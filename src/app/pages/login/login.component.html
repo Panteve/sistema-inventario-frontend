@@ -1,12 +1,9 @@
-
-<form>  
+<form (submit)="onSubmit($event)">  
     <input type="text" placeholder="Document" [formField]="loginForm.document">  
     <input type="password" placeholder="Password" [formField]="loginForm.password">
-    <button (click)="onSubmit()">Login</button>
-    <button class="btn btn-primary">One</button>
+    <button class="du-btn du-btn-primary" type="submit">Login</button>
 </form>
 
 
 
 
-<p>login.component works!</p>
