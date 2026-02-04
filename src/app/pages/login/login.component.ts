@@ -1,5 +1,5 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { form, FormField } from '@angular/forms/signals';
+import { Component, inject, signal } from '@angular/core';
+import { form, FormField, required, } from '@angular/forms/signals';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 
@@ -18,9 +18,11 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
 
-  private login = signal<boolean>(false);
+  loading = signal<boolean>(false);
+  incorrectLogin = signal<boolean>(false);
+  error = signal<string>('');
+  
 
-  isLoggedIn = computed<boolean>(() => this.login());
 
 
   loginModel = signal<LoginData>({
@@ -28,24 +30,38 @@ export class LoginComponent {
     password: '',
   });
 
-  loginForm = form(this.loginModel);
+  loginForm = form(this.loginModel, (schemePath) => {
+    required(schemePath.document,{message: 'El documento es obligatorio'});
+    required(schemePath.password,{message: 'La contraseña es obligatoria'});
+  });
 
-  onSubmit(event: Event) {
+  async onSubmit(event: Event) {
     event.preventDefault();
+    this.loading.set(true);
     const loginData = this.loginModel();
 
     loginData.document = loginData.document.trim();
     loginData.password = loginData.password.trim();
-    if(this.authService.login(loginData.document, loginData.password)){
-      this.login.set(true);
-    }
-    this.authService.getAuthToken().then(token => {
-      console.log('Auth Token:', token);
-    })
-    if (this.isLoggedIn()) {
+
+    this.authService.login(loginData.document, loginData.password).then(res => {
+      this.loading.set(false);
       this.router.navigate(['/dashboard']);
-    }else{
-      alert('Login failed. Please check your credentials.');
+    }).catch((err) => {
+      console.error('Login failed', err);
+      if(err.status === 401 || err.status === 404) {
+        this.error.set('Documento o contraseña incorrectos.');
+        this.incorrectLogin.set(true);
+      }else{
+        this.error.set('Error de conexión con el servidor. Por favor, inténtelo de nuevo más tarde.');
+        this.incorrectLogin.set(true);
+      }
+      this.loading.set(false);
+    })
+  }
+  onInputChange() {
+    if(this.incorrectLogin()) {
+      this.incorrectLogin.set(false);
+      this.error.set('');
     }
   }
 }

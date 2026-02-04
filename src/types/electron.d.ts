@@ -6,6 +6,9 @@ declare global {
       saveToken: (token: string) => Promise<void>;
       getToken: () => Promise<string | null>;
       deleteToken: () => Promise<void>;
+      saveTheme: (theme: string) => Promise<void>;
+      getTheme: () => Promise<string>;
+
     };
   }
 }

@@ -1,6 +1,9 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
 const path = require('path');
 const keytar = require('keytar');
+const Store = require('electron-store').default;
+
+const store = new Store();
 
 const SERVICE = 'sistema-inventario-app';
 const ACCOUNT = 'auth-token';
@@ -29,6 +32,14 @@ ipcMain.handle('auth:getToken', async () => {
 
 ipcMain.handle('auth:deleteToken', async () => {
   await keytar.deletePassword(SERVICE, ACCOUNT);
+});
+
+ipcMain.handle('settings:saveTheme', async (_, theme) => {
+  store.set('theme', theme);
+});
+
+ipcMain.handle('settings:getTheme', async () => {
+  return store.get('theme' , 'sunset');
 });
 
 app.whenReady().then(createWindow);

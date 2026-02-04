@@ -2,6 +2,6 @@
 
 @import "tailwindcss";
  @plugin "daisyui" {
-  themes: sunset --default;
+  themes: sunset, dracula, light;
   prefix: "du-";
 }

@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Observable } from 'rxjs';
 
 interface LoginResponse {
   access_token: string;
@@ -11,23 +10,39 @@ interface LoginResponse {
   providedIn: 'root',
 })
 export class AuthService {
-
   private http = inject(HttpClient);
+  private isLoggedIn = signal<boolean>(false);
   private token = signal<string | null>(null);
 
-   login(document: string, password: string): boolean{
-    this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, { document, password }).subscribe({
-      next: async (response: any) => {
-        await window.electronAPI.saveToken(response.access_token);
-      },
-      error: (err) => {
-        console.error('Login error', err);
-      },
+  login(document: string, password: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      this.http
+        .post<LoginResponse>(`${environment.apiUrl}/auth/login`, { document, password })
+        .subscribe({
+          next: async (response: any) => {
+            await window.electronAPI.saveToken(response.access_token);
+            this.token.set(response.access_token);
+            this.isLoggedIn.set(true);
+            resolve(true);
+          },
+          error: (err) => {
+            reject(err);
+          },
+        });
     });
-    if (!this.token()) {
-      return false;
-    }
-    return true;
+  }
+
+  logout(): Promise<boolean> {
+    return new Promise(async (resolve) => {
+      await window.electronAPI.deleteToken();
+      this.token.set(null);
+      this.isLoggedIn.set(false);
+      resolve(true);
+    });
+  }
+
+  getIsLoggedIn(): boolean {
+    return this.isLoggedIn();
   }
 
   async getAuthToken(): Promise<string | null> {
