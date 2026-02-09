@@ -1,0 +1,89 @@
+<div class="w-full">
+  <div class="du-card du-card-bordered bg-base-100 shadow-sm">
+    <div class="du-card-body p-4">
+      <!-- Header -->
+      <div class="flex items-center justify-between mb-4 pr-4">
+        <h2 class="text-lg font-semibold">Productos disponibles</h2>
+
+        <div class="du-tooltip" data-tip="Recargar productos">
+          <button
+            class="du-btn du-btn-sm du-btn-accent "
+            title="Actualizar"
+            (click)="this.loadProducts()"
+          >
+            ⟳
+          </button>
+        </div>
+      </div>
+      @if (!this.loading() && this.error() !== '') {
+        <!-- Error -->
+        <div class="du-alert du-alert-error mb-3">
+          <span>{{ this.error() }}</span>
+        </div>
+      }
+      @if (this.loading()) {
+        <!-- Loading -->
+        <div class="flex justify-center items-center gap-2 text-sm opacity-70 mb-3">
+          <span class="du-loading du-loading-spinner du-loading-sm"></span>
+          Cargando productos...
+        </div>
+      }
+      
+
+      <!-- Table -->
+      <div class="overflow-x-auto">
+        <table class="du-table du-table-sm w-full">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Stock</th>
+              <th class="text-right">Precio</th>
+              <th class="text-right">Precio Mayor</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <tr class="hover:bg-base-200 cursor-pointer">
+              <td>
+                <div>
+                  <p class="font-medium">Producto A</p>
+                  <p class="text-xs opacity-60">Código: 001</p>
+                </div>
+              </td>
+              <td>12</td>
+              <td class="text-right font-semibold">$25.000</td>
+              <td class="text-right font-semibold">$22.000</td>
+            </tr>
+
+            <tr class="hover:bg-base-200 cursor-pointer">
+              <td>
+                <div>
+                  <p class="font-medium">Producto B</p>
+                  <p class="text-xs opacity-60">Código: 002</p>
+                </div>
+              </td>
+              <td>5</td>
+              <td class="text-right font-semibold">$18.500</td>
+              <td class="text-right font-semibold">$22.000</td>
+            </tr>
+
+            <tr class="hover:bg-base-200 cursor-pointer opacity-50">
+              <td>
+                <div>
+                  <p class="font-medium">Producto C</p>
+                  <p class="text-xs opacity-60">Código: 003</p>
+                </div>
+              </td>
+              <td>0</td>
+              <td class="text-right font-semibold">$9.900</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Empty -->
+      @if (this.products().length === 0) {
+        <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>
+      }
+    </div>
+  </div>
+</div>

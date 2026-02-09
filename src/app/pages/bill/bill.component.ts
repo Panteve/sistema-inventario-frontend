@@ -3,11 +3,11 @@ import { BillInterface } from '../../interfaces/bill.interface';
 import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { BillService } from '../../services/bill.service';
-import { ProductInterface } from '../../interfaces/product.interface';
+import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [],
+  imports: [RouterOutlet],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
 })
@@ -15,13 +15,15 @@ export class BillComponent implements OnInit {
   private billService = inject(BillService);
   private productService = inject(ProductService);
   private authService = inject(AuthService);
+  router = inject(Router);
 
-  error = signal<string>('');
-  loading = signal<boolean>(false);
+  modalAbierto = signal<boolean>(false);
+  error = this.productService.error.asReadonly();
+  loading = signal<boolean>(true);
 
-  products: ProductInterface[] = [];
+  products = this.productService.products.asReadonly();
 
-  loginModel = signal<BillInterface>({
+  billModel = signal<BillInterface>({
     userId: undefined,
     paymentMethodId: 1,
     employeeId: this.authService.getEmployeeId(),
@@ -29,17 +31,8 @@ export class BillComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.productService.getProducts().then((products) => {
-      this.products = products;
-    }).catch((err) => {
-      console.error('Get products failed', err);
-      if(err.status === 401 ) {
-        this.error.set('No autorizado. Por favor, inicie sesión de nuevo.');
-      }else{
-        this.error.set('Error de conexión con el servidor. Por favor, inténtelo de nuevo más tarde.');
-      }
+    this.productService.loadProducts().add(() => {
       this.loading.set(false);
     });
   }
-
 }

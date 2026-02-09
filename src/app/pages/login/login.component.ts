@@ -19,8 +19,8 @@ export class LoginComponent {
   error = signal<string>('');
 
   loginModel = signal<LoginDataInterface>({
-    document: '',
-    password: '',
+    document: '123456789',
+    password: '123456789',
   });
 
   loginForm = form(this.loginModel, (schemePath) => {
