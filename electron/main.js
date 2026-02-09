@@ -39,7 +39,7 @@ ipcMain.handle('settings:saveTheme', async (_, theme) => {
 });
 
 ipcMain.handle('settings:getTheme', async () => {
-  return store.get('theme' , 'sunset');
+  return store.get('theme' , 'light');
 });
 
 app.whenReady().then(createWindow);

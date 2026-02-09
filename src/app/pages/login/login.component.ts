@@ -1,12 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
-import { form, FormField, required, } from '@angular/forms/signals';
+import { form, FormField, required } from '@angular/forms/signals';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-
-interface LoginData {
-  document: string;
-  password: string;
-}
+import { LoginDataInterface } from '../../interfaces/login-data.interface';
 
 @Component({
   selector: 'app-login.component',
@@ -21,18 +17,15 @@ export class LoginComponent {
   loading = signal<boolean>(false);
   incorrectLogin = signal<boolean>(false);
   error = signal<string>('');
-  
 
-
-
-  loginModel = signal<LoginData>({
+  loginModel = signal<LoginDataInterface>({
     document: '',
     password: '',
   });
 
   loginForm = form(this.loginModel, (schemePath) => {
-    required(schemePath.document,{message: 'El documento es obligatorio'});
-    required(schemePath.password,{message: 'La contraseña es obligatoria'});
+    required(schemePath.document, { message: 'El documento es obligatorio' });
+    required(schemePath.password, { message: 'La contraseña es obligatoria' });
   });
 
   async onSubmit(event: Event) {
@@ -43,23 +36,29 @@ export class LoginComponent {
     loginData.document = loginData.document.trim();
     loginData.password = loginData.password.trim();
 
-    this.authService.login(loginData.document, loginData.password).then(res => {
-      this.loading.set(false);
-      this.router.navigate(['/dashboard']);
-    }).catch((err) => {
-      console.error('Login failed', err);
-      if(err.status === 401 || err.status === 404) {
-        this.error.set('Documento o contraseña incorrectos.');
-        this.incorrectLogin.set(true);
-      }else{
-        this.error.set('Error de conexión con el servidor. Por favor, inténtelo de nuevo más tarde.');
-        this.incorrectLogin.set(true);
-      }
-      this.loading.set(false);
-    })
+    this.authService.login(loginData.document, loginData.password).subscribe({
+      next: () => {
+        this.loading.set(false);
+        this.authService.showNav.set(true);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => {
+        console.error('Login failed', err);
+        if (err.status === 401 || err.status === 404) {
+          this.error.set('Documento o contraseña incorrectos.');
+          this.incorrectLogin.set(true);
+        } else {
+          this.error.set(
+            'Error de conexión con el servidor. Por favor, inténtelo de nuevo más tarde.',
+          );
+          this.incorrectLogin.set(true);
+        }
+        this.loading.set(false);
+      },
+    });
   }
   onInputChange() {
-    if(this.incorrectLogin()) {
+    if (this.incorrectLogin()) {
       this.incorrectLogin.set(false);
       this.error.set('');
     }

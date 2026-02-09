@@ -16,7 +16,7 @@ export class ThemeService {
     }
   }
 
-  setTheme(light:boolean) {
+  async setTheme(light:boolean) {
     if (light) {
       this.theme.set('light');
     } else {

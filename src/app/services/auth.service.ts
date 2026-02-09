@@ -1,42 +1,54 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-
-interface LoginResponse {
-  access_token: string;
-}
+import { LoginResponseInterface } from '../interfaces/login-response.interface';
+import { UserInterface } from '../interfaces/employee.interface';
+import { from, map, switchMap, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
   private http = inject(HttpClient);
-  private isLoggedIn = signal<boolean>(false);
-  private token = signal<string | null>(null);
 
-  login(document: string, password: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      this.http
-        .post<LoginResponse>(`${environment.apiUrl}/auth/login`, { document, password })
-        .subscribe({
-          next: async (response: any) => {
-            await window.electronAPI.saveToken(response.access_token);
-            this.token.set(response.access_token);
-            this.isLoggedIn.set(true);
-            resolve(true);
-          },
-          error: (err) => {
-            reject(err);
-          },
-        });
-    });
-  }
+  private isLoggedIn = computed(() => this.isAuthenticated() && this.showNav());
+  showNav = signal<boolean>(false);
+  private isAuthenticated = signal<boolean>(false);
+  private isAdmin = signal<boolean>(false);
+  private employee: UserInterface = { id: 0, document: '' };
+
+  login(document: string, password: string) {
+  return this.http
+    .post<LoginResponseInterface>(
+      `${environment.apiUrl}/auth/login`,
+      { document, password }
+    )
+    .pipe(
+      switchMap(response =>
+        from(window.electronAPI.saveToken(response.access_token)).pipe(
+          tap(() => {
+            this.isAdmin.set(
+              response.user.role?.toUpperCase() === 'ADMIN'
+            );
+
+            this.employee = {
+              id: response.user.id,
+              document: response.user.document,
+            };
+
+            this.isAuthenticated.set(true);
+          }),
+          map(() => true)
+        )
+      )
+    );
+}
+
 
   logout(): Promise<boolean> {
     return new Promise(async (resolve) => {
-      await window.electronAPI.deleteToken();
-      this.token.set(null);
-      this.isLoggedIn.set(false);
+      this.isAuthenticated.set(false);
+      this.employee = { id: 0, document: '' };
       resolve(true);
     });
   }
@@ -44,9 +56,20 @@ export class AuthService {
   getIsLoggedIn(): boolean {
     return this.isLoggedIn();
   }
+  getIsAdmin(): boolean {
+    return this.isAdmin();
+  }
+  getEmployeeId(): number {
+    return this.employee.id;
+  }
+  getEmployeeDocument(): string {
+    return this.employee.document;
+  }
 
-  async getAuthToken(): Promise<string | null> {
-    this.token.set(await window.electronAPI.getToken());
-    return this.token();
+  getAuthToken(): Promise<string | null> {
+    return new Promise(async (resolve) => {
+      const token = await window.electronAPI.getToken();
+      resolve(token);
+    });
   }
 }

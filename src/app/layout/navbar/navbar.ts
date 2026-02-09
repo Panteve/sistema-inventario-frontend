@@ -32,6 +32,9 @@ export class Navbar implements OnInit {
     }
   }
 
+  goDashboard() {
+    this.router.navigate(['/dashboard']);
+  }
 
   ngOnInit() {
     this.theme.init();
