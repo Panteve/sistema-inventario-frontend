@@ -11,13 +11,18 @@ export class ProductService {
   private http = inject(HttpClient);
 
   products = signal<ProductInterface[]>([]);
+  loadingBill = signal<boolean>(true);
+  loadingProduct = signal<boolean>(false);
   error = signal<string>('');
 
   loadProducts() {
+    this.loadingProduct.set(true);
     return this.http.get<ProductInterface[]>(`${environment.apiUrl}/products`).subscribe({
       next: (products) => {
         this.error.set('');
         this.products.set(products);
+        this.loadingBill.set(false);
+        this.loadingProduct.set(false);
       },
       error: (err) => {
         if (err.status === 401) {
@@ -28,6 +33,10 @@ export class ProductService {
           );
         }
       },
+      complete: () => {
+        this.loadingBill.set(false);
+        this.loadingProduct.set(false);
+      }
     });
   }
 

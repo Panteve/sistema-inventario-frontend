@@ -19,7 +19,7 @@ export class BillComponent implements OnInit {
 
   modalAbierto = signal<boolean>(false);
   error = this.productService.error.asReadonly();
-  loading = signal<boolean>(true);
+  loading = this.productService.loadingBill.asReadonly();
 
   products = this.productService.products.asReadonly();
 
@@ -31,8 +31,6 @@ export class BillComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.productService.loadProducts().add(() => {
-      this.loading.set(false);
-    });
+    this.productService.loadProducts()
   }
 }

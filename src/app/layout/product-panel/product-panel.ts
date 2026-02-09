@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 
 @Component({
@@ -12,12 +12,9 @@ export class ProductPanel {
 
   products = this.productService.products.asReadonly();
   error = this.productService.error.asReadonly();
-  loading = signal<boolean>(false);
+  loading = this.productService.loadingProduct.asReadonly();
 
   loadProducts() {
-    this.loading.set(true);
-     this.productService.loadProducts().add(() => {
-       this.loading.set(false);
-     });
+    this.productService.loadProducts()
   }
 }

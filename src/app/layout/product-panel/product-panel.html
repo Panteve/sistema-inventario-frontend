@@ -27,7 +27,7 @@
           <span class="du-loading du-loading-spinner du-loading-sm"></span>
           Cargando productos...
         </div>
-      }
+      } @else{
       
 
       <!-- Table -->
@@ -80,6 +80,7 @@
           </tbody>
         </table>
       </div>
+      }
       <!-- Empty -->
       @if (this.products().length === 0) {
         <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>
