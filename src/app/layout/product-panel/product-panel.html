@@ -1,17 +1,22 @@
 <div class="w-full">
-  <div class="du-card du-card-bordered bg-base-100 shadow-sm">
+  <div class="du-card du-card-bordered bg-base-100 shadow-md">
     <div class="du-card-body p-4">
       <!-- Header -->
-      <div class="flex items-center justify-between mb-4 pr-4">
+      <div class="flex items-center justify-between pr-4">
         <h2 class="text-lg font-semibold">Productos disponibles</h2>
 
         <div class="du-tooltip" data-tip="Recargar productos">
           <button
-            class="du-btn du-btn-sm du-btn-accent "
+            class="du-btn du-btn-circle du-btn-sm md:du-btn-md du-btn-accent"
             title="Actualizar"
             (click)="this.loadProducts()"
           >
-            ⟳
+            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+              <path
+                fill="currentColor"
+                d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
+              />
+            </svg>
           </button>
         </div>
       </div>
@@ -27,60 +32,80 @@
           <span class="du-loading du-loading-spinner du-loading-sm"></span>
           Cargando productos...
         </div>
-      } @else{
-      
+      } @else {
+        <div>
+          <input
+            #search
+            placeholder="Buscar producto..."
+            class="du-input du-input-bordered du-input-info lg:du-input-lg md:du-input-md w-full mb-4"
+            (input)="globalFilter.set(search.value)"
+          />
+        </div>
+        <!-- Table -->
+        <div class="overflow-x-auto rounded-box border border-base-content/25 bg-base-300">
+          <table class="du-table lg:du-table-lg md:du-table-md sm:du-table-sm w-full">
+            <thead class="bg-base-200">
+              <tr>
+                <th class="text-center font-extrabold text-base-content">ID</th>
+                <th class="text-center font-extrabold text-base-content">Nombre</th>
+                <th class="text-center font-extrabold text-base-content">Precio</th>
+                <th class="text-center font-extrabold text-base-content">Precio Mayor</th>
+                <th class="text-center font-extrabold text-base-content">Stock</th>
+              </tr>
+            </thead>
 
-      <!-- Table -->
-      <div class="overflow-x-auto">
-        <table class="du-table du-table-sm w-full">
-          <thead>
-            <tr>
-              <th>Producto</th>
-              <th>Stock</th>
-              <th class="text-right">Precio</th>
-              <th class="text-right">Precio Mayor</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            <tr class="hover:bg-base-200 cursor-pointer">
-              <td>
-                <div>
-                  <p class="font-medium">Producto A</p>
-                  <p class="text-xs opacity-60">Código: 001</p>
-                </div>
-              </td>
-              <td>12</td>
-              <td class="text-right font-semibold">$25.000</td>
-              <td class="text-right font-semibold">$22.000</td>
-            </tr>
-
-            <tr class="hover:bg-base-200 cursor-pointer">
-              <td>
-                <div>
-                  <p class="font-medium">Producto B</p>
-                  <p class="text-xs opacity-60">Código: 002</p>
-                </div>
-              </td>
-              <td>5</td>
-              <td class="text-right font-semibold">$18.500</td>
-              <td class="text-right font-semibold">$22.000</td>
-            </tr>
-
-            <tr class="hover:bg-base-200 cursor-pointer opacity-50">
-              <td>
-                <div>
-                  <p class="font-medium">Producto C</p>
-                  <p class="text-xs opacity-60">Código: 003</p>
-                </div>
-              </td>
-              <td>0</td>
-              <td class="text-right font-semibold">$9.900</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+            <tbody>
+              @for (row of table.getRowModel().rows; track row.id) {
+                <tr
+                  class="hover:bg-base-100 cursor-pointer"
+                  (click)="getProductTable(row.original)"
+                >
+                  @for (cell of row.getVisibleCells(); track cell.id) {
+                    <td class="text-center font-medium">
+                      <ng-container
+                        *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cell"
+                      >
+                        <div [innerHTML]="cell"></div>
+                      </ng-container>
+                    </td>
+                  }
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
       }
+      <div class="flex justify-center">
+        <div class="du-join">
+          <button
+            class="du-join-item du-btn"
+            (click)="previousPage()"
+            [disabled]="!table.getCanPreviousPage()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 42">
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M27.066 1L7 21.068l19.568 19.569l4.934-4.933l-14.637-14.636L32 5.933z"
+              />
+            </svg>
+          </button>
+          <button class="du-join-item du-btn text-xl">{{ numberPage() }}</button>
+          <button
+            class="du-join-item du-btn"
+            (click)="nextPage()"
+            [disabled]="!table.getCanNextPage()"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 42">
+              <path
+                fill="currentColor"
+                fill-rule="evenodd"
+                d="M13.933 1L34 21.068L14.431 40.637l-4.933-4.933l14.638-14.636L9 5.933z"
+              />
+            </svg>
+          </button>
+        </div>
+      </div>
       <!-- Empty -->
       @if (this.products().length === 0) {
         <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>

@@ -19,7 +19,6 @@ export class BillComponent implements OnInit {
 
   modalAbierto = signal<boolean>(false);
   error = this.productService.error.asReadonly();
-  loading = this.productService.loadingBill.asReadonly();
 
   products = this.productService.products.asReadonly();
 
