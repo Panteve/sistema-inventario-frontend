@@ -6,8 +6,7 @@ import { authGuard } from './auth-guard';
 import { ProductPanel } from './layout/product-panel/product-panel';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' },
-  { path: 'login', component: LoginComponent, title: 'Inicio de sesión' },
+  { path: '', component: LoginComponent, title: 'Inicio de sesión'},
   {
     path: 'dashboard',
     component: DashboardComponent,

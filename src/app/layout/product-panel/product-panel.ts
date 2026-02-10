@@ -8,6 +8,7 @@ import {
   getPaginationRowModel,
 } from '@tanstack/angular-table';
 import { ProductInterface } from '../../interfaces/product.interface';
+import { BillService } from '../../services/bill.service';
 @Component({
   selector: 'app-product-panel',
   imports: [FlexRenderDirective],
@@ -16,6 +17,7 @@ import { ProductInterface } from '../../interfaces/product.interface';
 })
 export class ProductPanel {
   private productService = inject(ProductService);
+  private billService = inject(BillService);
 
   globalFilter = signal('');
   products = this.productService.products.asReadonly();
@@ -27,11 +29,11 @@ export class ProductPanel {
     this.productService.loadProducts();
   }
 
-  getProductTable(prodcut: ProductInterface) {
-    console.log('Producto seleccionado ID:', prodcut);
+  getProductTable(product: ProductInterface) {
+    this.billService.productsOnBill.update((products) => [...products, product]);
   }
 
-  
+
 
   table = createAngularTable(() => ({
     data: this.products(),

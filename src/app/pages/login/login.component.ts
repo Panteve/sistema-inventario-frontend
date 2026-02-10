@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
@@ -11,6 +11,8 @@ import { LoginDataInterface } from '../../interfaces/login-data.interface';
   styleUrl: './login.component.css',
 })
 export class LoginComponent {
+  constructor() {}
+
   private authService = inject(AuthService);
   private router = inject(Router);
 
@@ -63,4 +65,6 @@ export class LoginComponent {
       this.error.set('');
     }
   }
+
+  
 }

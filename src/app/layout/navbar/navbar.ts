@@ -20,7 +20,7 @@ export class Navbar implements OnInit {
     this.loading.set(true);
     this.auth.logout().then(() => {
       this.loading.set(false);
-      this.router.navigate(['/login']);
+      this.router.navigate(['']);
     });
   }
   changeTheme(event: Event) {
