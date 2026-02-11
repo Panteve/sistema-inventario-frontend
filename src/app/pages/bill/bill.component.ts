@@ -1,12 +1,8 @@
 import {
   Component,
-  ElementRef,
   inject,
   OnInit,
   signal,
-  ViewChild,
-  effect,
-  untracked,
 } from '@angular/core';
 import { BillInterface } from '../../interfaces/bill.interface';
 import { ProductService } from '../../services/product.service';
@@ -21,24 +17,12 @@ import { Router, RouterOutlet } from '@angular/router';
   styleUrl: './bill.component.css',
 })
 export class BillComponent implements OnInit {
-  constructor() {
-    effect(() => {
-      this.billService.productsOnBill();
-      untracked(() => {
-        if (this.modalAbierto()) {
-          this.btnCerrrar.nativeElement.click();
-          this.modalAbierto.set(false);
-        }
-      });
-    });
-  }
 
   private billService = inject(BillService);
   private productService = inject(ProductService);
   private authService = inject(AuthService);
   router = inject(Router);
 
-  @ViewChild('cerrarBtn') btnCerrrar!: ElementRef<HTMLButtonElement>;
 
   modalAbierto = signal<boolean>(false);
   error = this.productService.error.asReadonly();

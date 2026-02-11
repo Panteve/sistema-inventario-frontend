@@ -9,28 +9,32 @@ import {
 } from '@tanstack/angular-table';
 import { ProductInterface } from '../../interfaces/product.interface';
 import { BillService } from '../../services/bill.service';
+import { Router, RouterOutlet } from '@angular/router';
 @Component({
   selector: 'app-product-panel',
-  imports: [FlexRenderDirective],
+  imports: [FlexRenderDirective, RouterOutlet],
   templateUrl: './product-panel.html',
   styleUrl: './product-panel.css',
 })
 export class ProductPanel {
   private productService = inject(ProductService);
   private billService = inject(BillService);
+  router = inject(Router);
 
   globalFilter = signal('');
   products = this.productService.products.asReadonly();
   error = this.productService.error.asReadonly();
   loading = this.productService.loading.asReadonly();
   numberPage = signal<number>(1);
+  modalAbierto = signal<boolean>(false);
 
   loadProducts() {
     this.productService.loadProducts();
   }
 
   getProductTable(product: ProductInterface) {
-    this.billService.productsOnBill.update((products) => [...products, product]);
+    this.productService.productSelected.set(product);
+    this.modalAbierto.set(true);
   }
 
 
@@ -79,6 +83,11 @@ export class ProductPanel {
       },
     },
   }));
+
+  resetViewTable() {
+    this.table.setPageIndex(0);
+    this.numberPage.set(1);
+  }
 
   nextPage() {
     this.table.nextPage();

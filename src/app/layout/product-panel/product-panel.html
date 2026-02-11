@@ -39,6 +39,7 @@
             placeholder="Buscar producto..."
             class="du-input du-input-bordered du-input-info lg:du-input-lg md:du-input-md w-full mb-4"
             (input)="globalFilter.set(search.value)"
+            (input)="resetViewTable()"
           />
         </div>
         <!-- Table -->
@@ -59,6 +60,9 @@
                 <tr
                   class="hover:bg-base-100 cursor-pointer"
                   (click)="getProductTable(row.original)"
+                  onclick="my_modal_2.showModal()"
+                  (click)="this.modalAbierto.set(true)"
+                  (click)="this.router.navigate(['/bill/products/product'])"
                 >
                   @for (cell of row.getVisibleCells(); track cell.id) {
                     <td class="text-center font-medium">
@@ -106,6 +110,18 @@
           </button>
         </div>
       </div>
+      <dialog id="my_modal_2" class="du-modal">
+        <div class="du-modal-box">
+          @if (this.modalAbierto()) {
+                <router-outlet />
+              }
+          <div class="du-modal-action">
+            <form method="dialog">
+              <button class="du-btn" (click)="this.modalAbierto.set(false)">Close</button>
+            </form>
+          </div>
+        </div>
+      </dialog>
       <!-- Empty -->
       @if (this.products().length === 0) {
         <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>

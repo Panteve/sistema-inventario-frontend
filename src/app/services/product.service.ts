@@ -11,6 +11,7 @@ export class ProductService {
   private http = inject(HttpClient);
 
   products = signal<ProductInterface[]>([]);
+  productSelected = signal<ProductInterface>({name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
   loading = signal<boolean>(false);
   error = signal<string>('');
 
@@ -34,6 +35,10 @@ export class ProductService {
         this.loading.set(false);
       }
     });
+  }
+
+  getProductSelected() {
+    return this.productSelected();
   }
 
   createProduct(product: ProductInterface) {
