@@ -1,133 +1,119 @@
 <div class="flex-1 flex justify-center pt-15 pb-15">
-  <div class="w-full max-w-9/12 px-4 py-10 min-h-5/6 flex bg-base-100 rounded-4xl du-card shadow-2xl">
-        <!-- Card principal (DaisyUI) -->
-          <div class="du-card-body">
-              <!-- Header -->
-              <div class="flex justify-between items-center mb-6">
-                <div>
-                  <h1 class="text-3xl font-bold">Factura</h1>
-                  <p class="text-sm opacity-60">Bill / Invoice</p>
-                </div>
+  <div
+    class="w-full max-w-9/12 px-4 py-10 min-h-5/6 flex bg-base-100 rounded-4xl du-card shadow-2xl"
+  >
+    <!-- Card principal (DaisyUI) -->
+    <div class="du-card-body">
+      <!-- Header -->
+      <div class="flex justify-between items-center mb-6">
+        <div>
+          <h1 class="text-3xl font-bold">Factura</h1>
+          <p class="text-sm opacity-60">Bill / Invoice</p>
+        </div>
 
-                <div class="text-right">
-                  <p class="font-semibold">Factura #00123</p>
-                  <p class="text-sm opacity-60">Fecha: 08/02/2026</p>
-                </div>
-              </div>
+        <div class="text-right">
+          <p class="font-semibold">Factura #00123</p>
+          <p class="text-sm opacity-60">Fecha: 08/02/2026</p>
+        </div>
+      </div>
 
-              <!-- Cliente / Empresa -->
-              <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-                <div>
-                  <h2 class="font-semibold mb-2">Facturar a</h2>
-                  <p>Nombre del cliente</p>
-                  <p class="text-sm opacity-60">cliente@email.com</p>
-                  <p class="text-sm opacity-60">Tel: 300 000 0000</p>
-                </div>
+      <!-- Cliente / Empresa -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        <div>
+          <h2 class="font-semibold mb-2">Facturar a</h2>
+          <p>Nombre del cliente</p>
+          <p class="text-sm opacity-60">cliente@email.com</p>
+          <p class="text-sm opacity-60">Tel: 300 000 0000</p>
+        </div>
 
-                <div class="md:text-right">
-                  <h2 class="font-semibold mb-2">Empresa</h2>
-                  <p>Mi Empresa S.A.S</p>
-                  <p class="text-sm opacity-60">NIT: 900000000</p>
-                  <p class="text-sm opacity-60">Bogotá, Colombia</p>
-                </div>
-              </div>
+        <div class="md:text-right">
+          <h2 class="font-semibold mb-2">Empresa</h2>
+          <p>Mi Empresa S.A.S</p>
+          <p class="text-sm opacity-60">NIT: 900000000</p>
+          <p class="text-sm opacity-60">Bogotá, Colombia</p>
+        </div>
+      </div>
 
-              <!-- Tabla de items (DaisyUI) -->
-              <div class="overflow-x-auto mb-6">
-                <table class="du-table du-table-zebra w-full">
-                  <thead>
-                    <tr>
-                      <th>Descripción</th>
-                      <th class="text-right">Cantidad</th>
-                      <th class="text-right">Precio</th>
-                      <th class="text-right">Total</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr>
-                      <td>Producto / Servicio 1</td>
-                      <td class="text-right">2</td>
-                      <td class="text-right">$50.000</td>
-                      <td class="text-right">$100.000</td>
-                    </tr>
-                    <tr>
-                      <td>Producto / Servicio 1</td>
-                      <td class="text-right">2</td>
-                      <td class="text-right">$50.000</td>
-                      <td class="text-right">$100.000</td>
-                    </tr>
-                    <tr>
-                      <td>Producto / Servicio 1</td>
-                      <td class="text-right">2</td>
-                      <td class="text-right">$50.000</td>
-                      <td class="text-right">$100.000</td>
-                    </tr>
-                    <tr>
-                      <td>Producto / Servicio 1</td>
-                      <td class="text-right">2</td>
-                      <td class="text-right">$50.000</td>
-                      <td class="text-right">$100.000</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
+      <!-- Tabla de items (DaisyUI) -->
+      <div class="overflow-x-auto mb-6">
+        <table class="du-table du-table-zebra w-full">
+          <thead>
+            <tr>
+              <th class="text-center">Descripción</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-center">Precio</th>
+              <th class="text-center">Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (product of productsOnBill(); track product.id) {
+              <tr>
+                <td>{{ product.name }}</td>
+                <td class="text-center">
+                  <input
+                    type="number"
+                    class="du-input du-input-sm w-20 text-center du-input-ghost"
+                    [value]="product.stock"
+                  />
+                </td>
 
-              <!-- Totales -->
-              <div class="flex justify-end">
-                <div class="w-full md:w-1/3 space-y-2">
-                  <div class="flex justify-between">
-                    <span>Subtotal</span>
-                    <span>$180.000</span>
-                  </div>
+                <td class="text-center">{{ product.priceSelected | currency }}</td>
+                <td class="text-center">{{ (product.priceSelected ?? 0) * product.stock | currency }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
 
-                  <div class="flex justify-between">
-                    <span>IVA (19%)</span>
-                    <span>$34.200</span>
-                  </div>
+      <!-- Totales -->
+      <div class="flex justify-end">
+        <div class="w-full md:w-1/3 space-y-2">
+          <div class="flex justify-between">
+            <span>Subtotal</span>
+            <span>$180.000</span>
+          </div>
 
-                  <div class="du-divider my-1"></div>
+          <div class="flex justify-between">
+            <span>IVA (19%)</span>
+            <span>$34.200</span>
+          </div>
 
-                  <div class="flex justify-between font-bold text-lg">
-                    <span>Total</span>
-                    <span>$214.200</span>
-                  </div>
-                </div>
-              </div>
+          <div class="du-divider my-1"></div>
 
-              <!-- Acciones (DaisyUI) -->
-              <div class="du-card-actions justify-end mt-6">
-                <button class="du-btn du-btn-outline">Cancelar</button>
-                <button class="du-btn du-btn-primary">Generar factura</button>
-
-                <button
-                  class="du-btn"
-                  onclick="my_modal_1.showModal()"
-                  (click)="this.router.navigate(['/bill/products'])"
-                  (click)="this.modalAbierto.set(true)"
-                >
-                  open modal
-                </button>
-                <dialog id="my_modal_1" class="du-modal">
-                  <div class="du-modal-box w-3/4 max-w-3/4">
-                    @if (this.modalAbierto()) {
-                      <router-outlet />
-                    }
-                    <div class="du-modal-action justify-center">
-                      <form method="dialog">
-                        <button
-                          #cerrarBtn
-                          class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
-                          (click)="this.modalAbierto.set(false);"
-                        >
-                          Cerrar
-                        </button>
-                      </form>
-                    </div>
-                  </div>
-                </dialog>
-              </div>
+          <div class="flex justify-between font-bold text-lg">
+            <span>Total</span>
+            <span>$214.200</span>
           </div>
         </div>
       </div>
 
+      <!-- Acciones (DaisyUI) -->
+      <div class="du-card-actions justify-end mt-6">
+        <button class="du-btn du-btn-outline">Cancelar</button>
+        <button class="du-btn du-btn-primary">Generar factura</button>
 
+        <button
+          class="du-btn"
+          onclick="my_modal_1.showModal()"
+          (click)="this.router.navigate(['/bill/products'])"
+        >
+          open modal
+        </button>
+        <dialog id="my_modal_1" class="du-modal">
+          <div class="du-modal-box w-3/4 max-w-3/4">
+              <router-outlet />
+            <div class="du-modal-action justify-center">
+              <form method="dialog">
+                <button
+                  class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
+                >
+                  Cerrar
+                </button>
+              </form>
+            </div>
+          </div>
+        </dialog>
+      </div>
+    </div>
+  </div>
+</div>

@@ -8,6 +8,5 @@ export const productResolver: ResolveFn<ProductInterface> = (
   state: RouterStateSnapshot,
 ) => {
   const productService = inject(ProductService);
-  console.log('Resolviendo producto');
-  return productService.getProductSelected();
+  return productService.productSelected();
 };

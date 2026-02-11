@@ -33,15 +33,28 @@
           Cargando productos...
         </div>
       } @else {
-        <div>
+        <label
+          class="du-input du-input-bordered du-input-info lg:du-input-lg md:du-input-md w-full mb-4"
+        >
+          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <g
+              stroke-linejoin="round"
+              stroke-linecap="round"
+              stroke-width="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <circle cx="11" cy="11" r="8"></circle>
+              <path d="m21 21-4.3-4.3"></path>
+            </g>
+          </svg>
           <input
             #search
             placeholder="Buscar producto..."
-            class="du-input du-input-bordered du-input-info lg:du-input-lg md:du-input-md w-full mb-4"
             (input)="globalFilter.set(search.value)"
             (input)="resetViewTable()"
           />
-        </div>
+        </label>
         <!-- Table -->
         <div class="overflow-x-auto rounded-box border border-base-content/25 bg-base-300">
           <table class="du-table lg:du-table-lg md:du-table-md sm:du-table-sm w-full">
@@ -94,7 +107,7 @@
               />
             </svg>
           </button>
-          <button class="du-join-item du-btn text-xl">{{ numberPage() }}</button>
+          <button class="du-join-item du-btn text-xl" (click)="resetViewTable()">{{ numberPage() }}</button>
           <button
             class="du-join-item du-btn"
             (click)="nextPage()"
@@ -112,12 +125,16 @@
       </div>
       <dialog id="my_modal_2" class="du-modal">
         <div class="du-modal-box">
-          @if (this.modalAbierto()) {
-                <router-outlet />
-              }
-          <div class="du-modal-action">
+            <router-outlet />
+          <div class="du-modal-action justify-center">
             <form method="dialog">
-              <button class="du-btn" (click)="this.modalAbierto.set(false)">Close</button>
+              <button
+                #btnCerrar
+                class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
+                (click)="this.modalAbierto.set(false)"
+              >
+                Cerrar
+              </button>
             </form>
           </div>
         </div>

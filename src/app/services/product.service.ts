@@ -12,8 +12,10 @@ export class ProductService {
 
   products = signal<ProductInterface[]>([]);
   productSelected = signal<ProductInterface>({name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
+  modalClose = signal<boolean>(false);
   loading = signal<boolean>(false);
   error = signal<string>('');
+
 
   loadProducts() {
     this.loading.set(true);
@@ -35,10 +37,6 @@ export class ProductService {
         this.loading.set(false);
       }
     });
-  }
-
-  getProductSelected() {
-    return this.productSelected();
   }
 
   createProduct(product: ProductInterface) {

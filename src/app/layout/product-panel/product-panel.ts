@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild, ViewChildren } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import {
   createAngularTable,
@@ -10,21 +10,33 @@ import {
 import { ProductInterface } from '../../interfaces/product.interface';
 import { BillService } from '../../services/bill.service';
 import { Router, RouterOutlet } from '@angular/router';
+
 @Component({
   selector: 'app-product-panel',
   imports: [FlexRenderDirective, RouterOutlet],
   templateUrl: './product-panel.html',
   styleUrl: './product-panel.css',
 })
+
 export class ProductPanel {
+  constructor() {
+    effect(() => {
+      if (this.productService.modalClose()) {
+        this.btnCerrar.nativeElement.click();
+        this.productService.modalClose.set(false);
+      }
+    })
+  }
+
   private productService = inject(ProductService);
-  private billService = inject(BillService);
   router = inject(Router);
 
+  @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
+
   globalFilter = signal('');
-  products = this.productService.products.asReadonly();
-  error = this.productService.error.asReadonly();
-  loading = this.productService.loading.asReadonly();
+  products = this.productService.products;
+  error = this.productService.error;
+  loading = this.productService.loading;
   numberPage = signal<number>(1);
   modalAbierto = signal<boolean>(false);
 
@@ -37,7 +49,11 @@ export class ProductPanel {
     this.modalAbierto.set(true);
   }
 
-
+  private currencyFormatter = new Intl.NumberFormat('es-CO', {
+    style: 'currency',
+    currency: 'COP',
+    minimumFractionDigits: 2,
+  });
 
   table = createAngularTable(() => ({
     data: this.products(),
@@ -53,10 +69,12 @@ export class ProductPanel {
       {
         header: 'Precio unitario',
         accessorKey: 'unitPrice',
+        cell: (info) => this.currencyFormatter.format(info.getValue() as number),
       },
       {
         header: 'Precio mayorista',
         accessorKey: 'wholesalePrice',
+        cell: (info) => this.currencyFormatter.format(info.getValue() as number),
       },
       {
         header: 'Stock',
@@ -78,8 +96,8 @@ export class ProductPanel {
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
       pagination: {
-        pageIndex: 0, 
-        pageSize: 2, 
+        pageIndex: 0,
+        pageSize: 2,
       },
     },
   }));
@@ -93,7 +111,7 @@ export class ProductPanel {
     this.table.nextPage();
     this.numberPage.update((n) => n + 1);
   }
-  
+
   previousPage() {
     this.table.previousPage();
     this.numberPage.update((n) => n - 1);

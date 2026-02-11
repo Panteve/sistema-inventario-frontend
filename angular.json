@@ -8,6 +8,9 @@
   "newProjectRoot": "projects",
   "projects": {
     "sistema-inventario-frontend": {
+      "i18n": {
+        "sourceLocale": "es"
+      },
       "projectType": "application",
       "schematics": {},
       "root": "",
