@@ -8,7 +8,6 @@ import {
   getPaginationRowModel,
 } from '@tanstack/angular-table';
 import { ProductInterface } from '../../interfaces/product.interface';
-import { BillService } from '../../services/bill.service';
 import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -27,18 +26,17 @@ export class ProductPanel {
       }
     })
   }
+  @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   private productService = inject(ProductService);
   router = inject(Router);
 
-  @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
-
   globalFilter = signal('');
+  numberPage = signal<number>(1);
+  
   products = this.productService.products;
   error = this.productService.error;
   loading = this.productService.loading;
-  numberPage = signal<number>(1);
-  modalAbierto = signal<boolean>(false);
 
   loadProducts() {
     this.productService.loadProducts();
@@ -46,7 +44,6 @@ export class ProductPanel {
 
   getProductTable(product: ProductInterface) {
     this.productService.productSelected.set(product);
-    this.modalAbierto.set(true);
   }
 
   private currencyFormatter = new Intl.NumberFormat('es-CO', {

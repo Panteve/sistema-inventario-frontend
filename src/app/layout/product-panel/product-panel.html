@@ -67,14 +67,12 @@
                 <th class="text-center font-extrabold text-base-content">Stock</th>
               </tr>
             </thead>
-
             <tbody>
               @for (row of table.getRowModel().rows; track row.id) {
                 <tr
                   class="hover:bg-base-100 cursor-pointer"
                   (click)="getProductTable(row.original)"
                   onclick="my_modal_2.showModal()"
-                  (click)="this.modalAbierto.set(true)"
                   (click)="this.router.navigate(['/bill/products/product'])"
                 >
                   @for (cell of row.getVisibleCells(); track cell.id) {
@@ -131,7 +129,6 @@
               <button
                 #btnCerrar
                 class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
-                (click)="this.modalAbierto.set(false)"
               >
                 Cerrar
               </button>

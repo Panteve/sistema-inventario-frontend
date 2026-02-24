@@ -4,7 +4,7 @@ export interface BillInterface {
     userId?: number;
     paymentMethodId: number;
     employeeId: number;
-    products: ProductOnBillInterface[];
+    products?: ProductOnBillInterface[];
 }
 
 

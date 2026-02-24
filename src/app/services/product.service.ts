@@ -2,7 +2,6 @@ import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { ProductInterface } from '../interfaces/product.interface';
-import { tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +10,7 @@ export class ProductService {
   private http = inject(HttpClient);
 
   products = signal<ProductInterface[]>([]);
-  productSelected = signal<ProductInterface>({name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
+  productSelected = signal<ProductInterface>({id: 0, name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
   modalClose = signal<boolean>(false);
   loading = signal<boolean>(false);
   error = signal<string>('');

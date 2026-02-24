@@ -10,6 +10,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors([authInterceptor])),
-    {provide: DEFAULT_CURRENCY_CODE, useValue: '$ '},
+    {provide: DEFAULT_CURRENCY_CODE, useValue: '$'},
   ]
 };

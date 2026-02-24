@@ -1,14 +1,15 @@
-
-<h1 class="text-2xl font-bold mb-4">Precios del producto</h1>
-<table class="du-table w-full">
-  <tbody>
-    <tr class="hover:bg-base-300 cursor-pointer" (click)="addProduct('unitPrice')">
-        <td>Precio Unitario</td>
+<h1 class="text-2xl font-bold mb-4 text-center">Precios del producto</h1>
+<div class="overflow-x-auto rounded-box border border-base-content/25 bg-base-300 du-table-lg">
+  <table class="du-table w-full">
+    <tbody>
+      <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('unitPrice')">
+        <td class="font-bold">Precio Unitario</td>
         <td>{{ product().unitPrice | currency }}</td>
-    </tr>
-    <tr class="hover:bg-base-300 cursor-pointer" (click)="addProduct('wholesalePrice')">
-        <td>Precio Mayorista</td>
+      </tr>
+      <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('wholesalePrice')">
+        <td class="font-bold">Precio Mayorista</td>
         <td>{{ product().wholesalePrice | currency }}</td>
-    </tr>
-  </tbody>
-</table>
+      </tr>
+    </tbody>
+  </table>
+</div>
