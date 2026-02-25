@@ -195,3 +195,28 @@ La configuración de la URL de la API se encuentra en `src/environments/`:
 | `environment.ts` | Producción | `http://localhost:3000/api` |
 
 Para apuntar a un backend diferente, edita el valor de `apiUrl` en el archivo de entorno correspondiente antes de compilar.
+
+## 🧭 Flujo de trabajo con Pull Requests
+
+```bash
+# 1️⃣ Actualizar `main`
+git checkout main
+git pull origin main
+
+# 2️⃣ Crear rama de trabajo
+git checkout -b feature/x
+
+# 3️⃣ Guardar y subir cambios
+git add .
+git commit -m "feat: descripción corta"
+git push -u origin feature/x
+```
+4️⃣ Crear Pull Request
+Entra al repositorio y Aparecerá un botón: “Compare & pull request”
+```bash
+# 5️⃣ Limpiar ramas después del merge`
+git checkout main
+git pull origin main
+git branch -d feature/x
+git push origin --delete feature/x
+```
