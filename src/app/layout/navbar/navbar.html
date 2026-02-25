@@ -8,7 +8,7 @@
         viewBox="0 0 24 24"
         stroke-linejoin="round"
         stroke-linecap="round"
-        stroke-width="2"
+        stroke-width="1.5"
         fill="none"
         stroke="currentColor"
         class="my-1.5 inline-block size-10"
@@ -23,13 +23,7 @@
     <div class="du-navbar-start">
       <a class="du-btn du-btn-lg du-btn-ghost text-xl" (click)="goDashboard()">Electro</a>
     </div>
-    <!-- El navbar es responsive, esta parte es cuando esta en pantalla grandes -->
-    <div class="du-navbar-center hidden lg:flex">
-      <ul class="du-menu du-menu-lg du-menu-horizontal px-1">
-        <li><a (click)="router.navigate(['/bill'])">Factura</a></li>
-        <li><a>Ventas</a></li>
-      </ul>
-    </div>
+
   }
   <div class="du-navbar-end gap-2">
     @if (auth.getIsLoggedIn()) {

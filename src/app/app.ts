@@ -1,7 +1,8 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './layout/navbar/navbar';
 import { ThemeService } from './services/theme.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -11,7 +12,10 @@ import { ThemeService } from './services/theme.service';
 })
 export class App implements OnInit {
   themeService = inject(ThemeService);
-  protected readonly title = signal('sistema-inventario-frontend');
+  authService = inject(AuthService);
+  router = inject(Router);
+
+  protected readonly title = signal('Sistema POS');
 
   ngOnInit() {
     this.themeService.init();

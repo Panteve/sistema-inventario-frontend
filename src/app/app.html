@@ -1,74 +1,93 @@
-<div class="min-h-screen flex flex-col">
-  <div class="du-drawer lg:du-drawer-open">
-    <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
-    <div class="du-drawer-content">
-      <app-navbar />
-      <!-- Page content here -->
-      <main class="flex-1">
-        <router-outlet />
-      </main>
-    </div>
-
-    <div class="du-drawer-side du-is-drawer-close:overflow-visible">
-      <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
+<div class="du-drawer lg:du-drawer-open">
+  <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
+  <div class="du-drawer-content bg-base-content/5">
+    <app-navbar />
+    <main class="flex-1 ">
+      <router-outlet />
+    </main>
+  </div>
+  <div class="du-drawer-side du-is-drawer-close:overflow-visible">
+    <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
+    @if (authService.getIsLoggedIn()) {
       <div
-        class="flex min-h-full flex-col items-start bg-base-200 du-is-drawer-close:w-14 du-is-drawer-open:w-64"
+        class="flex min-h-full flex-col items-start bg-base-100 du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg "
       >
-        <!-- Sidebar content here -->
-        <ul class="du-menu w-full grow">
+        <ul
+          class="du-menu du-menu-lg du-is-drawer-close:content-center gap-1.5 w-full grow font-semibold"
+        >
           <!-- List item -->
+          <li class="du-menu-title text-base-content p-0 py-1.5">
+            <div class="flex self-center gap-2">
+              <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32">
+                <path
+                  fill="currentColor"
+                  d="M3.531 15.573c-1.385-2.417-1.667-4.672-.682-6.375c1.318-2.286 4.625-3.083 8.807-2.323c.24.036.406.266.365.505a.43.43 0 0 1-.521.339c-3.865-.703-6.813.01-7.906 1.906c-.807 1.396-.568 3.344.682 5.521a.43.43 0 0 1-.151.604a.43.43 0 0 1-.594-.177m19.891-8.094c2.448.031 4.208.792 5.005 2.167c1.094 1.891.24 4.792-2.292 7.781a.43.43 0 0 0 .031.625c.188.161.474.13.62-.068c2.74-3.234 3.698-6.49 2.38-8.766c-.969-1.677-3.01-2.563-5.729-2.599a.43.43 0 0 0-.458.427a.425.425 0 0 0 .448.432zm-2.469 20.318a.43.43 0 0 0-.589.146c-1.245 2.073-2.776 3.198-4.349 3.198c-2.188 0-4.276-2.193-5.599-5.891a.429.429 0 1 0-.807.292C11.036 29.537 13.38 32 16.015 32c1.917 0 3.693-1.307 5.083-3.615a.43.43 0 0 0-.146-.589zm9.807-3.458c-.005 1.672-1.891 2.635-3.25 1.667c-3.271 1.927-9.526.948-15.411-2.453c-2.505-1.448-4.703-3.188-6.396-5.047a.433.433 0 0 1 .021-.62a.43.43 0 0 1 .615.042c1.63 1.792 3.755 3.479 6.187 4.88c5.557 3.208 11.406 4.161 14.396 2.542a2.053 2.053 0 0 1 1.26-3a2.052 2.052 0 0 1 2.578 1.99zm-25.416 0c.005 1.589-1.724 2.578-3.094 1.771c-1.37-.802-1.344-2.797.047-3.563c-.313-3.839 3.719-8.979 9.813-12.5c2.531-1.458 5.167-2.495 7.641-3.026c.531-.073.693.688.182.839c-2.385.51-4.938 1.516-7.396 2.932c-5.734 3.313-9.526 8.089-9.396 11.505c.052-.005.099-.01.151-.01c1.135 0 2.052.922 2.052 2.052m8.62-22.287c.094-2.635 4.01-2.635 4.104 0c0 .031-.005.063-.005.089c3.401 1.76 5.76 7.75 5.76 14.672c0 2.849-.396 5.578-1.141 7.948c-.063.234-.307.375-.542.302s-.359-.328-.276-.557c.714-2.286 1.099-4.932 1.099-7.693c0-6.521-2.167-12.125-5.125-13.818c-.99 1.911-3.88 1.208-3.875-.943zm1.739 13.307c-.802.177-1.313.964-1.141 1.766s.964 1.313 1.766 1.141c1.938-.417 1.307-3.323-.625-2.906z"
+                />
+              </svg>
+
+              <span class="text-xl font-bold tracking-wide du-is-drawer-close:hidden"> Electro </span>
+            </div>
+          </li>
+          <div class="du-divider du-is-drawer-open:w-full m-0"></div>
           <li>
             <button
-              class="du-is-drawer-close:tooltip du-is-drawer-close:tooltip-right"
-              data-tip="Homepage"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
+              data-tip="Dashboard"
+              (click)="router.navigate(['/dashboard'])"
             >
-              <!-- Home icon -->
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2"
-                fill="none"
-                stroke="currentColor"
-                class="my-1.5 inline-block size-4"
+                width="30"
+                height="30"
+                viewBox="0 0 512 512"
+                class=""
               >
-                <path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path>
                 <path
-                  d="M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"
-                ></path>
+                  fill="currentColor"
+                  d="m326.1 231.9l-47.5 75.5a31 31 0 0 1-7 7a30.11 30.11 0 0 1-35-49l75.5-47.5a10.23 10.23 0 0 1 11.7 0a10.06 10.06 0 0 1 2.3 14"
+                />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="32"
+                  d="M256 64C132.3 64 32 164.2 32 287.9a223.18 223.18 0 0 0 56.3 148.5c1.1 1.2 2.1 2.4 3.2 3.5a25.19 25.19 0 0 0 37.1-.1a173.13 173.13 0 0 1 254.8 0a25.19 25.19 0 0 0 37.1.1l3.2-3.5A223.18 223.18 0 0 0 480 287.9C480 164.2 379.7 64 256 64"
+                />
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-miterlimit="10"
+                  stroke-width="32"
+                  d="M256 128v32m160 128h-32m-256 0H96m69.49-90.51l-22.63-22.63m203.65 22.63l22.63-22.63"
+                />
               </svg>
-              <span class="du-is-drawer-close:hidden">Homepage</span>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Dashboard</span>
             </button>
           </li>
-
           <!-- List item -->
           <li>
             <button
-              class="du-is-drawer-close:tooltip du-is-drawer-close:tooltip-right"
-              data-tip="Settings"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right text-accent"
+              data-tip="Generar factura"
+              (click)="router.navigate(['/bill'])"
             >
-              <!-- Settings icon -->
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                stroke-linejoin="round"
-                stroke-linecap="round"
-                stroke-width="2"
-                fill="none"
-                stroke="currentColor"
-                class="my-1.5 inline-block size-4"
-              >
-                <path d="M20 7h-9"></path>
-                <path d="M14 17H5"></path>
-                <circle cx="17" cy="17" r="3"></circle>
-                <circle cx="7" cy="7" r="3"></circle>
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                  d="M5 3h14v18l-1.032-.884a2 2 0 0 0-2.603 0L14.333 21l-1.031-.884a2 2 0 0 0-2.604 0L9.667 21l-1.032-.884a2 2 0 0 0-2.603 0L5 21zm10 4H9m6 4H9m6 4h-4"
+                />
               </svg>
-              <span class="du-is-drawer-close:hidden">Settings</span>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Generar factura</span>
             </button>
           </li>
         </ul>
       </div>
-    </div>
+    }
   </div>
 </div>
