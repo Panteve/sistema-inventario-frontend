@@ -35,7 +35,7 @@
 
 ## 📖 Descripción general
 
-Este proyecto es el **frontend** de un sistema de inventario y punto de venta (POS). Se distribuye como una **aplicación de escritorio multiplataforma** gracias a Electron, consumiendo una API REST externa para todas las operaciones de datos.
+Este proyecto es el **frontend** de un sistema de inventario y punto de venta (POS). Se distribuye **exclusivamente como una aplicación de escritorio** mediante Electron — su ejecución fuera de Electron no está soportada, ya que funcionalidades críticas como el almacenamiento seguro del token de autenticación dependen del proceso nativo de Electron a través de `window.electronAPI`.
 
 **Flujo general del sistema:**
 
@@ -143,6 +143,7 @@ sistema-inventario-frontend/
 
 - **Node.js** ≥ 20
 - **npm** ≥ 11
+- **Electron** — obligatorio; la aplicación no funciona en un navegador web estándar
 - **Backend corriendo** → [Panteve/sistema-inventario](https://github.com/Panteve/sistema-inventario) en `http://localhost:3000`
 
 ---
@@ -163,16 +164,11 @@ cd sistema-inventario-frontend
 # Instalar dependencias
 npm install
 
-# Iniciar la aplicación de escritorio (Angular + Electron)
+# Iniciar la aplicación de escritorio (Angular + Electron) ← forma correcta de ejecutar
 npm run dev
 ```
 
-Para ejecutar **sólo** el servidor web de desarrollo (sin Electron):
-
-```bash
-npm start
-# Abrir http://localhost:4200 en el navegador
-```
+> ⚠️ **Electron es obligatorio.** La aplicación depende de APIs nativas de Electron (`window.electronAPI`) para el manejo seguro de tokens de sesión. Ejecutarla solo en el navegador (`npm start`) causará errores de autenticación.
 
 ---
 
@@ -180,12 +176,12 @@ npm start
 
 | Script | Comando | Descripción |
 |---|---|---|
-| `start` | `npm start` | 🌐 Servidor de desarrollo Angular en `http://localhost:4200` |
-| `dev` | `npm run dev` | 🖥️ Inicia Angular y lanza Electron cuando el servidor esté listo |
+| `dev` | `npm run dev` | 🖥️ **Uso recomendado** — inicia Angular y lanza Electron cuando el servidor esté listo |
 | `build` | `npm run build` | 📦 Compila la aplicación para producción en `dist/` |
 | `watch` | `npm run watch` | 👁️ Compila en modo desarrollo con recarga automática |
 | `test` | `npm test` | 🧪 Ejecuta los tests unitarios con Vitest |
-| `electron` | `npm run electron` | ⚡ Inicia sólo el proceso Electron (requiere servidor ya corriendo) |
+| `electron` | `npm run electron` | ⚡ Inicia sólo el proceso Electron (requiere `npm start` ya corriendo) |
+| `start` | `npm start` | 🌐 Servidor Angular en `http://localhost:4200` — **no usar de forma aislada** (requiere Electron) |
 
 ---
 
