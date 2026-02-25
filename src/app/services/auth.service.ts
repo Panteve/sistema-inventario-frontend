@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { LoginResponseInterface } from '../interfaces/login-response.interface';
-import { UserInterface } from '../interfaces/employee.interface';
+import { EmployeeInterface } from '../interfaces/employee.interface';
 import { from, map, switchMap, tap } from 'rxjs';
 
 @Injectable({
@@ -16,7 +16,7 @@ export class AuthService {
   showNav = signal<boolean>(false);
   private isAuthenticated = signal<boolean>(false);
   private isAdmin = signal<boolean>(false);
-  private employee: UserInterface = { id: 0, document: '' };
+  private employee: EmployeeInterface = { id: 0, document: ''};
 
   /*
   async recoverSession() {
@@ -51,12 +51,14 @@ export class AuthService {
           from(window.electronAPI.saveToken(response.access_token)).pipe(
             tap(() => {
               this.isAdmin.set(response.user.role?.toUpperCase() === 'ADMIN');
-
               this.employee = {
                 id: response.user.id,
                 document: response.user.document,
+                officeId: response.user.officeId,
+                officeName: response.user.officeName,
               };
-
+              console.log(this.employee);
+              console.log('Token saved successfully');
               this.isAuthenticated.set(true);
             }),
             map(() => true),
@@ -68,7 +70,7 @@ export class AuthService {
   logout(): Promise<boolean> {
     return new Promise(async (resolve) => {
       this.isAuthenticated.set(false);
-      this.employee = { id: 0, document: '' };
+      this.employee = { id: 0, document: '', officeName: undefined, officeId: undefined };
       window.electronAPI.deleteToken();
       resolve(true);
     });
@@ -86,6 +88,12 @@ export class AuthService {
   }
   getEmployeeDocument(): string {
     return this.employee.document;
+  }
+  getEmployeeOfficeName(): string | undefined {
+    return this.employee.officeName;
+  }
+  getEmployeeOfficeId(): number | undefined {
+    return this.employee.officeId;
   }
 
   getAuthToken(): Promise<string | null> {

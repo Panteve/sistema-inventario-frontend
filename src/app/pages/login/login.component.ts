@@ -22,7 +22,7 @@ export class LoginComponent {
 
   loginModel = signal<LoginDataInterface>({
     document: '123456789',
-    password: '123456789',
+    password: '12345',
   });
 
   loginForm = form(this.loginModel, (schemePath) => {

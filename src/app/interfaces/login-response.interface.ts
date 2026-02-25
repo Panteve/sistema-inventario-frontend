@@ -4,5 +4,7 @@ export interface LoginResponseInterface {
         id: number;
         document: string;
         role: string;
+        officeId?: number;
+        officeName?: string;
     };
 }
