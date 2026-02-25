@@ -4,7 +4,6 @@
   >
     <!-- Card principal (DaisyUI) -->
     <div class="du-card-body">
-      <!-- Header -->
       <div class="flex justify-between items-center mb-6">
         <div>
           <h1 class="text-3xl font-bold">Factura</h1>
@@ -13,11 +12,11 @@
 
         <div class="text-right">
           <p class="font-semibold">Factura #00123</p>
-          <p class="text-sm opacity-60">Fecha: 08/02/2026</p>
+          <p class="text-sm opacity-60">Fecha: {{ this.currentDate | date: 'dd/MM/yyyy' }}</p>
         </div>
       </div>
 
-      <!-- Cliente / Empresa -->
+      <!-- Cliente / Empresa ISSUE: #1 -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
         <div>
           <h2 class="font-semibold mb-2">Facturar a</h2>
@@ -29,7 +28,7 @@
         <div class="md:text-right">
           <h2 class="font-semibold mb-2">Empresa</h2>
           <p>Mi Empresa S.A.S</p>
-          <p class="text-sm opacity-60">NIT: 900000000</p>
+          <p class="text-sm opacity-60">NIT: <input type="text" placeholder="Type here" class="du-input" /></p>
           <p class="text-sm opacity-60">Bogotá, Colombia</p>
         </div>
       </div>

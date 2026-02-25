@@ -4,13 +4,13 @@ import { ProductService } from '../../services/product.service';
 import { AuthService } from '../../services/auth.service';
 import { BillService } from '../../services/bill.service';
 import { Router, RouterOutlet } from '@angular/router';
-import { CurrencyPipe } from '@angular/common';
+import { CurrencyPipe, DatePipe } from '@angular/common';
 import { PaymentMethodService } from '../../services/payment-method.service';
 import { form } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [RouterOutlet, CurrencyPipe],
+  imports: [RouterOutlet, CurrencyPipe, DatePipe],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
 })
@@ -33,6 +33,7 @@ export class BillComponent implements OnInit {
   modalAbierto = signal<boolean>(false);
   billCreated = signal<boolean>(false);
   loading = signal<boolean>(false);
+  currentDate = Date.now();
 
   billModel = signal<BillInterface>({
     userId: undefined,
