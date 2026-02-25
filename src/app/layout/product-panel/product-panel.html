@@ -137,7 +137,7 @@
         </div>
       </dialog>
       <!-- Empty -->
-      @if (this.products().length === 0) {
+      @if (this.products().length === 0 && !this.loading()) {
         <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>
       }
     </div>

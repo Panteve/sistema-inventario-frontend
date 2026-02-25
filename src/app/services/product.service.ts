@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { ProductInterface } from '../interfaces/product.interface';
+import { Product } from '../interfaces/product.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +9,8 @@ import { ProductInterface } from '../interfaces/product.interface';
 export class ProductService {
   private http = inject(HttpClient);
 
-  products = signal<ProductInterface[]>([]);
-  productSelected = signal<ProductInterface>({id: 0, name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
+  products = signal<Product[]>([]);
+  productSelected = signal<Product>({id: 0, name: '', unitPrice: 0, wholesalePrice: 0, stock: 0});
   modalClose = signal<boolean>(false);
   loading = signal<boolean>(false);
   error = signal<string>('');
@@ -18,7 +18,7 @@ export class ProductService {
 
   loadProducts() {
     this.loading.set(true);
-    return this.http.get<ProductInterface[]>(`${environment.apiUrl}/products`).subscribe({
+    return this.http.get<Product[]>(`${environment.apiUrl}/products`).subscribe({
       next: (products) => {
         this.error.set('');
         this.products.set(products);
@@ -38,7 +38,7 @@ export class ProductService {
     });
   }
 
-  createProduct(product: ProductInterface) {
+  createProduct(product: Product) {
     return this.http.post<void>(`${environment.apiUrl}/products/product`, product);
   }
 }

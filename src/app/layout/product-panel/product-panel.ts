@@ -7,7 +7,7 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from '@tanstack/angular-table';
-import { ProductInterface } from '../../interfaces/product.interface';
+import { Product } from '../../interfaces/product.interface';
 import { Router, RouterOutlet } from '@angular/router';
 
 @Component({
@@ -42,7 +42,7 @@ export class ProductPanel {
     this.productService.loadProducts();
   }
 
-  getProductTable(product: ProductInterface) {
+  getProductTable(product: Product) {
     this.productService.productSelected.set(product);
   }
 
