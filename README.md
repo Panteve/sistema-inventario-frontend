@@ -212,6 +212,7 @@ git commit -m "feat: descripción corta"
 git push -u origin feature/x
 ```
 4️⃣ Crear Pull Request
+
 Entra al repositorio y Aparecerá un botón: “Compare & pull request”
 ```bash
 # 5️⃣ Limpiar ramas después del merge`
