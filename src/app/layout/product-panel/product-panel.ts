@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, signal, ViewChild, ViewChildren } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import {
   createAngularTable,
@@ -26,6 +26,7 @@ export class ProductPanel {
       }
     })
   }
+  
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   private productService = inject(ProductService);
@@ -57,25 +58,25 @@ export class ProductPanel {
     columns: [
       {
         header: 'ID',
-        accessorKey: 'id',
+        accessorKey: 'product.id',
       },
       {
         header: 'Producto',
-        accessorKey: 'name',
+        accessorKey: 'product.name',
       },
       {
         header: 'Precio unitario',
-        accessorKey: 'unitPrice',
+        accessorKey: 'product.unitPrice',
         cell: (info) => this.currencyFormatter.format(info.getValue() as number),
       },
       {
         header: 'Precio mayorista',
-        accessorKey: 'wholesalePrice',
+        accessorKey: 'product.wholesalePrice',
         cell: (info) => this.currencyFormatter.format(info.getValue() as number),
       },
       {
         header: 'Stock',
-        accessorKey: 'stock',
+        accessorKey: 'quantity',
       },
     ],
     state: {

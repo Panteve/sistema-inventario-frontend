@@ -4,11 +4,11 @@
     <tbody>
       <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('unitPrice')">
         <td class="font-bold">Precio Unitario</td>
-        <td>{{ product().unitPrice | currency }}</td>
+        <td>{{ product().product.unitPrice| currency }}</td>
       </tr>
       <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('wholesalePrice')">
         <td class="font-bold">Precio Mayorista</td>
-        <td>{{ product().wholesalePrice | currency }}</td>
+        <td>{{ product().product.wholesalePrice | currency }}</td>
       </tr>
     </tbody>
   </table>

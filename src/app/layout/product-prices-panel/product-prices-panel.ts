@@ -18,16 +18,16 @@ export class ProductPricesPanel {
 
   addProductToBill(price: string) {
     if (price === 'unitPrice') {
-      this.product().priceSelected = this.product().unitPrice;
+      this.product().priceSelected = this.product().product.unitPrice;
     } else if (price === 'wholesalePrice') {
-      this.product().priceSelected = this.product().wholesalePrice;
+      this.product().priceSelected = this.product().product.wholesalePrice;
     }
     this.billService.productsOnBill.update((products) => {
-      const { name, id, priceSelected } = this.product();
+      const { name, id } = this.product().product;
       const producTo: ProductOnBillInterface = {
         name,
         productId: id,
-        price: priceSelected,
+        price: this.product().priceSelected,
         quantity: 1,
       };
       if (!products.some((p) => p.productId === id)) {

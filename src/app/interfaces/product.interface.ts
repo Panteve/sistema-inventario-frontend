@@ -1,9 +1,12 @@
 export interface Product {
-  id: number;
-  name: string;
-  description?: string;
+  quantity: number;
   priceSelected?: number;
-  unitPrice: number;
-  wholesalePrice: number;
-  stock: number;
+  product: {
+    id: number;
+    name: string;
+    description?: string;
+    unitPrice: number;
+    wholesalePrice: number;
+    status: boolean;
+  };
 }

@@ -57,8 +57,6 @@ export class AuthService {
                 officeId: response.user.officeId,
                 officeName: response.user.officeName,
               };
-              console.log(this.employee);
-              console.log('Token saved successfully');
               this.isAuthenticated.set(true);
             }),
             map(() => true),
@@ -79,7 +77,9 @@ export class AuthService {
   getIsLoggedIn(): boolean {
     return this.isLoggedIn();
   }
-
+  getOfficeId(): number | undefined {
+    return this.employee.officeId;
+  }
   getIsAdmin(): boolean {
     return this.isAdmin();
   }
