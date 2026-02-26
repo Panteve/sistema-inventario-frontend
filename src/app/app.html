@@ -2,7 +2,7 @@
   <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
   <div class="du-drawer-content bg-base-content/5">
     <app-navbar />
-    <main class="flex-1 ">
+    <main class="flex-1">
       <router-outlet />
     </main>
   </div>
@@ -10,7 +10,7 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
     @if (authService.getIsLoggedIn()) {
       <div
-        class="flex min-h-full flex-col items-start bg-base-100 du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg "
+        class="flex min-h-full flex-col items-start bg-base-100 du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg"
       >
         <ul
           class="du-menu du-menu-lg du-is-drawer-close:content-center gap-1.5 w-full grow font-semibold"
@@ -25,7 +25,9 @@
                 />
               </svg>
 
-              <span class="text-xl font-bold tracking-wide du-is-drawer-close:hidden"> Electro </span>
+              <span class="text-xl font-bold tracking-wide du-is-drawer-close:hidden">
+                Electro
+              </span>
             </div>
           </li>
           <div class="du-divider du-is-drawer-open:w-full m-0"></div>
@@ -66,7 +68,6 @@
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Dashboard</span>
             </button>
           </li>
-          <!-- List item -->
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right text-accent"
@@ -84,6 +85,24 @@
                 />
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Generar factura</span>
+            </button>
+          </li>
+          <!-- Separador de los elementos de arrriba y los de abajo -->
+          <div class="flex grow"></div>
+          <li>
+            <button
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-is-drawer-open:hover:cursor-default"
+              data-tip="Cambiar oficina"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  fill-rule="evenodd"
+                  d="M7.707 2.293a1 1 0 0 1 0 1.414L5.414 6H21a1 1 0 1 1 0 2H5.414l2.293 2.293a1 1 0 1 1-1.414 1.414l-4-4a1 1 0 0 1 0-1.414l4-4a1 1 0 0 1 1.414 0m8.586 10a1 1 0 0 1 1.414 0l4 4a1 1 0 0 1 0 1.414l-4 4a1 1 0 0 1-1.414-1.414L18.586 18H3a1 1 0 1 1 0-2h15.586l-2.293-2.293a1 1 0 0 1 0-1.414"
+                  clip-rule="evenodd"
+                />
+              </svg>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Prueba</span>
             </button>
           </li>
         </ul>
