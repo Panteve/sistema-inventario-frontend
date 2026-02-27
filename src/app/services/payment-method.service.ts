@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { PaymentMethodInterface } from '../interfaces/paymentMethod.interface';
+import { PaymentMethod } from '../interfaces/paymentMethod.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -9,11 +9,11 @@ import { PaymentMethodInterface } from '../interfaces/paymentMethod.interface';
 export class PaymentMethodService {
   private http = inject(HttpClient);
 
-  paymentMethods = signal<PaymentMethodInterface[]>([]);
+  paymentMethods = signal<PaymentMethod[]>([]);
   error = signal<string>('');
   
   loadPaymentMethods() {
-    this.http.get<PaymentMethodInterface[]>(`${environment.apiUrl}/payment-method`).subscribe({
+    this.http.get<PaymentMethod[]>(`${environment.apiUrl}/payment-method`).subscribe({
       next: (paymentMethods) => {
         this.paymentMethods.set(paymentMethods);
       },

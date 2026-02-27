@@ -80,6 +80,7 @@ export class BillComponent implements OnInit {
 
   setPaymentMethod(id: number) {
     this.billModel().paymentMethodId = id;
+    console.log(this.billModel());
   }
 
   createBill() {
