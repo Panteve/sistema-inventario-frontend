@@ -117,7 +117,7 @@
               <option disabled selected>Seleccionar</option>
               @for (paymentMethod of paymentMethods(); track $index) {
                 <option (click)="setPaymentMethod(paymentMethod.id)">
-                  {{ paymentMethod.method }}
+                  {{ paymentMethod.name }}
                 </option>
               }
             </select>

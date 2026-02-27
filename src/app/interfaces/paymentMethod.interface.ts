@@ -1,4 +1,7 @@
-export interface PaymentMethodInterface {
+export interface PaymentMethod {
   id: number;
-  method: string;
+  name: string;
+  code: string;
+  affectsCash: boolean
+  status: boolean;
 }
