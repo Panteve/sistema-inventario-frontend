@@ -5,6 +5,8 @@ import { BillComponent } from './pages/bill/bill.component';
 import { authGuard } from './auth-guard';
 import { ProductPanel } from './layout/product-panel/product-panel';
 import { ProductPricesPanel } from './layout/product-prices-panel/product-prices-panel';
+import { ProductStore } from './store/product-store';
+import { BillStore } from './store/bill-store';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -19,6 +21,7 @@ export const routes: Routes = [
     component: BillComponent,
     title: 'Crear factura',
     canActivate: [authGuard],
+    providers: [ProductStore, BillStore],
     children: [
       {
         path: 'products',

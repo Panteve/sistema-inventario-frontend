@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, OnInit, Signal, signal, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import {
   createAngularTable,
@@ -9,15 +9,19 @@ import {
 } from '@tanstack/angular-table';
 import { Product } from '../../interfaces/product.interface';
 import { Router, RouterOutlet } from '@angular/router';
+import { ProductStore } from '../../store/product-store';
+import { ErrorStore } from '../../store/errors-store';
+import { BillStore } from '../../store/bill-store';
 
 @Component({
   selector: 'app-product-panel',
   imports: [FlexRenderDirective, RouterOutlet],
+  providers: [],
   templateUrl: './product-panel.html',
   styleUrl: './product-panel.css',
 })
 
-export class ProductPanel {
+export class ProductPanel{
   constructor() {
     effect(() => {
       if (this.productService.modalClose()) {
@@ -26,25 +30,25 @@ export class ProductPanel {
       }
     })
   }
+  productStore = inject(ProductStore);
+  billStore = inject(BillStore);
   
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   private productService = inject(ProductService);
+  errorStore = inject(ErrorStore);
   router = inject(Router);
 
   globalFilter = signal('');
   numberPage = signal<number>(1);
   
-  products = this.productService.products;
-  error = this.productService.error;
-  loading = this.productService.loading;
 
   loadProducts() {
-    this.productService.loadProducts();
+    this.productStore.loadProducts();
   }
 
   getProductTable(product: Product) {
-    this.productService.productSelected.set(product);
+    this.billStore.setSelectedProduct(product);
   }
 
   private currencyFormatter = new Intl.NumberFormat('es-CO', {
@@ -54,7 +58,7 @@ export class ProductPanel {
   });
 
   table = createAngularTable(() => ({
-    data: this.products(),
+    data: this.productStore.products(),
     columns: [
       {
         header: 'ID',

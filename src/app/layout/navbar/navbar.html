@@ -1,6 +1,6 @@
 <div class="du-navbar bg-base-100 shadow-sm">
   <!-- El navbar es responsive, esta parte es cuando esta en pantalla pequeñas -->
-  @if (auth.getIsLoggedIn()) {
+  @if (this.authStore.isAuthenticated()) {
     <label for="my-drawer-4" aria-label="open sidebar" class="du-btn du-btn-square du-btn-ghost">
       <!-- Sidebar toggle icon -->
       <svg
@@ -21,12 +21,12 @@
       </svg>
     </label>
     <div class="du-navbar-start">
-      <a class="du-btn du-btn-lg du-btn-ghost text-xl" (click)="goDashboard()">Electro</a>
+      <a class="du-btn du-btn-lg du-btn-ghost text-xl" (click)="router.navigate(['/dashboard'])">Electro</a>
     </div>
 
   }
   <div class="du-navbar-end gap-2">
-    @if (auth.getIsLoggedIn()) {
+    @if (this.authStore.isAuthenticated()) {
       <div class="du-dropdown du-dropdown-end">
         <div tabindex="0" role="button" class="du-btn du-btn-ghost du-btn-circle du-avatar">
           <div class="w-10 rounded-full items-center justify-center flex">
@@ -43,17 +43,17 @@
           class="du-menu du-menu-md du-dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow"
         >
           <!-- Solo si es admin -->
-          @if (this.auth.getIsAdmin()) {
+          @if (this.authStore.isAdmin()) {
             <li><a class="justify-between">Perfil</a></li>
           }
           <li>
             <a class="du-btn-disabled bg-base-100"
               >Documento:
-              <h6 class="font-bold">{{ auth.getEmployeeDocument() }}</h6></a
+              <h6 class="font-bold">{{ authStore.employee()?.document }}</h6></a
             >
             <a class="du-btn-disabled bg-base-100"
               >Oficina:
-              <h6 class="font-bold">{{ auth.getEmployeeOfficeName() }}</h6></a
+              <h6 class="font-bold">{{ authStore.employee()?.officeName }}</h6></a
             >
           </li>
           <li><a (click)="logout()">Cerrar sesion</a></li>

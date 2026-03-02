@@ -1,7 +1,7 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThemeService } from '../../services/theme.service';
+import { AuthStore } from '../../store/auth-store';
 
 @Component({
   selector: 'app-navbar',
@@ -10,19 +10,15 @@ import { ThemeService } from '../../services/theme.service';
   styleUrl: './navbar.css',
 })
 export class Navbar implements OnInit {
-  auth = inject(AuthService);
+  authStore = inject(AuthStore);
   theme = inject(ThemeService);
   router = inject(Router);
 
-  loading = signal<boolean>(false);
 
   logout() {
-    this.loading.set(true);
-    this.auth.logout().then(() => {
-      this.loading.set(false);
-      this.router.navigate(['']);
-    });
+    this.authStore.logout();
   }
+
   changeTheme(event: Event) {
     const isChecked = (event.target as HTMLInputElement);
     if (isChecked.checked) {
@@ -30,10 +26,6 @@ export class Navbar implements OnInit {
     } else {
       this.theme.setTheme(false);
     }
-  }
-
-  goDashboard() {
-    this.router.navigate(['/dashboard']);
   }
 
   ngOnInit() {

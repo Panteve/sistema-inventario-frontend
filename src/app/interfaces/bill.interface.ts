@@ -1,10 +1,15 @@
-import { ProductOnBillInterface } from "./product-on-bill.interface";
-
-export interface BillInterface {
-    userId?: number;
+export interface ProductOnBill {
+    name?: string;
+    productId: number;
+    priceUnique?: number;
+    quantity: number;
+    taxPercentage?: number;
+}
+export interface Bill {
+    customerId?: number;
     paymentMethodId: number;
-    employeeId: number;
-    products?: ProductOnBillInterface[];
+    cashRegisterId?: number;
+    products: ProductOnBill[];
 }
 
 

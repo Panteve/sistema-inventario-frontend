@@ -20,13 +20,13 @@
           </button>
         </div>
       </div>
-      @if (!this.loading() && this.error() !== '') {
+      @if (!this.productStore.loading() && this.errorStore.message()) {
         <!-- Error -->
         <div class="du-alert du-alert-error mb-3">
-          <span>{{ this.error() }}</span>
+          <span>{{ this.errorStore.message() }}</span>
         </div>
       }
-      @if (this.loading()) {
+      @if (this.productStore.loading()) {
         <!-- Loading -->
         <div class="flex justify-center items-center gap-2 text-sm opacity-70 mb-3">
           <span class="du-loading du-loading-spinner du-loading-sm"></span>
@@ -137,7 +137,7 @@
         </div>
       </dialog>
       <!-- Empty -->
-      @if (this.products().length === 0 && !this.loading()) {
+      @if (this.productStore.products().length === 0 && !this.productStore.loading()) {
         <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>
       }
     </div>
