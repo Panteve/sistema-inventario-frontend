@@ -62,6 +62,5 @@ export const ProductStore = signalStore(
     onInit(store) {
       store.loadProducts();
     },
-    onDestroy() {},
   }),
 );

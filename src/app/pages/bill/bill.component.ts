@@ -1,26 +1,27 @@
-import { Component, inject, OnInit, signal } from '@angular/core';;
+import { Component, inject, signal } from '@angular/core';;
 import { Router, RouterOutlet } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { PaymentMethodService } from '../../services/payment-method.service';
+
 import { ProductStore } from '../../store/product-store';
 import { BillStore } from '../../store/bill-store';
 import { ErrorStore } from '../../store/errors-store';
+import { PaymentMethodStore } from '../../store/payment-method-store';
 
 @Component({
   selector: 'app-bill.component',
   imports: [RouterOutlet, CurrencyPipe, DatePipe ],
-  providers: [BillStore],
+  providers: [BillStore, PaymentMethodStore],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
 })
-export class BillComponent implements OnInit {
-  private paymentMethodService = inject(PaymentMethodService);
+export class BillComponent {
   errorStore = inject(ErrorStore);
   billStore = inject(BillStore);
   productStore = inject(ProductStore);
+  private paymentMethodStore = inject(PaymentMethodStore);
   router = inject(Router);
 
-  paymentMethods = this.paymentMethodService.paymentMethods.asReadonly(); 
+  paymentMethods = this.paymentMethodStore.paymentMethods; 
 
   // Signals for UI state
   productInputId = signal<number>(0);
@@ -63,7 +64,4 @@ export class BillComponent implements OnInit {
     this.router.navigate(['/bill']);
   }
 
-  ngOnInit(): void {
-    this.paymentMethodService.loadPaymentMethods();
-  }
 }
