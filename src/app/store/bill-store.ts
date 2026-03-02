@@ -13,18 +13,18 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { ErrorStore } from './errors-store';
 import { filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { Bill, ProductOnBill } from '../interfaces/bill.interface';
-import { Product } from '../interfaces/product.interface';
+import { CreateBillRequest, ProductOnBill, ProductSelected } from '../interfaces/bill.interface';
 
 type BillState = {
-  productSelected: Product;
-  bill: Bill;
+  productSelected: ProductSelected;
+  bill: CreateBillRequest;
   loading: boolean;
 };
 
 const initialState: BillState = {
   productSelected: {
-    product: { id: 0, name: '', unitPrice: 0, wholesalePrice: 0, status: true },
+    product: { id: 0, unitPrice: 0, wholesalePrice: 0, name: '' },
+    priceSelected: 0,
     quantity: 0,
   },
   bill: {
@@ -87,7 +87,7 @@ export const BillStore = signalStore(
     cancelBill() {
       patchState(store, { bill: initialState.bill, loading: false });
     },
-    setSelectedProduct(product: Product) {
+    setSelectedProduct(product:  ProductSelected) {
       patchState(store, { productSelected: product });
     },
     setPriceSelected(priceType: string) {
@@ -104,6 +104,7 @@ export const BillStore = signalStore(
     addProduct() {
       const productTo: ProductOnBill = {
         productId: store.productSelected().product.id,
+        name: store.productSelected().product.name,
         priceUnique: store.productSelected().priceSelected,
         quantity: 1,
         taxPercentage: 0.1,

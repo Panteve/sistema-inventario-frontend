@@ -1,5 +1,5 @@
 import { patchState, signalStore, withHooks, withMethods, withProps, withState } from '@ngrx/signals';
-import { PaymentMethod } from '../interfaces/paymentMethod.interface';
+import { PaymentMethodResponse } from '../interfaces/paymentMethod.interface';
 import { inject } from '@angular/core';
 import { ErrorStore } from './errors-store';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
@@ -7,7 +7,7 @@ import { PaymentMethodService } from '../services/payment-method.service';
 import { finalize, pipe, switchMap, tap } from 'rxjs';
 
 type PaymentMethodState = {
-  paymentMethods: PaymentMethod[];
+  paymentMethods: PaymentMethodResponse[];
   loading: boolean;
 };
 

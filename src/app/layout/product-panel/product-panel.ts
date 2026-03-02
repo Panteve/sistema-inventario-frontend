@@ -7,7 +7,8 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
 } from '@tanstack/angular-table';
-import { Product } from '../../interfaces/product.interface';
+import { ProductResponse } from '../../interfaces/product.interface';
+import { ProductSelected } from '../../interfaces/bill.interface';
 import { Router, RouterOutlet } from '@angular/router';
 import { ProductStore } from '../../store/product-store';
 import { ErrorStore } from '../../store/errors-store';
@@ -47,8 +48,20 @@ export class ProductPanel{
     this.productStore.loadProducts();
   }
 
-  getProductTable(product: Product) {
-    this.billStore.setSelectedProduct(product);
+  getProductTable(product: ProductResponse) {
+    console.log(product);
+    const productSelected: ProductSelected = {
+      product: {
+        id: product.product.id,
+        name: product.product.name,
+        unitPrice: product.product.unitPrice,
+        wholesalePrice: product.product.wholesalePrice,
+      },
+      priceSelected: 0,
+      quantity: 0,
+    };
+    console.log(productSelected);
+    this.billStore.setSelectedProduct(productSelected);
   }
 
   private currencyFormatter = new Intl.NumberFormat('es-CO', {

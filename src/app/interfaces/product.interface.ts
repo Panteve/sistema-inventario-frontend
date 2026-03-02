@@ -1,6 +1,5 @@
-export interface Product {
+export interface ProductResponse {
   quantity: number;
-  priceSelected?: number;
   product: {
     id: number;
     name: string;

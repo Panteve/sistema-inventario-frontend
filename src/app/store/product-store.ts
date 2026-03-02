@@ -6,7 +6,7 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
-import { Product } from '../interfaces/product.interface';
+import { ProductResponse } from '../interfaces/product.interface';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject } from '@angular/core';
 import { AuthStore } from './auth-store';
@@ -15,17 +15,12 @@ import { ProductService } from '../services/product.service';
 import { ErrorStore } from './errors-store';
 
 type ProductState = {
-  productSelected: Product;
-  products: Product[];
+  products: ProductResponse[];
   modalClose: boolean;
   loading: boolean;
 };
 
 const initialState: ProductState = {
-  productSelected: {
-    product: { id: 0, name: '', unitPrice: 0, wholesalePrice: 0, status: true },
-    quantity: 0,
-  },
   products: [],
   modalClose: false,
   loading: false,

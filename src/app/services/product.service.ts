@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
-import { Product } from '../interfaces/product.interface';
+import { ProductResponse } from '../interfaces/product.interface';
 import { AuthStore } from '../store/auth-store';
 
 @Injectable({
@@ -15,10 +15,10 @@ export class ProductService {
 
 
   loadProducts() {
-    return this.http.get<Product[]>(`${environment.apiUrl}/office-inventory/${this.authStore.employee()?.officeId || 0}`)
+    return this.http.get<ProductResponse[]>(`${environment.apiUrl}/office-inventory/${this.authStore.employee()?.officeId || 0}`)
   }
 
-  createProduct(product: Product) {
+  createProduct(product: ProductResponse) {
     return this.http.post<void>(`${environment.apiUrl}/products/product`, product);
   }
 }

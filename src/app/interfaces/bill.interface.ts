@@ -1,15 +1,25 @@
-export interface ProductOnBill {
-    name?: string;
+export interface ProductOnBill{
     productId: number;
-    priceUnique?: number;
+    name: string;
+    priceUnique: number;
     quantity: number;
-    taxPercentage?: number;
-}
-export interface Bill {
-    customerId?: number;
-    paymentMethodId: number;
-    cashRegisterId?: number;
-    products: ProductOnBill[];
+    taxPercentage: number;
 }
 
+export interface CreateBillRequest {
+  customerId?: number;
+  paymentMethodId: number;
+  cashRegisterId: number;
+  products: ProductOnBill[];
+}
 
+export interface ProductSelected {
+  product: {
+    name: string;
+    id: number;
+    unitPrice: number;
+    wholesalePrice: number;
+  };
+  priceSelected: number;
+  quantity: number;
+}
