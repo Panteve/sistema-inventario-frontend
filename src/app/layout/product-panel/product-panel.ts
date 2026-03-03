@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, OnInit, Signal, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, OnDestroy, OnInit, Signal, signal, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import {
   createAngularTable,
@@ -9,20 +9,20 @@ import {
 } from '@tanstack/angular-table';
 import { ProductResponse } from '../../interfaces/product.interface';
 import { ProductSelected } from '../../interfaces/bill.interface';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { ProductStore } from '../../store/product-store';
 import { ErrorStore } from '../../store/errors-store';
 import { BillStore } from '../../store/bill-store';
 
 @Component({
   selector: 'app-product-panel',
-  imports: [FlexRenderDirective, RouterOutlet],
+  imports: [FlexRenderDirective, RouterOutlet, RouterLinkWithHref],
   providers: [],
   templateUrl: './product-panel.html',
   styleUrl: './product-panel.css',
 })
 
-export class ProductPanel{
+export class ProductPanel {
   constructor() {
     effect(() => {
       if (this.productService.modalClose()) {
@@ -49,7 +49,6 @@ export class ProductPanel{
   }
 
   getProductTable(product: ProductResponse) {
-    console.log(product);
     const productSelected: ProductSelected = {
       product: {
         id: product.product.id,
@@ -60,7 +59,6 @@ export class ProductPanel{
       priceSelected: 0,
       quantity: 0,
     };
-    console.log(productSelected);
     this.billStore.setSelectedProduct(productSelected);
   }
 

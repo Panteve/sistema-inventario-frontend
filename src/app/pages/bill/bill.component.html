@@ -1,192 +1,206 @@
-<div class="flex-1 flex justify-center pt-15 pb-15">
-  <div
-    class="w-full max-w-9/12 px-4 py-10 min-h-5/6 flex bg-base-100 rounded-4xl du-card shadow-2xl"
-  >
-    <!-- Card principal (DaisyUI) -->
-    <div class="du-card-body">
-      <div class="flex justify-between items-center mb-6">
-        <div>
-          <h1 class="text-3xl font-bold">Factura</h1>
-          <p class="text-sm opacity-60">Bill / Invoice</p>
-        </div>
-
-        <div class="text-right">
-          <p class="font-semibold">Factura #00123</p>
-          <p class="text-sm opacity-60">Fecha: {{ this.currentDate | date: 'dd/MM/yyyy' }}</p>
-        </div>
-      </div>
-
-      <!-- Cliente / Empresa ISSUE: #1 -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-        <div>
-          <h2 class="font-semibold mb-2">Facturar a</h2>
-          <p>Nombre del cliente</p>
-          <p class="text-sm opacity-60">cliente@email.com</p>
-          <p class="text-sm opacity-60">Tel: 300 000 0000</p>
-        </div>
-
-        <div class="md:text-right">
-          <h2 class="font-semibold mb-2">Empresa</h2>
-          <p>Mi Empresa S.A.S</p>
-          <p class="text-sm opacity-60">NIT: 888884545</p>
-          <p class="text-sm opacity-60">Bogotá, Colombia</p>
-        </div>
-      </div>
-      @if (errorStore.message() !== null) {
-        <div role="alert" class="du-alert du-alert-error">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-6 w-6 shrink-0 stroke-current"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{{ errorStore.message() }}</span>
-        </div>
-      }
-      <!-- Tabla de items (DaisyUI) -->
-      <div class="overflow-x-auto mb-6 rounded-box border border-base-content/25 bg-base-200">
-        <table class="du-table du-table-zebra w-full table-auto md:table-fixed">
-          <thead class="md:text-base text-sm">
-            <tr>
-              <th class="text-center">Nombre</th>
-              <th class="text-center">Cantidad</th>
-              <th class="text-center">Precio</th>
-              <th class="text-center">Total</th>
-            </tr>
-          </thead>
-          <tbody class="text-sm md:text-lg text-center">
-            @for (product of billStore.bill().products; track $index) {
-              <tr>
-                <td>{{ product.name }}</td>
-                <td>
-                  <input
-                    type="number"
-                    min="1"
-                    class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
-                    [value]="product.quantity"
-                    (focus)="selectAll($event)"
-                    (input)="modifyingQuantity($event, product.productId)"
-                    (keydown.enter)="modifyingQuantity($event, product.productId)"
-                  />
-                </td>
-                @if (this.modifiyingPrice() && productInputId() === product.productId) {
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-xl"
-                      (focus)="selectAll($event)"
-                      (focusout)="finishModifyPrice($event, product.productId)"
-                      (keydown.enter)="finishModifyPrice($event, product.productId)"
-                      [value]="product.priceUnique"
-                    />
-                  </td>
-                } @else {
-                  <td
-                    class="text-center hover:bg-base-300 cursor-pointer"
-                    (click)="
-                      this.modifiyingPrice.set(true); this.productInputId.set(product.productId)
-                    "
-                  >
-                    {{ product.priceUnique | currency }}
-                  </td>
-                }
-                <td class="text-center">
-                  {{ (product.priceUnique) * product.quantity | currency }}
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Totales -->
-      <div class="flex justify-end">
-        <div class="w-full md:w-2/5 space-y-2">
-          <div class="flex justify-between items-center">
-            <span>Metodo de pago</span>
-            <select class="du-select w-3/5 text-center">
-              <option disabled selected>Seleccionar</option>
-              @for (paymentMethod of paymentMethods(); track $index) {
-                <option (click)="setPaymentMethod(paymentMethod.id)">
-                  {{ paymentMethod.name }}
-                </option>
-              }
-            </select>
-          </div>
-          <div class="flex justify-between">
-            <span>Subtotal</span>
-            <span>{{ billStore.subtotal() | currency }}</span>
-          </div>
-
-          <div class="flex justify-between">
-            <span>IVA (19%)</span>
-            <span>{{ billStore.iva() | currency }}</span>
-          </div>
-
-          <div class="du-divider my-1"></div>
-
-          <div class="flex justify-between font-bold text-lg">
-            <span>Total</span>
-            <span>{{ billStore.total() | currency }}</span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Acciones (DaisyUI) -->
-
+<div class="du-drawer du-drawer-end">
+  <input id="my-drawer-1" type="checkbox" class="du-drawer-toggle" />
+  <div class="du-drawer-content">
+    <div class="flex-1 flex justify-center pt-15 pb-15">
       <div
-        class="du-card-actions flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center w-full"
+        class="w-full max-w-9/12 px-4 py-10 min-h-5/6 flex bg-base-100 rounded-4xl du-card shadow-2xl"
       >
-        <button class="du-btn du-btn-outline du-btn-error w-full sm:w-auto" (click)="cancelBill()">
-          Cancelar
-        </button>
-        <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:gap-2">
-          @if (billStore.loading()) {
-            <button class="btn">
-              <span class="loading loading-spinner"></span>
-              loading
-            </button>
-          } @else {
-            <button class="du-btn du-btn-primary w-full sm:w-auto" (click)="createBill()">
-              Generar factura
-            </button>
-          }
-          <button
-            class="du-btn du-btn-secondary w-full sm:w-auto"
-            onclick="my_modal_1.showModal()"
-            (click)="this.router.navigate(['/bill/products'])"
-            [disabled]="billStore.loading()"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M18 10h-4V6a2 2 0 0 0-4 0l.071 4H6a2 2 0 0 0 0 4l4.071-.071L10 18a2 2 0 0 0 4 0v-4.071L18 14a2 2 0 0 0 0-4"
-              />
-            </svg>
-            Agregar producto
-          </button>
-        </div>
-        <dialog id="my_modal_1" class="du-modal">
-          <div class="du-modal-box w-3/4 max-w-3/4">
-            <router-outlet />
-            <div class="du-modal-action justify-center">
-              <form method="dialog">
-                <button class="du-btn du-btn-md lg:du-btn-lg du-btn-info" [disabled]="billStore.loading()">
-                  Cerrar
-                </button>
-              </form>
+        <!-- Card principal (DaisyUI) -->
+        <div class="du-card-body">
+          <div class="flex justify-between items-center mb-6">
+            <div>
+              <h1 class="text-3xl font-bold">Factura</h1>
+              <p class="text-sm opacity-60">Bill / Invoice</p>
+            </div>
+
+            <div class="text-right">
+              <p class="font-semibold">Factura #00123</p>
+              <p class="text-sm opacity-60">Fecha: {{ this.currentDate | date: 'dd/MM/yyyy' }}</p>
             </div>
           </div>
-        </dialog>
+
+          <!-- Cliente / Empresa ISSUE: #1 -->
+          <h2 class="font-semibold mb-2 text-2xl">Facturar a</h2>
+          <h3 class="font-medium mb-4 text-xl">
+            Cliente: Consumidor Final
+            <label for="my-drawer-1" class="du-btn du-du-drawer-button" [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
+              ><svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+                <path
+                  fill="currentColor"
+                  d="M18 10h-4V6a2 2 0 0 0-4 0l.071 4H6a2 2 0 0 0 0 4l4.071-.071L10 18a2 2 0 0 0 4 0v-4.071L18 14a2 2 0 0 0 0-4"
+                /></svg
+              >Agregar cliente</label
+            >
+          </h3>
+          @if (errorStore.message() !== null) {
+            <div role="alert" class="du-alert du-alert-error">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-6 w-6 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{{ errorStore.message() }}</span>
+            </div>
+          }
+          <!-- Tabla de items (DaisyUI) -->
+          <div class="overflow-x-auto mb-6 rounded-box border border-base-content/25 bg-base-200">
+            <table class="du-table du-table-zebra w-full table-auto md:table-fixed">
+              <thead class="md:text-base text-sm">
+                <tr>
+                  <th class="text-center">Nombre</th>
+                  <th class="text-center">Cantidad</th>
+                  <th class="text-center">Precio</th>
+                  <th class="text-center">Total</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm md:text-lg text-center">
+                @for (product of billStore.bill().products; track $index) {
+                  <tr>
+                    <td>{{ product.name }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="1"
+                        class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
+                        [value]="product.quantity"
+                        (focus)="selectAll($event)"
+                        (input)="modifyingQuantity($event, product.productId)"
+                        (keydown.enter)="modifyingQuantity($event, product.productId)"
+                      />
+                    </td>
+                    @if (this.modifiyingPrice() && productInputId() === product.productId) {
+                      <td>
+                        <input
+                          type="number"
+                          min="1"
+                          class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-xl"
+                          (focus)="selectAll($event)"
+                          (focusout)="finishModifyPrice($event, product.productId)"
+                          (keydown.enter)="finishModifyPrice($event, product.productId)"
+                          [value]="product.priceUnique"
+                        />
+                      </td>
+                    } @else {
+                      <td
+                        class="text-center hover:bg-base-300 cursor-pointer"
+                        (click)="
+                          this.modifiyingPrice.set(true); this.productInputId.set(product.productId)
+                        "
+                      >
+                        {{ product.priceUnique | currency }}
+                      </td>
+                    }
+                    <td class="text-center">
+                      {{ product.priceUnique * product.quantity | currency }}
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Totales -->
+          <div class="flex justify-end">
+            <div class="w-full md:w-2/5 space-y-2">
+              <div class="flex justify-between items-center">
+                <span>Metodo de pago</span>
+                <select class="du-select w-3/5 text-center">
+                  <option disabled selected>Seleccionar</option>
+                  @for (paymentMethod of paymentMethods(); track $index) {
+                    <option (click)="setPaymentMethod(paymentMethod.id)">
+                      {{ paymentMethod.name }}
+                    </option>
+                  }
+                </select>
+              </div>
+              <div class="flex justify-between">
+                <span>Subtotal</span>
+                <span>{{ billStore.subtotal() | currency }}</span>
+              </div>
+
+              <div class="flex justify-between">
+                <span>IVA (19%)</span>
+                <span>{{ billStore.iva() | currency }}</span>
+              </div>
+
+              <div class="du-divider my-1"></div>
+
+              <div class="flex justify-between font-bold text-lg">
+                <span>Total</span>
+                <span>{{ billStore.total() | currency }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Acciones (DaisyUI) -->
+
+          <div
+            class="du-card-actions flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center w-full"
+          >
+            <button
+              class="du-btn du-btn-outline du-btn-error w-full sm:w-auto"
+              (click)="cancelBill()"
+            >
+              Cancelar
+            </button>
+            <div class="flex flex-col gap-2 w-full sm:flex-row sm:w-auto sm:gap-2">
+              @if (billStore.loading()) {
+                <button class="btn">
+                  <span class="loading loading-spinner"></span>
+                  loading
+                </button>
+              } @else {
+                <button class="du-btn du-btn-primary w-full sm:w-auto" (click)="createBill()">
+                  Generar factura
+                </button>
+              }
+              <button
+                class="du-btn du-btn-secondary w-full sm:w-auto"
+                onclick="my_modal_1.showModal()"
+                [disabled]="billStore.loading()"
+                [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
+                  <path
+                    fill="currentColor"
+                    d="M18 10h-4V6a2 2 0 0 0-4 0l.071 4H6a2 2 0 0 0 0 4l4.071-.071L10 18a2 2 0 0 0 4 0v-4.071L18 14a2 2 0 0 0 0-4"
+                  />
+                </svg>
+                Agregar producto
+              </button>
+            </div>
+            <dialog id="my_modal_1" class="du-modal">
+              <div class="du-modal-box w-3/4 max-w-3/4">
+                <router-outlet name="view-products-table" />
+                <div class="du-modal-action justify-center">
+                  <form method="dialog">
+                    <button
+                      class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
+                      [disabled]="billStore.loading()"
+                    >
+                      Cerrar
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
+          </div>
+        </div>
       </div>
     </div>
+  </div>
+  <div class="du-drawer-side">
+    <label for="my-drawer-1" aria-label="close sidebar" class="du-drawer-overlay"></label>
+    <ul class="du-menu bg-base-100 min-h-full w-100 p-4">
+      <router-outlet name="add-client-info" />
+    </ul>
   </div>
 </div>

@@ -1,0 +1,61 @@
+<h2 class="text-3xl font-bold">Agregar cliente</h2>
+
+<div class="du-divider du-is-drawer-open:w-full m-0"></div>
+<form [formGroup]="customerForm">
+  <fieldset class="du-fieldset w-full">
+    <legend class="du-fieldset-legend">Documento</legend>
+    <div class="du-join">
+      <label class="du-input w-full du-join-item">
+        <input type="number" placeholder="Ingrese documento" required formControlName="document" />
+      </label>
+
+      <button class="du-btn du-btn-info du-join-item" (click)="buscarCliente()">Buscar</button>
+    </div>
+  </fieldset>
+  @if (this.errorStore.message() !== null) {
+    <div
+      role="alert"
+      class="du-alert du-alert-warning mt-2"
+      animate.enter="enter-animation-izquierdaDerecha"
+      animate.leave="leaving-izquierdaDerecha"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-6 w-6 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+        />
+      </svg>
+      <span>Cliente no registrado. Complete los datos del cliente.</span>
+    </div>
+  }
+  <fieldset class="du-fieldset">
+    <legend class="du-fieldset-legend">Nombre</legend>
+    <input type="text" class="du-input w-full" formControlName="name" />
+  </fieldset>
+  <fieldset class="du-fieldset">
+    <legend class="du-fieldset-legend">Correo</legend>
+    <input type="text" class="du-input w-full" formControlName="email" />
+  </fieldset>
+  <fieldset class="du-fieldset">
+    <legend class="du-fieldset-legend">Telefono</legend>
+    <input type="text" class="du-input w-full" formControlName="phone" />
+  </fieldset>
+  <fieldset class="du-fieldset">
+    <legend class="du-fieldset-legend">Tipo</legend>
+    <select class="du-select w-full" formControlName="type">
+      @for (type of typesCustomer; track type.id) {
+        <option [value]="type.code">{{ type.name }}</option>
+      }
+    </select>
+  </fieldset>
+</form>
+@if (!this.customerStore.customer()) {
+  <button class="du-btn w-full" (click)="limpiarBusqueda()">Limpiar</button>
+}

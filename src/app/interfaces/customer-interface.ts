@@ -1,4 +1,4 @@
-type Role = 'CLIENT' | 'BUSINESS';
+export type Role = 'CLIENT' | 'BUSINESS';
 
 export interface CreateCustomerRequest { 
     document: string;

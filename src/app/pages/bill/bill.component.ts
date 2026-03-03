@@ -1,5 +1,5 @@
 import { Component, inject, signal } from '@angular/core';;
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 
 import { ProductStore } from '../../store/product-store';
@@ -9,7 +9,7 @@ import { PaymentMethodStore } from '../../store/payment-method-store';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [RouterOutlet, CurrencyPipe, DatePipe ],
+  imports: [RouterOutlet, CurrencyPipe, DatePipe, RouterLinkWithHref],
   providers: [BillStore, PaymentMethodStore],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
