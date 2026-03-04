@@ -7,6 +7,7 @@ import { ProductPanel } from './layout/product-panel/product-panel';
 import { ProductPricesPanel } from './layout/product-prices-panel/product-prices-panel';
 import { ProductStore } from './store/product-store';
 import { BillStore } from './store/bill-store';
+import { AgregarCliente } from './layout/add-customer/add-customer';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -24,16 +25,24 @@ export const routes: Routes = [
     providers: [ProductStore, BillStore],
     children: [
       {
-        path: 'products',
+        path: 'view-products',
         title: 'Productos disponibles',
         component: ProductPanel,
+        outlet: 'view-products-table',
         children: [
           {
-            path: 'product',
+            path: 'product-prices',
             title: 'Detalle del producto',
+            outlet: 'select-product-price',
             component: ProductPricesPanel,
           },
         ],
+      },
+      {
+        path: 'add-client',
+        title: 'Agregar cliente',
+        outlet: 'add-client-info',
+        component: AgregarCliente,
       },
     ],
   },

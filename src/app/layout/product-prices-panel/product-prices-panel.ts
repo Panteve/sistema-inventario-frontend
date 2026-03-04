@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import { CurrencyPipe } from '@angular/common';
 import { ProductStore } from '../../store/product-store';
@@ -12,8 +12,8 @@ import { BillStore } from '../../store/bill-store';
 })
 export class ProductPricesPanel {
   private productService = inject(ProductService);
-  productStore = inject(ProductStore)
-  billStore = inject(BillStore)
+  productStore = inject(ProductStore);
+  billStore = inject(BillStore);
 
   addProductToBill(price: string) {
     this.billStore.setPriceSelected(price);

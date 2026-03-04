@@ -14,6 +14,7 @@ import { ErrorStore } from './errors-store';
 import { filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { CreateBillRequest, ProductOnBill, ProductSelected } from '../interfaces/bill.interface';
+import { CustomerStore } from './customer-store';
 
 type BillState = {
   productSelected: ProductSelected;
@@ -28,6 +29,7 @@ const initialState: BillState = {
     quantity: 0,
   },
   bill: {
+    customerId: 0,
     paymentMethodId: 0,
     cashRegisterId: 1,
     products: [],
@@ -49,6 +51,7 @@ export const BillStore = signalStore(
   })),
   withProps(() => ({
     billService: inject(BillService),
+    customerStore: inject(CustomerStore),
     errorStore: inject(ErrorStore),
     router: inject(Router),
   })),
@@ -67,16 +70,26 @@ export const BillStore = signalStore(
       return true;
     },
   })),
-  withMethods(({ billService, errorStore, router, ...store }) => ({
+  withMethods(({ customerStore, billService, errorStore, router, ...store }) => ({
     createBill: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { loading: true })),
+        tap(() => {
+          const customer = customerStore.customer();
+          patchState(store, (state) => ({
+            bill: {
+              ...state.bill,
+              customerId: customer ? customer.id : 0,
+            },
+            loading: true,
+          }));
+          console.log('Creating bill with data:', store.bill());
+        }),
         filter(() => store._isValidForSubmit()),
         switchMap(() =>
           billService.createBill(store.bill()).pipe(
             tap((billId) => {
               console.log(`Bill created with ID: ${billId}`);
-              router.navigate([`/bill/${billId}`]);
+              //router.navigate([`/bill/${billId}`]);
             }),
           ),
         ),
@@ -87,7 +100,7 @@ export const BillStore = signalStore(
     cancelBill() {
       patchState(store, { bill: initialState.bill, loading: false });
     },
-    setSelectedProduct(product:  ProductSelected) {
+    setSelectedProduct(product: ProductSelected) {
       patchState(store, { productSelected: product });
     },
     setPriceSelected(priceType: string) {
