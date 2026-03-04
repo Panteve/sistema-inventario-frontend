@@ -11,7 +11,7 @@ export const ErrorStore = signalStore(
       patchState(store, { message });
       setTimeout(() => {
         patchState(store, { message: null });
-      }, 6000);
+      }, 5000);
     },
     clearError() {
       patchState(store, { message: null });

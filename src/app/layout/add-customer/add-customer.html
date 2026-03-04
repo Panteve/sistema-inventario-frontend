@@ -1,24 +1,13 @@
 <h2 class="text-3xl font-bold">Agregar cliente</h2>
 
 <div class="du-divider du-is-drawer-open:w-full m-0"></div>
-<form [formGroup]="customerForm">
-  <fieldset class="du-fieldset w-full">
-    <legend class="du-fieldset-legend">Documento</legend>
-    <div class="du-join">
-      <label class="du-input w-full du-join-item">
-        <input type="number" placeholder="Ingrese documento" required formControlName="document" />
-      </label>
-
-      <button class="du-btn du-btn-info du-join-item" (click)="buscarCliente()">Buscar</button>
-    </div>
-  </fieldset>
-  @if (this.errorStore.message() !== null) {
-    <div
-      role="alert"
-      class="du-alert du-alert-warning mt-2"
-      animate.enter="enter-animation-izquierdaDerecha"
-      animate.leave="leaving-izquierdaDerecha"
-    >
+<div
+  class="grid transition-all duration-300 ease-out"
+  [class.grid-rows-[0fr]]="errorStore.message() === null"
+  [class.grid-rows-[1fr]]="errorStore.message() !== null"
+>
+  <div class="overflow-hidden">
+    <div role="alert" class="du-alert mt-2">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-6 w-6 shrink-0 stroke-current"
@@ -32,30 +21,160 @@
           d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
         />
       </svg>
-      <span>Cliente no registrado. Complete los datos del cliente.</span>
+      <span>{{ errorStore.message() }}</span>
+    </div>
+  </div>
+</div>
+<form [formGroup]="customerForm" class="relative">
+  @if (customerStore.loading()) {
+    <div class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/70 rounded-box">
+      <span class="du-loading du-loading-spinner du-loading-lg"></span>
     </div>
   }
+  <fieldset class="du-fieldset w-full">
+    <legend class="du-fieldset-legend">Documento</legend>
+    <div class="du-join">
+      <label
+        class="du-input w-full du-join-item"
+        [class.du-input-error]="
+          customerForm.get('document')?.invalid && customerForm.get('document')?.touched
+        "
+      >
+        <input
+          type="text"
+          placeholder="Ingrese documento"
+          required
+          formControlName="document"
+          (input)="customerForm.get('document')?.markAsUntouched()"
+        />
+      </label>
+
+      <button class="du-btn du-btn-info du-join-item" type="button" (click)="buscarCliente()">
+        Buscar
+      </button>
+    </div>
+    @if (customerForm.get('document')?.touched && customerForm.get('document')?.invalid) {
+      <p class="du-fieldset-label text-error text-xs mt-1">
+        @if (customerForm.get('document')?.hasError('required')) {
+          El documento es obligatorio.
+        } @else if (customerForm.get('document')?.hasError('pattern')) {
+          Solo se permiten números.
+        } @else if (customerForm.get('document')?.hasError('minlength')) {
+          Mínimo 5 caracteres.
+        } @else if (customerForm.get('document')?.hasError('maxlength')) {
+          Máximo 15 caracteres.
+        }
+      </p>
+    }
+  </fieldset>
+
   <fieldset class="du-fieldset">
     <legend class="du-fieldset-legend">Nombre</legend>
-    <input type="text" class="du-input w-full" formControlName="name" />
+    <input
+      type="text"
+      class="du-input w-full"
+      formControlName="name"
+      [class.text-base-content]="customerStore.customer() !== null"
+      [class.du-input-error]="
+        customerForm.get('name')?.invalid && customerForm.get('name')?.touched
+      "
+      (input)="customerForm.get('name')?.markAsUntouched()"
+    />
+    @if (customerForm.get('name')?.touched && customerForm.get('name')?.invalid) {
+      <p class="du-fieldset-label text-error text-xs mt-1">
+        @if (customerForm.get('name')?.hasError('required')) {
+          El nombre es obligatorio.
+        } @else if (customerForm.get('name')?.hasError('pattern')) {
+          Solo se permiten letras y espacios.
+        } @else if (customerForm.get('name')?.hasError('maxlength')) {
+          Máximo 50 caracteres.
+        }
+      </p>
+    }
   </fieldset>
   <fieldset class="du-fieldset">
     <legend class="du-fieldset-legend">Correo</legend>
-    <input type="text" class="du-input w-full" formControlName="email" />
+    <input
+      type="text"
+      class="du-input w-full"
+      formControlName="email"
+      [class.text-base-content]="customerStore.customer() !== null"
+      [class.du-input-error]="
+        customerForm.get('email')?.invalid && customerForm.get('email')?.touched
+      "
+      (input)="customerForm.get('email')?.markAsUntouched()"
+    />
+    @if (customerForm.get('email')?.touched && customerForm.get('email')?.invalid) {
+      <p class="du-fieldset-label text-error text-xs mt-1">
+        @if (customerForm.get('email')?.hasError('required')) {
+          El correo es obligatorio.
+        } @else if (customerForm.get('email')?.hasError('email')) {
+          Ingrese un correo válido.
+        }
+      </p>
+    }
   </fieldset>
   <fieldset class="du-fieldset">
     <legend class="du-fieldset-legend">Telefono</legend>
-    <input type="text" class="du-input w-full" formControlName="phone" />
+    <input
+      type="text"
+      class="du-input w-full"
+      formControlName="phone"
+      [class.text-base-content]="customerStore.customer() !== null"
+      [class.du-input-error]="
+        customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched
+      "
+      (input)="customerForm.get('phone')?.markAsUntouched()"
+    />
+    @if (customerForm.get('phone')?.touched && customerForm.get('phone')?.invalid) {
+      <p class="du-fieldset-label text-error text-xs mt-1">
+        @if (customerForm.get('phone')?.hasError('required')) {
+          El teléfono es obligatorio.
+        } @else if (customerForm.get('phone')?.hasError('pattern')) {
+          Solo se permiten números.
+        } @else if (customerForm.get('phone')?.hasError('minlength')) {
+          Mínimo 5 caracteres.
+        } @else if (customerForm.get('phone')?.hasError('maxlength')) {
+          Máximo 15 caracteres.
+        }
+      </p>
+    }
   </fieldset>
   <fieldset class="du-fieldset">
     <legend class="du-fieldset-legend">Tipo</legend>
-    <select class="du-select w-full" formControlName="type">
-      @for (type of typesCustomer; track type.id) {
-        <option [value]="type.code">{{ type.name }}</option>
+    <select
+      class="du-select w-full"
+      formControlName="role"
+      [class.text-base-content]="customerStore.customer() !== null"
+      [class.du-select-error]="
+        customerForm.get('role')?.invalid && customerForm.get('role')?.touched
+      "
+      (change)="customerForm.get('role')?.markAsUntouched()"
+    >
+      @for (role of rolesCustomer; track role.id) {
+        <option [value]="role.code">{{ role.name }}</option>
       }
     </select>
+    @if (customerForm.get('role')?.touched && customerForm.get('role')?.invalid) {
+      <p class="du-fieldset-label text-error text-xs mt-1">Seleccione un tipo válido.</p>
+    }
   </fieldset>
+  @if (this.customerStore.customer() && !this.customerStore.editarClienteActivo()) {
+    <div class="flex justify-between">
+      <button class="du-btn w-1/3 mt-2" type="button" (click)="limpiarBusqueda()">Limpiar</button>
+      <button class="du-btn w-1/3 mt-2" type="button" (click)="enableEditarCliente()">
+        Editar
+      </button>
+    </div>
+  } @else if (this.customerStore.newCustomer()) {
+    <button class="du-btn w-full mt-2" type="submit" (click)="crearCliente()">Crear</button>
+  }
+  @if (this.customerStore.editarClienteActivo()) {
+    <div class="flex justify-between">
+      <button class="du-btn w-1/3 mt-2" type="button" (click)="disabledEditarCliente()">
+        Cancelar
+      </button>
+      <button class="du-btn w-1/3 mt-2" type="submit" (click)="editarCliente()">Guardar</button>
+    </div>
+  }
 </form>
-@if (!this.customerStore.customer()) {
-  <button class="du-btn w-full" (click)="limpiarBusqueda()">Limpiar</button>
-}

@@ -5,7 +5,7 @@
   prefix: "du-";
 }
 .enter-animation-izquierdaDerecha {
-  animation: slide-fade-izquierdaDerecha 1s;
+  animation: slide-fade-izquierdaDerecha 2s;
 }
 .leaving-izquierdaDerecha {
   opacity: 0;
