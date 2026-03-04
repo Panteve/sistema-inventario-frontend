@@ -1,145 +1,171 @@
-<div class="w-full">
-  <div class="du-card du-card-bordered bg-base-100 shadow-md">
-    <div class="du-card-body p-4">
-      <!-- Header -->
-      <div class="flex items-center justify-between pr-4">
-        <h2 class="text-lg font-semibold">Productos disponibles</h2>
-
-        <div class="du-tooltip" data-tip="Recargar productos">
-          <button
-            class="du-btn du-btn-circle du-btn-sm md:du-btn-md du-btn-accent"
-            title="Actualizar"
-            (click)="this.loadProducts()"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-      @if (!this.productStore.loading() && this.errorStore.message()) {
-        <!-- Error -->
-        <div class="du-alert du-alert-error mb-3">
-          <span>{{ this.errorStore.message() }}</span>
-        </div>
-      }
-      @if (this.productStore.loading()) {
-        <!-- Loading -->
-        <div class="flex justify-center items-center gap-2 text-sm opacity-70 mb-3">
-          <span class="du-loading du-loading-spinner du-loading-sm"></span>
-          Cargando productos...
-        </div>
-      } @else {
-        <label
-          class="du-input du-input-bordered du-input-info lg:du-input-lg md:du-input-md w-full mb-4"
-        >
-          <svg class="h-[1em] opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <g
-              stroke-linejoin="round"
-              stroke-linecap="round"
-              stroke-width="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <circle cx="11" cy="11" r="8"></circle>
-              <path d="m21 21-4.3-4.3"></path>
-            </g>
-          </svg>
-          <input
-            #search
-            placeholder="Buscar producto..."
-            (input)="globalFilter.set(search.value)"
-            (input)="resetViewTable()"
+<div class="w-full overflow-hidden">
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h2 class="text-xl font-bold">Productos disponibles</h2>
+      <p class="text-sm opacity-50">Selecciona un producto para agregarlo</p>
+    </div>
+    <div class="du-tooltip" data-tip="Recargar productos">
+      <button class="du-btn du-btn-circle du-btn-sm du-btn-ghost" (click)="this.loadProducts()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
           />
-        </label>
-        <!-- Table -->
-        <div class="overflow-x-auto rounded-box border border-base-content/25 bg-base-300">
-          <table class="du-table lg:du-table-lg md:du-table-md sm:du-table-sm w-full">
-            <thead class="bg-base-200">
-              <tr>
-                <th class="text-center font-extrabold text-base-content">ID</th>
-                <th class="text-center font-extrabold text-base-content">Nombre</th>
-                <th class="text-center font-extrabold text-base-content">Precio</th>
-                <th class="text-center font-extrabold text-base-content">Precio Mayor</th>
-                <th class="text-center font-extrabold text-base-content">Stock</th>
-              </tr>
-            </thead>
-            <tbody>
-              @for (row of table.getRowModel().rows; track row.id) {
-                <tr
-                  class="hover:bg-base-100 cursor-pointer"
-                  (click)="getProductTable(row.original)"
-                  onclick="my_modal_2.showModal()"
-                  [routerLink]="[{ outlets: { 'select-product-price': ['product-prices'] } }]"
-                >
-                  @for (cell of row.getVisibleCells(); track cell.id) {
-                    <td class="text-center font-medium">
-                      <ng-container
-                        *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cell"
-                      >
-                        <div [innerHTML]="cell"></div>
-                      </ng-container>
-                    </td>
-                  }
-                </tr>
-              }
-            </tbody>
-          </table>
-        </div>
-      }
-      <div class="flex justify-center">
-        <div class="du-join">
-          <button
-            class="du-join-item du-btn"
-            (click)="previousPage()"
-            [disabled]="!table.getCanPreviousPage()"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 42">
-              <path
-                fill="currentColor"
-                fill-rule="evenodd"
-                d="M27.066 1L7 21.068l19.568 19.569l4.934-4.933l-14.637-14.636L32 5.933z"
-              />
-            </svg>
-          </button>
-          <button class="du-join-item du-btn text-xl" (click)="resetViewTable()">{{ numberPage() }}</button>
-          <button
-            class="du-join-item du-btn"
-            (click)="nextPage()"
-            [disabled]="!table.getCanNextPage()"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 50 42">
-              <path
-                fill="currentColor"
-                fill-rule="evenodd"
-                d="M13.933 1L34 21.068L14.431 40.637l-4.933-4.933l14.638-14.636L9 5.933z"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-      <dialog id="my_modal_2" class="du-modal">
-        <div class="du-modal-box">
-            <router-outlet name="select-product-price" />
-          <div class="du-modal-action justify-center">
-            <form method="dialog">
-              <button
-                #btnCerrar
-                class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
-              >
-                Cerrar
-              </button>
-            </form>
-          </div>
-        </div>
-      </dialog>
-      <!-- Empty -->
-      @if (this.productStore.products().length === 0 && !this.productStore.loading()) {
-        <div class="text-center text-sm opacity-60 py-6">No hay productos disponibles</div>
-      }
+        </svg>
+      </button>
     </div>
   </div>
+
+  @if (!this.productStore.loading() && this.errorStore.message()) {
+    <div role="alert" class="du-alert du-alert-error mb-4">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 shrink-0 stroke-current"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+        />
+      </svg>
+      <span>{{ this.errorStore.message() }}</span>
+    </div>
+  }
+
+  @if (this.productStore.loading()) {
+    <div class="flex flex-col items-center justify-center py-12 gap-3">
+      <span class="du-loading du-loading-spinner du-loading-lg text-primary"></span>
+      <span class="text-sm opacity-60">Cargando productos...</span>
+    </div>
+  } @else {
+    <!-- Búsqueda -->
+    <label class="du-input du-input-bordered w-full mb-4 flex items-center gap-2">
+      <svg class="h-4 w-4 opacity-50" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+        <g
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          stroke-width="2.5"
+          fill="none"
+          stroke="currentColor"
+        >
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.3-4.3"></path>
+        </g>
+      </svg>
+      <input
+        #search
+        class="grow"
+        placeholder="Buscar por nombre o ID..."
+        (input)="globalFilter.set(search.value); resetViewTable()"
+      />
+    </label>
+
+    <!-- Tabla -->
+    <div class="overflow-hidden rounded-xl border border-base-content/10">
+      <table class="du-table du-table-zebra du-table-md md:du-table-lg w-full">
+        <thead class="bg-base-200">
+          <tr>
+            <th class="text-center">ID</th>
+            <th class="text-center">Nombre</th>
+            <th class="text-center">Precio</th>
+            <th class="text-center">P. Mayor</th>
+            <th class="text-center">Stock</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of table.getRowModel().rows; track row.id) {
+            <tr
+              class="hover:bg-primary/5 cursor-pointer transition-colors"
+              (click)="getProductTable(row.original)"
+              onclick="my_modal_2.showModal()"
+              [routerLink]="[{ outlets: { 'select-product-price': ['product-prices'] } }]"
+            >
+              @for (cell of row.getVisibleCells(); track cell.id) {
+                <td class="text-center">
+                  <ng-container
+                    *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let cell"
+                  >
+                    <div [innerHTML]="cell"></div>
+                  </ng-container>
+                </td>
+              }
+            </tr>
+          } @empty {
+            <tr>
+              <td colspan="5" class="text-center py-8 opacity-50">No se encontraron productos</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="flex justify-center mt-4">
+      <div class="du-join">
+        <button
+          class="du-join-item du-btn du-btn-sm"
+          (click)="previousPage()"
+          [disabled]="!table.getCanPreviousPage()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
+          </svg>
+        </button>
+        <button class="du-join-item du-btn du-btn-sm" (click)="resetViewTable()">
+          {{ numberPage() }}
+        </button>
+        <button
+          class="du-join-item du-btn du-btn-sm"
+          (click)="nextPage()"
+          [disabled]="!table.getCanNextPage()"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (this.productStore.products().length === 0 && !this.productStore.loading()) {
+    <div class="text-center py-10 opacity-50">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-12 w-12 mx-auto mb-2 opacity-30"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="1.5"
+          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+        />
+      </svg>
+      <p>No hay productos disponibles</p>
+    </div>
+  }
+
+  <!-- Modal precios -->
+  <dialog id="my_modal_2" class="du-modal">
+    <div class="du-modal-box">
+      <form method="dialog">
+        <button
+          #btnCerrar
+          class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
+        >
+          ✕
+        </button>
+      </form>
+      <router-outlet name="select-product-price" />
+    </div>
+    <form method="dialog" class="du-modal-backdrop">
+      <button>close</button>
+    </form>
+  </dialog>
 </div>

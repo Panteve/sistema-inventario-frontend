@@ -151,7 +151,6 @@
           <!-- Totales -->
           <div class="flex justify-end">
             <div class="w-full md:w-2/5 space-y-2">
-              
               <div class="flex justify-between">
                 <span>Subtotal</span>
                 <span>{{ billStore.subtotal() | currency }}</span>
@@ -190,9 +189,9 @@
                 </button>
               } @else {
                 <button
-                  class="du-btn du-btn-soft du-btn-primary w-full sm:w-auto du-btn-sm sm:du-btn-sm md:du-btn-md" 
+                  class="du-btn du-btn-soft du-btn-primary w-full sm:w-auto du-btn-sm sm:du-btn-sm md:du-btn-md"
                   onclick="payment.showModal()"
-                  [routerLink]="[{ outlets: { 'payment': ['payment'] } }]"
+                  [routerLink]="[{ outlets: { payment: ['payment'] } }]"
                 >
                   Generar factura
                 </button>
@@ -231,7 +230,7 @@
 </div>
 <!-- Modal para ver productos -->
 <dialog id="viewProducts" class="du-modal">
-  <div class="du-modal-box w-3/4 max-w-3/4">
+  <div class="du-modal-box w-11/12 max-w-2xl">
     <router-outlet name="view-products-table" />
     <div class="du-modal-action justify-center">
       <form method="dialog">

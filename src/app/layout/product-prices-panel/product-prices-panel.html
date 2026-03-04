@@ -1,15 +1,61 @@
-<h1 class="text-2xl font-bold mb-4 text-center">Precios del producto</h1>
-<div class="overflow-x-auto rounded-box border border-base-content/25 bg-base-300 du-table-lg">
-  <table class="du-table w-full">
-    <tbody>
-      <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('unitPrice')">
-        <td class="font-bold">Precio Unitario</td>
-        <td>{{ billStore.productSelected().product.unitPrice| currency }}</td>
-      </tr>
-      <tr class="hover:bg-base-100 cursor-pointer" (click)="addProductToBill('wholesalePrice')">
-        <td class="font-bold">Precio Mayorista</td>
-        <td>{{ billStore.productSelected().product.wholesalePrice | currency }}</td>
-      </tr>
-    </tbody>
-  </table>
+<div class="flex flex-col gap-4 py-2">
+  <div class="text-center">
+    <h3 class="text-lg font-bold">{{ billStore.productSelected().product.name }}</h3>
+    <p class="text-sm opacity-50">Selecciona el tipo de precio</p>
+  </div>
+
+  <div class="flex flex-col gap-3">
+    <!-- Precio Unitario -->
+    <button
+      class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
+      (click)="addProductToBill('unitPrice')"
+    >
+      <div class="flex flex-col items-start">
+        <span class="text-xs opacity-50 font-normal">Precio unitario</span>
+        <span class="text-lg font-bold">{{
+          billStore.productSelected().product.unitPrice | currency
+        }}</span>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M5 12h14m-7-7l7 7-7 7" />
+      </svg>
+    </button>
+
+    <!-- Precio Mayorista -->
+    <button
+      class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
+      (click)="addProductToBill('wholesalePrice')"
+      [disabled]="!billStore.productSelected().product.wholesalePrice"
+    >
+      <div class="flex flex-col items-start">
+        <span class="text-xs opacity-50 font-normal">Precio mayorista</span>
+        <span class="text-lg font-bold">{{
+          billStore.productSelected().product.wholesalePrice | currency
+        }}</span>
+      </div>
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="M5 12h14m-7-7l7 7-7 7" />
+      </svg>
+    </button>
+  </div>
 </div>
