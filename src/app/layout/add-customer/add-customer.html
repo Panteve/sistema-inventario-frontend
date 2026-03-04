@@ -49,7 +49,7 @@
         />
       </label>
 
-      <button class="du-btn du-btn-info du-join-item" type="button" (click)="buscarCliente()">
+      <button class="du-btn du-join-item du-btn-neutral" type="button" (click)="buscarCliente()">
         Buscar
       </button>
     </div>
@@ -161,20 +161,20 @@
   </fieldset>
   @if (this.customerStore.customer() && !this.customerStore.editarClienteActivo()) {
     <div class="flex justify-between">
-      <button class="du-btn w-1/3 mt-2" type="button" (click)="limpiarBusqueda()">Limpiar</button>
-      <button class="du-btn w-1/3 mt-2" type="button" (click)="enableEditarCliente()">
+      <button class="du-btn w-1/3 mt-2 du-btn-neutral" type="button" (click)="limpiarBusqueda()">Limpiar</button>
+      <button class="du-btn  w-1/3 mt-2 du-btn-neutral" type="button" (click)="enableEditarCliente()">
         Editar
       </button>
     </div>
   } @else if (this.customerStore.newCustomer()) {
-    <button class="du-btn w-full mt-2" type="submit" (click)="crearCliente()">Crear</button>
+    <button class="du-btn w-full mt-2 du-btn-neutral" type="submit" (click)="crearCliente()">Crear</button>
   }
   @if (this.customerStore.editarClienteActivo()) {
     <div class="flex justify-between">
-      <button class="du-btn w-1/3 mt-2" type="button" (click)="disabledEditarCliente()">
+      <button class="du-btn w-1/3 mt-2 du-btn-neutral" type="button" (click)="disabledEditarCliente()">
         Cancelar
       </button>
-      <button class="du-btn w-1/3 mt-2" type="submit" (click)="editarCliente()">Guardar</button>
+      <button class="du-btn w-1/3 mt-2 du-btn-neutral" type="submit" (click)="editarCliente()">Guardar</button>
     </div>
   }
 </form>

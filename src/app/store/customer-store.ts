@@ -97,7 +97,7 @@ export const CustomerStore = signalStore(
     changeEditarClienteActivo(value: boolean) {
       patchState(store, { editarClienteActivo: value });
     },
-    cleanCustomer() {
+    clearCustomer() {
       errorStore.clearError();
       patchState(store, { customer: null, newCustomer: false });
     },

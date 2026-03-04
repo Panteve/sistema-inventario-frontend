@@ -97,7 +97,7 @@ export class AgregarCliente {
   }
 
   limpiarBusqueda() {
-    this.customerStore.cleanCustomer();
+    this.customerStore.clearCustomer();
     this.customerForm.reset();
   }
 

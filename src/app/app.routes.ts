@@ -8,6 +8,7 @@ import { ProductPricesPanel } from './layout/product-prices-panel/product-prices
 import { ProductStore } from './store/product-store';
 import { BillStore } from './store/bill-store';
 import { AgregarCliente } from './layout/add-customer/add-customer';
+import { PaymentContent } from './layout/payment-content/payment-content';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -37,6 +38,12 @@ export const routes: Routes = [
             component: ProductPricesPanel,
           },
         ],
+      },
+      {
+        path: 'payment',
+        title: 'Metodo de pago',
+        component: PaymentContent,
+        outlet: 'payment',
       },
       {
         path: 'add-client',

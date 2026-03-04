@@ -60,10 +60,6 @@ export class BillComponent {
     this.modifiyingPrice.set(false);
   }
 
-  setPaymentMethod(id: number) {
-    this.billStore.setMethodOfPayment(id);
-  }
-
   createBill() {
     this.billStore.createBill();
   }

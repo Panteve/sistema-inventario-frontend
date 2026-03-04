@@ -29,7 +29,7 @@
           <div class="flex items-center justify-between mb-1">
             <div>
               <h2 class="font-semibold mb-1 lg:text-2xl md:text-xl sm:text-lg">Facturar a</h2>
-              <h3 class=" lg:text-xl md:text-lg sm:text-base">
+              <h3 class="lg:text-xl md:text-lg sm:text-base">
                 @if (this.customerStore.customer()) {
                   {{ this.customerStore.customer()?.name }}
                   <p class="text-sm opacity-60">
@@ -42,17 +42,12 @@
             </div>
             <label
               for="my-drawer-1"
-              class="du-btn du-btn-soft du-btn-secondary du-drawer-button du-btn-sm sm:du-btn-sm md:du-btn-md"
+              class="du-btn du-btn-neutral du-drawer-button du-btn-sm sm:du-btn-sm md:du-btn-md"
               (click)="drawerOpen.set(true)"
               [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
             >
               @if (this.customerStore.customer()) {
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="25"
-                  height="25"
-                  viewBox="0 0 32 32"
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 32 32">
                   <path
                     fill="currentColor"
                     d="M27.87 7.863L23.024 4.82l-7.89 12.566l4.843 3.04zM14.395 21.25l-.107 2.855l2.527-1.337l2.35-1.24l-4.673-2.936zM29.163 3.24L26.63 1.647a1.364 1.364 0 0 0-1.88.43l-1 1.588l4.843 3.042l1-1.586c.4-.64.21-1.483-.43-1.883zm-3.965 23.82c0 .275-.225.5-.5.5h-19a.5.5 0 0 1-.5-.5v-19a.5.5 0 0 1 .5-.5h13.244l1.884-3H5.698c-1.93 0-3.5 1.57-3.5 3.5v19c0 1.93 1.57 3.5 3.5 3.5h19c1.93 0 3.5-1.57 3.5-3.5V11.097l-3 4.776v11.19z"
@@ -156,17 +151,7 @@
           <!-- Totales -->
           <div class="flex justify-end">
             <div class="w-full md:w-2/5 space-y-2">
-              <div class="flex justify-between items-center">
-                <span>Metodo de pago</span>
-                <select class="du-select w-3/5 text-center">
-                  <option disabled selected>Seleccionar</option>
-                  @for (paymentMethod of paymentMethods(); track $index) {
-                    <option (click)="setPaymentMethod(paymentMethod.id)">
-                      {{ paymentMethod.name }}
-                    </option>
-                  }
-                </select>
-              </div>
+              
               <div class="flex justify-between">
                 <span>Subtotal</span>
                 <span>{{ billStore.subtotal() | currency }}</span>
@@ -204,13 +189,17 @@
                   loading
                 </button>
               } @else {
-                <button class="du-btn du-btn-soft du-btn-primary w-full sm:w-auto du-btn-sm sm:du-btn-sm md:du-btn-md" (click)="createBill()">
+                <button
+                  class="du-btn du-btn-soft du-btn-primary w-full sm:w-auto du-btn-sm sm:du-btn-sm md:du-btn-md" 
+                  onclick="payment.showModal()"
+                  [routerLink]="[{ outlets: { 'payment': ['payment'] } }]"
+                >
                   Generar factura
                 </button>
               }
               <button
                 class="du-btn du-btn-soft du-btn-secondary w-full sm:w-auto du-btn-sm sm:du-btn-sm md:du-btn-md"
-                onclick="my_modal_1.showModal()"
+                onclick="viewProducts.showModal()"
                 [disabled]="billStore.loading()"
                 [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
               >
@@ -223,21 +212,6 @@
                 Agregar producto
               </button>
             </div>
-            <dialog id="my_modal_1" class="du-modal">
-              <div class="du-modal-box w-3/4 max-w-3/4">
-                <router-outlet name="view-products-table" />
-                <div class="du-modal-action justify-center">
-                  <form method="dialog">
-                    <button
-                      class="du-btn du-btn-md lg:du-btn-lg du-btn-info"
-                      [disabled]="billStore.loading()"
-                    >
-                      Cerrar
-                    </button>
-                  </form>
-                </div>
-              </div>
-            </dialog>
           </div>
         </div>
       </div>
@@ -250,8 +224,33 @@
       class="du-drawer-overlay"
       (click)="drawerOpen.set(false)"
     ></label>
-    <ul class="du-menu bg-base-100 min-h-full w-100 p-4">
+    <ul class="du-menu bg-base-100 min-h-full w-80 md:w-100 p-4">
       <router-outlet name="add-client-info" />
     </ul>
   </div>
 </div>
+<!-- Modal para ver productos -->
+<dialog id="viewProducts" class="du-modal">
+  <div class="du-modal-box w-3/4 max-w-3/4">
+    <router-outlet name="view-products-table" />
+    <div class="du-modal-action justify-center">
+      <form method="dialog">
+        <button class="du-btn du-btn-md lg:du-btn-lg du-btn-info" [disabled]="billStore.loading()">
+          Cerrar
+        </button>
+      </form>
+    </div>
+  </div>
+</dialog>
+<!-- Modal para pagar -->
+<dialog id="payment" class="du-modal">
+  <div class="du-modal-box w-11/12 max-w-md">
+    <form method="dialog">
+      <button class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3">✕</button>
+    </form>
+    <router-outlet name="payment" />
+  </div>
+  <form method="dialog" class="du-modal-backdrop">
+    <button>close</button>
+  </form>
+</dialog>

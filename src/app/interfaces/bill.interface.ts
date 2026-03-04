@@ -1,6 +1,6 @@
 export interface ProductOnBill{
     productId: number;
-    name: string;
+    name?: string;
     priceUnique: number;
     quantity: number;
     taxPercentage: number;

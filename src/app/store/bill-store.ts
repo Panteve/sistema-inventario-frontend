@@ -82,22 +82,28 @@ export const BillStore = signalStore(
             },
             loading: true,
           }));
-          console.log('Creating bill with data:', store.bill());
         }),
         filter(() => store._isValidForSubmit()),
-        switchMap(() =>
-          billService.createBill(store.bill()).pipe(
+        switchMap(() => {
+          const bill = store.bill();
+          const cleanBill = {
+            ...bill,
+            products: bill.products.map(({ name, ...rest }) => rest),
+          };
+          return billService.createBill(cleanBill).pipe(
             tap((billId) => {
-              console.log(`Bill created with ID: ${billId}`);
+              patchState(store, { loading: false });
+              console.log('Factura creada con ID:', billId);
               //router.navigate([`/bill/${billId}`]);
             }),
-          ),
-        ),
+          );
+        }),
         finalize(() => patchState(store, { loading: false })),
       ),
     ),
 
     cancelBill() {
+      customerStore.clearCustomer();
       patchState(store, { bill: initialState.bill, loading: false });
     },
     setSelectedProduct(product: ProductSelected) {

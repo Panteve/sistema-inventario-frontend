@@ -1,7 +1,7 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
  @plugin "daisyui" {
-  themes: sunset, dracula, light;
+  themes: dark, dracula, light;
   prefix: "du-";
 }
 .enter-animation-izquierdaDerecha {

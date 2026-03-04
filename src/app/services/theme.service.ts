@@ -20,7 +20,7 @@ export class ThemeService {
     if (light) {
       this.theme.set('light');
     } else {
-      this.theme.set('sunset');
+      this.theme.set('dracula');
     }
     document.documentElement.setAttribute('data-theme', this.theme());
     window.electronAPI.saveTheme(this.theme());

@@ -1,0 +1,79 @@
+<h3 class="text-xl font-bold mb-4">Confirmar pago</h3>
+
+<div class="flex flex-col gap-5">
+
+  <!-- Método de pago -->
+  <div class="du-form-control w-full">
+    <label class="du-label">
+      <span class="du-label-text font-semibold">Método de pago</span>
+    </label>
+    <select class="du-select du-select-bordered w-full" (change)="onPaymentMethodChange($event)">
+      <option value="0" disabled selected>Seleccionar método</option>
+      @for (method of paymentMethods(); track method.id) {
+        <option [value]="method.id">{{ method.name }}</option>
+      }
+    </select>
+  </div>
+
+  <!-- Resumen de totales -->
+  <div class="rounded-xl bg-base-200 p-4 flex flex-col gap-2">
+    <div class="flex justify-between text-sm opacity-70">
+      <span>Subtotal</span>
+      <span>{{ billStore.subtotal() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+    </div>
+    <div class="flex justify-between text-sm opacity-70">
+      <span>IVA (19%)</span>
+      <span>{{ billStore.iva() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+    </div>
+    <div class="du-divider my-0"></div>
+    <div class="flex justify-between text-xl font-bold">
+      <span>Total</span>
+      <span>{{ billStore.total() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+    </div>
+  </div>
+
+  <!-- Sección de vueltas (solo efectivo) -->
+  @if (affectsCash()) {
+    <div class="du-form-control w-full">
+      <label class="du-label">
+        <span class="du-label-text font-semibold">Monto recibido</span>
+      </label>
+      <input
+        type="number"
+        class="du-input du-input-bordered w-full text-lg"
+        placeholder="$0"
+        min="0"
+        [value]="amountReceived()"
+        (input)="onAmountReceivedChange($event)"
+      />
+    </div>
+
+    <div
+      class="flex justify-between items-center rounded-xl px-4 py-3 transition-colors"
+      [class]="change() >= 0 ? 'bg-success/10' : 'bg-error/10'"
+    >
+      <span class="font-semibold">Vueltas</span>
+      <span
+        class="text-xl font-bold tabular-nums"
+        [class]="change() >= 0 ? 'text-success' : 'text-error'"
+      >
+        {{ change() | currency:'CLP':'symbol-narrow':'1.0-0' }}
+      </span>
+    </div>
+  }
+
+  <!-- Botón confirmar -->
+  <button
+    class="du-btn du-btn-primary w-full du-btn-md"
+    [disabled]="!canConfirm() || billStore.loading()"
+    (click)="confirm()"
+  >
+    @if (billStore.loading()) {
+      <span class="du-loading du-loading-spinner"></span>
+      Procesando...
+    } @else {
+      Confirmar pago
+    }
+  </button>
+
+</div>
