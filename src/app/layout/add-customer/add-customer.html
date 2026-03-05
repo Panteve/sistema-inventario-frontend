@@ -26,7 +26,6 @@
 </div>
 
 <div class="du-divider m-0"></div>
-
 <!-- Error alert -->
 <div
   class="grid transition-all duration-300 ease-out"
@@ -309,7 +308,7 @@
   <div class="pt-2">
     @if (this.customerStore.customer() && !this.customerStore.editarClienteActivo()) {
       <div class="flex gap-2">
-        <button class="du-btn du-btn-ghost flex-1" type="button" (click)="limpiarBusqueda()">
+        <button class="du-btn du-btn-soft flex-1" type="button" (click)="limpiarBusqueda()">
           Limpiar
         </button>
         <button

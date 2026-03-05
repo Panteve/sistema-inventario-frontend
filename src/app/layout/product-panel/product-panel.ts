@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, OnDestroy, OnInit, Signal, signal, ViewChild } from '@angular/core';
+import { Component, effect, ElementRef, inject, signal, ViewChild } from '@angular/core';
 import { ProductService } from '../../services/product.service';
 import {
   createAngularTable,
@@ -27,24 +27,23 @@ export class ProductPanel {
     effect(() => {
       if (this.productService.modalClose()) {
         this.btnCerrar.nativeElement.click();
-        this.productService.modalClose.set(false);
       }
     })
   }
-  productStore = inject(ProductStore);
-  billStore = inject(BillStore);
-  
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   private productService = inject(ProductService);
+  productStore = inject(ProductStore);
+  billStore = inject(BillStore);
   errorStore = inject(ErrorStore);
   router = inject(Router);
 
-  globalFilter = signal('');
+  globalFilter = signal<string>('');
   numberPage = signal<number>(1);
   
 
   loadProducts() {
+    this.globalFilter.set('');
     this.productStore.loadProducts();
   }
 

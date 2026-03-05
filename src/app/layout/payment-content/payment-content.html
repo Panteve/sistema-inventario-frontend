@@ -1,7 +1,6 @@
 <h3 class="text-xl font-bold mb-4">Confirmar pago</h3>
 
 <div class="flex flex-col gap-5">
-
   <!-- Método de pago -->
   <div class="du-form-control w-full">
     <label class="du-label">
@@ -19,16 +18,16 @@
   <div class="rounded-xl bg-base-200 p-4 flex flex-col gap-2">
     <div class="flex justify-between text-sm opacity-70">
       <span>Subtotal</span>
-      <span>{{ billStore.subtotal() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+      <span>{{ billStore.subtotal() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
     </div>
     <div class="flex justify-between text-sm opacity-70">
       <span>IVA (19%)</span>
-      <span>{{ billStore.iva() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+      <span>{{ billStore.iva() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
     </div>
     <div class="du-divider my-0"></div>
     <div class="flex justify-between text-xl font-bold">
       <span>Total</span>
-      <span>{{ billStore.total() | currency:'CLP':'symbol-narrow':'1.0-0' }}</span>
+      <span>{{ billStore.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
     </div>
   </div>
 
@@ -40,7 +39,7 @@
       </label>
       <input
         type="number"
-        class="du-input du-input-bordered w-full text-lg"
+        class="du-input du-input-bordered w-full text-lg no-spinner"
         placeholder="$0"
         min="0"
         [value]="amountReceived()"
@@ -57,7 +56,7 @@
         class="text-xl font-bold tabular-nums"
         [class]="change() >= 0 ? 'text-success' : 'text-error'"
       >
-        {{ change() | currency:'CLP':'symbol-narrow':'1.0-0' }}
+        {{ change() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
       </span>
     </div>
   }
@@ -75,5 +74,29 @@
       Confirmar pago
     }
   </button>
-
+  <!-- Error alert -->
+  <div
+    class="grid transition-all duration-300 ease-out"
+    [class.grid-rows-[0fr]]="errorStore.message() === null"
+    [class.grid-rows-[1fr]]="errorStore.message() !== null"
+  >
+    <div class="overflow-hidden">
+      <div role="alert" class="du-alert du-alert-error du-alert-sm">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 shrink-0 stroke-current"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+          />
+        </svg>
+        <span class="text-sm font-base">{{ errorStore.message() }}</span>
+      </div>
+    </div>
+  </div>
 </div>

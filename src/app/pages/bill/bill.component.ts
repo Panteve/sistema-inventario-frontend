@@ -18,8 +18,8 @@ import { CustomerStore } from '../../store/customer-store';
 export class BillComponent {
   constructor() {
     effect(() => {
-      
-    })
+      document.body.style.overflow = this.panelOpen() ? 'hidden' : '';
+    });
   }
 
   errorStore = inject(ErrorStore);
@@ -35,7 +35,7 @@ export class BillComponent {
   productInputId = signal<number>(0);
   modifiyingPrice = signal<boolean>(false);
   modalAbierto = signal<boolean>(false);
-  drawerOpen = signal<boolean>(false);
+  panelOpen = signal<boolean>(false);
 
   currentDate = Date.now();
 
@@ -58,6 +58,9 @@ export class BillComponent {
     const price = (event.target as HTMLInputElement).value;
     this.billStore.modifyPrice(Number(price), productId);
     this.modifiyingPrice.set(false);
+  }
+  showerror() {
+    this.errorStore.showError('Esto es una prueba');
   }
 
   createBill() {
