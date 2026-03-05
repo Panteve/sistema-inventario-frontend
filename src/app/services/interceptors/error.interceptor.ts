@@ -16,8 +16,8 @@ export const errorInterceptor: HttpInterceptorFn = (req, next) => {
       } else if (err.status === 403) {
         errorStore.showError('No tienes permisos para esta acción');
       } else if (err.status === 401) {
-        errorStore.showError('No estás autenticado. Por favor, inicia sesión.');
         authStore.logout();
+        errorStore.showError('No estás autenticado. Por favor, inicia sesión.');
       } else if (err.status === 0) {
         errorStore.showError('Sin conexión al servidor');
       }

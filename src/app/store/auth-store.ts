@@ -79,6 +79,7 @@ export const AuthStore = signalStore(
     },
 
     checkSession: rxMethod<void>(
+      
       pipe(
         tap(() => patchState(store, { loading: true })),
         switchMap(() =>

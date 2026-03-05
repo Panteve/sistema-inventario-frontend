@@ -31,6 +31,11 @@
             </div>
           </li>
           <div class="du-divider du-is-drawer-open:w-full m-0"></div>
+          <p
+            class="text-[11px] uppercase tracking-widest opacity-40 font-semibold px-3 mb-1 du-is-drawer-close:hidden"
+          >
+            Menú
+          </p>
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
@@ -70,7 +75,38 @@
           </li>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right text-accent"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
+              data-tip="Apertura de caja"
+              (click)="router.navigate(['/dashboard'])"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M21 15h-2.5a1.503 1.503 0 0 0-1.5 1.5a1.503 1.503 0 0 0 1.5 1.5h1a1.503 1.503 0 0 1 1.5 1.5a1.503 1.503 0 0 1-1.5 1.5H17m2 0v1m0-8v1m-6 6H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2m12 3.12V9a2 2 0 0 0-2-2h-2"
+                  />
+                  <path
+                    d="M16 10V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6m8 0H8m8 0h1m-9 0H7m1 4v.01M8 17v.01m4-3.02V14m0 3v.01"
+                  />
+                </g>
+              </svg>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Apertura de caja</span>
+            </button>
+          </li>
+          <div class="du-divider du-is-drawer-open:w-full m-0"></div>
+          <p
+            class="text-[11px] uppercase tracking-widest opacity-40 font-semibold px-3 mb-1 du-is-drawer-close:hidden"
+          >
+            Acciones
+          </p>
+          <li>
+            <button
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-primary"
               data-tip="Generar factura"
               (click)="router.navigate(['/bill'])"
             >
@@ -91,7 +127,7 @@
           <div class="flex grow"></div>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-is-drawer-open:hover:cursor-default"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right opacity-60"
               data-tip="Cambiar oficina"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
@@ -102,7 +138,7 @@
                   clip-rule="evenodd"
                 />
               </svg>
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Prueba</span>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Cambiar de oficina</span>
             </button>
           </li>
         </ul>

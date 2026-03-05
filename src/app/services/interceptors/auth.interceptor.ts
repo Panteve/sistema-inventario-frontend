@@ -2,11 +2,9 @@ import { inject } from '@angular/core';
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
-import { AuthService } from '../auth.service';
 import { AuthStore } from '../../store/auth-store';
 
 export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {
-  const authService = inject(AuthService);
   const authStore = inject(AuthStore);
 
   return from(authStore.getToken()).pipe(
