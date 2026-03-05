@@ -41,7 +41,7 @@ export const AuthStore = signalStore(
     login: rxMethod<{ document: string; password: string }>(
       pipe(
         tap(() => {
-          (patchState(store, { loading: true }));
+          patchState(store, { loading: true });
         }),
         switchMap(({ document, password }) =>
           authService.login(document, password).pipe(
@@ -51,10 +51,10 @@ export const AuthStore = signalStore(
                 employee: user,
                 isAuthenticated: true,
               });
+              router.navigate(['/dashboard']);
             }),
             finalize(() => {
               patchState(store, { loading: false });
-              router.navigate(['/dashboard']);
             }),
             catchError((err) => {
               if (err.status === 401 || err.status === 404) {
@@ -79,7 +79,6 @@ export const AuthStore = signalStore(
     },
 
     checkSession: rxMethod<void>(
-      
       pipe(
         tap(() => patchState(store, { loading: true })),
         switchMap(() =>

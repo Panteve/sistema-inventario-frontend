@@ -21,16 +21,15 @@ import { BillStore } from '../../store/bill-store';
   templateUrl: './product-panel.html',
   styleUrl: './product-panel.css',
 })
-
 export class ProductPanel {
   constructor() {
     effect(() => {
       if (this.productService.modalClose()) {
         this.btnCerrar.nativeElement.click();
+        
       }
-    })
+    });
   }
-  @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   private productService = inject(ProductService);
   productStore = inject(ProductStore);
@@ -40,7 +39,7 @@ export class ProductPanel {
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
-  
+  @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
 
   loadProducts() {
     this.globalFilter.set('');
@@ -48,6 +47,7 @@ export class ProductPanel {
   }
 
   getProductTable(product: ProductResponse) {
+    this.productService.modalClose.set(false);
     const productSelected: ProductSelected = {
       product: {
         id: product.product.id,
