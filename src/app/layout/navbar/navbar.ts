@@ -1,6 +1,6 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { ThemeService } from '../../services/theme.service';
+import { ThemeStore } from '../../store/theme-store';
 import { AuthStore } from '../../store/auth-store';
 
 @Component({
@@ -9,28 +9,16 @@ import { AuthStore } from '../../store/auth-store';
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',
 })
-export class Navbar implements OnInit {
+export class Navbar {
   authStore = inject(AuthStore);
-  theme = inject(ThemeService);
+  theme = inject(ThemeStore);
   router = inject(Router);
-
 
   logout() {
     this.authStore.logout();
   }
 
   changeTheme(event: Event) {
-    const isChecked = (event.target as HTMLInputElement);
-    if (isChecked.checked) {
-      this.theme.setTheme(true);
-    } else {
-      this.theme.setTheme(false);
-    }
+    this.theme.setTheme((event.target as HTMLInputElement).checked);
   }
-
-  ngOnInit() {
-    this.theme.init();
-  }
-
-
 }

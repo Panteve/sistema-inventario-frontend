@@ -63,7 +63,7 @@
     }
     <label class="du-swap du-swap-rotate">
       <!-- this hidden checkbox controls the state -->
-      <input type="checkbox" (change)="changeTheme($event)" />
+      <input type="checkbox" (change)="changeTheme($event)" [checked]="theme.isLightTheme()" />
       <!-- sun icon -->
       <svg
         class="du-swap-on h-10 w-10 fill-current"

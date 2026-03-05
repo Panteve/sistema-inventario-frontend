@@ -6,12 +6,12 @@ import {
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
 import { provideRouter, withRouterConfig } from '@angular/router';
-
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './services/interceptors/auth.interceptor';
 import { AuthStore } from './store/auth-store';
 import { errorInterceptor } from './services/interceptors/error.interceptor';
+import { ThemeStore } from './store/theme-store';
 
 
 export const appConfig: ApplicationConfig = {
@@ -22,6 +22,8 @@ export const appConfig: ApplicationConfig = {
     { provide: DEFAULT_CURRENCY_CODE, useValue: '$' },
     provideAppInitializer(async () => {
       const authStore = inject(AuthStore);
+      const themeStore = inject(ThemeStore);
+      await themeStore.init();
       return authStore.checkSession();
     }),
   ],
