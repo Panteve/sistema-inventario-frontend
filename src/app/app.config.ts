@@ -2,6 +2,7 @@ import {
   ApplicationConfig,
   DEFAULT_CURRENCY_CODE,
   inject,
+  LOCALE_ID,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
@@ -13,12 +14,12 @@ import { AuthStore } from './store/auth-store';
 import { errorInterceptor } from './services/interceptors/error.interceptor';
 import { ThemeStore } from './store/theme-store';
 
-
 export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
+    { provide: LOCALE_ID, useValue: 'es-CO' }, // Opcional: para formato local
     { provide: DEFAULT_CURRENCY_CODE, useValue: '$' },
     provideAppInitializer(async () => {
       const authStore = inject(AuthStore);

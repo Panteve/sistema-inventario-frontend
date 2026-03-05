@@ -57,6 +57,7 @@ export const routes: Routes = [
     path: 'open-cash-register',
     title: 'Apertura de caja',
     canActivate: [authGuard],
+     component: AgregarCliente,
   },
   {
     path: 'view-bills',
@@ -67,6 +68,7 @@ export const routes: Routes = [
         path: 'bill/:billId',
         title: 'Informacion de la factura',
         outlet: 'view-bill',
+         component: AgregarCliente,
       },
     ],
   },
