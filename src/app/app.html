@@ -5,6 +5,23 @@
     <main class="flex-1">
       <router-outlet />
     </main>
+    @if (authStore.isAuthenticated() && cashModalOpen()) {
+      <dialog class="du-modal du-modal-open" (close)="closeCashModal()">
+        <div class="du-modal-box w-3/4 max-w-md">
+          <button
+            class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
+            aria-label="close"
+            (click)="closeCashModal()"
+          >
+            ✕
+          </button>
+          <app-cash-register></app-cash-register>
+        </div>
+        <form method="dialog" class="du-modal-backdrop" (click)="closeCashModal()">
+          <button>close</button>
+        </form>
+      </dialog>
+    }
   </div>
   <div class="du-drawer-side du-is-drawer-close:overflow-visible">
     <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
@@ -71,7 +88,7 @@
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
               data-tip="Apertura de caja"
-              (click)="router.navigate(['/dashboard'])"
+              (click)="openCashModal()"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
                 <g
