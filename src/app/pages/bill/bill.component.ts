@@ -59,6 +59,11 @@ export class BillComponent {
     this.billStore.modifyPrice(Number(price), productId);
     this.modifiyingPrice.set(false);
   }
+  quitProduct(productId: number) {
+    this.billStore.quitProduct(productId);
+  }
+
+
   showerror() {
     this.errorStore.showError('Esto es una prueba');
   }

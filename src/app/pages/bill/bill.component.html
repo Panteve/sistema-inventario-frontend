@@ -160,7 +160,7 @@
                         {{ product.priceUnique * product.quantity | currency }}
                       </td>
                       <td class="text-center">
-                        <button class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle">
+                        <button class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle" (click)="quitProduct(product.productId)">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             width="14"

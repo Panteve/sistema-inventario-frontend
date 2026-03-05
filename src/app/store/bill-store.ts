@@ -149,6 +149,14 @@ export const BillStore = signalStore(
         }));
       }
     },
+    quitProduct(productId: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          products: state.bill.products.filter((p) => p.productId !== productId),
+        },
+      }));
+    },
     modifyQuantity(quantity: number, productId: number) {
       patchState(store, (state) => ({
         bill: {
