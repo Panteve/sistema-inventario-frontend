@@ -53,4 +53,21 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'open-cash-register',
+    title: 'Apertura de caja',
+    canActivate: [authGuard],
+  },
+  {
+    path: 'view-bills',
+    title: 'Ver facturas',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'bill/:billId',
+        title: 'Informacion de la factura',
+        outlet: 'view-bill',
+      },
+    ],
+  },
 ];

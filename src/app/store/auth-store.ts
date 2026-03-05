@@ -89,10 +89,10 @@ export const AuthStore = signalStore(
                 employee: response,
                 isAuthenticated: true,
               });
+              router.navigate(['/dashboard']);
             }),
             finalize(() => {
               patchState(store, { loading: false });
-              router.navigate(['/dashboard']);
             }),
             catchError(() => {
               patchState(store, { employee: null, loading: false, isAuthenticated: false });
