@@ -1,4 +1,4 @@
-import { Component, DestroyRef, inject, signal } from '@angular/core';
+import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './layout/navbar/navbar';
 import { AuthStore } from './store/auth-store';
@@ -7,6 +7,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
 import { ErrorStore } from './store/errors-store';
 import { CashRegisterComponent } from './pages/cash-register.component/cash-register.component';
+import { CashRegisterStore } from './store/cash-register-store';
 
 @Component({
   selector: 'app-root',
@@ -23,7 +24,7 @@ export class App {
       )
       .subscribe(() => this.errorStore.clearError());
   }
-
+  cashRegisterStore = inject(CashRegisterStore);
   errorStore = inject(ErrorStore);
   authStore = inject(AuthStore);
   router = inject(Router);

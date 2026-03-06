@@ -1,12 +1,12 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-
 import { ProductStore } from '../../store/product-store';
 import { BillStore } from '../../store/bill-store';
 import { ErrorStore } from '../../store/errors-store';
 import { PaymentMethodStore } from '../../store/payment-method-store';
 import { CustomerStore } from '../../store/customer-store';
+import { CashRegisterStore } from '../../store/cash-register-store';
 
 @Component({
   selector: 'app-bill.component',
@@ -24,6 +24,7 @@ export class BillComponent {
 
   errorStore = inject(ErrorStore);
   customerStore = inject(CustomerStore);
+  cashRegisterStore = inject(CashRegisterStore);
   billStore = inject(BillStore);
   productStore = inject(ProductStore);
   private paymentMethodStore = inject(PaymentMethodStore);

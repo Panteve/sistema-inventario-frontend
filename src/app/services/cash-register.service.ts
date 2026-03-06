@@ -13,4 +13,13 @@ export class CashRegisterService {
     return this.http.post<CashRegisterResponse>(`${environment.apiUrl}/api/cash-register/open`, openCashRegisterData);
   }
 
+  closeCashRegister(cashRegisterId: number){
+    return this.http.patch(`${environment.apiUrl}/api/cash-register/close${cashRegisterId}`, {});
+  }
+
+  getCashRegisterSummary(cashRegisterId: number){
+    return this.http.get(`${environment.apiUrl}/api/cash-register/${cashRegisterId}/summary`);
+  }
+
+
 }
