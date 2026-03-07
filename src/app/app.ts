@@ -42,6 +42,9 @@ export class App {
       queryParams: { cashModal: 'open' },
       queryParamsHandling: 'merge',
     });
+    if (this.cashRegisterStore.cashRegisterOpen()) {
+      this.cashRegisterStore.getCashRegisterSummary();
+    }
   }
 
   closeCashModal() {
