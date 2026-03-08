@@ -26,8 +26,7 @@ export interface Expense {
 }
 
 export interface CloseCashRegisterRequest {
-  cashRegisterId: number;
-  amountReceived: number;
+  amountRecived: number;
   difference: number;
 }
 

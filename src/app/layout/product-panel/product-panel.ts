@@ -109,7 +109,7 @@ export class ProductPanel {
     initialState: {
       pagination: {
         pageIndex: 0,
-        pageSize: 2,
+        pageSize: 5,
       },
     },
   }));

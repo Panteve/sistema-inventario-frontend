@@ -5,6 +5,9 @@ export interface Employee {
   role: string;
   officeId?: number;
   officeName?: string;
+  cashRegisterId?: {
+    id: number;
+  };
 }
 
 export interface LoginResponse {

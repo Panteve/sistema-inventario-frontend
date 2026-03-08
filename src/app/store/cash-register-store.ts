@@ -86,7 +86,7 @@ export const CashRegisterStore = signalStore(
           patchState(store, { loading: true });
         }),
         filter(() => {
-          if(store.amountReceived() <= 0){
+          if (store.amountReceived() <= 0) {
             erorrStore.showError('El monto inicial no puede ser igual o menor a cero.');
             patchState(store, { loading: false });
             return false;
@@ -106,10 +106,10 @@ export const CashRegisterStore = signalStore(
           ),
         ),
         finalize(() => {
-          patchState(store, { loading: false });
+          patchState(store, { loading: false, amountReceived: 0, openingCash: 0 });
         }),
         catchError((err) => {
-          if(err.status === 403){
+          if (err.status === 403) {
             erorrStore.showError('Ya existe una caja abierta para este usuario');
           }
           console.error('Error al abrir caja:', err);
@@ -147,31 +147,47 @@ export const CashRegisterStore = signalStore(
         switchMap(() =>
           cashRegisterService
             .closeCashRegister({
-              cashRegisterId: store.cashRegisterId(),
-              amountReceived: store.amountReceived(),
+              amountRecived: store.amountReceived(),
               difference: store.cashDifference(),
             })
             .pipe(
               tap((response) => {
                 patchState(store, { loading: false, cashRegisterId: 0 });
+                erorrStore.showError('Caja cerrada exitosamente');
                 router.navigate([], {
-                queryParams: { cashModal: 'null' },
-                queryParamsHandling: 'merge',
-              });
+                  queryParams: { cashModal: 'null' },
+                  queryParamsHandling: 'merge',
+                });
               }),
             ),
         ),
         finalize(() => {
-          patchState(store, { loading: false });
+          patchState(store, {
+            loading: false,
+            cashRegisterId: 0,
+            amountReceived: 0,
+            openingCash: 0,
+          });
         }),
         catchError((err) => {
-          erorrStore.showError('Fallo al obtener resumen de caja, por favor intente de nuevo.');
+          console.error('Error al cerrar caja:', err);
+          erorrStore.showError('Fallo al cerrar caja, por favor intente de nuevo.');
           return EMPTY;
         }),
       ),
     ),
     changeAmountReceived(amount: number) {
       patchState(store, { amountReceived: amount });
+    },
+    setCashRegisterId(id: number) {
+      if (id === 0) {
+        patchState(store, {
+          cashRegisterId: 0,
+          cashRegisterSummary: initialState.cashRegisterSummary,
+        });
+        return;
+      }
+      patchState(store, { cashRegisterId: id });
     },
   })),
 );

@@ -9,7 +9,6 @@ export interface ProductOnBill{
 export interface CreateBillRequest {
   customerId?: number;
   paymentMethodId: number;
-  cashRegisterId: number;
   products: ProductOnBill[];
 }
 

@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import type { Employee } from '../interfaces/Auth.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ErrorStore } from './errors-store';
+import { CashRegisterStore } from './cash-register-store';
 
 type AuthState = {
   employee: Employee | null;
@@ -34,10 +35,11 @@ export const AuthStore = signalStore(
   })),
   withProps(() => ({
     authService: inject(AuthService),
+    cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
     errorStore: inject(ErrorStore),
   })),
-  withMethods(({ authService, router, errorStore, ...store }) => ({
+  withMethods(({ authService, cashRegisterStore, router, errorStore, ...store }) => ({
     login: rxMethod<{ document: string; password: string }>(
       pipe(
         tap(() => {
@@ -88,6 +90,10 @@ export const AuthStore = signalStore(
                 employee: response,
                 isAuthenticated: true,
               });
+              if (response.cashRegisterId?.id) {
+                cashRegisterStore.setCashRegisterId(response.cashRegisterId.id);
+              }
+              
               router.navigate(['/dashboard']);
             }),
             finalize(() => {
