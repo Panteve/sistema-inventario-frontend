@@ -1,4 +1,4 @@
-<div class="du-navbar bg-base-100 shadow-sm">
+<div class="du-navbar bg-base-100 shadow-sm" [attr.data-theme]="fixedLayoutTheme">
   <!-- El navbar es responsive, esta parte es cuando esta en pantalla pequeñas -->
   @if (this.authStore.isAuthenticated()) {
     <label for="my-drawer-4" aria-label="open sidebar" class="du-btn du-btn-square du-btn-ghost">
@@ -21,9 +21,10 @@
       </svg>
     </label>
     <div class="du-navbar-start">
-      <a class="du-btn du-btn-lg du-btn-ghost text-xl" (click)="router.navigate(['/dashboard'])">Electro</a>
+      <a class="du-btn du-btn-lg du-btn-ghost text-xl" (click)="router.navigate(['/dashboard'])"
+        >Electro</a
+      >
     </div>
-
   }
   <div class="du-navbar-end gap-2">
     @if (this.authStore.isAuthenticated()) {
@@ -59,7 +60,6 @@
           <li><a (click)="logout()">Cerrar sesion</a></li>
         </ul>
       </div>
-
     }
     <label class="du-swap du-swap-rotate">
       <!-- this hidden checkbox controls the state -->

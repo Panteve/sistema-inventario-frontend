@@ -8,6 +8,7 @@ import { map } from 'rxjs/operators';
 import { ErrorStore } from './store/errors-store';
 import { CashRegisterComponent } from './pages/cash-register.component/cash-register.component';
 import { CashRegisterStore } from './store/cash-register-store';
+import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +31,7 @@ export class App {
   router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);
+  fixedLayoutTheme = FIXED_LAYOUT_THEME;
 
   cashModalOpen = toSignal(
     this.route.queryParamMap.pipe(map((params) => params.get('cashModal') === 'open')),
