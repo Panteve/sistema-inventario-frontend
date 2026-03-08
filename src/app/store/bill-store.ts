@@ -11,7 +11,7 @@ import { computed, inject } from '@angular/core';
 import { BillService } from '../services/bill.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { ErrorStore } from './errors-store';
-import { filter, finalize, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import { CreateBillRequest, ProductOnBill, ProductSelected } from '../interfaces/bill.interface';
 import { CustomerStore } from './customer-store';
@@ -31,7 +31,6 @@ const initialState: BillState = {
   bill: {
     customerId: 0,
     paymentMethodId: 0,
-    cashRegisterId: 1,
     products: [],
   },
   loading: false,
@@ -99,6 +98,10 @@ export const BillStore = signalStore(
           );
         }),
         finalize(() => patchState(store, { loading: false })),
+        catchError((error) => {
+          errorStore.showError('Ocurrió un error al crear la factura. Inténtalo de nuevo.');
+          return EMPTY
+        })
       ),
     ),
 

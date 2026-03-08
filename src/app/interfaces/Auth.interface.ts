@@ -1,9 +1,13 @@
 export interface Employee {
   id: number;
   document: string;
+  name: string;
   role: string;
   officeId?: number;
   officeName?: string;
+  cashRegisterId?: {
+    id: number;
+  };
 }
 
 export interface LoginResponse {

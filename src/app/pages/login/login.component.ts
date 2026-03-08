@@ -21,7 +21,7 @@ export class LoginComponent {
 
   loginModel = signal<LoginData>({
     document: '123456789',
-    password: '12345',
+    password: '123456789',
   });
   loginForm = form(this.loginModel, (schemePath) => {
     required(schemePath.document, { message: 'El documento es obligatorio' });
