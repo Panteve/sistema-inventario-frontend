@@ -53,6 +53,9 @@ export const AuthStore = signalStore(
                 employee: user,
                 isAuthenticated: true,
               });
+              if (user.cashRegisterId) {
+                cashRegisterStore.setCashRegisterId(user.cashRegisterId);
+              }
               router.navigate(['/dashboard']);
             }),
             finalize(() => {
@@ -90,8 +93,8 @@ export const AuthStore = signalStore(
                 employee: response,
                 isAuthenticated: true,
               });
-              if (response.cashRegisterId?.id) {
-                cashRegisterStore.setCashRegisterId(response.cashRegisterId.id);
+              if (response.cashRegisterId) {
+                cashRegisterStore.setCashRegisterId(response.cashRegisterId);
               }
 
               router.navigate(['/dashboard']);
