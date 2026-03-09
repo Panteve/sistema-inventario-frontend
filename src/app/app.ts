@@ -1,13 +1,13 @@
 import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, RouterOutlet } from '@angular/router';
-import { Navbar } from './layout/navbar/navbar';
-import { AuthStore } from './store/auth-store';
+import { Navbar } from './core/components/navbar/navbar';
+import { AuthStore } from './core/store/auth-store';
 import { filter } from 'rxjs';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs/operators';
-import { ErrorStore } from './store/errors-store';
-import { CashRegisterComponent } from './pages/cash-register.component/cash-register.component';
-import { CashRegisterStore } from './store/cash-register-store';
+import { ErrorStore } from './core/store/errors-store';
+import { CashRegisterComponent } from './features/cash-register/pages/cash-register.component';
+import { CashRegisterStore } from './features/cash-register/store/cash-register-store';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 
 @Component({
