@@ -9,10 +9,10 @@ import {
 import { provideRouter, withRouterConfig } from '@angular/router';
 import { routes } from './app.routes';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
-import { authInterceptor } from './services/interceptors/auth.interceptor';
-import { AuthStore } from './store/auth-store';
-import { errorInterceptor } from './services/interceptors/error.interceptor';
-import { ThemeStore } from './store/theme-store';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { AuthStore } from './core/store/auth-store';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
+import { ThemeStore } from './core/store/theme-store';
 
 export const appConfig: ApplicationConfig = {
   providers: [

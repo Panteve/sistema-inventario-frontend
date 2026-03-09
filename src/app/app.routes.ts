@@ -1,14 +1,14 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './pages/login/login.component';
-import { DashboardComponent } from './pages/dashboard/dashboard.component';
-import { BillComponent } from './pages/bill/bill.component';
-import { authGuard } from './auth-guard';
-import { ProductPanel } from './layout/product-panel/product-panel';
-import { ProductPricesPanel } from './layout/product-prices-panel/product-prices-panel';
-import { ProductStore } from './store/product-store';
-import { BillStore } from './store/bill-store';
-import { AgregarCliente } from './layout/add-customer/add-customer';
-import { PaymentContent } from './layout/payment-content/payment-content';
+import { LoginComponent } from './features/login/pages/login.component';
+import { DashboardComponent } from './features/dashboard/pages/dashboard.component';
+import { BillComponent } from './features/bill/pages/bill.component';
+import { authGuard } from './core/guards/auth-guard';
+import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
+import { ProductPricesPanel } from './features/bill/layouts/product-prices-panel/product-prices-panel';
+import { ProductStore } from './features/bill/store/product-store';
+import { BillStore } from './features/bill/store/bill-store';
+import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
+import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -62,7 +62,7 @@ export const routes: Routes = [
         path: 'bill/:billId',
         title: 'Informacion de la factura',
         outlet: 'view-bill',
-         component: AgregarCliente,
+        component: AgregarCliente,
       },
     ],
   },
