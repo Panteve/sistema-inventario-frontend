@@ -24,6 +24,7 @@ export class CashRegisterComponent {
   currentHour = new Date().getHours();
   currentMinute = new Date().getMinutes();
   isAmountFocused = signal<boolean>(false);
+  closeConfirmationOpen = signal<boolean>(false);
 
   // UI-only mock values for close cash summary.
 
@@ -83,11 +84,25 @@ export class CashRegisterComponent {
     this.cashRegisterStore.openCashRegister();
   }
 
-  closeCashRegister() {
+  requestCloseCashRegister() {
+    if (this.cashRegisterStore.loading()) {
+      return;
+    }
+
+    this.closeConfirmationOpen.set(true);
+  }
+
+  cancelCloseCashRegister() {
+    this.closeConfirmationOpen.set(false);
+  }
+
+  confirmCloseCashRegister() {
+    this.closeConfirmationOpen.set(false);
     this.cashRegisterStore.closeCashRegister();
   }
 
   closeCashModal() {
+    this.closeConfirmationOpen.set(false);
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { cashModal: null },
