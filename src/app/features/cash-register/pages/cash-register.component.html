@@ -148,7 +148,13 @@
     </div>
 
     <div class="flex flex-col-reverse sm:flex-row gap-3 mt-3">
-      <button class="du-btn du-btn-soft flex-1" [disabled]="cashRegisterStore.loading()" (click)="closeCashModal()">Cancelar</button>
+      <button
+        class="du-btn du-btn-soft flex-1"
+        [disabled]="cashRegisterStore.loading()"
+        (click)="closeCashModal()"
+      >
+        Cancelar
+      </button>
       @if (cashRegisterStore.loading()) {
         <button class="du-btn du-btn-accent flex-1 gap-2 du-btn-disabled">
           <span class="du-loading du-loading-spinner du-loading-sm"></span>
@@ -304,7 +310,11 @@
     </fieldset>
 
     <div class="flex flex-col-reverse sm:flex-row gap-3 mt-3">
-      <button class="du-btn du-btn-soft flex-1" [disabled]="cashRegisterStore.loading()" (click)="closeCashModal()">
+      <button
+        class="du-btn du-btn-soft flex-1"
+        [disabled]="cashRegisterStore.loading()"
+        (click)="closeCashModal()"
+      >
         Cancelar
       </button>
       @if (cashRegisterStore.loading()) {
@@ -316,7 +326,7 @@
         <button
           class="du-btn du-btn-error flex-1 gap-2"
           type="button"
-          (click)="closeCashRegister()"
+          (click)="requestCloseCashRegister()"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -341,6 +351,73 @@
       <p class="text-xs opacity-30">
         Esta vista es solo UI. El cierre definitivo y su persistencia se conectaran en la logica.
       </p>
+    </div>
+  }
+
+  @if (closeConfirmationOpen()) {
+    <div
+      class="absolute inset-0 z-30 flex items-center justify-center bg-base-100/65 px-4 backdrop-blur-[2px]"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="close-cash-confirmation-title"
+      aria-describedby="close-cash-confirmation-description"
+    >
+      <div class="w-full max-w-md rounded-3xl border border-error/20 bg-base-100 p-6 shadow-2xl">
+        <div class="flex items-start gap-3">
+          <div
+            class="mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-error/10 text-error"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="22"
+              height="22"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 9v4" />
+              <path d="M12 17h.01" />
+              <path
+                d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+              />
+            </svg>
+          </div>
+          <div class="min-w-0 flex-1">
+            <h2 id="close-cash-confirmation-title" class="text-lg font-bold tracking-tight">
+              Confirmar cierre de caja
+            </h2>
+            <p id="close-cash-confirmation-description" class="mt-2 text-sm opacity-70">
+              Esta acción cerrará la caja actual. Verifica el efectivo físico antes de continuar.
+            </p>
+          </div>
+        </div>
+
+        <div class="mt-4 rounded-2xl border border-base-content/10 bg-base-200/40 p-4 text-sm">
+          <p class="font-semibold">Resumen actual</p>
+          <p class="mt-2 opacity-70">Esperado en caja: $ {{ displayExpectedCash() }}</p>
+          <p class="opacity-70">Diferencia registrada: $ {{ displayDifference() }}</p>
+        </div>
+
+        <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row">
+          <button
+            class="du-btn du-btn-soft flex-1"
+            type="button"
+            (click)="cancelCloseCashRegister()"
+          >
+            Cancelar
+          </button>
+          <button
+            class="du-btn du-btn-error flex-1"
+            type="button"
+            (click)="confirmCloseCashRegister()"
+          >
+            Sí, cerrar caja
+          </button>
+        </div>
+      </div>
     </div>
   }
 </div>

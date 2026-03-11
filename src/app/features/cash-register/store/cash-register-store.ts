@@ -152,7 +152,7 @@ export const CashRegisterStore = signalStore(
             })
             .pipe(
               tap((response) => {
-                patchState(store, { loading: false, cashRegisterId: 0 });
+                patchState(store, { loading: false, cashRegisterId: 0, amountReceived: 0, openingCash: 0 });
                 errorStore.showError('Caja cerrada exitosamente');
                 router.navigate([], {
                   queryParams: { cashModal: 'null' },
@@ -170,7 +170,6 @@ export const CashRegisterStore = signalStore(
           });
         }),
         catchError((err) => {
-          console.error('Error al cerrar caja:', err);
           errorStore.showError('Fallo al cerrar caja, por favor intente de nuevo.');
           return EMPTY;
         }),
