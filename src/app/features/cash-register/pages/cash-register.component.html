@@ -308,13 +308,13 @@
         Cancelar
       </button>
       @if (cashRegisterStore.loading()) {
-        <button class="du-btn du-btn-accent flex-1 gap-2">
+        <button class="du-btn du-btn-error flex-1 gap-2">
           <span class="du-loading du-loading-spinner du-loading-sm"></span>
           Procesando
         </button>
       } @else {
         <button
-          class="du-btn du-btn-accent flex-1 gap-2"
+          class="du-btn du-btn-error flex-1 gap-2"
           type="button"
           (click)="closeCashRegister()"
         >

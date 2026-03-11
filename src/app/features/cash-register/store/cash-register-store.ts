@@ -75,11 +75,11 @@ export const CashRegisterStore = signalStore(
     };
   }),
   withProps(() => ({
-    erorrStore: inject(ErrorStore),
+    errorStore: inject(ErrorStore),
     cashRegisterService: inject(CashRegisterService),
     router: inject(Router),
   })),
-  withMethods(({ erorrStore, cashRegisterService, router, ...store }) => ({
+  withMethods(({ errorStore, cashRegisterService, router, ...store }) => ({
     openCashRegister: rxMethod<void>(
       pipe(
         tap(() => {
@@ -87,7 +87,7 @@ export const CashRegisterStore = signalStore(
         }),
         filter(() => {
           if (store.amountReceived() <= 0) {
-            erorrStore.showError('El monto inicial no puede ser igual o menor a cero.');
+            errorStore.showError('El monto inicial no puede ser igual o menor a cero.');
             patchState(store, { loading: false });
             return false;
           }
@@ -97,7 +97,7 @@ export const CashRegisterStore = signalStore(
           cashRegisterService.openCashRegister({ initialAmount: store.amountReceived() }).pipe(
             tap((response) => {
               patchState(store, { loading: false, cashRegisterId: response.id });
-              erorrStore.showError('Caja abierta exitosamente');
+              errorStore.showError('Caja abierta exitosamente');
               router.navigate([], {
                 queryParams: { cashModal: 'null' },
                 queryParamsHandling: 'merge',
@@ -110,10 +110,10 @@ export const CashRegisterStore = signalStore(
         }),
         catchError((err) => {
           if (err.status === 409) {
-            erorrStore.showError('Ya existe una caja abierta para este usuario');
+            errorStore.showError('Ya existe una caja abierta para este usuario');
             return EMPTY;
           }
-          erorrStore.showError('Fallo al abrir caja, por favor intente de nuevo.');
+          errorStore.showError('Fallo al abrir caja, por favor intente de nuevo.');
           return EMPTY;
         }),
       ),
@@ -134,7 +134,7 @@ export const CashRegisterStore = signalStore(
           patchState(store, { loading: false });
         }),
         catchError((err) => {
-          erorrStore.showError('Fallo al obtener resumen de caja, por favor intente de nuevo.');
+          errorStore.showError('Fallo al obtener resumen de caja, por favor intente de nuevo.');
           return EMPTY;
         }),
       ),
@@ -153,7 +153,7 @@ export const CashRegisterStore = signalStore(
             .pipe(
               tap((response) => {
                 patchState(store, { loading: false, cashRegisterId: 0 });
-                erorrStore.showError('Caja cerrada exitosamente');
+                errorStore.showError('Caja cerrada exitosamente');
                 router.navigate([], {
                   queryParams: { cashModal: 'null' },
                   queryParamsHandling: 'merge',
@@ -171,7 +171,7 @@ export const CashRegisterStore = signalStore(
         }),
         catchError((err) => {
           console.error('Error al cerrar caja:', err);
-          erorrStore.showError('Fallo al cerrar caja, por favor intente de nuevo.');
+          errorStore.showError('Fallo al cerrar caja, por favor intente de nuevo.');
           return EMPTY;
         }),
       ),

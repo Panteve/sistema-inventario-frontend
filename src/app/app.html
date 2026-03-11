@@ -17,9 +17,20 @@
           </button>
           <app-cash-register></app-cash-register>
         </div>
-        <form method="dialog" class="du-modal-backdrop" (click)="closeCashModal()">
-          <button>close</button>
-        </form>
+      </dialog>
+    }
+    @if (authStore.isAuthenticated() && expenseModalOpen()) {
+      <dialog class="du-modal du-modal-open" (close)="closeExpenseModal()">
+        <div class="du-modal-box w-11/12 max-w-2xl">
+          <button
+            class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-50"
+            aria-label="close"
+            (click)="closeExpenseModal()"
+          >
+            ✕
+          </button>
+          <app-expense></app-expense>
+        </div>
       </dialog>
     }
   </div>
@@ -58,7 +69,7 @@
           </p>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
               data-tip="Dashboard"
               (click)="router.navigate(['/dashboard'])"
             >
@@ -89,8 +100,12 @@
           </li>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right"
-              data-tip="Apertura de caja"
+              [class]="
+                cashRegisterStore.cashRegisterOpen()
+                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
+                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-warning justify-start'
+              "
+              [attr.data-tip]="cashRegisterStore.cashRegisterOpen() ? 'Cerrar caja' : 'Abrir caja'"
               (click)="openCashModal()"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
@@ -109,7 +124,41 @@
                   />
                 </g>
               </svg>
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Apertura de caja</span>
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">
+                @if (!cashRegisterStore.cashRegisterOpen()) {
+                  Apertura de caja
+                } @else {
+                  Cierre de caja
+                }
+              </span>
+            </button>
+          </li>
+          <li>
+            <button
+              [class]="
+                cashRegisterStore.cashRegisterOpen()
+                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
+                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
+              "
+              data-tip="Crear gasto"
+              (click)="openExpenseModal()"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                >
+                  <path
+                    d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5m-6 6l3 3l3-3m-4-7h.01m.99 4v6M6 12h.01"
+                  />
+                  <circle cx="12" cy="12" r="2" />
+                </g>
+              </svg>
+
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Crear gasto</span>
             </button>
           </li>
           <div class="du-divider du-is-drawer-open:w-full m-0"></div>
@@ -120,7 +169,11 @@
           </p>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-primary"
+              [class]="
+                cashRegisterStore.cashRegisterOpen()
+                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-primary justify-start'
+                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
+              "
               data-tip="Generar factura"
               (click)="router.navigate(['/bill'])"
             >
@@ -141,7 +194,7 @@
           <div class="flex grow"></div>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right opacity-60"
+              !class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right opacity-60"
               data-tip="Cambiar oficina"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
