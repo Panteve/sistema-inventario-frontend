@@ -1,4 +1,4 @@
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { ActivatedRoute, NavigationStart, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
@@ -9,10 +9,11 @@ import { ErrorStore } from './core/store/errors-store';
 import { CashRegisterComponent } from './features/cash-register/pages/cash-register.component';
 import { CashRegisterStore } from './features/cash-register/store/cash-register-store';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
+import { ExpenseComponent } from './features/expense/pages/expense.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CashRegisterComponent],
+  imports: [RouterOutlet, Navbar, CashRegisterComponent, ExpenseComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -38,6 +39,11 @@ export class App {
     { initialValue: false },
   );
 
+  expenseModalOpen = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get('expenseModal') === 'open')),
+    { initialValue: false },
+  );
+
   openCashModal() {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -53,6 +59,22 @@ export class App {
     this.router.navigate([], {
       relativeTo: this.route,
       queryParams: { cashModal: null },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  openExpenseModal() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { expenseModal: 'open' },
+      queryParamsHandling: 'merge',
+    });
+  }
+
+  closeExpenseModal() {
+    this.router.navigate([], {
+      relativeTo: this.route,
+      queryParams: { expenseModal: null },
       queryParamsHandling: 'merge',
     });
   }
