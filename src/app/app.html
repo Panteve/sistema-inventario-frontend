@@ -190,6 +190,62 @@
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Generar factura</span>
             </button>
           </li>
+          <li>
+            <!-- Boton para cuando el drawer esta cerrado no mostrar el submenu si no un boton-->
+            <button
+              class="du-is-drawer-open:hidden"
+              [class]="
+                cashRegisterStore.cashRegisterOpen()
+                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
+                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
+              "
+              data-tip="Inventario"
+              (click)="router.navigate(['/inventory/inventory-office'])"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                <g
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="1.5"
+                >
+                  <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+                  <path
+                    d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8zM6 13h12M6 17h12"
+                  />
+                </g>
+              </svg>
+            </button>
+            <!-- Cuando el drawer esta abierto se muestra el submenu como se debe -->
+            <details
+              class="du-is-drawer-close:hidden"
+              open
+              [class]="cashRegisterStore.cashRegisterOpen() ? '' : 'opacity-50'"
+            >
+              <summary>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
+                  <g
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="1.5"
+                  >
+                    <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+                    <path
+                      d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8zM6 13h12M6 17h12"
+                    />
+                  </g>
+                </svg>
+                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Inventario</span>
+              </summary>
+              <ul class="du-is-drawer-close:hidden">
+                <li><a>Submenu 1</a></li>
+                <li><a>Submenu 2</a></li>
+              </ul>
+            </details>
+          </li>
           <!-- Separador de los elementos de arrriba y los de abajo -->
           <div class="flex grow"></div>
           <li>

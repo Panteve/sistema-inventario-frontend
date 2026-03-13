@@ -26,6 +26,7 @@ const initialState: ProductState = {
   loading: false,
 };
 export const ProductStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withProps(() => ({
     authStore: inject(AuthStore),

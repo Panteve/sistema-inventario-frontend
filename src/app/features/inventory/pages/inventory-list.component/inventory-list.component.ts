@@ -1,0 +1,170 @@
+import { Component, computed, effect, inject, signal } from '@angular/core';
+import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
+import { ProductStore } from '../../../bill/store/product-store';
+import { ErrorStore } from '../../../../core/store/errors-store';
+import { Router } from '@angular/router';
+import { AuthStore } from '../../../../core/store/auth-store';
+
+type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
+type PriceOrderType = 'none' | 'asc' | 'desc';
+type StockStatusFilter = 'normal' | 'low' | 'out';
+
+@Component({
+  selector: 'app-inventory-list',
+  imports: [TableProducts],
+  templateUrl: './inventory-list.component.html',
+})
+export class InventoryListComponent {
+  private readonly stockFilterDebounceMs = 350;
+  private readonly priceFilterDebounceMs = 350;
+
+  authStore = inject(AuthStore);
+  productStore = inject(ProductStore);
+  errorStore = inject(ErrorStore);
+  router = inject(Router);
+
+  visibleProductsCount = signal(0);
+  selectedOrderGeneral = signal('none');
+  draftMinStockFilter = signal<number | null>(null);
+  draftMaxStockFilter = signal<number | null>(null);
+  minStockFilter = signal<number | null>(null);
+  maxStockFilter = signal<number | null>(null);
+  selectedPriceFilterType = signal<PriceFilterType>('none');
+  selectedPriceOrder = signal<PriceOrderType>('none');
+  draftMinPriceFilter = signal<number | null>(null);
+  draftMaxPriceFilter = signal<number | null>(null);
+  minPriceFilter = signal<number | null>(null);
+  maxPriceFilter = signal<number | null>(null);
+  selectedStockStatuses = signal<StockStatusFilter[]>([]);
+
+  constructor() {
+    this.setupDebouncedRangeSync(
+      this.draftMinStockFilter,
+      this.draftMaxStockFilter,
+      this.minStockFilter,
+      this.maxStockFilter,
+      this.stockFilterDebounceMs,
+    );
+
+    this.setupDebouncedRangeSync(
+      this.draftMinPriceFilter,
+      this.draftMaxPriceFilter,
+      this.minPriceFilter,
+      this.maxPriceFilter,
+      this.priceFilterDebounceMs,
+    );
+  }
+  //TOCA AGREGAR OPCION PARA DESACTIVAR LOS STOCKS RESALTADOS Y TAMBEIN PAR CAMBIAR EL UMPBRAL DE STOCK BAJO
+  //JUNTO CON CUANTOS PRODUCTOS MOSTRAR POR PAGINA
+  private setupDebouncedRangeSync(
+    draftMinSignal: { (): number | null },
+    draftMaxSignal: { (): number | null },
+    targetMinSignal: { set: (value: number | null) => void },
+    targetMaxSignal: { set: (value: number | null) => void },
+    debounceMs: number,
+  ) {
+    effect((onCleanup) => {
+      const draftMin = draftMinSignal();
+      const draftMax = draftMaxSignal();
+
+      const timeoutId = window.setTimeout(() => {
+        targetMinSignal.set(draftMin);
+        targetMaxSignal.set(draftMax);
+      }, debounceMs);
+
+      onCleanup(() => window.clearTimeout(timeoutId));
+    });
+  }
+
+  changeOrderGeneral(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedOrderGeneral.set(selectElement.value);
+  }
+
+  changeStockFilterMin(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.draftMinStockFilter.set(this.parseNullableNumber(value));
+  }
+
+  changeStockFilterMax(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.draftMaxStockFilter.set(this.parseNullableNumber(value));
+  }
+
+  changePriceFilterType(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    const nextType = selectElement.value as PriceFilterType;
+
+    this.selectedPriceFilterType.set(nextType);
+
+    if (nextType === 'none') {
+      this.resetPriceFilters();
+    }
+  }
+
+  changePriceOrder(event: Event) {
+    const selectElement = event.target as HTMLSelectElement;
+    this.selectedPriceOrder.set(selectElement.value as PriceOrderType);
+  }
+
+  changePriceFilterMin(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.draftMinPriceFilter.set(this.parseNullableNumber(value));
+  }
+
+  changePriceFilterMax(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    this.draftMaxPriceFilter.set(this.parseNullableNumber(value));
+  }
+
+  toggleStockStatus(status: StockStatusFilter) {
+    this.selectedStockStatuses.update((currentStatuses) =>
+      currentStatuses.includes(status)
+        ? currentStatuses.filter((currentStatus) => currentStatus !== status)
+        : [...currentStatuses, status],
+    );
+  }
+
+  hasStockStatus(status: StockStatusFilter) {
+    return this.selectedStockStatuses().includes(status);
+  }
+
+  clearStockStatusFilters() {
+    this.selectedStockStatuses.set([]);
+  }
+
+  clearFilters() {
+    this.selectedOrderGeneral.set('none');
+    this.resetStockFilters();
+    this.resetPriceFilters();
+    this.clearStockStatusFilters();
+  }
+
+  updateVisibleProductsCount(count: number) {
+    this.visibleProductsCount.set(count);
+  }
+
+  private parseNullableNumber(value: string) {
+    if (value === '') return null;
+
+    const parsedValue = Number(value);
+    return Number.isFinite(parsedValue) ? parsedValue : null;
+  }
+
+  private resetStockFilters() {
+    this.draftMinStockFilter.set(null);
+    this.draftMaxStockFilter.set(null);
+    this.minStockFilter.set(null);
+    this.maxStockFilter.set(null);
+    this.selectedStockStatuses.set([]);
+  }
+
+  private resetPriceFilters() {
+    this.selectedPriceFilterType.set('none');
+    this.selectedPriceOrder.set('none');
+    this.draftMinPriceFilter.set(null);
+    this.draftMaxPriceFilter.set(null);
+    this.minPriceFilter.set(null);
+    this.maxPriceFilter.set(null);
+  }
+}

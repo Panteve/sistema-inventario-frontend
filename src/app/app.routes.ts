@@ -9,6 +9,7 @@ import { ProductStore } from './features/bill/store/product-store';
 import { BillStore } from './features/bill/store/bill-store';
 import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
 import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
+import { InventoryListComponent } from './features/inventory/pages/inventory-list.component/inventory-list.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -66,4 +67,22 @@ export const routes: Routes = [
       },
     ],
   },
+  {
+    path: 'inventory',
+    title: 'Panel de control',
+    canActivate: [authGuard],
+    providers: [ProductStore],
+    children: [
+      {
+        path: 'inventory-office',
+        title: 'Inventario de la oficina',
+        component: InventoryListComponent,
+      }
+    ]
+  },
+  {
+    path: '**',
+    title: 'Página no encontrada',
+    redirectTo: 'dashboard',
+  }
 ];
