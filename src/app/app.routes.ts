@@ -9,7 +9,8 @@ import { ProductStore } from './features/bill/store/product-store';
 import { BillStore } from './features/bill/store/bill-store';
 import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
 import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
-import { InventoryListComponent } from './features/inventory/pages/inventory-list.component/inventory-list.component';
+import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
+import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -77,6 +78,11 @@ export const routes: Routes = [
         path: 'inventory-office',
         title: 'Inventario de la oficina',
         component: InventoryListComponent,
+      },
+      {
+        path: 'new-movement',
+        title: 'Nuevo movimiento',
+        component: MovementCreateComponent,
       }
     ]
   },
