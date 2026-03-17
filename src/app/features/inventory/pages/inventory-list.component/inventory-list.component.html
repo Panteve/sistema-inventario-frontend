@@ -1,5 +1,5 @@
 <section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
-  <div class="w-full max-w-4xl md:max-w-5xl">
+  <div class="w-full max-w-4xl md:max-w-7xl">
     <!-- Header -->
     <div class="flex items-center gap-3 mb-5">
       <div
@@ -73,15 +73,10 @@
           </div>
         }
         <div class="du-divider my-0"></div>
-        <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4 md:p-5">
-          <div class="flex flex-col gap-4">
-            <div class="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <h3 class="text-sm md:text-base font-semibold">Filtros</h3>
-                <p class="text-xs md:text-sm opacity-60">
-                  Ajusta la vista del inventario por estado, stock y busqueda.
-                </p>
-              </div>
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-3 md:p-4">
+          <section class="">
+            <div class="flex items-center justify-between gap-2">
+              <h3 class="text-sm font-semibold">Filtros de inventario</h3>
               <button
                 type="button"
                 class="du-btn du-btn-ghost du-btn-sm w-full sm:w-auto"
@@ -91,147 +86,210 @@
               </button>
             </div>
 
-            <!-- Fila 1: Ordenar por -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label class="du-form-control">
-                <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
-                  Ordenar por
-                </span>
-                <select
-                  class="du-select du-select-bordered du-select-sm w-full"
-                  [value]="selectedOrderGeneral()"
-                  (change)="changeOrderGeneral($event)"
-                >
-                  <option value="none">Sin orden</option>
-                  <option value="name-asc">Nombre A-Z</option>
-                  <option value="name-desc">Nombre Z-A</option>
-                  <option value="quantity-asc">Stock menor a mayor</option>
-                  <option value="quantity-desc">Stock mayor a menor</option>
-                </select>
-              </label>
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-2">
+              <fieldset
+                class="du-fieldset lg:col-span-5 rounded-xl border border-base-content/10 bg-base-100/60 p-2 opacity-70 transition-opacity hover:opacity-100"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Stock
+                </legend>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <label class="du-form-control sm:col-span-2">
+                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                      Ordenar por
+                    </span>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedOrderGeneral()"
+                      (change)="changeOrderGeneral($event)"
+                    >
+                      <option value="none">Sin orden</option>
+                      <option value="name-asc">Nombre A-Z</option>
+                      <option value="name-desc">Nombre Z-A</option>
+                      <option value="quantity-asc">Stock menor a mayor</option>
+                      <option value="quantity-desc">Stock mayor a menor</option>
+                    </select>
+                  </label>
+
+                  <label class="du-form-control">
+                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                      Stock minimo
+                    </span>
+                    <input
+                      type="number"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      [value]="draftMinStockFilter() ?? ''"
+                      (input)="changeStockFilterMin($event)"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </label>
+
+                  <label class="du-form-control">
+                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                      Stock maximo
+                    </span>
+                    <input
+                      type="number"
+                      [value]="draftMaxStockFilter() ?? ''"
+                      (input)="changeStockFilterMax($event)"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      placeholder="500"
+                      min="0"
+                    />
+                  </label>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset lg:col-span-7 rounded-xl border border-base-content/10 bg-base-100/60 p-2 opacity-70 transition-opacity hover:opacity-100"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Precio
+                </legend>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                  <label class="du-form-control">
+                    <span class="label-text text-xs opacity-60 mb-1">Filtrar por</span>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedPriceFilterType()"
+                      (change)="changePriceFilterType($event)"
+                    >
+                      <option value="none">Seleccionar</option>
+                      <option value="unitPrice">Precio unitario</option>
+                      <option value="wholesalePrice">Precio mayorista</option>
+                    </select>
+                  </label>
+
+                  <label class="du-form-control">
+                    <span class="label-text text-xs opacity-60 mb-1">Orden</span>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedPriceOrder()"
+                      (change)="changePriceOrder($event)"
+                      [disabled]="selectedPriceFilterType() === 'none'"
+                    >
+                      <option value="none">Seleccionar</option>
+                      <option value="asc">Menor a mayor</option>
+                      <option value="desc">Mayor a menor</option>
+                    </select>
+                  </label>
+
+                  <label class="du-form-control">
+                    <span class="label-text text-xs opacity-60 mb-1">Minimo</span>
+                    <input
+                      type="number"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      [value]="draftMinPriceFilter() ?? ''"
+                      (input)="changePriceFilterMin($event)"
+                      placeholder="$ 0"
+                      min="0"
+                      [disabled]="selectedPriceFilterType() === 'none'"
+                    />
+                  </label>
+
+                  <label class="du-form-control">
+                    <span class="label-text text-xs opacity-60 mb-1">Maximo</span>
+                    <input
+                      type="number"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      [value]="draftMaxPriceFilter() ?? ''"
+                      (input)="changePriceFilterMax($event)"
+                      placeholder="$ 999.999"
+                      min="0"
+                      [disabled]="selectedPriceFilterType() === 'none'"
+                    />
+                  </label>
+                </div>
+              </fieldset>
             </div>
 
-            <!-- Fila 2: Stock -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <label class="du-form-control">
-                <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
-                  Stock minimo
-                </span>
-                <input
-                  type="number"
-                  class="du-input du-input-bordered du-input-sm w-full"
-                  [value]="draftMinStockFilter() ?? ''"
-                  (input)="changeStockFilterMin($event)"
-                  placeholder="0"
-                  min="0"
-                />
-              </label>
-              <label class="du-form-control">
-                <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
-                  Stock maximo
-                </span>
-                <input
-                  type="number"
-                  [value]="draftMaxStockFilter() ?? ''"
-                  (input)="changeStockFilterMax($event)"
-                  class="du-input du-input-bordered du-input-sm w-full"
-                  placeholder="500"
-                  min="0"
-                />
-              </label>
-            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-2">
+              <fieldset
+                class="du-fieldset sm:col-span-6 lg:col-span-6 rounded-xl border border-base-content/10 bg-base-100/60 p-2 opacity-70 transition-opacity hover:opacity-100"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Estado de stock
+                </legend>
+                <label class="du-label cursor-pointer justify-start gap-2 py-0.5">
+                  <input
+                    type="checkbox"
+                    checked="checked"
+                    class="du-checkbox du-checkbox-sm"
+                    (change)="enableStatusStockHighlight.set(!enableStatusStockHighlight())"
+                  />
+                  <span class="du-label-text text-sm">Resaltar stock bajo</span>
+                </label>
+                <label class="du-input du-input-bordered du-input-sm w-full">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Ej. 5"
+                    value="5"
+                    class="w-full text-sm"
+                    [disabled]="!enableStatusStockHighlight()"
+                    (input)="changeLowStockThreshold($event)"
+                  />
+                  <span class="text-xs opacity-60">uds.</span>
+                </label>
+                <div class="flex h-[calc(100%-18px)] flex-wrap items-start gap-1.5 content-start">
+                  <button
+                    type="button"
+                    class="du-btn du-btn-square du-btn-sm"
+                    (click)="clearStockStatusFilters()"
+                  >
+                    ×
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-neutral]="hasStockStatus('normal')"
+                    [class.du-btn-soft]="!hasStockStatus('normal')"
+                    (click)="toggleStockStatus('normal')"
+                  >
+                    Stock normal
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-warning du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-soft]="!hasStockStatus('low')"
+                    (click)="toggleStockStatus('low')"
+                  >
+                    Stock bajo
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-error du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-soft]="!hasStockStatus('out')"
+                    (click)="toggleStockStatus('out')"
+                  >
+                    Stock agotado
+                  </button>
+                </div>
+              </fieldset>
 
-            <!-- Fila 3: Precio (tipo + rango) -->
-            <div
-              class="rounded-xl border border-base-content/10 bg-base-100/60 p-3 flex flex-col gap-3"
-            >
-              <p class="text-xs uppercase tracking-wide opacity-60">Rango de precio</p>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="du-form-control w-full sm:w-64">
-                  <span class="label-text text-xs opacity-60 mb-1">Filtrar precio por</span>
-                  <select
-                    class="du-select du-select-bordered du-select-sm w-full"
-                    [value]="selectedPriceFilterType()"
-                    (change)="changePriceFilterType($event)"
-                  >
-                    <option value="none">Seleccionar</option>
-                    <option value="unitPrice">Precio unitario</option>
-                    <option value="wholesalePrice">Precio mayorista</option>
-                  </select>
-                </label>
-                <label class="du-form-control w-full sm:w-64">
-                  <span class="label-text text-xs opacity-60 mb-1">Ordenar por</span>
-                  <select
-                    class="du-select du-select-bordered du-select-sm w-full"
-                    [value]="selectedPriceOrder()"
-                    (change)="changePriceOrder($event)"
-                    [disabled]="selectedPriceFilterType() === 'none'"
-                  >
-                    <option value="none">Seleccionar</option>
-                    <option value="asc">Menor a mayor</option>
-                    <option value="desc">Mayor a menor</option>
-                  </select>
-                </label>
-              </div>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="du-form-control">
-                  <span class="label-text text-xs opacity-60 mb-1">Minimo</span>
+              <fieldset
+                class="du-fieldset border-base-content/10 bg-base-100/60 rounded-lg border p-2 h-full opacity-70 transition-opacity hover:opacity-100 sm:col-span-6 lg:col-span-6 grid grid-cols-1 sm:grid-cols-2 gap-2"
+              >
+                <legend class="du-fieldset-legend text-[11px] font-medium opacity-70">
+                  Productos por página
+                </legend>
+                <label class="du-input du-input-bordered du-input-sm w-full">
                   <input
                     type="number"
-                    class="du-input du-input-bordered du-input-sm w-full"
-                    [value]="draftMinPriceFilter() ?? ''"
-                    (input)="changePriceFilterMin($event)"
-                    placeholder="$ 0"
-                    min="0"
-                    [disabled]="selectedPriceFilterType() === 'none'"
+                    min="1"
+                    max="50"
+                    (input)="changeQuantityProducts($event)"
+                    placeholder="Menor a 50"
+                    class="w-full text-sm"
                   />
                 </label>
-                <label class="du-form-control">
-                  <span class="label-text text-xs opacity-60 mb-1">Maximo</span>
-                  <input
-                    type="number"
-                    class="du-input du-input-bordered du-input-sm w-full"
-                    [value]="draftMaxPriceFilter() ?? ''"
-                    (input)="changePriceFilterMax($event)"
-                    placeholder="$ 999.999"
-                    min="0"
-                    [disabled]="selectedPriceFilterType() === 'none'"
-                  />
-                </label>
-              </div>
+              </fieldset>
             </div>
-            <!-- Fila 4: Chips de estado de stock -->
-            <div class="flex flex-wrap gap-2">
-              <button type="button" class="du-btn du-btn-square du-btn-sm"(click)="clearStockStatusFilters()">
-                ×
-              </button>
-              <button
-                type="button"
-                class="du-btn du-btn-sm transition-colors"
-                [class.du-btn-neutral]="hasStockStatus('normal')"
-                [class.du-btn-soft]="!hasStockStatus('normal')"
-                (click)="toggleStockStatus('normal')"
-              >
-                Stock normal
-              </button>
-              <button
-                type="button"
-                class="du-btn du-btn-warning du-btn-sm transition-colors"
-                [class.du-btn-soft]="!hasStockStatus('low')"
-                (click)="toggleStockStatus('low')"
-              >
-                Stock bajo
-              </button>
-              <button
-                type="button"
-                class="du-btn du-btn-error du-btn-sm transition-colors"
-                [class.du-btn-soft]="!hasStockStatus('out')"
-                (click)="toggleStockStatus('out')"
-              >
-                Stock agotado
-              </button>
-            </div>
-          </div>
+          </section>
         </div>
         <div class="rounded-2xl border border-base-content/10 p-3 md:p-4 bg-base-100">
           @if (this.productStore.loading()) {
@@ -242,9 +300,9 @@
             </div>
           } @else {
             <app-table-products
-              [quantityProducts]="15"
-              [enableStockStatus]="true"
-              [lowStockThreshold]="5"
+              [quantityProducts]="quantityProducts()"
+              [enableStockStatus]="enableStatusStockHighlight()"
+              [lowStockThreshold]="lowStockThreshold()"
               [selectedOrderGeneral]="selectedOrderGeneral()"
               [minStockFilter]="minStockFilter()"
               [maxStockFilter]="maxStockFilter()"

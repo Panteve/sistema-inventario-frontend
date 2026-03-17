@@ -37,6 +37,10 @@ export class InventoryListComponent {
   maxPriceFilter = signal<number | null>(null);
   selectedStockStatuses = signal<StockStatusFilter[]>([]);
 
+  enableStatusStockHighlight = signal<boolean>(true);
+  quantityProducts = signal<number>(15);
+  lowStockThreshold = signal<number>(5);
+
   constructor() {
     this.setupDebouncedRangeSync(
       this.draftMinStockFilter,
@@ -54,8 +58,6 @@ export class InventoryListComponent {
       this.priceFilterDebounceMs,
     );
   }
-  //TOCA AGREGAR OPCION PARA DESACTIVAR LOS STOCKS RESALTADOS Y TAMBEIN PAR CAMBIAR EL UMPBRAL DE STOCK BAJO
-  //JUNTO CON CUANTOS PRODUCTOS MOSTRAR POR PAGINA
   private setupDebouncedRangeSync(
     draftMinSignal: { (): number | null },
     draftMaxSignal: { (): number | null },
@@ -74,6 +76,25 @@ export class InventoryListComponent {
 
       onCleanup(() => window.clearTimeout(timeoutId));
     });
+  }
+
+  changeQuantityProducts(event: Event) {
+    const value = (event.target as HTMLInputElement).value;
+    const parsedValue = this.parseNullableNumber(value);
+    if(parsedValue === null) {
+      this.quantityProducts.set(15);
+      return;
+    };
+    if (parsedValue > 0 && parsedValue <= 50) {
+      this.quantityProducts.set(this.parseNullableNumber(value) || 15);
+    }
+  }
+
+  changeLowStockThreshold(event: Event) {
+    if (this.enableStatusStockHighlight()) {
+      const value = (event.target as HTMLInputElement).value;
+      this.lowStockThreshold.set(this.parseNullableNumber(value) || 5);
+    }
   }
 
   changeOrderGeneral(event: Event) {
