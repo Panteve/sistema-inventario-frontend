@@ -4,6 +4,7 @@ import { ProductStore } from '../../../bill/store/product-store';
 import { ErrorStore } from '../../../../core/store/errors-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
+import { CurrencyPipe } from '@angular/common';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -12,6 +13,7 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 @Component({
   selector: 'app-inventory-list',
   imports: [TableProducts],
+  providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })
 export class InventoryListComponent {
@@ -22,6 +24,7 @@ export class InventoryListComponent {
   productStore = inject(ProductStore);
   errorStore = inject(ErrorStore);
   router = inject(Router);
+  private currencyPipe = inject(CurrencyPipe);
 
   visibleProductsCount = signal(0);
   selectedOrderGeneral = signal('none');
@@ -40,6 +43,25 @@ export class InventoryListComponent {
   enableStatusStockHighlight = signal<boolean>(true);
   quantityProducts = signal<number>(15);
   lowStockThreshold = signal<number>(5);
+
+  minPriceFocus = signal<boolean>(false);
+  maxPriceFocus = signal<boolean>(false);
+
+  displayMinPrice = computed(() => {
+    if (this.minPriceFocus()) {
+      const val = this.draftMinPriceFilter();
+      return val === null ? '' : String(val);
+    }
+    return this.currencyPipe.transform(this.draftMinPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
+  });
+
+  displayMaxPrice = computed(() => {
+    if (this.maxPriceFocus()) {
+      const val = this.draftMaxPriceFilter();
+      return val === null ? '' : String(val);
+    }
+    return this.currencyPipe.transform(this.draftMaxPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
+  });
 
   constructor() {
     this.setupDebouncedRangeSync(
@@ -81,9 +103,9 @@ export class InventoryListComponent {
   changeQuantityProducts(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     const parsedValue = this.parseNullableNumber(value);
-    if((parsedValue === null) || parsedValue < 0 || parsedValue > 50) {
+    if (parsedValue === null || parsedValue < 0 || parsedValue > 50) {
       return;
-    };
+    }
     this.quantityProducts.set(parsedValue || 15);
   }
 

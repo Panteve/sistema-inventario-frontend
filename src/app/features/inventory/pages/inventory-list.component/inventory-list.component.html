@@ -94,10 +94,10 @@
                   Stock
                 </legend>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <label class="du-form-control sm:col-span-2">
-                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                  <fieldset class="du-fieldset sm:col-span-2">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
                       Ordenar por
-                    </span>
+                    </legend>
                     <select
                       class="du-select du-select-bordered du-select-sm w-full"
                       [value]="selectedOrderGeneral()"
@@ -109,12 +109,13 @@
                       <option value="quantity-asc">Stock menor a mayor</option>
                       <option value="quantity-desc">Stock mayor a menor</option>
                     </select>
-                  </label>
+                  </fieldset>
 
-                  <label class="du-form-control">
-                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
                       Stock minimo
-                    </span>
+                    </legend>
+
                     <input
                       type="number"
                       class="du-input du-input-bordered du-input-sm w-full"
@@ -123,12 +124,11 @@
                       placeholder="0"
                       min="0"
                     />
-                  </label>
-
-                  <label class="du-form-control">
-                    <span class="label-text text-xs uppercase tracking-wide opacity-60 mb-1">
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
                       Stock maximo
-                    </span>
+                    </legend>
                     <input
                       type="number"
                       [value]="draftMaxStockFilter() ?? ''"
@@ -137,7 +137,7 @@
                       placeholder="500"
                       min="0"
                     />
-                  </label>
+                  </fieldset>
                 </div>
               </fieldset>
 
@@ -148,8 +148,8 @@
                   Precio
                 </legend>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                  <label class="du-form-control">
-                    <span class="label-text text-xs opacity-60 mb-1">Filtrar por</span>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">Filtrar por</legend>
                     <select
                       class="du-select du-select-bordered du-select-sm w-full"
                       [value]="selectedPriceFilterType()"
@@ -159,10 +159,10 @@
                       <option value="unitPrice">Precio unitario</option>
                       <option value="wholesalePrice">Precio mayorista</option>
                     </select>
-                  </label>
+                  </fieldset>
 
-                  <label class="du-form-control">
-                    <span class="label-text text-xs opacity-60 mb-1">Orden</span>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">Orden</legend>
                     <select
                       class="du-select du-select-bordered du-select-sm w-full"
                       [value]="selectedPriceOrder()"
@@ -173,33 +173,39 @@
                       <option value="asc">Menor a mayor</option>
                       <option value="desc">Mayor a menor</option>
                     </select>
-                  </label>
-
-                  <label class="du-form-control">
-                    <span class="label-text text-xs opacity-60 mb-1">Minimo</span>
-                    <input
-                      type="number"
-                      class="du-input du-input-bordered du-input-sm w-full"
-                      [value]="draftMinPriceFilter() ?? ''"
-                      (input)="changePriceFilterMin($event)"
-                      placeholder="$ 0"
-                      min="0"
-                      [disabled]="selectedPriceFilterType() === 'none'"
-                    />
-                  </label>
-
-                  <label class="du-form-control">
-                    <span class="label-text text-xs opacity-60 mb-1">Maximo</span>
-                    <input
-                      type="number"
-                      class="du-input du-input-bordered du-input-sm w-full"
-                      [value]="draftMaxPriceFilter() ?? ''"
-                      (input)="changePriceFilterMax($event)"
-                      placeholder="$ 999.999"
-                      min="0"
-                      [disabled]="selectedPriceFilterType() === 'none'"
-                    />
-                  </label>
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">Minimo</legend>
+                    <label class="du-input du-input-bordered du-input-sm w-full text-center">
+                      <span class="text-xs opacity-60 mb-1">$</span>
+                      <input
+                        type="text"
+                        [value]="displayMinPrice()"
+                        (input)="changePriceFilterMin($event)"
+                        (focus)="minPriceFocus.set(true)"
+                        (blur)="minPriceFocus.set(false)"
+                        placeholder="0"
+                        min="0"
+                        [disabled]="selectedPriceFilterType() === 'none'"
+                      />
+                    </label>
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">Maximo</legend>
+                    <label class="du-input du-input-bordered du-input-sm w-full text-center">
+                      <span class="text-xs opacity-60 mb-1">$</span>
+                      <input
+                        type="text"
+                        [value]="displayMaxPrice()"
+                        (input)="changePriceFilterMax($event)"
+                        (focus)="maxPriceFocus.set(true)"
+                        (blur)="maxPriceFocus.set(false)"
+                        placeholder="999.999"
+                        min="0"
+                        [disabled]="selectedPriceFilterType() === 'none'"
+                      />
+                    </label>
+                  </fieldset>
                 </div>
               </fieldset>
             </div>
