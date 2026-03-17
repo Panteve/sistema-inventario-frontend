@@ -164,12 +164,8 @@ export class TableProducts {
       this.maxPriceFilter();
       this.resetViewTable();
     });
-    effect((onCleanup) => {
-      
-      const timeoutId = window.setTimeout(() => {
+    effect(() => {
         this.table.setPageSize(this.quantityProducts());
-      }, 350);
-      onCleanup(() => window.clearTimeout(timeoutId));
     })
 
     effect(() => {

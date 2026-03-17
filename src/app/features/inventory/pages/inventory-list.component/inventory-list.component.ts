@@ -81,13 +81,10 @@ export class InventoryListComponent {
   changeQuantityProducts(event: Event) {
     const value = (event.target as HTMLInputElement).value;
     const parsedValue = this.parseNullableNumber(value);
-    if(parsedValue === null) {
-      this.quantityProducts.set(15);
+    if((parsedValue === null) || parsedValue < 0 || parsedValue > 50) {
       return;
     };
-    if (parsedValue > 0 && parsedValue <= 50) {
-      this.quantityProducts.set(this.parseNullableNumber(value) || 15);
-    }
+    this.quantityProducts.set(parsedValue || 15);
   }
 
   changeLowStockThreshold(event: Event) {
