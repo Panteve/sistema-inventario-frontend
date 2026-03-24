@@ -1,13 +1,4 @@
-import {
-  Component,
-  computed,
-  effect,
-  EventEmitter,
-  inject,
-  input,
-  Output,
-  signal,
-} from '@angular/core';
+import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import {
   ColumnFiltersState,
   createAngularTable,
@@ -18,8 +9,8 @@ import {
   getSortedRowModel,
   SortingState,
 } from '@tanstack/angular-table';
-import { ProductStore } from '../../../features/bill/store/product-store';
-import { ProductResponse } from '../../interfaces/product.interface';
+import { ProductStore } from '../../store/product-store';
+import { ProductOnInventoryResponse } from '../../interfaces/product.interface';
 
 type PriceColumnId = 'unitPrice' | 'wholesalePrice';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -49,10 +40,11 @@ export class TableProducts {
   minPriceFilter = input<number | null>(null);
   maxPriceFilter = input<number | null>(null);
   selectedStockStatuses = input<StockStatusFilter[]>([]);
-  @Output() rowSelected = new EventEmitter<ProductResponse>();
-  @Output() filteredProductsCountChanged = new EventEmitter<number>();
+  rowSelected = output<ProductOnInventoryResponse>();
+  filteredProductsCountChanged = output<number>();
 
   productStore = inject(ProductStore);
+  
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
   private lastFilteredCount = signal<number>(-1);
@@ -151,7 +143,7 @@ export class TableProducts {
 
     return filters;
   });
-
+  
   constructor() {
     effect(() => {
       this.selectedOrderGeneral();
@@ -165,9 +157,8 @@ export class TableProducts {
       this.resetViewTable();
     });
     effect(() => {
-        this.table.setPageSize(this.quantityProducts());
-    })
-
+      this.table.setPageSize(this.quantityProducts());
+    });
     effect(() => {
       this.productStore.products();
       this.globalFilter();
@@ -182,7 +173,7 @@ export class TableProducts {
     });
   }
 
-  onRowClick(product: ProductResponse) {
+  onRowClick(product: ProductOnInventoryResponse) {
     if (!this.enableRowSelect) return;
     this.rowSelected.emit(product);
   }
@@ -197,7 +188,7 @@ export class TableProducts {
   }
   loadProducts() {
     this.globalFilter.set('');
-    this.productStore.loadProducts();
+    this.productStore.loadProductsOnInventory();
   }
 
   private currencyFormatter = new Intl.NumberFormat('es-CO', {

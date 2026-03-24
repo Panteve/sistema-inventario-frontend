@@ -1,7 +1,7 @@
 import { Component, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
-import { ProductStore } from '../store/product-store';
+import { ProductStore } from '../../../shared/store/product-store';
 import { BillStore } from '../store/bill-store';
 import { ErrorStore } from '../../../core/store/errors-store';
 import { PaymentMethodStore } from '../store/payment-method-store';
@@ -62,10 +62,6 @@ export class BillComponent {
   }
   quitProduct(productId: number) {
     this.billStore.quitProduct(productId);
-  }
-
-  showerror() {
-    this.errorStore.showError('Esto es una prueba');
   }
 
   createBill() {

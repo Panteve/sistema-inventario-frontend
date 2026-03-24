@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
-import { ProductStore } from '../../../bill/store/product-store';
+import { ProductStore } from '../../../../shared/store/product-store';
 import { ErrorStore } from '../../../../core/store/errors-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';

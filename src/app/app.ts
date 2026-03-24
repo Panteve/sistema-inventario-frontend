@@ -10,7 +10,7 @@ import { CashRegisterComponent } from './features/cash-register/pages/cash-regis
 import { CashRegisterStore } from './features/cash-register/store/cash-register-store';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense.component';
-import { ProductStore } from './features/bill/store/product-store';
+import { ProductStore } from './shared/store/product-store';
 
 @Component({
   selector: 'app-root',

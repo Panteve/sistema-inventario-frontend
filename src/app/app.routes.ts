@@ -5,12 +5,14 @@ import { BillComponent } from './features/bill/pages/bill.component';
 import { authGuard } from './core/guards/auth-guard';
 import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
 import { ProductPricesPanel } from './features/bill/layouts/product-prices-panel/product-prices-panel';
-import { ProductStore } from './features/bill/store/product-store';
+import { ProductStore } from './shared/store/product-store';
 import { BillStore } from './features/bill/store/bill-store';
 import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
 import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
 import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
 import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
+import { MovementInventoryStore } from './features/inventory/store/movement-inventory-store';
+import { OfficeStore } from './shared/store/office-store';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -82,13 +84,14 @@ export const routes: Routes = [
       {
         path: 'new-movement',
         title: 'Nuevo movimiento',
+        providers: [MovementInventoryStore, OfficeStore],
         component: MovementCreateComponent,
-      }
-    ]
+      },
+    ],
   },
   {
     path: '**',
     title: 'Página no encontrada',
     redirectTo: 'dashboard',
-  }
+  },
 ];

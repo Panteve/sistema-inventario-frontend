@@ -82,6 +82,15 @@ export const AuthStore = signalStore(
     async getToken() {
       return await window.electronAPI.getToken();
     },
+    //DEPURACION SOLO PARA PROBAR FUNCIONALIDAD DE ADMINISTRADOR
+    changeAdminStatus() {
+      patchState(store, (state) => ({
+        employee: state.employee?.role === 'ADMIN'
+          ? { ...state.employee, role: 'USER' }
+          : { ...state.employee, role: 'ADMIN' } as Employee,
+      }));
+
+    },
 
     checkSession: rxMethod<void>(
       pipe(
@@ -97,7 +106,7 @@ export const AuthStore = signalStore(
                 cashRegisterStore.setCashRegisterId(response.cashRegisterId);
               }
 
-              router.navigate(['/dashboard']);
+              router.navigate(['/inventory/new-movement']);
             }),
             finalize(() => {
               patchState(store, { loading: false });
