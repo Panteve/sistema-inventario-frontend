@@ -26,7 +26,6 @@ export class CashRegisterComponent {
   isAmountFocused = signal<boolean>(false);
   closeConfirmationOpen = signal<boolean>(false);
 
-  // UI-only mock values for close cash summary.
 
   differenceStatus = computed<'ok' | 'short' | 'over'>(() => {
     const difference = this.cashRegisterStore.cashDifference();

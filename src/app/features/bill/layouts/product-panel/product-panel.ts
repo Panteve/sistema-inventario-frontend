@@ -1,9 +1,9 @@
 import { Component, effect, ElementRef, inject, ViewChild } from '@angular/core';
-import { ProductService } from '../../services/product.service';
-import { ProductResponse } from '../../../../shared/interfaces/product.interface';
+import { ProductService } from '../../../../shared/services/product.service';
+import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { ProductStore } from '../../store/product-store';
+import { ProductStore } from '../../../../shared/store/product-store';
 import { ErrorStore } from '../../../../core/store/errors-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
@@ -34,7 +34,7 @@ export class ProductPanel {
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
   @ViewChild('my_modal_2') productModal!: ElementRef<HTMLDialogElement>;
 
-  async getProductTable(product: ProductResponse) {
+  async getProductTable(product: ProductOnInventoryResponse) {
     this.productService.modalClose.set(false);
 
     const productSelected: ProductSelected = {

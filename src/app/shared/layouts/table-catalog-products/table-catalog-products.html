@@ -40,7 +40,6 @@
         <th class="text-center">Nombre</th>
         <th class="text-center">Precio</th>
         <th class="text-center">P. Mayor</th>
-        <th class="text-center">Stock</th>
       </tr>
     </thead>
     <tbody>
@@ -48,10 +47,6 @@
         <tr
           class="hover:bg-base-300 transition-colors"
           [class.cursor-pointer]="enableRowSelect()"
-          [class.bg-warning/20]="isLowStock(row.original.quantity)"
-          [class.hover:bg-warning/30]="isLowStock(row.original.quantity)"
-          [class.bg-error/20]="isNegativeStock(row.original.quantity)"
-          [class.hover:bg-error/30]="isNegativeStock(row.original.quantity)"
           (click)="onRowClick(row.original)"
         >
           @for (cell of row.getVisibleCells(); track cell.id) {
@@ -59,23 +54,14 @@
               <ng-container
                 *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let renderedCell"
               >
-                <div
-                  [class.text-warning]="
-                    isStockCell(cell.column.id) && isLowStock(row.original.quantity)
-                  "
-                  [class.text-error]="
-                    isStockCell(cell.column.id) && isNegativeStock(row.original.quantity)
-                  "
-                  [class.font-semibold]="isStockCell(cell.column.id) && enableStockStatus()"
-                  [innerHTML]="renderedCell"
-                ></div>
+              {{ renderedCell }}
               </ng-container>
             </td>
           }
         </tr>
       } @empty {
         <tr>
-          <div colspan="5" class="text-center py-10 opacity-50">
+          <div colspan="4" class="text-center py-10 opacity-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="h-12 w-12 mx-auto mb-2 opacity-30"

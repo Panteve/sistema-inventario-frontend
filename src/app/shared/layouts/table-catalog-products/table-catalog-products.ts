@@ -11,7 +11,10 @@ import {
   SortingState,
 } from '@tanstack/angular-table';
 import { ProductStore } from '../../store/product-store';
-import { ProductOnInventoryResponse } from '../../interfaces/product.interface';
+import {
+  ProductCatalogResponse,
+  ProductOnInventoryResponse,
+} from '../../interfaces/product.interface';
 
 type PriceColumnId = 'unitPrice' | 'wholesalePrice';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -23,25 +26,20 @@ type RangeFilterValue = {
 };
 
 @Component({
-  selector: 'app-table-products',
+  selector: 'app-table-catalog-products',
   imports: [FlexRenderDirective],
-  templateUrl: './table-products.html',
-  styleUrl: './table-products.css',
+  templateUrl: './table-catalog-products.html',
+  styleUrl: './table-catalog-products.css',
 })
-export class TableProducts {
+export class TableCatalogProducts {
   enableRowSelect = input<boolean>(false);
   quantityProducts = input<number>(10);
-  enableStockStatus = input<boolean>(false);
-  lowStockThreshold = input<number>(5);
   selectedOrderGeneral = input<string>('none');
-  minStockFilter = input<number | null>(null);
-  maxStockFilter = input<number | null>(null);
   selectedPriceFilterType = input<PriceColumnId | 'none'>('none');
   selectedPriceOrder = input<PriceOrderType>('none');
   minPriceFilter = input<number | null>(null);
   maxPriceFilter = input<number | null>(null);
-  selectedStockStatuses = input<StockStatusFilter[]>([]);
-  rowSelected = output<ProductOnInventoryResponse>();
+  rowSelected = output<ProductCatalogResponse>();
   filteredProductsCountChanged = output<number>();
 
   productStore = inject(ProductStore);
@@ -57,30 +55,10 @@ export class TableProducts {
     };
   }
 
-  private createStockFilter(min: number | null, max: number | null, statuses: StockStatusFilter[]) {
-    return {
-      id: 'quantity',
-      value: { min, max, statuses },
-    };
-  }
-
   private getGeneralSortingRules(option: string): SortingState {
     if (option === 'name-asc') return [{ id: 'name', desc: false }];
     if (option === 'name-desc') return [{ id: 'name', desc: true }];
-    if (option === 'quantity-asc') return [{ id: 'quantity', desc: false }];
-    if (option === 'quantity-desc') return [{ id: 'quantity', desc: true }];
     return [];
-  }
-
-  private matchesStockStatus(quantity: number, status: StockStatusFilter) {
-    if (status === 'normal') return quantity > this.lowStockThreshold();
-    if (status === 'low') return quantity > 0 && quantity <= this.lowStockThreshold();
-    return quantity <= 0;
-  }
-
-  private matchesAnyStockStatus(quantity: number, statuses: StockStatusFilter[]) {
-    if (statuses.length === 0) return true;
-    return statuses.some((status) => this.matchesStockStatus(quantity, status));
   }
 
   private matchesRangeFilter(filterValue: RangeFilterValue, value: number) {
@@ -92,14 +70,6 @@ export class TableProducts {
   private rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
     const value = row.getValue(columnId) as number;
     return this.matchesRangeFilter(filterValue, value);
-  };
-
-  private stockFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
-    const quantity = row.getValue(columnId) as number;
-    const statuses = filterValue?.statuses ?? [];
-
-    if (!this.matchesRangeFilter(filterValue, quantity)) return false;
-    return this.matchesAnyStockStatus(quantity, statuses);
   };
 
   private isValueInRange(value: number, min: number | null, max: number | null) {
@@ -126,17 +96,10 @@ export class TableProducts {
   });
 
   columnFilters = computed<ColumnFiltersState>(() => {
-    const min = this.minStockFilter();
-    const max = this.maxStockFilter();
-    const selectedStockStatuses = this.selectedStockStatuses();
     const selectedPriceFilterType = this.selectedPriceFilterType();
     const minPrice = this.minPriceFilter();
     const maxPrice = this.maxPriceFilter();
     const filters: ColumnFiltersState = [];
-
-    if (min !== null || max !== null || selectedStockStatuses.length > 0) {
-      filters.push(this.createStockFilter(min, max, selectedStockStatuses));
-    }
 
     if (selectedPriceFilterType !== 'none' && (minPrice !== null || maxPrice !== null)) {
       filters.push(this.createRangeFilter(selectedPriceFilterType, minPrice, maxPrice));
@@ -148,9 +111,6 @@ export class TableProducts {
   constructor() {
     effect(() => {
       this.selectedOrderGeneral();
-      this.minStockFilter();
-      this.maxStockFilter();
-      this.selectedStockStatuses();
       this.selectedPriceFilterType();
       this.selectedPriceOrder();
       this.minPriceFilter();
@@ -161,7 +121,7 @@ export class TableProducts {
       this.table.setPageSize(this.quantityProducts());
     });
     effect(() => {
-      this.productStore.products();
+      this.productStore.catalogProducts();
       this.globalFilter();
       this.columnFilters();
       this.sorting();
@@ -174,22 +134,14 @@ export class TableProducts {
     });
   }
 
-  onRowClick(product: ProductOnInventoryResponse) {
+  onRowClick(product: ProductCatalogResponse) {
     if (!this.enableRowSelect) return;
     this.rowSelected.emit(product);
   }
-  isStockCell(columnId: string) {
-    return columnId === 'quantity';
-  }
-  isNegativeStock(quantity: number) {
-    return this.enableStockStatus() && quantity < 0;
-  }
-  isLowStock(quantity: number) {
-    return this.enableStockStatus() && quantity >= 0 && quantity <= this.lowStockThreshold();
-  }
+
   loadProducts() {
     this.globalFilter.set('');
-    this.productStore.loadProductsOnInventory();
+    this.productStore.loadProductsCatalog();
   }
 
   private currencyFormatter = new Intl.NumberFormat('es-CO', {
@@ -199,39 +151,33 @@ export class TableProducts {
   });
 
   table = createAngularTable(() => ({
-    data: this.productStore.products(),
+    data: this.productStore.catalogProducts(),
     columns: [
       {
         header: 'ID',
-        accessorKey: 'product.id',
+        accessorKey: 'id',
         id: 'id',
       },
       {
         header: 'Producto',
-        accessorKey: 'product.name',
+        accessorKey: 'name',
         id: 'name',
       },
       {
         header: 'Precio unitario',
-        accessorKey: 'product.unitPrice',
+        accessorKey: 'unitPrice',
         id: 'unitPrice',
         filterFn: this.rangeFilterFn,
-        cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
+        cell: (info: CellContext<ProductCatalogResponse, any>) =>
           this.currencyFormatter.format(info.getValue() as number),
       },
       {
         header: 'Precio mayorista',
-        accessorKey: 'product.wholesalePrice',
+        accessorKey: 'wholesalePrice',
         id: 'wholesalePrice',
         filterFn: this.rangeFilterFn,
-        cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
+        cell: (info: CellContext<ProductCatalogResponse, any>) =>
           this.currencyFormatter.format(info.getValue() as number),
-      },
-      {
-        header: 'Stock',
-        accessorKey: 'quantity',
-        id: 'quantity',
-        filterFn: this.stockFilterFn,
       },
     ],
     state: {

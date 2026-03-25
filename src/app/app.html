@@ -241,8 +241,9 @@
                 <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Inventario</span>
               </summary>
               <ul class="du-is-drawer-close:hidden">
-                <li><a>Submenu 1</a></li>
-                <li><a>Submenu 2</a></li>
+                <li (click)="router.navigate(['/inventory/inventory-office'])"><a>Stock actual</a></li>
+                <li (click)="router.navigate(['/inventory/movements'])"><a>Movimientos</a></li>
+                <li (click)="router.navigate(['/inventory/new-movement'])"><a>Nuevo movimiento</a></li>
               </ul>
             </details>
           </li>
