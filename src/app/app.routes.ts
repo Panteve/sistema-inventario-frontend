@@ -84,7 +84,7 @@ export const routes: Routes = [
       {
         path: 'new-movement',
         title: 'Nuevo movimiento',
-        providers: [MovementInventoryStore, OfficeStore],
+        providers: [MovementInventoryStore],
         component: MovementCreateComponent,
       },
     ],

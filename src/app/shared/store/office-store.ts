@@ -1,4 +1,11 @@
-import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withHooks,
+  withMethods,
+  withProps,
+  withState,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
@@ -17,6 +24,7 @@ const initialState: ProductState = {
   loading: false,
 };
 export const OfficeStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withProps(() => ({
     authStore: inject(AuthStore),

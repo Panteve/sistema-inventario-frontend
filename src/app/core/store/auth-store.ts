@@ -89,9 +89,13 @@ export const AuthStore = signalStore(
           ? { ...state.employee, role: 'USER' }
           : { ...state.employee, role: 'ADMIN' } as Employee,
       }));
-
     },
-
+    
+    setOfficeId(officeId: number) {
+      patchState(store, (state) => ({
+        employee: state.employee ? { ...state.employee, officeId } : null,
+      }));
+    },
     checkSession: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true })),
