@@ -30,27 +30,34 @@
             </p>
           </div>
         </div>
-        <button class="du-btn" (click)="authStore.changeAdminStatus()">Button</button>
-        @if (errorStore.message()) {
-          <div role="alert" class="du-alert du-alert-error mb-4">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-5 w-5 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>{{ errorStore.message() }}</span>
+          <!-- Error alert -->
+          <div
+            class="grid transition-all duration-300 ease-out"
+            [class.grid-rows-[0fr]]="errorStore.message() === null"
+            [class.grid-rows-[1fr]]="errorStore.message() !== null"
+          >
+            <div class="overflow-hidden">
+              <div role="alert" class="du-alert du-alert-error mb-4">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 shrink-0 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span>{{ errorStore.message() }}</span>
+              </div>
+            </div>
           </div>
-        }
+        
 
-        <div class="du-divider mt-2 mb-2"></div>
+        <div class="du-divider mt-0 mb-2"></div>
 
         <div
           [class.sm:grid-cols-3]="movementStore.movementData().type === MOVEMENTYPE.TRANSFER"
