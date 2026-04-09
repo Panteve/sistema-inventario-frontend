@@ -1,0 +1,358 @@
+<section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
+  <div class="w-full max-w-4xl md:max-w-7xl">
+    <!-- Header -->
+    <div class="flex items-center gap-3 mb-5">
+      <div
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path
+            class="w-5 h-5 text-primary"
+            fill="currentColor"
+            d="M5 22q-.825 0-1.412-.587T3 20V8.725q-.45-.275-.725-.712T2 7V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v3q0 .575-.275 1.013T21 8.724V20q0 .825-.587 1.413T19 22zM5 9v11h14V9zM4 7h16V4H4zm6 7h4q.425 0 .713-.288T15 13t-.288-.712T14 12h-4q-.425 0-.712.288T9 13t.288.713T10 14m2 .5"
+          />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Inventario oficina</h1>
+        <p class="text-xs md:text-sm opacity-60">Informacion del inventario</p>
+      </div>
+    </div>
+
+    <div
+      class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 overflow-hidden min-h-5/6"
+    >
+      <div class="du-card-body p-6 md:p-10">
+        <!-- Sub - Header -->
+        <div class="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-0">
+          <div>
+            <h2 class="text-lg md:text-xl font-bold tracking-tight">Inventario oficina</h2>
+            <p class="text-xs md:text-sm opacity-60 mt-0.5">Informacion del inventario</p>
+          </div>
+        </div>
+
+        <div class="du-divider my-0"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+          <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
+            <p class="text-[11px] uppercase tracking-wide opacity-60">Productos</p>
+            <p class="text-lg font-semibold leading-tight">
+              {{ productStore.loading() ? 0 : visibleProductsCount() }}
+            </p>
+          </div>
+          <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
+            <p class="text-[11px] uppercase tracking-wide opacity-60">Estado</p>
+            <p class="text-sm font-semibold leading-tight">
+              {{ productStore.loading() ? 'Cargando' : 'Actualizado' }}
+            </p>
+          </div>
+          <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
+            <p class="text-[11px] uppercase tracking-wide opacity-60">Sede</p>
+            @if (authStore.isAdmin()) {
+              <select class="du-select du-select-sm w-full" (change)="changeOffice($event)">
+                @if (officeStore.loading()) {
+                  <option selected disabled>Cargando oficinas...</option>
+                } @else {
+                  @for (office of officeStore.offices(); track office.id) {
+                    <option [value]="office.id">
+                      {{ office.name }}
+                    </option>
+                  } @empty {
+                    <option disabled selected>No hay oficinas disponibles</option>
+                  }
+                }
+              </select>
+            } @else {
+              <p class="text-sm font-semibold leading-tight truncate">
+                {{ authStore.employee()?.officeName || 'Sin oficina' }}
+              </p>
+            }
+          </div>
+        </div>
+
+        @if (!this.productStore.loading() && this.errorStore.message()) {
+          <div role="alert" class="du-alert du-alert-error mb-4">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="h-5 w-5 shrink-0 stroke-current"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <span>{{ this.errorStore.message() }}</span>
+          </div>
+        }
+        <div class="du-divider my-0"></div>
+        <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-3 md:p-4">
+          <section class="">
+            <div class="mb-3 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <div>
+                <h3 class="text-sm font-semibold md:text-base">Filtros de inventario</h3>
+                <p class="text-xs opacity-60">Ordena, segmenta y destaca productos rapidamente.</p>
+              </div>
+              <button
+                type="button"
+                class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
+                (click)="clearFilters()"
+              >
+                Limpiar filtros
+              </button>
+            </div>
+
+            <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
+              <fieldset
+                class="du-fieldset lg:col-span-5 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Stock
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <fieldset class="du-fieldset sm:col-span-2">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Ordenar por
+                    </legend>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedOrderGeneral()"
+                      (change)="changeOrderGeneral($event)"
+                    >
+                      <option value="none">Sin orden</option>
+                      <option value="name-asc">Nombre A-Z</option>
+                      <option value="name-desc">Nombre Z-A</option>
+                      <option value="quantity-asc">Stock menor a mayor</option>
+                      <option value="quantity-desc">Stock mayor a menor</option>
+                    </select>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Stock minimo
+                    </legend>
+
+                    <input
+                      type="number"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      [value]="draftMinStockFilter() ?? ''"
+                      (input)="changeStockFilterMin($event)"
+                      placeholder="0"
+                      min="0"
+                    />
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Stock maximo
+                    </legend>
+                    <input
+                      type="number"
+                      [value]="draftMaxStockFilter() ?? ''"
+                      (input)="changeStockFilterMax($event)"
+                      class="du-input du-input-bordered du-input-sm w-full"
+                      placeholder="500"
+                      min="0"
+                    />
+                  </fieldset>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset lg:col-span-7 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Precio
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Filtrar por
+                    </legend>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedPriceFilterType()"
+                      (change)="changePriceFilterType($event)"
+                    >
+                      <option value="none">Seleccionar</option>
+                      <option value="unitPrice">Precio unitario</option>
+                      <option value="wholesalePrice">Precio mayorista</option>
+                    </select>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Orden
+                    </legend>
+                    <select
+                      class="du-select du-select-bordered du-select-sm w-full"
+                      [value]="selectedPriceOrder()"
+                      (change)="changePriceOrder($event)"
+                      [disabled]="selectedPriceFilterType() === 'none'"
+                    >
+                      <option value="none">Seleccionar</option>
+                      <option value="asc">Menor a mayor</option>
+                      <option value="desc">Mayor a menor</option>
+                    </select>
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Minimo
+                    </legend>
+                    <label class="du-input du-input-bordered du-input-sm w-full text-center">
+                      <span class="text-xs opacity-60 mb-1">$</span>
+                      <input
+                        type="text"
+                        [value]="displayMinPrice()"
+                        (input)="changePriceFilterMin($event)"
+                        (focus)="minPriceFocus.set(true)"
+                        (blur)="minPriceFocus.set(false)"
+                        placeholder="0"
+                        min="0"
+                        [disabled]="selectedPriceFilterType() === 'none'"
+                      />
+                    </label>
+                  </fieldset>
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Maximo
+                    </legend>
+                    <label class="du-input du-input-bordered du-input-sm w-full text-center">
+                      <span class="text-xs opacity-60 mb-1">$</span>
+                      <input
+                        type="text"
+                        [value]="displayMaxPrice()"
+                        (input)="changePriceFilterMax($event)"
+                        (focus)="maxPriceFocus.set(true)"
+                        (blur)="maxPriceFocus.set(false)"
+                        placeholder="999.999"
+                        min="0"
+                        [disabled]="selectedPriceFilterType() === 'none'"
+                      />
+                    </label>
+                  </fieldset>
+                </div>
+              </fieldset>
+            </div>
+
+            <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-12">
+              <fieldset
+                class="du-fieldset sm:col-span-6 lg:col-span-6 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Estado de stock
+                </legend>
+                <label class="du-label cursor-pointer justify-start gap-2 py-0.5">
+                  <input
+                    type="checkbox"
+                    checked="checked"
+                    class="du-checkbox du-checkbox-sm"
+                    (change)="enableStatusStockHighlight.set(!enableStatusStockHighlight())"
+                  />
+                  <span class="du-label-text text-sm">Resaltar stock bajo</span>
+                </label>
+                <label class="du-input du-input-bordered du-input-sm w-full">
+                  <input
+                    type="number"
+                    min="0"
+                    placeholder="Ej. 5"
+                    value="5"
+                    class="w-full text-sm"
+                    [disabled]="!enableStatusStockHighlight()"
+                    (input)="changeLowStockThreshold($event)"
+                  />
+                  <span class="text-xs opacity-60">uds.</span>
+                </label>
+                <div class="flex h-[calc(100%-18px)] flex-wrap items-start gap-1.5 content-start">
+                  <button
+                    type="button"
+                    class="du-btn du-btn-square du-btn-sm"
+                    (click)="clearStockStatusFilters()"
+                  >
+                    ×
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-neutral]="hasStockStatus('normal')"
+                    [class.du-btn-soft]="!hasStockStatus('normal')"
+                    (click)="toggleStockStatus('normal')"
+                  >
+                    Stock normal
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-warning du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-soft]="!hasStockStatus('low')"
+                    (click)="toggleStockStatus('low')"
+                  >
+                    Stock bajo
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-error du-btn-sm transition-colors"
+                    [disabled]="!enableStatusStockHighlight()"
+                    [class.du-btn-soft]="!hasStockStatus('out')"
+                    (click)="toggleStockStatus('out')"
+                  >
+                    Stock agotado
+                  </button>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset border-base-content/10 bg-base-100/70 rounded-xl border p-3 h-full w-full sm:col-span-6 lg:col-span-6"
+              >
+                <legend class="du-fieldset-legend text-[11px] font-medium opacity-70">
+                  Productos por página
+                </legend>
+                <p class="mb-2 text-xs opacity-60">
+                  Controla cuántos productos mostrar en la tabla.
+                </p>
+                <label class="du-input du-input-bordered du-input-sm w-full">
+                  <input
+                    type="number"
+                    min="1"
+                    max="50"
+                    [value]="quantityProducts()"
+                    (input)="changeQuantityProducts($event)"
+                    placeholder="Menor a 50"
+                    class="w-full text-sm"
+                  />
+                </label>
+              </fieldset>
+            </div>
+          </section>
+        </div>
+        <div class="rounded-2xl border border-base-content/10 p-3 md:p-4 bg-base-100">
+          @if (this.productStore.loading()) {
+            <div
+              class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/70 backdrop-blur-[1px] rounded-2xl"
+            >
+              <span class="du-loading du-loading-spinner du-loading-lg text-primary"></span>
+            </div>
+          } @else {
+            <app-table-products
+              [quantityProducts]="quantityProducts()"
+              [enableStockStatus]="enableStatusStockHighlight()"
+              [lowStockThreshold]="lowStockThreshold()"
+              [selectedOrderGeneral]="selectedOrderGeneral()"
+              [minStockFilter]="minStockFilter()"
+              [maxStockFilter]="maxStockFilter()"
+              [selectedPriceFilterType]="selectedPriceFilterType()"
+              [selectedPriceOrder]="selectedPriceOrder()"
+              [minPriceFilter]="minPriceFilter()"
+              [maxPriceFilter]="maxPriceFilter()"
+              [selectedStockStatuses]="selectedStockStatuses()"
+              (filteredProductsCountChanged)="updateVisibleProductsCount($event)"
+            ></app-table-products>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

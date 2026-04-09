@@ -10,6 +10,8 @@ import { CashRegisterComponent } from './features/cash-register/pages/cash-regis
 import { CashRegisterStore } from './features/cash-register/store/cash-register-store';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense.component';
+import { ProductStore } from './shared/store/product-store';
+import { OfficeStore } from './shared/store/office-store';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,8 @@ export class App {
   cashRegisterStore = inject(CashRegisterStore);
   errorStore = inject(ErrorStore);
   authStore = inject(AuthStore);
+  officeStore = inject(OfficeStore);
+  productStore = inject(ProductStore);
   router = inject(Router);
   private route = inject(ActivatedRoute);
   private destroyRef = inject(DestroyRef);

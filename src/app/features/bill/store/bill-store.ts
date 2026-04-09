@@ -88,10 +88,9 @@ export const BillStore = signalStore(
         }),
         filter(() => store._isValidForSubmit()),
         switchMap(() => {
-          const bill = store.bill();
           const cleanBill = {
-            ...bill,
-            products: bill.products.map(({ name, ...rest }) => rest),
+            ...store.bill(),
+            products: store.bill().products.map(({ name, ...rest }) => rest),
           };
           return billService.createBill(cleanBill).pipe(
             tap((billId) => {
