@@ -7,10 +7,16 @@
   />
   <div class="du-drawer-content relative">
     @if (!cashRegisterStore.cashRegisterOpen()) {
-      <div class="absolute inset-0 z-10 bg-base-100/75 backdrop-blur-xs flex items-center justify-center p-4">
-        <div class="w-full max-w-md rounded-3xl border border-accent/20 bg-base-100 shadow-2xl p-6 md:p-7">
-          <div class="flex items-center gap-3 mb-4">
-            <div class="w-11 h-11 rounded-2xl bg-accent/10 text-accent inline-flex items-center justify-center">
+      <div
+        class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs"
+      >
+        <div
+          class="w-full max-w-md rounded-4xl border border-accent/20 bg-base-100 p-6 shadow-2xl md:p-7"
+        >
+          <div class="mb-4 flex items-center gap-3">
+            <div
+              class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/10 text-accent"
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="22"
@@ -29,26 +35,27 @@
             <span class="du-badge du-badge-warning">Caja cerrada</span>
           </div>
 
-          <h3 class="text-lg md:text-xl font-bold tracking-tight">Apertura requerida</h3>
-          <p class="text-sm opacity-70 mt-1">
+          <h3 class="text-lg font-bold tracking-tight md:text-xl">Apertura requerida</h3>
+          <p class="mt-1 text-sm opacity-70">
             Debes realizar primero la apertura de caja para continuar con la facturacion.
           </p>
 
           <div class="du-divider my-4"></div>
 
-          <div class="rounded-xl bg-base-200/70 border border-base-content/10 p-3">
-            <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">Estado actual</p>
-            <p class="text-sm font-medium mt-1">No hay una caja activa para esta sesion.</p>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/70 p-3">
+            <p class="text-xs font-semibold uppercase tracking-wider opacity-50">Estado actual</p>
+            <p class="mt-1 text-sm font-medium">No hay una caja activa para esta sesion.</p>
           </div>
         </div>
       </div>
     }
-    
-    <div class="flex-1 flex justify-center px-4 py-10 md:py-14">
+
+    <div class="flex justify-center px-4 py-10 md:py-14">
       <div class="w-full max-w-4xl md:max-w-5xl">
-        <!-- Header -->
-        <div class="flex items-center gap-3 mb-5">
-          <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
+        <div class="mb-5 flex items-center gap-3">
+          <div
+            class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="w-5 h-5 text-primary"
@@ -65,35 +72,37 @@
             </svg>
           </div>
           <div>
-            <h1 class="text-xl md:text-2xl font-bold tracking-tight">Factura</h1>
-            <p class="text-xs opacity-50">Nueva factura de venta</p>
+            <h1 class="text-xl font-bold tracking-tight md:text-2xl">Factura</h1>
+            <p class="text-xs opacity-50 md:text-sm">Nueva factura de venta</p>
           </div>
         </div>
 
-        <div class="du-card bg-base-100 shadow-xl rounded-4xl">
-          <div class="du-card-body p-6 md:p-10">
-            <!-- Sub-header -->
-            <div class="flex justify-between">
+        <div class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl">
+          <div class="du-card-body p-5 md:p-8 lg:p-10">
+            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h2 class="text-lg md:text-xl font-bold tracking-tight">Detalle</h2>
-                <p class="text-xs opacity-50 mt-0.5">Información de la factura</p>
+                <h2 class="text-lg font-bold tracking-tight md:text-xl">Detalle</h2>
+                <p class="mt-0.5 text-xs opacity-50 md:text-sm">Información de la factura</p>
               </div>
-              <div class="text-left flex flex-col items-end gap-1">
+              <div class="flex flex-wrap items-center gap-2 sm:justify-end">
                 <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md font-mono"
                   >#00123</span
                 >
-                <p class="text-sm md:text-base font-semibold opacity-80">
+                <p
+                  class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80 md:text-base"
+                >
                   {{ this.currentDate | date: 'dd/MM/yyyy' }}
                 </p>
               </div>
             </div>
 
-            <div class="du-divider mt-2 mb-2"></div>
+            <div class="du-divider my-2"></div>
 
-            <!-- Cliente -->
-            <div class="flex items-center justify-between">
+            <div
+              class="mb-4 flex flex-col gap-3 rounded-2xl border border-base-content/10 bg-base-200/30 p-4 md:flex-row md:items-center md:justify-between"
+            >
               <div>
-                <p class="text-xs uppercase tracking-wider opacity-40 mb-1">Facturar a</p>
+                <p class="mb-1 text-xs uppercase tracking-wider opacity-50">Facturar a</p>
                 @if (this.customerStore.customer(); as customer) {
                   <p class="text-lg font-semibold">{{ customer?.name }}</p>
                   <p class="text-sm opacity-50">{{ customer?.document }}</p>
@@ -103,7 +112,7 @@
               </div>
               <label
                 for="my-drawer-1"
-                class="du-btn du-btn-ghost du-btn-sm md:du-btn-md"
+                class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
                 (click)="panelOpen.set(true)"
                 [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
               >
@@ -142,14 +151,13 @@
                 }
               </label>
             </div>
-            <!-- Error alert -->
             <div
               class="grid transition-all duration-300 ease-out"
               [class.grid-rows-[0fr]]="errorStore.message() === null || panelOpen()"
               [class.grid-rows-[1fr]]="errorStore.message() !== null && !panelOpen()"
             >
               <div class="overflow-hidden">
-                <div role="alert" class="du-alert du-alert-error du-alert-sm">
+                <div role="alert" class="du-alert du-alert-error du-alert-sm mb-4">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     class="h-5 w-5 shrink-0 stroke-current"
@@ -168,11 +176,17 @@
               </div>
             </div>
 
-            <!-- Tabla de productos -->
-            <div class="overflow-x-auto mb-6 rounded-2xl border border-base-content/10 bg-base-100">
+            <div class="mb-3 flex items-center justify-between gap-2">
+              <h3 class="text-sm md:text-base font-semibold">Productos</h3>
+              <p class="text-xs opacity-60">
+                {{ billStore.bill().products.length }} productos seleccionados
+              </p>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100">
               <table class="du-table w-full table-auto md:table-fixed">
                 <thead>
-                  <tr class="bg-base-300/50 md:text-base text-sm">
+                  <tr class="bg-base-300/50 text-sm md:text-base">
                     <th class="text-center font-semibold">Nombre</th>
                     <th class="text-center font-semibold">Cantidad</th>
                     <th class="text-center font-semibold">Precio</th>
@@ -188,7 +202,7 @@
                         <input
                           type="number"
                           min="1"
-                          class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
+                          class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-lg"
                           [value]="product.quantity"
                           (focus)="selectAll($event)"
                           (input)="modifyingQuantity($event, product.productId)"
@@ -200,7 +214,7 @@
                           <input
                             type="number"
                             min="1"
-                            class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-xl"
+                            class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
                             (focus)="selectAll($event)"
                             (focusout)="finishModifyPrice($event, product.productId)"
                             (keydown.enter)="finishModifyPrice($event, product.productId)"
@@ -245,10 +259,10 @@
                     </tr>
                   } @empty {
                     <tr>
-                      <td colspan="5" class="text-center py-10 opacity-40">
+                      <td colspan="5" class="py-10 text-center opacity-40">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          class="h-10 w-10 mx-auto mb-2 opacity-30"
+                          class="mx-auto mb-2 h-10 w-10 opacity-30"
                           fill="none"
                           viewBox="0 0 24 24"
                           stroke="currentColor"
@@ -268,14 +282,15 @@
               </table>
             </div>
 
-            <!-- Totales -->
-            <div class="flex justify-end">
-              <div class="w-full md:w-2/5 rounded-xl bg-base-300/40 p-5 flex flex-col gap-2">
+            <div class="mt-5 flex justify-end">
+              <div
+                class="w-full rounded-2xl border border-base-content/10 bg-base-200/40 p-5 md:w-2/5"
+              >
                 <div class="flex justify-between text-base">
                   <span class="opacity-60">Subtotal</span>
                   <span class="font-medium">{{ billStore.subtotal() | currency }}</span>
                 </div>
-                <div class="flex justify-between text-base">
+                <div class="mt-2 flex justify-between text-base">
                   <span class="opacity-60">IVA (19%)</span>
                   <span class="font-medium">{{ billStore.iva() | currency }}</span>
                 </div>
@@ -287,8 +302,9 @@
               </div>
             </div>
 
-            <!-- Acciones -->
-            <div class="flex flex-col-reverse sm:flex-row justify-between items-center gap-3 pt-2">
+            <div
+              class="mt-5 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between"
+            >
               <button
                 class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
                 (click)="cancelBill()"
@@ -296,7 +312,31 @@
               >
                 Cancelar
               </button>
-              <div class="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+
+              <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+                <button
+                  class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
+                  onclick="viewProducts.showModal()"
+                  [disabled]="billStore.loading()"
+                  [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+                  Agregar producto
+                </button>
+
                 @if (billStore.loading()) {
                   <button class="du-btn du-btn-sm du-btn-disabled w-full sm:w-auto">
                     <span class="du-loading du-loading-spinner du-loading-sm"></span>
@@ -326,28 +366,6 @@
                     Pagar
                   </button>
                 }
-                <button
-                  class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
-                  onclick="viewProducts.showModal()"
-                  [disabled]="billStore.loading()"
-                  [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  Agregar producto
-                </button>
               </div>
             </div>
           </div>

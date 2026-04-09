@@ -1,4 +1,7 @@
-<div class="du-navbar bg-base-100 shadow-sm" [attr.data-theme]="fixedLayoutTheme">
+<div
+  class="du-navbar z-40 border-b border-base-content/10 bg-base-100/95 shadow-sm backdrop-blur"
+  [attr.data-theme]="fixedLayoutTheme"
+>
   <!-- El navbar es responsive, esta parte es cuando esta en pantalla pequeñas -->
   @if (this.authStore.isAuthenticated()) {
     <label for="my-drawer-4" aria-label="open sidebar" class="du-btn du-btn-square du-btn-ghost">

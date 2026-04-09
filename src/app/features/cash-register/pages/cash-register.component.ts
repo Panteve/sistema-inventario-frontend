@@ -7,7 +7,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-cash-register',
-  imports: [CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe],
+  imports: [CurrencyPipe, DatePipe, DecimalPipe],
   providers: [CurrencyPipe],
   templateUrl: './cash-register.component.html',
   styleUrl: './cash-register.component.css',
