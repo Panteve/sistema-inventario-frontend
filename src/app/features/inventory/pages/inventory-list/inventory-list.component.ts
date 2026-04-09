@@ -5,6 +5,7 @@ import { ErrorStore } from '../../../../core/store/errors-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
+import { OfficeStore } from '../../../../shared/store/office-store';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -22,6 +23,7 @@ export class InventoryListComponent {
 
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
+  officeStore = inject(OfficeStore);
   errorStore = inject(ErrorStore);
   router = inject(Router);
   private currencyPipe = inject(CurrencyPipe);
@@ -206,5 +208,9 @@ export class InventoryListComponent {
     this.draftMaxPriceFilter.set(null);
     this.minPriceFilter.set(null);
     this.maxPriceFilter.set(null);
+  }
+  changeOffice(event: Event) {
+    this.authStore.setOfficeId(Number((event.target as HTMLSelectElement).value));
+    this.productStore.loadProductsOnInventory();
   }
 }

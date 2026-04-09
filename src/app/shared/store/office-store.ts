@@ -58,7 +58,6 @@ export const OfficeStore = signalStore(
     onInit(store) {
       if (store.authStore.isAdmin()) {
         store.loadOffices();
-        console.log('OfficeStore initialized and offices loaded');
       }
     },
   }),
