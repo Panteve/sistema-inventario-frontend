@@ -5,7 +5,13 @@ import { ErrorStore } from '../../../core/store/errors-store';
 import { InventoryService } from '../services/inventory.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { CreateInventoryMovementRequest } from '../../../shared/interfaces/inventoryMovement.interface';
+import {
+  CreateInventoryMovementRequest,
+  InventoryMovement,
+  InventoryMovementPagination,
+  InventoryMovementResponse,
+  ParamsGetInventoryMovements,
+} from '../../../shared/interfaces/inventoryMovement.interface';
 import {
   ProductCatalogResponse,
   ProductOnInventoryResponse,
@@ -14,6 +20,8 @@ import {
 type MovementInventoryState = {
   loading: boolean;
   movementData: CreateInventoryMovementRequest;
+  movementList: InventoryMovement[];
+  pagination: InventoryMovementPagination;
 };
 
 const initialState: MovementInventoryState = {
@@ -23,6 +31,11 @@ const initialState: MovementInventoryState = {
     fromOfficeId: 0,
     type: 'IN',
     products: [],
+  },
+  movementList: [],
+  pagination: {
+    totalItems: 0,
+    totalPages: 0,
   },
 };
 
@@ -35,6 +48,39 @@ export const MovementInventoryStore = signalStore(
   })),
 
   withMethods(({ errorStore, inventoryService, router, ...store }) => ({
+    getInventoyryMovements: rxMethod<ParamsGetInventoryMovements>(
+      pipe(
+        tap(() => {
+          patchState(store, { loading: true });
+        }),
+        switchMap((params) => {
+          const httpParams: ParamsGetInventoryMovements = {
+            startDate: params.startDate,
+            endDate: params.endDate,
+          };
+          if (params.fromOfficeId) httpParams.fromOfficeId = params.fromOfficeId;
+          if (params.toOfficeId) httpParams.toOfficeId = params.toOfficeId;
+          if (params.employeeId) httpParams.employeeId = params.employeeId;
+          if (params.type) httpParams.type = params.type;
+          if (params.limit) httpParams.limit = params.limit;
+          if (params.page) httpParams.page = params.page;
+          return inventoryService.getInventoryMovements(httpParams).pipe(
+            tap((response) => {
+              patchState(store, { movementList: response.data, pagination: response.pagination });
+            }),
+            catchError((error) => {
+              console.error(error);
+              errorStore.showError('Error al cargar los movimientos de inventario.');
+              return EMPTY;
+            }),
+            finalize(() => {
+              patchState(store, { loading: false });
+            }),
+          );
+        }),
+      ),
+    ),
+
     createMovementInventory: rxMethod<void>(
       pipe(
         tap(() => {

@@ -68,9 +68,6 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   );
 
   ngOnInit(): void {
-    if (this.authStore.isAdmin()) {
-      this.officeStore.loadOffices();
-    }
     this.productStore.loadProductsCatalog();
   }
 
