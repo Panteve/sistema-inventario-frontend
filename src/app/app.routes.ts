@@ -13,6 +13,8 @@ import { InventoryListComponent } from './features/inventory/pages/inventory-lis
 import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
 import { MovementInventoryStore } from './features/inventory/store/movement-inventory-store';
 import { OfficeStore } from './shared/store/office-store';
+import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
+import { EmployeeStore } from './shared/store/employee-store';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -74,7 +76,7 @@ export const routes: Routes = [
     path: 'inventory',
     title: 'Panel de control',
     canActivate: [authGuard],
-    providers: [ProductStore],
+    providers: [ProductStore, OfficeStore],
     children: [
       {
         path: 'inventory-office',
@@ -86,6 +88,12 @@ export const routes: Routes = [
         title: 'Nuevo movimiento',
         providers: [MovementInventoryStore],
         component: MovementCreateComponent,
+      },
+      {
+        path: 'history-movement',
+        title: 'Historial de movimientos',
+        providers: [MovementInventoryStore, EmployeeStore],
+        component: MovementListComponent,
       },
     ],
   },

@@ -19,43 +19,49 @@
     <div class="du-card bg-base-100 shadow-xl rounded-4xl">
       <div class="du-card-body p-6 md:p-10">
         <!-- Sub-header -->
-        <div class="flex justify-between">
+        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <h2 class="text-lg md:text-xl font-bold tracking-tight">Detalle</h2>
             <p class="text-xs opacity-50 mt-0.5">Información del movimiento</p>
           </div>
-          <div class="text-left flex flex-col items-end gap-1">
-            <p class="text-sm md:text-base font-semibold opacity-80">
+          <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+            <p
+              class="text-sm md:text-base font-semibold opacity-80 rounded-full bg-base-200/70 px-3 py-1"
+            >
               {{ this.currentDate | date: 'dd/MM/yyyy' }}
+            </p>
+            <p
+              class="text-xs md:text-sm rounded-full border border-base-content/10 bg-base-100 px-3 py-1"
+            >
+              {{ movementStore.movementData().products.length }} productos
             </p>
           </div>
         </div>
-          <!-- Error alert -->
-          <div
-            class="grid transition-all duration-300 ease-out"
-            [class.grid-rows-[0fr]]="errorStore.message() === null"
-            [class.grid-rows-[1fr]]="errorStore.message() !== null"
-          >
-            <div class="overflow-hidden">
-              <div role="alert" class="du-alert du-alert-error mb-4">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="h-5 w-5 shrink-0 stroke-current"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{{ errorStore.message() }}</span>
-              </div>
+        <!-- Error alert -->
+        <div
+          class="grid transition-all duration-300 ease-out"
+          [class.grid-rows-[0fr]]="errorStore.message() === null"
+          [class.grid-rows-[1fr]]="errorStore.message() !== null"
+        >
+          <div class="overflow-hidden">
+            <div role="alert" class="du-alert du-alert-error mb-4 mt-3">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="h-5 w-5 shrink-0 stroke-current"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+              </svg>
+              <span>{{ errorStore.message() }}</span>
             </div>
           </div>
-        
+        </div>
 
         <div class="du-divider mt-0 mb-2"></div>
 
@@ -63,7 +69,7 @@
           [class.sm:grid-cols-3]="movementStore.movementData().type === MOVEMENTYPE.TRANSFER"
           class="grid grid-cols-1 sm:grid-cols-2 gap-2"
         >
-          <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
+          <div class="rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3">
             <p class="text-[11px] uppercase tracking-wide opacity-60">Tipo de movimiento</p>
             <p class="text-lg font-semibold leading-tight">
               <select class="du-select w-full" (change)="changeMovementType($event)">
@@ -78,7 +84,7 @@
 
           <div
             [class.hidden]="movementStore.movementData().type === MOVEMENTYPE.IN"
-            class="flex flex-col justify-center rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2"
+            class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
               {{
@@ -123,7 +129,7 @@
 
           <div
             [class.hidden]="movementStore.movementData().type === MOVEMENTYPE.OUT"
-            class="flex flex-col justify-center rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2"
+            class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
               {{
@@ -166,130 +172,153 @@
           </div>
         </div>
         <div class="du-divider mt-0 mb-0"></div>
-        <fieldset class="du-fieldset flex flex-col w-full">
+        <fieldset
+          class="du-fieldset flex flex-col w-full rounded-2xl border border-base-content/10 bg-base-200/20 p-3 md:p-4"
+        >
           <legend
-            class="du-fieldset-legend text-xs uppercase tracking-wider opacity-40 font-semibold"
+            class="du-fieldset-legend text-xs uppercase tracking-wider opacity-50 font-semibold"
           >
-            Motivo del gasto
+            Motivo del movimiento
           </legend>
           <textarea
             class="du-textarea du-textarea-bordered h-24 w-full resize-none"
             placeholder="Ejemplo: Entrada por error de salida ..."
           ></textarea>
-          <div class="du-divider mt-2 mb-2"></div>
         </fieldset>
-        <div class="overflow-x-auto mb-6 rounded-2xl border border-base-content/10 bg-base-100">
-          <table class="du-table w-full table-auto md:table-fixed">
-            <thead>
-              <tr class="bg-base-300/50 md:text-base text-sm">
-                <th class="text-center font-semibold">Nombre</th>
-                <th class="text-center font-semibold">Cantidad</th>
-                <th class="w-12"></th>
-              </tr>
-            </thead>
-            <tbody class="text-sm md:text-base text-center">
-              @for (product of movementStore.movementData().products; track product.productId) {
-                <tr class="hover:bg-base-200 transition-colors">
-                  <td>{{ product.name }}</td>
-                  <td>
-                    <input
-                      type="number"
-                      min="1"
-                      class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
-                      [value]="product.quantity"
-                      (focus)="selectAll($event)"
-                      (input)="modifyingQuantity($event, product.productId)"
-                      (keydown.enter)="modifyingQuantity($event, product.productId)"
-                    />
-                  </td>
-                  <td class="text-center">
-                    <button
-                      class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
-                      (click)="quitProduct(product.productId)"
-                    >
+
+        <div class="mt-4 rounded-2xl border border-base-content/10 bg-base-100 p-3 md:p-4">
+          <div class="mb-3 flex items-center justify-between gap-2">
+            <h3 class="text-sm md:text-base font-semibold">Productos seleccionados</h3>
+            <p class="text-xs opacity-60">Edita cantidades o elimina productos</p>
+          </div>
+
+          <div class="overflow-x-auto mb-6 rounded-2xl border border-base-content/10 bg-base-100">
+            <table class="du-table w-full table-auto md:table-fixed">
+              <thead>
+                <tr class="bg-base-300/50 md:text-base text-sm">
+                  <th class="text-center font-semibold">Nombre</th>
+                  <th class="text-center font-semibold">Cantidad</th>
+                  <th class="w-12"></th>
+                </tr>
+              </thead>
+              <tbody class="text-sm md:text-base text-center">
+                @for (product of movementStore.movementData().products; track product.productId) {
+                  <tr class="hover:bg-base-200 transition-colors">
+                    <td>{{ product.name }}</td>
+                    <td>
+                      <input
+                        type="number"
+                        min="1"
+                        class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
+                        [value]="product.quantity"
+                        (focus)="selectAll($event)"
+                        (input)="modifyingQuantity($event, product.productId)"
+                        (keydown.enter)="modifyingQuantity($event, product.productId)"
+                      />
+                    </td>
+                    <td class="text-center">
+                      <button
+                        class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
+                        aria-label="Quitar producto"
+                        (click)="quitProduct(product.productId)"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="14"
+                          height="14"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2.5"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                        >
+                          <line x1="18" y1="6" x2="6" y2="18" />
+                          <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
+                      </button>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="3" class="text-center py-10 opacity-40">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
-                        width="14"
-                        height="14"
-                        viewBox="0 0 24 24"
+                        class="h-10 w-10 mx-auto mb-2 opacity-30"
                         fill="none"
+                        viewBox="0 0 24 24"
                         stroke="currentColor"
-                        stroke-width="2.5"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
                       >
-                        <line x1="18" y1="6" x2="6" y2="18" />
-                        <line x1="6" y1="6" x2="18" y2="18" />
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="1.5"
+                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                        />
                       </svg>
-                    </button>
-                  </td>
-                </tr>
-              } @empty {
-                <tr>
-                  <td colspan="3" class="text-center py-10 opacity-40">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      class="h-10 w-10 mx-auto mb-2 opacity-30"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="1.5"
-                        d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                      />
-                    </svg>
-                    <p>Agrega productos al movimiento</p>
-                  </td>
-                </tr>
+                      <p>Agrega productos al movimiento</p>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+            <button
+              class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
+              [disabled]="movementStore.loading() || officeStore.loading() || notSelectedOffice()"
+              (click)="openProductsModal()"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <line x1="12" y1="5" x2="12" y2="19" />
+                <line x1="5" y1="12" x2="19" y2="12" />
+              </svg>
+              Agregar producto
+            </button>
+
+            <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
+              <button
+                class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
+                [disabled]="officeStore.loading()"
+                (click)="this.movementStore.resetMovementData()"
+              >
+                Cancelar
+              </button>
+
+              @if (movementStore.loading()) {
+                <button class="du-btn du-btn-disabled w-full sm:w-auto">
+                  <span class="du-loading du-loading-spinner du-loading-sm"></span>
+                  Procesando
+                </button>
+              } @else {
+                <button
+                  class="du-btn du-btn-primary du-btn-sm md:du-btn-md w-full sm:w-auto"
+                  [disabled]="!canConfirm() || officeStore.loading() || notSelectedOffice()"
+                  (click)="submitMovement()"
+                >
+                  Crear
+                </button>
               }
-            </tbody>
-          </table>
+            </div>
+          </div>
+
+          @if (!canConfirm() || notSelectedOffice()) {
+            <p class="mt-2 text-xs opacity-60">
+              Selecciona una oficina y agrega al menos un producto para habilitar la creación del
+              movimiento.
+            </p>
+          }
         </div>
-        <button
-          class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
-          [disabled]="movementStore.loading() || officeStore.loading() || notSelectedOffice()"
-          (click)="openProductsModal()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <line x1="12" y1="5" x2="12" y2="19" />
-            <line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Agregar producto
-        </button>
-        @if (movementStore.loading()) {
-          <button class="du-btn du-btn-sm du-btn-disabled w-full sm:w-auto">
-            <span class="du-loading du-loading-spinner du-loading-sm"></span>
-            Procesando
-          </button>
-        } @else {
-          <button
-            class="du-btn du-btn-primary du-btn-sm md:du-btn-md w-full sm:w-auto"
-            [disabled]="!canConfirm() || officeStore.loading() || notSelectedOffice()"
-            (click)="submitMovement()"
-          >
-            Crear
-          </button>
-        }
-        <button
-          class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
-          [disabled]="officeStore.loading()"
-          (click)="this.movementStore.resetMovementData()"
-        >
-          Cancelar
-        </button>
       </div>
     </div>
     @if (authStore.isAuthenticated() && productsModalOpen()) {

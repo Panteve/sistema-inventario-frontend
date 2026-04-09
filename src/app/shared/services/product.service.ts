@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ProductCatalogResponse, ProductOnInventoryResponse } from '../interfaces/product.interface';
 import { AuthStore } from '../../core/store/auth-store';
+import { OfficeStore } from '../store/office-store';
 
 @Injectable({
   providedIn: 'root',
@@ -10,12 +11,14 @@ import { AuthStore } from '../../core/store/auth-store';
 export class ProductService {
   private http = inject(HttpClient);
   private authStore = inject(AuthStore);
+  private officeStore = inject(OfficeStore);
 
   modalClose = signal<boolean>(false);
 
   loadProductsOnInventory() {
+    const officeId: number = this.authStore.employee()?.officeId || this.officeStore.offices()[0]?.id;
     return this.http.get<ProductOnInventoryResponse[]>(
-      `${environment.apiUrl}/office-inventory/${this.authStore.employee()?.officeId || 0}`,
+      `${environment.apiUrl}/office-inventory/${officeId}`,
     );
   }
 

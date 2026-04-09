@@ -14,12 +14,12 @@ import { ErrorStore } from '../../core/store/errors-store';
 import { OfficeService } from '../services/office.service';
 import { OfficeNameIdResponse } from '../interfaces/office.interface';
 
-type ProductState = {
+type OfficeState = {
   offices: OfficeNameIdResponse[];
   loading: boolean;
 };
 
-const initialState: ProductState = {
+const initialState: OfficeState = {
   offices: [],
   loading: false,
 };
@@ -54,4 +54,11 @@ export const OfficeStore = signalStore(
       ),
     ),
   })),
+  withHooks({
+    onInit(store) {
+      if (store.authStore.isAdmin()) {
+        store.loadOffices();
+      }
+    },
+  }),
 );

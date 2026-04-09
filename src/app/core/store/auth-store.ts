@@ -110,7 +110,7 @@ export const AuthStore = signalStore(
                 cashRegisterStore.setCashRegisterId(response.cashRegisterId);
               }
 
-              router.navigate(['/inventory/new-movement']);
+              router.navigate(['/inventory/history-movement']);
             }),
             finalize(() => {
               patchState(store, { loading: false });
