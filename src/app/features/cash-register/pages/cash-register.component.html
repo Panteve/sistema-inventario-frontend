@@ -1,371 +1,383 @@
-<div class="relative">
+<div class="relative rounded-3xl h-fit px-4 py-2 md:py-3">
   @if (cashRegisterStore.loading()) {
     <div
-      class="absolute inset-0 z-20 h-full flex items-center justify-center bg-base-100/70 backdrop-blur-[2px]"
+      class="fixed inset-0 z-30 flex items-center justify-center bg-base-100/70 backdrop-blur-[2px]"
     >
       <span class="du-loading du-loading-spinner du-loading-xl text-accent"></span>
     </div>
   }
-  <!-- Header -->
-  <div class="flex items-center gap-3 mb-5">
-    <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-accent/10">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="w-5 h-5 text-accent"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-        stroke-width="1.5"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
-        />
-      </svg>
-    </div>
-    <div>
-      @if (!cashRegisterStore.cashRegisterOpen()) {
-        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Apertura de Caja</h1>
-        <p class="text-xs opacity-50">Registra el monto inicial para comenzar las operaciones</p>
-      } @else {
-        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Cierre de Caja</h1>
-        <p class="text-xs opacity-50">
-          Registra el efectivo fisico y valida el cuadre final antes del cierre.
-        </p>
-      }
-    </div>
-  </div>
 
-  <!-- Info de sesion -->
-  <div class="flex items-center gap-4 p-4 rounded-2xl bg-base-200/50">
-    <div class="du-avatar du-placeholder">
+  <div class="relative z-10 mx-auto w-full max-w-5xl">
+    <div class="mb-3 flex items-center gap-2">
       <div
-        class="bg-accent text-center text-accent-content w-10 rounded-full inline-flex items-center justify-center"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 24 24">
-          <g
-            fill="none"
-            stroke="currentColor"
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5 text-accent"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+          stroke-width="1.5"
+        >
+          <path
             stroke-linecap="round"
             stroke-linejoin="round"
-            stroke-width="2"
-          >
-            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-            <circle cx="12" cy="7" r="4" />
-          </g>
+            d="M2.25 18.75a60.07 60.07 0 0 1 15.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 0 1 3 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 0 0-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 0 1-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 0 0 3 15h-.75M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm3 0h.008v.008H18V10.5Zm-12 0h.008v.008H6V10.5Z"
+          />
         </svg>
       </div>
+      <div>
+        @if (!cashRegisterStore.cashRegisterOpen()) {
+          <h1 class="text-xl font-bold tracking-tight">Apertura de caja</h1>
+          <p class="text-sm opacity-50">Registra el monto inicial para comenzar la jornada.</p>
+        } @else {
+          <h1 class="text-xl font-bold tracking-tight">Cierre de caja</h1>
+          <p class="text-sm opacity-50">Valida el efectivo físico y revisa el cuadre final.</p>
+        }
+      </div>
     </div>
-    <div class="flex-1 min-w-0">
-      <p class="text-sm font-semibold truncate">
-        {{ this.authStore.employee()?.name ?? 'Jhon Doe' }}
-      </p>
-      <p class="text-xs opacity-50">{{ this.authStore.employee()?.role | titlecase }}</p>
-    </div>
-    <div class="text-right">
-      <p class="text-xs font-mono opacity-60">{{ this.currentDate | date: 'dd/MM/yyyy' }}</p>
-      <p class="text-xs font-mono opacity-40">
-        {{ this.currentHour | number: '2.0-0' }}:{{ this.currentMinute | number: '2.0-0' }}
-      </p>
+
+    <div class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
+      <div class="du-card-body p-2.5 md:p-3">
+        <div class="mb-1.5 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <h2 class="text-lg font-bold tracking-tight">Detalle</h2>
+            <p class="text-sm opacity-50">Información de la caja y de la sesión.</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+            @if (!cashRegisterStore.cashRegisterOpen()) {
+              <span class="du-badge du-badge-warning du-badge-sm md:du-badge-md">Caja cerrada</span>
+            } @else {
+              <span class="du-badge du-badge-success du-badge-sm md:du-badge-md">Caja abierta</span>
+            }
+            <p class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80">
+              {{ currentDate | date: 'dd/MM/yyyy' }}
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 gap-1 sm:grid-cols-2">
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
+            <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+              {{ this.authStore.employee()?.name ?? 'Jhon Doe' }}
+            </p>
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Hora</p>
+            <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+              {{ currentHour | number: '2.0-0' }}:{{ currentMinute | number: '2.0-0' }}
+            </p>
+          </div>
+        </div>
+
+        @if (!cashRegisterStore.cashRegisterOpen()) {
+          <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
+            <fieldset
+              class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+            >
+              <legend
+                class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
+              >
+                Monto inicial en caja
+              </legend>
+              <label
+                class="du-input du-input-accent flex min-h-10 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 font-mono text-base shadow-sm"
+              >
+                <span class="font-bold opacity-40">$</span>
+                <input
+                  type="text"
+                  class="grow bg-transparent outline-none no-spinner"
+                  placeholder="0.00"
+                  [value]="displayAmount()"
+                  (input)="onAmountReceivedChange($event)"
+                  (focus)="onAmountFocus()"
+                  (blur)="onAmountBlur()"
+                />
+              </label>
+            </fieldset>
+
+            <fieldset
+              class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+            >
+              <legend
+                class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
+              >
+                Observaciones
+              </legend>
+              <textarea
+                class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
+                placeholder="Notas adicionales sobre la apertura..."
+              ></textarea>
+            </fieldset>
+          </div>
+
+          <div class="mt-2 rounded-2xl border border-accent/20 bg-accent/5 p-2.5">
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                  Total apertura
+                </p>
+                <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight text-accent">
+                  $ {{ displayAmount() }}
+                </p>
+              </div>
+              <div class="du-badge du-badge-accent du-badge-lg">Inicial</div>
+            </div>
+          </div>
+
+          <div
+            class="mt-1 grid transition-all duration-300 ease-out"
+            [class.grid-rows-[0fr]]="errorStore.message() === null"
+            [class.grid-rows-[1fr]]="errorStore.message() !== null"
+          >
+            <div class="overflow-hidden">
+              <div role="alert" class="du-alert du-alert-error du-alert-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5 shrink-0 stroke-current"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                <span class="text-sm font-semibold">{{ errorStore.message() }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="mt-2 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <button
+              class="du-btn du-btn-soft w-full sm:w-auto"
+              [disabled]="cashRegisterStore.loading()"
+              (click)="closeCashModal()"
+            >
+              Cancelar
+            </button>
+            @if (cashRegisterStore.loading()) {
+              <button class="du-btn du-btn-accent w-full gap-2 sm:w-auto du-btn-disabled">
+                <span class="du-loading du-loading-spinner du-loading-sm"></span>
+                Procesando
+              </button>
+            } @else {
+              <button
+                class="du-btn du-btn-accent w-full gap-2 sm:w-auto"
+                (click)="openCashRegister()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
+                  />
+                </svg>
+                Abrir caja
+              </button>
+            }
+          </div>
+        } @else {
+          <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-3">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Transferencias
+              </p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                {{ cashRegisterStore.totalTransferSales() | currency: 'COP' : '$' : '1.0-0' }}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Pagos en efectivo
+              </p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                {{ cashRegisterStore.totalCashSales() | currency: 'COP' : '$' : '1.0-0' }}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">Gastos</p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight text-error">
+                - {{ cashRegisterStore.totalExpenses() | currency: 'COP' : '$' : '1.0-0' }}
+              </p>
+            </div>
+          </div>
+
+          <div class="mt-1 grid grid-cols-1 gap-1 md:grid-cols-2">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Ventas totales
+              </p>
+              <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight">
+                {{
+                  cashRegisterStore.totalTransferSales() + cashRegisterStore.totalCashSales()
+                    | currency: 'COP' : '$' : '1.0-0'
+                }}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-accent/20 bg-accent/5 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Total esperado en caja
+              </p>
+              <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight text-accent">
+                $ {{ displayExpectedCash() }}
+              </p>
+            </div>
+          </div>
+
+          <fieldset
+            class="du-fieldset mt-2 rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+          >
+            <legend
+              class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
+            >
+              Efectivo físico en caja
+            </legend>
+            <label
+              class="du-input du-input-accent flex min-h-10 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 font-mono text-base shadow-sm"
+            >
+              <span class="font-bold opacity-40">$</span>
+              <input
+                type="text"
+                class="grow bg-transparent outline-none no-spinner"
+                placeholder="0.00"
+                [value]="displayAmount()"
+                (input)="onAmountReceivedChange($event)"
+                (focus)="onAmountFocus()"
+                (blur)="onAmountBlur()"
+              />
+            </label>
+          </fieldset>
+
+          <div
+            class="mt-2 rounded-2xl border p-2.5 transition-colors"
+            [class.bg-success/10]="differenceStatus() === 'ok'"
+            [class.border-success/30]="differenceStatus() === 'ok'"
+            [class.bg-error/10]="differenceStatus() === 'short'"
+            [class.border-error/30]="differenceStatus() === 'short'"
+            [class.bg-warning/10]="differenceStatus() === 'over'"
+            [class.border-warning/30]="differenceStatus() === 'over'"
+          >
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div class="min-w-0">
+                <p class="text-sm font-semibold uppercase tracking-[0.16em] opacity-50">
+                  Diferencia de caja
+                </p>
+                <p
+                  class="mt-0.5 break-all font-mono text-xl font-bold leading-tight"
+                  [class.text-success]="differenceStatus() === 'ok'"
+                  [class.text-error]="differenceStatus() === 'short'"
+                  [class.text-warning]="differenceStatus() === 'over'"
+                >
+                  @if (differenceStatus() === 'short') {
+                    -
+                  } @else if (differenceStatus() === 'over') {
+                    +
+                  }
+                  $ {{ displayDifference() }}
+                </p>
+              </div>
+              <div
+                class="du-badge du-badge-lg"
+                [class.du-badge-success]="differenceStatus() === 'ok'"
+                [class.du-badge-error]="differenceStatus() === 'short'"
+                [class.du-badge-warning]="differenceStatus() === 'over'"
+              >
+                @if (differenceStatus() === 'ok') {
+                  Cuadrado
+                } @else if (differenceStatus() === 'short') {
+                  Faltante
+                } @else {
+                  Sobrante
+                }
+              </div>
+            </div>
+            <p class="mt-1 text-sm opacity-80">{{ differenceFeedback() }}</p>
+          </div>
+
+          <fieldset
+            class="du-fieldset mt-1.5 rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+          >
+            <legend
+              class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
+            >
+              Observaciones de cierre
+            </legend>
+            <textarea
+              class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
+              placeholder="Anota novedades del cierre (faltantes, sobrantes, gastos no esperados)..."
+            ></textarea>
+          </fieldset>
+
+          <div
+            class="mt-2 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between"
+          >
+            <button
+              class="du-btn du-btn-soft w-full sm:w-auto"
+              [disabled]="cashRegisterStore.loading()"
+              (click)="closeCashModal()"
+            >
+              Cancelar
+            </button>
+            @if (cashRegisterStore.loading()) {
+              <button class="du-btn du-btn-error w-full gap-2 sm:w-auto du-btn-disabled">
+                <span class="du-loading du-loading-spinner du-loading-sm"></span>
+                Procesando
+              </button>
+            } @else {
+              <button
+                class="du-btn du-btn-error w-full gap-2 sm:w-auto"
+                type="button"
+                (click)="requestCloseCashRegister()"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    d="M6 7a6 6 0 0 1 12 0v3m-9 4h6m-9 8h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z"
+                  />
+                </svg>
+                Cerrar caja
+              </button>
+            }
+          </div>
+        }
+      </div>
     </div>
   </div>
-  <!-- Apertura de la caja -->
-  @if (!cashRegisterStore.cashRegisterOpen()) {
-    <div class="du-divider mt-2 mb-2"></div>
-
-    <fieldset class="du-fieldset w-full">
-      <legend class="du-fieldset-legend text-xs uppercase tracking-wider opacity-40 font-semibold">
-        Monto inicial en caja
-      </legend>
-      <label
-        class="du-input w-full du-input-accent flex items-center gap-2 font-mono text-lg rounded-xl"
-      >
-        <span class="opacity-40 font-bold">$</span>
-        <input
-          type="text"
-          class="grow no-spinner"
-          placeholder="0.00"
-          [value]="displayAmount()"
-          (input)="onAmountReceivedChange($event)"
-          (focus)="onAmountFocus()"
-          (blur)="onAmountBlur()"
-        />
-      </label>
-      <label class="du-label">
-        <span class="text-xs opacity-40">Ingresa el efectivo con el que inicias la jornada</span>
-      </label>
-    </fieldset>
-
-    <fieldset class="du-fieldset flex flex-col w-full">
-      <legend class="du-fieldset-legend text-xs uppercase tracking-wider opacity-40 font-semibold">
-        Observaciones
-      </legend>
-      <textarea
-        class="du-textarea du-textarea-bordered du-textarea-accent h-15 w-full resize-none"
-        placeholder="Notas adicionales sobre la apertura..."
-      ></textarea>
-    </fieldset>
-
-    <div class="du-divider mt-4 mb-4"></div>
-
-    <div
-      class="flex items-center justify-between p-4 rounded-2xl bg-accent/5 border border-accent/10"
-    >
-      <div class="min-w-0">
-        <p class="text-xs uppercase tracking-wider opacity-40 font-semibold">Total apertura</p>
-        <p
-          class="min-w-0 break-all leading-tight text-2xl md:text-3xl font-bold font-mono text-accent mt-1"
-        >
-          $ {{ displayAmount() }}
-        </p>
-      </div>
-    </div>
-
-    <div
-      class="grid transition-all duration-300 ease-out mt-3"
-      [class.grid-rows-[0fr]]="errorStore.message() === null"
-      [class.grid-rows-[1fr]]="errorStore.message() !== null"
-    >
-      <div class="overflow-hidden">
-        <div role="alert" class="du-alert du-alert-error du-alert-sm">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="h-5 w-5 shrink-0 stroke-current"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span class="text-sm md:text-base font-semibold">{{ errorStore.message() }}</span>
-        </div>
-      </div>
-    </div>
-
-    <div class="flex flex-col-reverse sm:flex-row gap-3 mt-3">
-      <button
-        class="du-btn du-btn-soft flex-1"
-        [disabled]="cashRegisterStore.loading()"
-        (click)="closeCashModal()"
-      >
-        Cancelar
-      </button>
-      @if (cashRegisterStore.loading()) {
-        <button class="du-btn du-btn-accent flex-1 gap-2 du-btn-disabled">
-          <span class="du-loading du-loading-spinner du-loading-sm"></span>
-          Procesando
-        </button>
-      } @else {
-        <button class="du-btn du-btn-accent flex-1 gap-2" (click)="openCashRegister()">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M13.5 10.5V6.75a4.5 4.5 0 1 1 9 0v3.75M3.75 21.75h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H3.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z"
-            />
-          </svg>
-          Abrir Caja
-        </button>
-      }
-    </div>
-
-    <div class="mt-4 text-center">
-      <p class="text-xs opacity-30">
-        Una vez abierta la caja, podras registrar ventas y movimientos de efectivo.
-      </p>
-    </div>
-  } @else {
-    <!-- Cierre de la caja -->
-    <div class="du-divider mt-2 mb-3"></div>
-
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-      <div class="p-4 rounded-2xl bg-base-200/60 border border-base-content/10">
-        <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">Ventas totales</p>
-        <p class="min-w-0 break-all leading-tight text-2xl font-bold font-mono mt-1">
-          {{
-            cashRegisterStore.totalTransferSales() + cashRegisterStore.totalCashSales()
-              | currency: 'COP' : '$' : '1.0-0'
-          }}
-        </p>
-      </div>
-      <div class="p-4 rounded-2xl bg-base-200/60 border border-base-content/10">
-        <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">
-          Total esperado en caja
-        </p>
-        <p class="min-w-0 break-all leading-tight text-2xl font-bold font-mono mt-1 text-accent">
-          $ {{ displayExpectedCash() }}
-        </p>
-      </div>
-    </div>
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-3 mt-3">
-      <div class="p-4 rounded-xl bg-base-100 border border-base-content/10">
-        <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">Transferencias</p>
-        <p class="min-w-0 break-all leading-tight text-lg font-semibold font-mono mt-1">
-          {{ cashRegisterStore.totalTransferSales() | currency: 'COP' : '$' : '1.0-0' }}
-        </p>
-      </div>
-      <div class="p-4 rounded-xl bg-base-100 border border-base-content/10">
-        <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">Pagos en efectivo</p>
-        <p class="min-w-0 break-all leading-tight text-lg font-semibold font-mono mt-1">
-          {{ cashRegisterStore.totalCashSales() | currency: 'COP' : '$' : '1.0-0' }}
-        </p>
-      </div>
-      <div class="p-4 rounded-xl bg-base-100 border border-base-content/10">
-        <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">Gastos</p>
-        <p class="min-w-0 break-all leading-tight text-lg font-semibold font-mono mt-1 text-error">
-          - {{ cashRegisterStore.totalExpenses() | currency: 'COP' : '$' : '1.0-0' }}
-        </p>
-      </div>
-    </div>
-    <fieldset class="du-fieldset w-full">
-      <legend class="du-fieldset-legend text-xs uppercase tracking-wider opacity-40 font-semibold">
-        Efectivo fisico en caja
-      </legend>
-      <label
-        class="du-input w-full du-input-accent flex items-center gap-2 font-mono text-lg rounded-xl"
-      >
-        <span class="opacity-40 font-bold">$</span>
-        <input
-          type="text"
-          class="grow no-spinner"
-          placeholder="0.00"
-          [value]="displayAmount()"
-          (input)="onAmountReceivedChange($event)"
-          (focus)="onAmountFocus()"
-          (blur)="onAmountBlur()"
-        />
-      </label>
-      <label class="du-label">
-        <span class="text-xs opacity-40">Ingresa el efectivo contado al momento del cierre</span>
-      </label>
-    </fieldset>
-
-    <div
-      class="mt-3 p-4 rounded-2xl border transition-colors"
-      [class.bg-success/10]="differenceStatus() === 'ok'"
-      [class.border-success/30]="differenceStatus() === 'ok'"
-      [class.bg-error/10]="differenceStatus() === 'short'"
-      [class.border-error/30]="differenceStatus() === 'short'"
-      [class.bg-warning/10]="differenceStatus() === 'over'"
-      [class.border-warning/30]="differenceStatus() === 'over'"
-    >
-      <div class="flex items-center justify-between gap-3">
-        <div class="min-w-0">
-          <p class="text-xs uppercase tracking-wider opacity-50 font-semibold">
-            Diferencia de caja
-          </p>
-          <p
-            class="min-w-0 break-all leading-tight text-2xl font-bold font-mono mt-1"
-            [class.text-success]="differenceStatus() === 'ok'"
-            [class.text-error]="differenceStatus() === 'short'"
-            [class.text-warning]="differenceStatus() === 'over'"
-          >
-            @if (differenceStatus() === 'short') {
-              -
-            } @else if (differenceStatus() === 'over') {
-              +
-            }
-            $ {{ displayDifference() }}
-          </p>
-        </div>
-        <div
-          class="du-badge du-badge-lg"
-          [class.du-badge-success]="differenceStatus() === 'ok'"
-          [class.du-badge-error]="differenceStatus() === 'short'"
-          [class.du-badge-warning]="differenceStatus() === 'over'"
-        >
-          @if (differenceStatus() === 'ok') {
-            Cuadrado
-          } @else if (differenceStatus() === 'short') {
-            Faltante
-          } @else {
-            Sobrante
-          }
-        </div>
-      </div>
-      <p class="text-sm mt-2 opacity-80">{{ differenceFeedback() }}</p>
-    </div>
-
-    <fieldset class="du-fieldset flex flex-col w-full mt-2">
-      <legend class="du-fieldset-legend text-xs uppercase tracking-wider opacity-40 font-semibold">
-        Observaciones de cierre
-      </legend>
-      <textarea
-        class="du-textarea du-textarea-bordered du-textarea-accent h-15 w-full resize-none"
-        placeholder="Anota novedades del cierre (faltantes, sobrantes, gastos no esperados)..."
-      ></textarea>
-    </fieldset>
-
-    <div class="flex flex-col-reverse sm:flex-row gap-3 mt-3">
-      <button
-        class="du-btn du-btn-soft flex-1"
-        [disabled]="cashRegisterStore.loading()"
-        (click)="closeCashModal()"
-      >
-        Cancelar
-      </button>
-      @if (cashRegisterStore.loading()) {
-        <button class="du-btn du-btn-error flex-1 gap-2">
-          <span class="du-loading du-loading-spinner du-loading-sm"></span>
-          Procesando
-        </button>
-      } @else {
-        <button
-          class="du-btn du-btn-error flex-1 gap-2"
-          type="button"
-          (click)="requestCloseCashRegister()"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="w-5 h-5"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            stroke-width="2"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M6 7a6 6 0 0 1 12 0v3m-9 4h6m-9 8h12a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z"
-            />
-          </svg>
-          Cerrar Caja
-        </button>
-      }
-    </div>
-
-    <div class="mt-4 text-center">
-      <p class="text-xs opacity-30">
-        Esta vista es solo UI. El cierre definitivo y su persistencia se conectaran en la logica.
-      </p>
-    </div>
-  }
 
   @if (closeConfirmationOpen()) {
     <div
-      class="absolute inset-0 z-30 flex items-center justify-center bg-base-100/65 px-4 backdrop-blur-[2px]"
+      class="fixed inset-0 z-40 flex items-center justify-center bg-base-100/65 px-4 backdrop-blur-[2px]"
       role="dialog"
       aria-modal="true"
       aria-labelledby="close-cash-confirmation-title"
       aria-describedby="close-cash-confirmation-description"
     >
-      <div class="w-full max-w-md rounded-3xl border border-error/20 bg-base-100 p-6 shadow-2xl">
+      <div class="w-full max-w-md rounded-3xl border border-error/20 bg-base-100 p-4 shadow-2xl">
         <div class="flex items-start gap-3">
           <div
-            class="mt-0.5 inline-flex h-11 w-11 items-center justify-center rounded-full bg-error/10 text-error"
+            class="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 text-error"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -386,22 +398,22 @@
             </svg>
           </div>
           <div class="min-w-0 flex-1">
-            <h2 id="close-cash-confirmation-title" class="text-lg font-bold tracking-tight">
+            <h2 id="close-cash-confirmation-title" class="text-base font-bold tracking-tight">
               Confirmar cierre de caja
             </h2>
-            <p id="close-cash-confirmation-description" class="mt-2 text-sm opacity-70">
+            <p id="close-cash-confirmation-description" class="mt-1 text-sm opacity-70">
               Esta acción cerrará la caja actual. Verifica el efectivo físico antes de continuar.
             </p>
           </div>
         </div>
 
-        <div class="mt-4 rounded-2xl border border-base-content/10 bg-base-200/40 p-4 text-sm">
+        <div class="mt-3 rounded-2xl border border-base-content/10 bg-base-200/40 p-3 text-sm">
           <p class="font-semibold">Resumen actual</p>
-          <p class="mt-2 opacity-70">Esperado en caja: $ {{ displayExpectedCash() }}</p>
+          <p class="mt-1 opacity-70">Esperado en caja: $ {{ displayExpectedCash() }}</p>
           <p class="opacity-70">Diferencia registrada: $ {{ displayDifference() }}</p>
         </div>
 
-        <div class="mt-5 flex flex-col-reverse gap-3 sm:flex-row">
+        <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row">
           <button
             class="du-btn du-btn-soft flex-1"
             type="button"

@@ -1,13 +1,13 @@
-<div class="du-drawer lg:du-drawer-open">
+<div class="du-drawer min-h-screen lg:du-drawer-open">
   <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
-  <div class="du-drawer-content bg-base-content/5">
+  <div class="du-drawer-content min-h-screen bg-base-content/5">
     <app-navbar />
-    <main class="flex-1">
+    <main class="flex-1 px-2 py-2 md:px-3 md:py-3">
       <router-outlet />
     </main>
     @if (authStore.isAuthenticated() && cashModalOpen()) {
-      <dialog class="du-modal du-modal-open" (close)="closeCashModal()">
-        <div class="du-modal-box w-11/12 max-w-4xl">
+      <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeCashModal()">
+        <div class="du-modal-box rounded-3xl w-11/12 max-w-4xl">
           <button
             class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-10"
             aria-label="close"
@@ -20,8 +20,8 @@
       </dialog>
     }
     @if (authStore.isAuthenticated() && expenseModalOpen()) {
-      <dialog class="du-modal du-modal-open" (close)="closeExpenseModal()">
-        <div class="du-modal-box w-11/12 max-w-2xl">
+      <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeExpenseModal()">
+        <div class="du-modal-box rounded-3xl w-11/12 max-w-2xl">
           <button
             class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-50"
             aria-label="close"
@@ -41,10 +41,10 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
     @if (authStore.isAuthenticated()) {
       <div
-        class="flex min-h-full flex-col items-start bg-base-100 du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg"
+        class="flex min-h-full flex-col items-start border-r border-base-content/10 bg-base-100/95 backdrop-blur-sm du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg"
       >
         <ul
-          class="du-menu du-menu-lg du-is-drawer-close:content-center gap-1.5 w-full grow font-semibold"
+          class="du-menu du-menu-lg du-is-drawer-close:content-center w-full grow gap-1.5 p-2 font-semibold"
         >
           <!-- List item -->
           <li class="du-menu-title text-base-content p-0 py-1.5">
@@ -241,9 +241,15 @@
                 <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Inventario</span>
               </summary>
               <ul class="du-is-drawer-close:hidden">
-                <li (click)="router.navigate(['/inventory/inventory-office'])"><a>Stock actual</a></li>
-                <li (click)="router.navigate(['/inventory/history-movement'])"><a>Movimientos</a></li>
-                <li (click)="router.navigate(['/inventory/new-movement'])"><a>Nuevo movimiento</a></li>
+                <li (click)="router.navigate(['/inventory/inventory-office'])">
+                  <a>Stock actual</a>
+                </li>
+                <li (click)="router.navigate(['/inventory/history-movement'])">
+                  <a>Movimientos</a>
+                </li>
+                <li (click)="router.navigate(['/inventory/new-movement'])">
+                  <a>Nuevo movimiento</a>
+                </li>
               </ul>
             </details>
           </li>
