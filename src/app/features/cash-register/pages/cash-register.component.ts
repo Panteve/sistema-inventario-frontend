@@ -1,9 +1,9 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { AuthStore } from '../../../core/store/auth-store';
-import { CurrencyPipe, DatePipe, DecimalPipe, TitleCasePipe } from '@angular/common';
+import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { CashRegisterStore } from '../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
+import { NgFastToastComponent } from 'ng-fast-toast';
 
 @Component({
   selector: 'app-cash-register',
@@ -15,7 +15,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 export class CashRegisterComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
-  errorStore = inject(ErrorStore);
   authStore = inject(AuthStore);
   cashRegisterStore = inject(CashRegisterStore);
   private currencyPipe = inject(CurrencyPipe);

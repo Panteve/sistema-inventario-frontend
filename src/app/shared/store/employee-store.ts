@@ -3,9 +3,9 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { ErrorStore } from '../../core/store/errors-store';
 import { EmployeesByOfficeResponse } from '../interfaces/employee.interface';
 import { EmployeeService } from '../services/employee.service';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type EmployeeState = {
   employees: EmployeesByOfficeResponse[];
@@ -21,28 +21,31 @@ export const EmployeeStore = signalStore(
   withProps(() => ({
     authStore: inject(AuthStore),
     employeeService: inject(EmployeeService),
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService),
   })),
-  withMethods(({ authStore, employeeService, errorStore, ...store }) => ({
+  withMethods(({ authStore, employeeService, toastNotification, ...store }) => ({
     loadEmployees: rxMethod<number>(
       pipe(
-        tap(() => patchState(store, { loading: true })),
-        switchMap((officeId) =>
-          employeeService.getEmployeesByOffice(officeId).pipe(
+        tap(() =>{patchState(store, { loading: true })}),
+        switchMap((officeId) => {
+          return employeeService.getEmployeesByOffice(officeId).pipe(
             tap((employees) => {
               patchState(store, { employees });
             }),
             catchError((err) => {
-              errorStore.showError(
-                'Error al cargar los empleados. Por favor, inténtelo de nuevo más tarde.',
-              );
+              toastNotification.error({
+                title: 'Error',
+                content: 'Error al cargar los empleados de la oficina.',
+                duration: 5,
+              });
               return EMPTY;
             }),
             finalize(() => {
               patchState(store, { loading: false });
             }),
-          ),
-        ),
+          );
+          
+        }),
       ),
     ),
   })),

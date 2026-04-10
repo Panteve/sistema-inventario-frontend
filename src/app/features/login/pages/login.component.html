@@ -34,13 +34,12 @@
               placeholder="Ingrese su documento"
               class="du-grow"
               [formField]="loginForm.document"
-              (change)="onInputChange()"
             />
           </label>
         </div>
 
         <!-- PASSWORD -->
-        <div class="du-form-control">
+        <div>
           <label class="du-label">
             <span class="du-label-text font-medium">Contraseña</span>
           </label>
@@ -66,38 +65,18 @@
               class="grow"
               [formField]="loginForm.password"
               placeholder="Ingrese su contraseña"
-              (change)="onInputChange()"
               title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
           </label>
         </div>
-
         <!-- BUTTON -->
         @if (!this.authStore.loading()) {
-          <button class="du-btn du-btn-primary w-full">Login</button>
+          <button class="du-btn du-btn-primary w-full mb-0">Login</button>
         } @else {
-          <button class="du-btn du-btn-primary w-full" disabled>
+          <button class="du-btn du-btn-primary w-full mb-0"disabled>
             <span class="du-loading du-loading-spinner"></span>
             Loading
           </button>
-        }
-        @if (this.errorStore.message()) {
-          <div role="du-alert" class="du-alert du-alert-error">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-              />
-            </svg>
-            <span>{{this.errorStore.message()}}</span>
-          </div>
         }
       </form>
     </div>

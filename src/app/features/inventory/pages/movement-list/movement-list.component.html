@@ -225,33 +225,32 @@
                 </div>
               </fieldset>
 
-              @if (authStore.isAdmin()) {
-                <fieldset
-                  class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+              <fieldset
+                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+              >
+                <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                  Empleado
+                </legend>
+                <select
+                  class="du-select du-select-sm w-full"
+                  (change)="changeEmployee($event)"
+                  [value]="employeeFilter() ?? ''"
                 >
-                  <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                    Empleado
-                  </legend>
-                  <select
-                    class="du-select du-select-sm w-full"
-                    (change)="changeEmployee($event)"
-                    [value]="employeeFilter() ?? ''"
-                  >
-                    @if (employeeStore.loading()) {
-                      <option selected disabled>Cargando empleados...</option>
-                    } @else {
-                      <option value="">Todos</option>
-                      @for (employee of employeeStore.employees(); track employee.id) {
-                        <option [value]="employee.id">
-                          {{ employee.name }}
-                        </option>
-                      } @empty {
-                        <option disabled selected>No hay empleados disponibles</option>
-                      }
+                  @if (employeeStore.loading()) {
+                    <option selected disabled>Cargando empleados...</option>
+                  } @else {
+                    <option value="">Todos</option>
+                    @for (employee of employeeStore.employees(); track employee.id) {
+                      <option [value]="employee.id">
+                        {{ employee.name }}
+                      </option>
+                    } @empty {
+                      <option disabled selected>No hay empleados disponibles</option>
                     }
-                  </select>
-                </fieldset>
-
+                  }
+                </select>
+              </fieldset>
+              @if (authStore.isAdmin()) {
                 <fieldset
                   class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
                 >
@@ -277,23 +276,22 @@
                     }
                   </select>
                 </fieldset>
-
-                <fieldset
-                  class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-                >
-                  <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                    Por página
-                  </legend>
-                  <input
-                    type="number"
-                    class="du-input du-input-sm du-input-bordered w-full"
-                    min="5"
-                    max="100"
-                    [value]="itemsPerPage()"
-                    (change)="changeItemsPerPage($event)"
-                  />
-                </fieldset>
               }
+              <fieldset
+                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+              >
+                <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                  Por página
+                </legend>
+                <input
+                  type="number"
+                  class="du-input du-input-sm du-input-bordered w-full"
+                  min="5"
+                  max="100"
+                  [value]="itemsPerPage()"
+                  (change)="changeItemsPerPage($event)"
+                />
+              </fieldset>
             </div>
           </div>
         </div>
@@ -538,3 +536,5 @@
     </div>
   </div>
 </section>
+
+

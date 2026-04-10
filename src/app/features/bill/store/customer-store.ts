@@ -1,13 +1,13 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
 import { CustomerService } from '../services/customer.service';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import {
   CreateCustomerRequest,
   UpdateCustomerRequest,
 } from '../../../shared/interfaces/customer-interface';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type CustomerState = {
   customer: CreateCustomerRequest | null;
@@ -27,23 +27,24 @@ export const CustomerStore = signalStore(
   withState(initialState),
   withProps(() => ({
     customerService: inject(CustomerService),
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService),
   })),
-  withMethods(({ customerService, errorStore, ...store }) => ({
+  withMethods(({ customerService,toastNotification, ...store }) => ({
     searchCustomer: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { loading: true, customer: null, newCustomer: false })),
         switchMap((document) =>
           customerService.searchCustomerByDoc(document).pipe(
             tap((customer) => {
-              errorStore.clearError();
               patchState(store, { customer });
             }),
             catchError((error) => {
               if (error.status === 404) {
-                errorStore.showError(
-                  'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
-                );
+                toastNotification.warn({
+                  title: 'Cliente no encontrado',
+                  content: 'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
+                  duration: 5,
+                })
                 patchState(store, { newCustomer: true });
               }
               return EMPTY;
@@ -59,14 +60,22 @@ export const CustomerStore = signalStore(
         switchMap((customerData) =>
           customerService.createCustomer(customerData).pipe(
             tap((customer) => {
-              errorStore.clearError();
               patchState(store, { customer, newCustomer: false });
-              errorStore.showError('Cliente creado exitosamente');
+              toastNotification.success({
+                title: 'Cliente creado',
+                content: 'El cliente ha sido creado exitosamente.',
+                duration: 5,
+              });
             }),
             catchError((error) => {
               if (error.status === 400) {
                 patchState(store, { newCustomer: true });
-                errorStore.showError('Error al crear el cliente. Verifique los datos ingresados.');
+                toastNotification.error({
+                  title: 'Error al crear el cliente',
+                  content: 'Verifique los datos ingresados.',
+                  
+                  duration: 5,
+                })
               }
               return EMPTY;
             }),
@@ -81,14 +90,20 @@ export const CustomerStore = signalStore(
         switchMap(({ document, customerData }) =>
           customerService.updateCustomerByDoc(document, customerData).pipe(
             tap((customer) => {
-              errorStore.showError('Cliente actualizado exitosamente');
+              toastNotification.success({
+                title: 'Cliente actualizado',
+                content: 'El cliente ha sido actualizado exitosamente.',
+                duration: 5,
+              });
               patchState(store, { customer, editarClienteActivo: false });
             }),
             catchError((error) => {
               if (error.status === 400) {
-                errorStore.showError(
-                  'Error al actualizar el cliente. Verifique los datos ingresados.',
-                );
+                toastNotification.error({
+                  title: 'Error al actualizar el cliente',
+                  content: 'Verifique los datos ingresados.',
+                  duration: 5,
+                })
               }
               return EMPTY;
             }),
@@ -101,7 +116,6 @@ export const CustomerStore = signalStore(
       patchState(store, { editarClienteActivo: value });
     },
     clearCustomer() {
-      errorStore.clearError();
       patchState(store, { customer: null, newCustomer: false });
     },
   })),

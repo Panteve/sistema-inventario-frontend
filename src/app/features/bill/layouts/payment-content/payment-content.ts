@@ -1,6 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { BillStore } from '../../store/bill-store';
-import { ErrorStore } from '../../../../core/store/errors-store';
 import { PaymentMethodStore } from '../../store/payment-method-store';
 import { CurrencyPipe } from '@angular/common';
 import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMethod.interface';
@@ -13,7 +12,6 @@ import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMeth
 })
 export class PaymentContent {
   billStore = inject(BillStore);
-  errorStore = inject(ErrorStore);
   paymentMethodStore = inject(PaymentMethodStore);
 
   paymentMethods = this.paymentMethodStore.paymentMethods;

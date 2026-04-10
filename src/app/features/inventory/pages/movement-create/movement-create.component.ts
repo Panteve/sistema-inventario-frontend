@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit } from '@angular/core';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import {
@@ -10,24 +10,30 @@ import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { ErrorStore } from '../../../../core/store/errors-store';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
+import { NgFastToastService } from 'ng-fast-toast';
 
 @Component({
   selector: 'app-movement-create.component',
-  imports: [DatePipe, TableProducts, ReactiveFormsModule, TableCatalogProducts],
+  imports: [
+    DatePipe,
+    TableProducts,
+    ReactiveFormsModule,
+    TableCatalogProducts,
+    
+  ],
   providers: [MovementInventoryStore],
   templateUrl: './movement-create.component.html',
 })
 export class MovementCreateComponent implements OnInit, OnDestroy {
   authStore = inject(AuthStore);
-  errorStore = inject(ErrorStore);
   productStore = inject(ProductStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);
+  toastNotification = inject(NgFastToastService);
   router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -47,6 +53,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     return true;
   });
   notSelectedOffice = computed(() => {
+    if (!this.authStore.isAdmin()) return false;
     if (this.movementStore.movementData().type === this.MOVEMENTYPE.IN) {
       return this.movementStore.movementData().toOfficeId === 0;
     }
@@ -138,29 +145,38 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   }
 
   submitMovement() {
-    if (this.movementStore.movementData().type === this.MOVEMENTYPE.IN) {
-      if (this.movementStore.movementData().toOfficeId === 0) {
-        this.errorStore.showError(
-          'Debe seleccionar una oficina de destino para el movimiento de entrada.',
-        );
-        return;
-      }
-    } else if (this.movementStore.movementData().type === this.MOVEMENTYPE.OUT) {
-      if (this.movementStore.movementData().fromOfficeId === 0) {
-        this.errorStore.showError(
-          'Debe seleccionar una oficina de origen para el movimiento de salida.',
-        );
-        return;
-      }
-    } else if (this.movementStore.movementData().type === this.MOVEMENTYPE.TRANSFER) {
-      if (
-        this.movementStore.movementData().fromOfficeId === 0 ||
-        this.movementStore.movementData().toOfficeId === 0
-      ) {
-        this.errorStore.showError(
-          'Debe seleccionar una oficina de origen y destino para el movimiento de transferencia.',
-        );
-        return;
+    if (this.authStore.isAdmin()) {
+      if (this.movementStore.movementData().type === this.MOVEMENTYPE.IN) {
+        if (this.movementStore.movementData().toOfficeId === 0) {
+          this.toastNotification.error({
+            title: 'Falta oficina de destino',
+            content: 'Debe seleccionar una oficina de destino para el movimiento de entrada.',
+            duration: 5,
+          });
+          return;
+        }
+      } else if (this.movementStore.movementData().type === this.MOVEMENTYPE.OUT) {
+        if (this.movementStore.movementData().fromOfficeId === 0) {
+          this.toastNotification.error({
+            title: 'Falta oficina de origen',
+            content: 'Debe seleccionar una oficina de origen para el movimiento de salida.',
+            duration: 5,
+          });
+          return;
+        }
+      } else if (this.movementStore.movementData().type === this.MOVEMENTYPE.TRANSFER) {
+        if (
+          this.movementStore.movementData().fromOfficeId === 0 ||
+          this.movementStore.movementData().toOfficeId === 0
+        ) {
+          this.toastNotification.error({
+            title: 'Falta oficina de origen o destino',
+            content:
+              'Debe seleccionar una oficina de origen y destino para el movimiento de transferencia.',
+            duration: 5,
+          });
+          return;
+        }
       }
     }
     this.movementStore.createMovementInventory();

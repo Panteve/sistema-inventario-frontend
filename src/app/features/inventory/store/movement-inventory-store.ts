@@ -1,7 +1,6 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { InventoryService } from '../services/inventory.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
@@ -9,13 +8,13 @@ import {
   CreateInventoryMovementRequest,
   InventoryMovement,
   InventoryMovementPagination,
-  InventoryMovementResponse,
   ParamsGetInventoryMovements,
 } from '../../../shared/interfaces/inventoryMovement.interface';
 import {
   ProductCatalogResponse,
   ProductOnInventoryResponse,
 } from '../../../shared/interfaces/product.interface';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type MovementInventoryState = {
   loading: boolean;
@@ -42,12 +41,12 @@ const initialState: MovementInventoryState = {
 export const MovementInventoryStore = signalStore(
   withState(initialState),
   withProps(() => ({
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService),
     inventoryService: inject(InventoryService),
     router: inject(Router),
   })),
 
-  withMethods(({ errorStore, inventoryService, router, ...store }) => ({
+  withMethods(({ toastNotification, inventoryService, router, ...store }) => ({
     getInventoyryMovements: rxMethod<ParamsGetInventoryMovements>(
       pipe(
         tap(() => {
@@ -69,8 +68,11 @@ export const MovementInventoryStore = signalStore(
               patchState(store, { movementList: response.data, pagination: response.pagination });
             }),
             catchError((error) => {
-              console.error(error);
-              errorStore.showError('Error al cargar los movimientos de inventario.');
+              toastNotification.error({
+                title: 'Error',
+                content: 'Error al cargar los movimientos de inventario.',
+                duration: 5,
+              });
               return EMPTY;
             }),
             finalize(() => {
@@ -97,7 +99,11 @@ export const MovementInventoryStore = signalStore(
           return inventoryService.createMovementInventory(movementDataClean).pipe(
             tap((response) => {
               patchState(store, { loading: false });
-              errorStore.showError('Movimiento de inventario creado exitosamente.');
+              toastNotification.success({
+                title: 'Éxito',
+                content: 'Movimiento de inventario creado exitosamente.',
+                duration: 5,
+              });
               console.log(response);
               //router.navigate([`/inventory/movement/${response}`]);
             }),
@@ -105,12 +111,19 @@ export const MovementInventoryStore = signalStore(
               patchState(store, { loading: false });
               console.error(error);
               if (error.status === 400) {
-                errorStore.showError(
-                  'La oficina de origen y destino no pueden ser la misma para un movimiento de transferencia.',
-                );
+                toastNotification.error({
+                  title: 'Error',
+                  content:
+                    'La oficina de origen y destino no pueden ser la misma para un movimiento de transferencia.',
+                  duration: 5,
+                });
                 return EMPTY;
               }
-              errorStore.showError('Error al crear el movimiento de inventario.');
+              toastNotification.error({
+                title: 'Error',
+                content: 'Error al crear el movimiento de inventario.',
+                duration: 5,
+              });
               return EMPTY;
             }),
             finalize(() => {

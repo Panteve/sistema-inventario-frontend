@@ -9,13 +9,13 @@ import { AuthStore } from '../../../../core/store/auth-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
 
+
 @Component({
   selector: 'app-movement-list.component',
   imports: [DatePipe],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './movement-list.component.html',
-  styleUrl: './movement-list.component.css',
 })
 export class MovementListComponent implements OnInit {
   readonly maxRangeMonths = 3;

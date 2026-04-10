@@ -8,10 +8,10 @@ import {
 } from '@ngrx/signals';
 import { PaymentMethodResponse } from '../../../shared/interfaces/paymentMethod.interface';
 import { inject } from '@angular/core';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { PaymentMethodService } from '../services/payment-method.service';
-import { finalize, pipe, switchMap, tap } from 'rxjs';
+import { catchError, finalize, pipe, switchMap, tap } from 'rxjs';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type PaymentMethodState = {
   paymentMethods: PaymentMethodResponse[];
@@ -26,11 +26,11 @@ const initialState: PaymentMethodState = {
 export const PaymentMethodStore = signalStore(
   withState(initialState),
   withProps(() => ({
-    errorStore: inject(ErrorStore),
     paymentMethodService: inject(PaymentMethodService),
+     toastNotification: inject(NgFastToastService),
   })),
 
-  withMethods(({ errorStore, paymentMethodService, ...store }) => ({
+  withMethods(({ paymentMethodService, toastNotification, ...store }) => ({
     loadPaymentMethods: rxMethod<void>(
       pipe(
         tap(() => {
@@ -41,9 +41,17 @@ export const PaymentMethodStore = signalStore(
             tap((paymentMethods) => {
               patchState(store, { paymentMethods, loading: false });
             }),
+            catchError((error) => {
+              toastNotification.error({
+                title: 'Error al cargar métodos de pago',
+                content: 'No se pudieron cargar los métodos de pago. Inténtalo de nuevo.',
+                duration: 5,
+              });
+              return [];
+            }),
+            finalize(() => patchState(store, { loading: false })),
           ),
         ),
-        finalize(() => patchState(store, { loading: false })),
       ),
     ),
   })),
