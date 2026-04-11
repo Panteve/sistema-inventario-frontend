@@ -1,8 +1,7 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
 import { ExpenseStore } from '../store/expense-store';
 import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
@@ -20,10 +19,7 @@ export class ExpenseComponent {
   private currencyPipe = inject(CurrencyPipe);
 
   expenseStore = inject(ExpenseStore);
-  errorStore = inject(ErrorStore);
   cashRegisterStore = inject(CashRegisterStore);
-
-  amountFocus = signal<boolean>(false);
 
   expenseForm = new FormGroup({
     amount: new FormControl<number>(0, [
@@ -38,23 +34,19 @@ export class ExpenseComponent {
     ]),
   });
 
-  displayAmount = computed(() => {
-    if (this.amountFocus()) {
-      const val = this.expenseForm.value.amount;
-      return val === 0 ? '' : String(val);
-    }
-    return this.currencyPipe.transform(this.expenseForm.value.amount, 'COP', '', '1.2-2') ?? '0.00';
-  });
+  displayAmount() {
+    const amount = this.expenseForm.get('amount')?.value ?? 0;
+    return this.currencyPipe.transform(amount, 'COP', '', '1.0-0') ?? '0';
+  }
 
   onAmountInput(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
     const value = Number(raw);
     this.expenseForm.get('amount')?.setValue(value);
-    this.errorStore.clearError();
   }
 
-  onReasonInput() {
-    this.errorStore.clearError();
+  onAmountClick(event: Event) {
+    (event.target as HTMLInputElement).select();
   }
 
   onSubmit(event: Event) {

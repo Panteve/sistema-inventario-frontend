@@ -26,34 +26,7 @@
 </div>
 
 <div class="du-divider m-0"></div>
-<!-- Error alert -->
-<div
-  class="grid transition-all duration-300 ease-out"
-  [class.grid-rows-[0fr]]="errorStore.message() === null"
-  [class.grid-rows-[1fr]]="errorStore.message() !== null"
->
-  <div class="overflow-hidden">
-    <div role="alert" class="du-alert du-alert-error du-alert-soft text-sm mt-2 rounded-xl">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="18"
-        height="18"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        class="shrink-0"
-      >
-        <circle cx="12" cy="12" r="10" />
-        <line x1="12" y1="8" x2="12" y2="12" />
-        <line x1="12" y1="16" x2="12.01" y2="16" />
-      </svg>
-      <span>{{ errorStore.message() }}</span>
-    </div>
-  </div>
-</div>
+<!-- Notificacion -->
 
 <!-- Form -->
 <form [formGroup]="customerForm" class="relative space-y-3 mt-2">
@@ -137,12 +110,12 @@
   <!-- Nombre -->
   <fieldset class="du-fieldset">
     <legend
-      class="du-fieldset-legend text-xs font-semibold uppercase tracking-wider text-base-content/60"
+      class="du-fieldset-legend text-xs font-semibold uppercase tracking-wider text-base-content/70"
     >
       Nombre
     </legend>
     <label
-      class="du-input du-input-bordered w-full"
+      class="du-input w-full"
       [class.du-input-error]="
         customerForm.get('name')?.invalid && customerForm.get('name')?.touched
       "
@@ -165,7 +138,7 @@
       <input
         type="text"
         formControlName="name"
-        [class.text-base-content]="customerStore.customer() !== null"
+        [class.text-base-content]="customerStore.customer() === null"
         (input)="customerForm.get('name')?.markAsUntouched()"
       />
     </label>
@@ -190,7 +163,7 @@
       Correo
     </legend>
     <label
-      class="du-input du-input-bordered w-full"
+      class="du-input w-full"
       [class.du-input-error]="
         customerForm.get('email')?.invalid && customerForm.get('email')?.touched
       "
@@ -236,7 +209,7 @@
       Teléfono
     </legend>
     <label
-      class="du-input du-input-bordered w-full"
+      class="du-input w-full"
       [class.du-input-error]="
         customerForm.get('phone')?.invalid && customerForm.get('phone')?.touched
       "

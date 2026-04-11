@@ -15,7 +15,7 @@ import { inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ProductService } from '../services/product.service';
-import { ErrorStore } from '../../core/store/errors-store';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type ProductState = {
   products: ProductOnInventoryResponse[];
@@ -36,9 +36,9 @@ export const ProductStore = signalStore(
   withProps(() => ({
     authStore: inject(AuthStore),
     productService: inject(ProductService),
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService)
   })),
-  withMethods(({ authStore, productService, errorStore, ...store }) => ({
+  withMethods(({ authStore, productService, toastNotification, ...store }) => ({
     loadProductsOnInventory: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true })),
@@ -48,9 +48,11 @@ export const ProductStore = signalStore(
               patchState(store, { products });
             }),
             catchError((err) => {
-              errorStore.showError(
-                'Error al cargar los productos. Por favor, inténtelo de nuevo más tarde.',
-              );
+              toastNotification.error({
+                title: 'Error al cargar productos',
+                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                duration: 5,
+              });
               return EMPTY;
             }),
             finalize(() => {
@@ -69,9 +71,11 @@ export const ProductStore = signalStore(
               patchState(store, { catalogProducts });
             }),
             catchError((err) => {
-              errorStore.showError(
-                'Error al cargar el catálogo de productos. Por favor, inténtelo de nuevo más tarde.',
-              );
+              toastNotification.error({
+                title: 'Error al cargar el catálogo de productos',
+                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                duration: 5,
+              });
               return EMPTY;
             }),
             finalize(() => patchState(store, { loading: false })),

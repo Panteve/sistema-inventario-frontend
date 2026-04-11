@@ -9,7 +9,6 @@ import { BillStore } from '../../store/bill-store';
   selector: 'app-product-prices-panel',
   imports: [CurrencyPipe],
   templateUrl: './product-prices-panel.html',
-  styleUrl: './product-prices-panel.css',
 })
 export class ProductPricesPanel {
   private productService = inject(ProductService);

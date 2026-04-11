@@ -9,15 +9,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { CustomerStore } from '../../store/customer-store';
-import { ErrorStore } from '../../../../core/store/errors-store';
 import { Role, UpdateCustomerRequest } from '../../../../shared/interfaces/customer-interface';
+
 
 @Component({
   selector: 'app-agregar-cliente',
   imports: [ReactiveFormsModule],
-  providers: [],
   templateUrl: './add-customer.html',
-  styleUrl: './add-customer.css',
 })
 export class AgregarCliente {
   constructor() {
@@ -45,7 +43,6 @@ export class AgregarCliente {
   }
 
   customerStore = inject(CustomerStore);
-  errorStore = inject(ErrorStore);
   rolesCustomer = [
     { id: 1, name: 'Natural', code: 'CLIENT' as Role },
     { id: 2, name: 'Negocio', code: 'BUSINESS' as Role },

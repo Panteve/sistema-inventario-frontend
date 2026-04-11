@@ -10,7 +10,6 @@ import {
 import { computed, inject } from '@angular/core';
 import { BillService } from '../services/bill.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
 import {
@@ -19,6 +18,7 @@ import {
   ProductSelected,
 } from '../../../shared/interfaces/bill.interface';
 import { CustomerStore } from './customer-store';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type BillState = {
   productSelected: ProductSelected;
@@ -55,25 +55,33 @@ export const BillStore = signalStore(
   withProps(() => ({
     billService: inject(BillService),
     customerStore: inject(CustomerStore),
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService),
     router: inject(Router),
   })),
-  withMethods(({ errorStore, ...store }) => ({
+  withMethods(({ toastNotification, ...store }) => ({
     _isValidForSubmit: () => {
       if (store.length() === 0) {
-        errorStore.showError('Agrega al menos un producto a la factura.');
+        toastNotification.error({
+          title: 'Factura vacía',
+          content: 'Agrega al menos un producto a la factura.',
+          duration: 5,
+        });
         patchState(store, { loading: false });
         return false;
       }
       if (store.bill().paymentMethodId === 0) {
-        errorStore.showError('Selecciona un método de pago.');
+        toastNotification.error({
+          title: 'Método de pago no seleccionado',
+          content: 'Selecciona un método de pago.',
+          duration: 5,
+        });
         patchState(store, { loading: false });
         return false;
       }
       return true;
     },
   })),
-  withMethods(({ customerStore, billService, errorStore, router, ...store }) => ({
+  withMethods(({ customerStore, billService, toastNotification, router, ...store }) => ({
     createBill: rxMethod<void>(
       pipe(
         tap(() => {
@@ -102,7 +110,11 @@ export const BillStore = signalStore(
         }),
         finalize(() => patchState(store, { loading: false })),
         catchError((error) => {
-          errorStore.showError('Ocurrió un error al crear la factura. Inténtalo de nuevo.');
+          toastNotification.error({
+            title: 'Error al crear la factura',
+            content: 'Ocurrió un error al crear la factura. Inténtalo de nuevo.',
+            duration: 5,
+          });
           return EMPTY;
         }),
       ),

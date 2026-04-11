@@ -12,8 +12,8 @@ import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import type { Employee } from '../../shared/interfaces/Auth.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { ErrorStore } from './errors-store';
 import { CashRegisterStore } from '../../features/cash-register/store/cash-register-store';
+import { NgFastToastService } from 'ng-fast-toast';
 
 type AuthState = {
   employee: Employee | null;
@@ -37,92 +37,98 @@ export const AuthStore = signalStore(
     authService: inject(AuthService),
     cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
-    errorStore: inject(ErrorStore),
+    toastNotification: inject(NgFastToastService),
   })),
-  withMethods(({ authService, cashRegisterStore, router, errorStore, ...store }) => ({
-    login: rxMethod<{ document: string; password: string }>(
-      pipe(
-        tap(() => {
-          patchState(store, { loading: true });
-        }),
-        switchMap(({ document, password }) =>
-          authService.login(document, password).pipe(
-            tap(({ user, access_token }) => {
-              window.electronAPI.saveToken(access_token);
-              patchState(store, {
-                employee: user,
-                isAuthenticated: true,
-              });
-              if (user.cashRegisterId) {
-                cashRegisterStore.setCashRegisterId(user.cashRegisterId);
-              }
-              router.navigate(['/dashboard']);
-            }),
-            finalize(() => {
-              patchState(store, { loading: false });
-            }),
-            catchError((err) => {
-              if (err.status === 401 || err.status === 404) {
-                errorStore.showError('Documento o contraseña incorrectos.');
-              }
-              patchState(store, { loading: false });
-              return EMPTY;
-            }),
+  withMethods(
+    ({ authService, cashRegisterStore, router, toastNotification, ...store }) => ({
+      login: rxMethod<{ document: string; password: string }>(
+        pipe(
+          tap(() => {
+            patchState(store, { loading: true });
+          }),
+          switchMap(({ document, password }) =>
+            authService.login(document, password).pipe(
+              tap(({ user, access_token }) => {
+                window.electronAPI.saveToken(access_token);
+                patchState(store, {
+                  employee: user,
+                  isAuthenticated: true,
+                });
+                if (user.cashRegisterId) {
+                  cashRegisterStore.setCashRegisterId(user.cashRegisterId);
+                }
+                router.navigate(['/dashboard']);
+              }),
+              catchError((err) => {
+                if (err.status === 401 || err.status === 404) {
+                  toastNotification.error({
+                    title: 'Inicio de sesión fallido',
+                    content: 'Documento o contraseña incorrectos.',
+                    duration: 5,
+                  });
+                }
+                patchState(store, { loading: false });
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, { loading: false });
+              }),
+            ),
           ),
         ),
       ),
-    ),
 
-    async logout() {
-      await window.electronAPI.deleteToken();
-      patchState(store, { employee: null, isAuthenticated: false });
-      router.navigate(['']);
-    },
+      async logout() {
+        await window.electronAPI.deleteToken();
+        patchState(store, { employee: null, isAuthenticated: false });
+        router.navigate(['']);
+      },
 
-    async getToken() {
-      return await window.electronAPI.getToken();
-    },
-    //DEPURACION SOLO PARA PROBAR FUNCIONALIDAD DE ADMINISTRADOR
-    changeAdminStatus() {
-      patchState(store, (state) => ({
-        employee: state.employee?.role === 'ADMIN'
-          ? { ...state.employee, role: 'USER' }
-          : { ...state.employee, role: 'ADMIN' } as Employee,
-      }));
-    },
-    
-    setOfficeId(officeId: number) {
-      patchState(store, (state) => ({
-        employee: state.employee ? { ...state.employee, officeId } : null,
-      }));
-    },
-    checkSession: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { loading: true })),
-        switchMap(() =>
-          authService.me().pipe(
-            tap((response) => {
-              patchState(store, {
-                employee: response,
-                isAuthenticated: true,
-              });
-              if (response.cashRegisterId) {
-                cashRegisterStore.setCashRegisterId(response.cashRegisterId);
-              }
+      async getToken() {
+        return await window.electronAPI.getToken();
+      },
+      //DEPURACION SOLO PARA PROBAR FUNCIONALIDAD DE ADMINISTRADOR
+      changeAdminStatus() {
+        patchState(store, (state) => ({
+          employee:
+            state.employee?.role === 'ADMIN'
+              ? { ...state.employee, role: 'USER' }
+              : ({ ...state.employee, role: 'ADMIN' } as Employee),
+        }));
+      },
 
-              router.navigate(['/inventory/history-movement']);
-            }),
-            finalize(() => {
-              patchState(store, { loading: false });
-            }),
-            catchError(() => {
-              patchState(store, { employee: null, loading: false, isAuthenticated: false });
-              router.navigate(['']);
-              return EMPTY;
-            }),
+      setOfficeId(officeId: number) {
+        patchState(store, (state) => ({
+          employee: state.employee ? { ...state.employee, officeId } : null,
+        }));
+      },
+      checkSession: rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { loading: true })),
+          switchMap(() =>
+            authService.me().pipe(
+              tap((response) => {
+                patchState(store, {
+                  employee: response,
+                  isAuthenticated: true,
+                });
+                if (response.cashRegisterId) {
+                  cashRegisterStore.setCashRegisterId(response.cashRegisterId);
+                }
+                router.navigate(['/dashboard']);
+              }),
+              finalize(() => {
+                patchState(store, { loading: false });
+              }),
+              catchError(() => {
+                patchState(store, { employee: null, loading: false, isAuthenticated: false });
+                router.navigate(['']);
+                return EMPTY;
+              }),
+            ),
           ),
         ),
       ),
-    ),
-  })),
+    }),
+  ),
 );

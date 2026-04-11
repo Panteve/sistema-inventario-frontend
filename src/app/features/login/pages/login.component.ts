@@ -2,17 +2,14 @@ import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { LoginData } from '../../../shared/interfaces/Auth.interface';
 import { AuthStore } from '../../../core/store/auth-store';
-import { ErrorStore } from '../../../core/store/errors-store';
 
 @Component({
   selector: 'app-login.component',
   imports: [FormField],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.css',
 })
 export class LoginComponent {
   authStore = inject(AuthStore);
-  errorStore = inject(ErrorStore);
 
   loading = signal<boolean>(false);
   incorrectLogin = signal<boolean>(false);
@@ -32,8 +29,5 @@ export class LoginComponent {
     this.loginModel().document.trim();
     this.loginModel().password.trim();
     this.authStore.login(this.loginModel());
-  }
-  onInputChange() {
-    this.errorStore.clearError();
   }
 }

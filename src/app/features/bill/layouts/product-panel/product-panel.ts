@@ -4,7 +4,6 @@ import { ProductOnInventoryResponse } from '../../../../shared/interfaces/produc
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ProductStore } from '../../../../shared/store/product-store';
-import { ErrorStore } from '../../../../core/store/errors-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 
@@ -13,7 +12,6 @@ import { TableProducts } from '../../../../shared/layouts/table-products/table-p
   imports: [RouterOutlet, TableProducts],
   providers: [],
   templateUrl: './product-panel.html',
-  styleUrl: './product-panel.css',
 })
 export class ProductPanel {
   constructor() {
@@ -28,7 +26,6 @@ export class ProductPanel {
   private route = inject(ActivatedRoute);
   productStore = inject(ProductStore);
   billStore = inject(BillStore);
-  errorStore = inject(ErrorStore);
   router = inject(Router);
 
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;

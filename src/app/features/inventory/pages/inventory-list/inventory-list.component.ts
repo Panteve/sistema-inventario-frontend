@@ -1,7 +1,6 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductStore } from '../../../../shared/store/product-store';
-import { ErrorStore } from '../../../../core/store/errors-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
@@ -13,7 +12,7 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableProducts],
+  imports: [TableProducts,],
   providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })
@@ -24,7 +23,6 @@ export class InventoryListComponent {
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
   officeStore = inject(OfficeStore);
-  errorStore = inject(ErrorStore);
   router = inject(Router);
   private currencyPipe = inject(CurrencyPipe);
 

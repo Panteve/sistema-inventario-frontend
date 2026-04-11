@@ -8,6 +8,7 @@ import { environment } from '../../../environments/environment';
 })
 export class EmployeeService {
   private http = inject(HttpClient);
+
   getEmployeesByOffice(officeId: number) {
     return this.http.get<EmployeesByOfficeResponse[]>(`${environment.apiUrl}/employees/by-office/${officeId}`);
   }

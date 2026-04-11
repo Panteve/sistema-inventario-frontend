@@ -6,26 +6,6 @@
       <p class="text-sm opacity-50">Selecciona un producto para agregarlo</p>
     </div>
   </div>
-
-  @if (!this.productStore.loading() && this.errorStore.message()) {
-    <div role="alert" class="du-alert du-alert-error mb-4">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        class="h-5 w-5 shrink-0 stroke-current"
-        fill="none"
-        viewBox="0 0 24 24"
-      >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-        />
-      </svg>
-      <span>{{ this.errorStore.message() }}</span>
-    </div>
-  }
-
   @if (this.productStore.loading()) {
     <div class="flex flex-col items-center justify-center py-12 gap-3">
       <span class="du-loading du-loading-spinner du-loading-lg text-primary"></span>
@@ -56,4 +36,5 @@
       <button>close</button>
     </form>
   </dialog>
+  
 </div>

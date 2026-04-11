@@ -3,14 +3,14 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { CurrencyPipe, DatePipe } from '@angular/common';
 import { ProductStore } from '../../../shared/store/product-store';
 import { BillStore } from '../store/bill-store';
-import { ErrorStore } from '../../../core/store/errors-store';
 import { PaymentMethodStore } from '../store/payment-method-store';
 import { CustomerStore } from '../store/customer-store';
 import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
+import { NgFastToastComponent } from 'ng-fast-toast';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [RouterOutlet, CurrencyPipe, DatePipe, RouterLinkWithHref],
+  imports: [RouterOutlet, CurrencyPipe, DatePipe, RouterLinkWithHref, NgFastToastComponent],
   providers: [BillStore, PaymentMethodStore, CustomerStore],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
@@ -21,8 +21,6 @@ export class BillComponent {
       document.body.style.overflow = this.panelOpen() ? 'hidden' : '';
     });
   }
-
-  errorStore = inject(ErrorStore);
   customerStore = inject(CustomerStore);
   cashRegisterStore = inject(CashRegisterStore);
   billStore = inject(BillStore);

@@ -1,5 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { ErrorStore } from '../../../core/store/errors-store';
+import { NgFastToastComponent } from 'ng-fast-toast';
+import { OfficeStore } from '../../../shared/store/office-store';
+import { ProductStore } from '../../../shared/store/product-store';
 
 @Component({
   selector: 'app-dashboard.component',
@@ -8,5 +10,7 @@ import { ErrorStore } from '../../../core/store/errors-store';
   styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent {
-  errorStore = inject(ErrorStore);
+  officeStore = inject(OfficeStore);
+    productStore = inject(ProductStore);
+
 }
