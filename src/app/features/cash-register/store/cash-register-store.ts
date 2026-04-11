@@ -99,7 +99,12 @@ export const CashRegisterStore = signalStore(
         switchMap(() =>
           cashRegisterService.openCashRegister({ initialAmount: store.amountReceived() }).pipe(
             tap((response) => {
-              patchState(store, { loading: false, cashRegisterId: response.id });
+              patchState(store, {
+                  loading: false,
+                  cashRegisterId: response.id,
+                  amountReceived: 0,
+                  openingCash: 0,
+                });
               toastNotification.success({
                 title: 'Caja abierta exitosamente',
                 content: 'La caja ha sido abierta, feliz día.',

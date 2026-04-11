@@ -22,9 +22,7 @@ export class CashRegisterComponent {
   currentDate = Date.now();
   currentHour = new Date().getHours();
   currentMinute = new Date().getMinutes();
-  isAmountFocused = signal<boolean>(false);
   closeConfirmationOpen = signal<boolean>(false);
-
 
   differenceStatus = computed<'ok' | 'short' | 'over'>(() => {
     const difference = this.cashRegisterStore.cashDifference();
@@ -43,13 +41,9 @@ export class CashRegisterComponent {
   });
 
   displayAmount = computed(() => {
-    if (this.isAmountFocused()) {
-      const val = this.cashRegisterStore.amountReceived();
-      return val === 0 ? '' : String(val);
-    }
     return (
-      this.currencyPipe.transform(this.cashRegisterStore.amountReceived(), 'COP', '', '1.2-2') ??
-      '0.00'
+      this.currencyPipe.transform(this.cashRegisterStore.amountReceived(), 'COP', '', '1.0-0') ??
+      '0'
     );
   });
 
@@ -70,12 +64,8 @@ export class CashRegisterComponent {
     this.cashRegisterStore.changeAmountReceived(isNaN(value) ? 0 : value);
   }
 
-  onAmountFocus() {
-    this.isAmountFocused.set(true);
-  }
-
-  onAmountBlur() {
-    this.isAmountFocused.set(false);
+  onAmountClick(event: Event) {
+    (event.target as HTMLInputElement).select();
   }
 
   openCashRegister() {
