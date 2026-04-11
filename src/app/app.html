@@ -271,7 +271,7 @@
           <!-- Separador de los elementos de arrriba y los de abajo -->
           <div class="flex grow"></div>
           <li>
-            <div class="du-dropdown du-dropdown-top">
+            <div class="du-dropdown du-dropdown-center du-dropdown-top ">
               <div tabindex="0" role="button" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24">
                   <path
@@ -279,23 +279,22 @@
                     d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z"
                   />
                 </svg>
-
-                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Perfil</span>
+                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2 ">Perfil</span>
               </div>
               <ul
                 tabindex="-1"
-                class="du-menu du-menu-md du-dropdown-content bg-base-100 rounded-box z-1 mt-3 w-60 p-2 shadow"
+                class="du-menu du-menu-md du-dropdown-content bg-base-200 rounded-box mt-3 w-60 p-2 shadow z-1 du-is-drawer-close:hidden"
               >
                 <!-- Solo si es admin -->
                 @if (this.authStore.isAdmin()) {
                   <li><a class="justify-between">Configuración</a></li>
                 }
                 <li>
-                  <a class="du-btn-disabled bg-base-100"
+                  <a class="du-btn-disabled bg-base-200"
                     >Documento:
                     <h6 class="font-bold">{{ authStore.employee()?.document }}</h6></a
                   >
-                  <a class="du-btn-disabled bg-base-100"
+                  <a class="du-btn-disabled bg-base-200"
                     >Oficina:
                     <h6 class="font-bold">{{ authStore.employee()?.officeName }}</h6></a
                   >
