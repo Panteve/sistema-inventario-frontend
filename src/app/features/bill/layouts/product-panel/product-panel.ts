@@ -6,7 +6,6 @@ import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
-import { NgFastToastService } from 'ng-fast-toast';
 
 @Component({
   selector: 'app-product-panel',
@@ -28,7 +27,6 @@ export class ProductPanel {
   productStore = inject(ProductStore);
   billStore = inject(BillStore);
   router = inject(Router);
-  toast = inject(NgFastToastService)
 
   @ViewChild('btnCerrar') btnCerrar!: ElementRef<HTMLButtonElement>;
   @ViewChild('my_modal_2') productModal!: ElementRef<HTMLDialogElement>;
@@ -56,12 +54,5 @@ export class ProductPanel {
     if (navigated) {
       this.productModal.nativeElement.showModal();
     }
-  }
-  prueba() {
-    this.toast.error({
-      title: 'Error de prueba',
-      content: 'Este es un mensaje de error de prueba.',
-      duration: 5,
-    });
   }
 }

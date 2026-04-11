@@ -19,6 +19,8 @@ export class PaymentContent {
   selectedMethod = signal<PaymentMethodResponse | null>(null);
   amountReceived = signal<number>(0);
 
+  displayAmount = computed(() => new Intl.NumberFormat('es-CO').format(this.amountReceived()));
+
   affectsCash = computed(() => this.selectedMethod()?.affectsCash ?? false);
   change = computed(() => this.amountReceived() - this.billStore.total());
   canConfirm = computed(() => {
@@ -39,8 +41,13 @@ export class PaymentContent {
   }
 
   onAmountReceivedChange(event: Event) {
-    const value = Number((event.target as HTMLInputElement).value);
+    const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
+    const value = Number(raw);
     this.amountReceived.set(isNaN(value) ? 0 : value);
+  }
+
+  onAmountReceivedClick(event: Event) {
+    (event.target as HTMLInputElement).select();
   }
 
   confirm() {

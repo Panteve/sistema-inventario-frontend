@@ -6,9 +6,13 @@
       <span class="du-label-text font-semibold">Método de pago</span>
     </label>
     <select class="du-select du-select-bordered w-full" (change)="onPaymentMethodChange($event)">
-      <option value="0" disabled selected>Seleccionar método</option>
-      @for (method of paymentMethods(); track method.id) {
-        <option [value]="method.id">{{ method.name }}</option>
+      @if(paymentMethodStore.loading()) {
+        <option value="0" disabled selected>Cargando métodos...</option>
+      } @else {
+        <option value="0" disabled selected>Seleccionar método</option>
+        @for (method of paymentMethods(); track method.id) {
+          <option [value]="method.id">{{ method.name }}</option>
+        }
       }
     </select>
   </div>
@@ -32,17 +36,18 @@
 
   <!-- Sección de vueltas (solo efectivo) -->
   @if (affectsCash()) {
-    <div class=" w-full">
+    <div class="w-full">
       <label class="du-label">
         <span class="du-label-text font-semibold">Monto recibido</span>
       </label>
       <input
-        type="number"
+        type="text"
         class="du-input du-input-bordered w-full text-lg no-spinner"
-        placeholder="$0"
-        min="0"
-        [value]="amountReceived()"
+        placeholder="0"
+        inputmode="numeric"
+        [value]="displayAmount()"
         (input)="onAmountReceivedChange($event)"
+        (click)="onAmountReceivedClick($event)"
       />
     </div>
 
