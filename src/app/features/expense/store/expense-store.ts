@@ -5,8 +5,9 @@ import { ExpenseService } from '../service/expense.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { NgFastToastService } from 'ng-fast-toast';
+
 import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
+import { ToastService } from '../../../shared/services/toast.service';
 
 type ExpenseState = {
   loading: boolean;
@@ -19,12 +20,12 @@ const initialState: ExpenseState = {
 export const ExpenseStore = signalStore(
   withState(initialState),
   withProps(() => ({
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
     expenseService: inject(ExpenseService),
     cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
   })),
-  withMethods(({ toastNotification, expenseService, router, cashRegisterStore, ...store }) => ({
+  withMethods(({ toastService, expenseService, router, cashRegisterStore, ...store }) => ({
     createExpense: rxMethod<CreateExpenseRequest>(
       pipe(
         tap(() => {
@@ -33,13 +34,12 @@ export const ExpenseStore = signalStore(
         switchMap((expenseData) =>
           expenseService.createExpense(expenseData).pipe(
             tap((response) => {
-              queueMicrotask(() => {
-                toastNotification.success({
-                  title: 'Gasto creado exitosamente',
-                  content: 'El gasto ha sido registrado correctamente.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Gasto creado exitosamente',
+                content: 'El gasto ha sido registrado correctamente.',
+                type: 'success',
               });
+
               patchState(store, { loading: false });
               cashRegisterStore.getCashRegisterSummary();
               router.navigate([], {
@@ -53,13 +53,12 @@ export const ExpenseStore = signalStore(
           patchState(store, { loading: false });
         }),
         catchError((err) => {
-          queueMicrotask(() => {
-            toastNotification.error({
-              title: 'Error al crear gasto',
-              content: 'Fallo al crear gasto, por favor intente de nuevo.',
-              duration: 5,
-            });
+          toastService.show({
+            title: 'Error al crear gasto',
+            content: 'Fallo al crear gasto, por favor intente de nuevo.',
+            type: 'error',
           });
+
           patchState(store, { loading: false });
           return EMPTY;
         }),

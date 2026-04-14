@@ -18,8 +18,8 @@ import {
   ProductSelected,
 } from '../../../shared/interfaces/bill.interface';
 import { CustomerStore } from './customer-store';
-import { NgFastToastService } from 'ng-fast-toast';
 import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
+import { ToastService } from '../../../shared/services/toast.service';
 
 type BillState = {
   productSelected: ProductSelected;
@@ -57,29 +57,26 @@ export const BillStore = signalStore(
     billService: inject(BillService),
     customerStore: inject(CustomerStore),
     cashRegisterStore: inject(CashRegisterStore),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
     router: inject(Router),
   })),
-  withMethods(({ toastNotification, cashRegisterStore, ...store }) => ({
+  withMethods(({ toastService, cashRegisterStore, ...store }) => ({
     _isValidForSubmit: () => {
       if (store.length() === 0) {
-        queueMicrotask(() => {
-          toastNotification.error({
-            title: 'Error',
-            content: 'Error al cargar las sucursales.',
-            duration: 5,
-          });
+        toastService.show({
+          title: 'Error',
+          content: 'Error al cargar las sucursales.',
+          type: 'error',
         });
+
         patchState(store, { loading: false });
         return false;
       }
       if (store.bill().paymentMethodId === 0) {
-        queueMicrotask(() => {
-          toastNotification.error({
-            title: 'Método de pago no seleccionado',
-            content: 'Selecciona un método de pago.',
-            duration: 5,
-          });
+        toastService.show({
+          title: 'Método de pago no seleccionado',
+          content: 'Selecciona un método de pago.',
+          type: 'error',
         });
         patchState(store, { loading: false });
         return false;
@@ -88,7 +85,7 @@ export const BillStore = signalStore(
     },
   })),
   withMethods(
-    ({ customerStore, billService, toastNotification, router, cashRegisterStore, ...store }) => ({
+    ({ customerStore, billService, toastService, router, cashRegisterStore, ...store }) => ({
       createBill: rxMethod<void>(
         pipe(
           tap(() => {
@@ -118,12 +115,10 @@ export const BillStore = signalStore(
           }),
           finalize(() => patchState(store, { loading: false })),
           catchError((error) => {
-            queueMicrotask(() => {
-              toastNotification.error({
-                title: 'Error al crear la factura',
-                content: 'Ocurrió un error al crear la factura. Inténtalo de nuevo.',
-                duration: 5,
-              });
+            toastService.show({
+              title: 'Error al crear la factura',
+              content: 'Ocurrió un error al crear la factura. Inténtalo de nuevo.',
+              type: 'error',
             });
             return EMPTY;
           }),

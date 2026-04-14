@@ -5,7 +5,7 @@ export type ToastType = 'success' | 'error' | 'info' | 'warning';
 export interface Toast {
   id: number;
   title?: string;
-  message: string;
+  content: string;
   type: ToastType;
   duration: number;
 }
@@ -17,7 +17,7 @@ export class ToastService {
   private _toasts = signal<Toast[]>([]);
   toasts = this._toasts.asReadonly();
 
-  show(notification: { message: string; type: ToastType; duration?: number; title?: string }) {
+  show(notification: { content: string; type: ToastType; duration?: number; title?: string }) {
     const id = Date.now();
     const duration = notification.duration || 5000;
 

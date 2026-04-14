@@ -24,8 +24,8 @@ import {
   tap,
 } from 'rxjs';
 import { ProductService } from '../services/product.service';
-import { NgFastToastService } from 'ng-fast-toast';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { ToastService } from '../services/toast.service';
 
 type ProductState = {
   products: ProductOnInventoryResponse[];
@@ -46,9 +46,9 @@ export const ProductStore = signalStore(
   withProps(() => ({
     authStore: inject(AuthStore),
     productService: inject(ProductService),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
   })),
-  withMethods(({ authStore, productService, toastNotification, ...store }) => ({
+  withMethods(({ authStore, productService, toastService, ...store }) => ({
     loadProductsOnInventory: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true })),
@@ -58,13 +58,12 @@ export const ProductStore = signalStore(
               patchState(store, { products });
             }),
             catchError((err) => {
-              queueMicrotask(() => {
-                toastNotification.error({
-                  title: 'Error al cargar productos',
-                  content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Error al cargar productos',
+                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                type: 'error',
               });
+
               return EMPTY;
             }),
             finalize(() => {
@@ -83,13 +82,12 @@ export const ProductStore = signalStore(
               patchState(store, { catalogProducts });
             }),
             catchError((err) => {
-              queueMicrotask(() => {
-                toastNotification.error({
-                  title: 'Error al cargar el catálogo de productos',
-                  content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Error al cargar el catálogo de productos',
+                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                type: 'error',
               });
+
               return EMPTY;
             }),
             finalize(() => patchState(store, { loading: false })),

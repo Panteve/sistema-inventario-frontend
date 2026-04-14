@@ -14,7 +14,7 @@ import {
   ProductCatalogResponse,
   ProductOnInventoryResponse,
 } from '../../../shared/interfaces/product.interface';
-import { NgFastToastService } from 'ng-fast-toast';
+import { ToastService } from '../../../shared/services/toast.service';
 
 type MovementInventoryState = {
   loading: boolean;
@@ -41,12 +41,12 @@ const initialState: MovementInventoryState = {
 export const MovementInventoryStore = signalStore(
   withState(initialState),
   withProps(() => ({
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
     inventoryService: inject(InventoryService),
     router: inject(Router),
   })),
 
-  withMethods(({ toastNotification, inventoryService, router, ...store }) => ({
+  withMethods(({ toastService, inventoryService, router, ...store }) => ({
     getInventoyryMovements: rxMethod<ParamsGetInventoryMovements>(
       pipe(
         tap(() => {
@@ -68,12 +68,10 @@ export const MovementInventoryStore = signalStore(
               patchState(store, { movementList: response.data, pagination: response.pagination });
             }),
             catchError((error) => {
-              queueMicrotask(() => {
-                toastNotification.error({
-                  title: 'Error',
-                  content: 'Error al cargar los movimientos de inventario.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Error',
+                content: 'Error al cargar los movimientos de inventario.',
+                type: 'error',
               });
               return EMPTY;
             }),
@@ -101,24 +99,21 @@ export const MovementInventoryStore = signalStore(
           return inventoryService.createMovementInventory(movementDataClean).pipe(
             tap((response) => {
               patchState(store, { loading: false });
-              queueMicrotask(() => {
-                toastNotification.success({
-                  title: 'Éxito',
-                  content: 'Movimiento de inventario creado exitosamente.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Éxito',
+                content: 'Movimiento de inventario creado exitosamente.',
+                type: 'success',
               });
+
               console.log(response);
               //router.navigate([`/inventory/movement/${response}`]);
             }),
             catchError((error) => {
               patchState(store, { loading: false });
-              queueMicrotask(() => {
-                toastNotification.error({
-                  title: 'Error',
-                  content: 'Error al crear el movimiento de inventario.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Error',
+                content: 'Error al crear el movimiento de inventario.',
+                type: 'error',
               });
               return EMPTY;
             }),

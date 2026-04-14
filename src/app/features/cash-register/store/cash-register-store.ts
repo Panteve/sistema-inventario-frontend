@@ -23,9 +23,9 @@ import {
 } from 'rxjs';
 import { Router } from '@angular/router';
 import { CashRegisterSummary } from '../../../shared/interfaces/cash-register-interface';
-import { NgFastToastService } from 'ng-fast-toast';
 import { AuthStore } from '../../../core/store/auth-store';
 import { toObservable } from '@angular/core/rxjs-interop';
+import { ToastService } from '../../../shared/services/toast.service';
 
 type CashRegisterState = {
   loading: boolean;
@@ -55,7 +55,7 @@ export const CashRegisterStore = signalStore(
   withState(initialState),
   withProps(() => ({
     authStore: inject(AuthStore),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
     cashRegisterService: inject(CashRegisterService),
     router: inject(Router),
   })),
@@ -98,7 +98,7 @@ export const CashRegisterStore = signalStore(
       cashDifference,
     };
   }),
-  withMethods(({ authStore, toastNotification, cashRegisterService, router, ...store }) => ({
+  withMethods(({ authStore, toastService, cashRegisterService, router, ...store }) => ({
     openCashRegister: rxMethod<number | null>(
       pipe(
         tap(() => {
@@ -106,14 +106,11 @@ export const CashRegisterStore = signalStore(
         }),
         filter(() => {
           if (store.amountReceived() <= 0) {
-            queueMicrotask(() => {
-              toastNotification.error({
-                title: 'Monto inicial no válido',
-                content: 'El monto inicial no puede ser igual o menor a cero.',
-                duration: 5,
-              });
+            toastService.show({
+              title: 'Monto inicial no válido',
+              content: 'El monto inicial no puede ser igual o menor a cero.',
+              type: 'error',
             });
-
             patchState(store, { loading: false });
             return false;
           }
@@ -133,10 +130,10 @@ export const CashRegisterStore = signalStore(
                   openingCash: 0,
                 });
                 authStore.setCashRegisterId(response.id);
-                toastNotification.success({
+                toastService.show({
                   title: 'Caja abierta exitosamente',
                   content: 'La caja ha sido abierta, feliz día.',
-                  duration: 5,
+                  type: 'success',
                 });
                 router.navigate([], {
                   queryParams: { cashModal: 'null' },
@@ -145,10 +142,10 @@ export const CashRegisterStore = signalStore(
               }),
               catchError((err) => {
                 if (err.status === 409) {
-                  toastNotification.error({
+                  toastService.show({
                     title: 'Caja ya abierta',
                     content: 'Ya existe una caja abierta para este usuario.',
-                    duration: 5,
+                    type: 'error',
                   });
                   return EMPTY;
                 }
@@ -180,13 +177,12 @@ export const CashRegisterStore = signalStore(
               console.log('Resumen de caja obtenido:', response);
             }),
             catchError((err) => {
-              queueMicrotask(() => {
-                toastNotification.error({
-                  title: 'Fallo al obtener resumen de caja',
-                  content: 'Fallo al obtener resumen de caja, por favor intente de nuevo.',
-                  duration: 5,
-                });
+              toastService.show({
+                title: 'Fallo al obtener resumen de caja',
+                content: 'Fallo al obtener resumen de caja, por favor intente de nuevo.',
+                type: 'error',
               });
+
               return EMPTY;
             }),
             finalize(() => {
@@ -215,12 +211,10 @@ export const CashRegisterStore = signalStore(
                   openingCash: 0,
                 });
                 authStore.setCashRegisterId(0);
-                queueMicrotask(() => {
-                  toastNotification.success({
-                    title: 'Caja cerrada exitosamente',
-                    content: 'La caja ha sido cerrada correctamente.',
-                    duration: 5,
-                  });
+                toastService.show({
+                  title: 'Caja cerrada exitosamente',
+                  content: 'La caja ha sido cerrada correctamente.',
+                  type: 'success',
                 });
                 router.navigate([], {
                   queryParams: { cashModal: 'null' },
@@ -235,12 +229,10 @@ export const CashRegisterStore = signalStore(
           });
         }),
         catchError((err) => {
-          queueMicrotask(() => {
-            toastNotification.error({
-              title: 'Fallo al cerrar caja',
-              content: 'Fallo al cerrar caja, por favor intente de nuevo.',
-              duration: 5,
-            });
+          toastService.show({
+            title: 'Fallo al cerrar caja',
+            content: 'Fallo al cerrar caja, por favor intente de nuevo.',
+            type: 'error',
           });
           return EMPTY;
         }),
