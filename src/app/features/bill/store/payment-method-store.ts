@@ -27,7 +27,7 @@ export const PaymentMethodStore = signalStore(
   withState(initialState),
   withProps(() => ({
     paymentMethodService: inject(PaymentMethodService),
-     toastNotification: inject(NgFastToastService),
+    toastNotification: inject(NgFastToastService),
   })),
 
   withMethods(({ paymentMethodService, toastNotification, ...store }) => ({
@@ -42,10 +42,12 @@ export const PaymentMethodStore = signalStore(
               patchState(store, { paymentMethods, loading: false });
             }),
             catchError((error) => {
-              toastNotification.error({
-                title: 'Error al cargar métodos de pago',
-                content: 'No se pudieron cargar los métodos de pago. Inténtalo de nuevo.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error al cargar métodos de pago',
+                  content: 'No se pudieron cargar los métodos de pago. Inténtalo de nuevo.',
+                  duration: 5,
+                });
               });
               return [];
             }),

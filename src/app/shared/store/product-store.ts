@@ -58,10 +58,12 @@ export const ProductStore = signalStore(
               patchState(store, { products });
             }),
             catchError((err) => {
-              toastNotification.error({
-                title: 'Error al cargar productos',
-                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error al cargar productos',
+                  content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                  duration: 5,
+                });
               });
               return EMPTY;
             }),
@@ -81,10 +83,12 @@ export const ProductStore = signalStore(
               patchState(store, { catalogProducts });
             }),
             catchError((err) => {
-              toastNotification.error({
-                title: 'Error al cargar el catálogo de productos',
-                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error al cargar el catálogo de productos',
+                  content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
+                  duration: 5,
+                });
               });
               return EMPTY;
             }),

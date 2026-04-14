@@ -68,10 +68,12 @@ export const MovementInventoryStore = signalStore(
               patchState(store, { movementList: response.data, pagination: response.pagination });
             }),
             catchError((error) => {
-              toastNotification.error({
-                title: 'Error',
-                content: 'Error al cargar los movimientos de inventario.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error',
+                  content: 'Error al cargar los movimientos de inventario.',
+                  duration: 5,
+                });
               });
               return EMPTY;
             }),
@@ -99,30 +101,24 @@ export const MovementInventoryStore = signalStore(
           return inventoryService.createMovementInventory(movementDataClean).pipe(
             tap((response) => {
               patchState(store, { loading: false });
-              toastNotification.success({
-                title: 'Éxito',
-                content: 'Movimiento de inventario creado exitosamente.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.success({
+                  title: 'Éxito',
+                  content: 'Movimiento de inventario creado exitosamente.',
+                  duration: 5,
+                });
               });
               console.log(response);
               //router.navigate([`/inventory/movement/${response}`]);
             }),
             catchError((error) => {
               patchState(store, { loading: false });
-              console.error(error);
-              if (error.status === 400) {
+              queueMicrotask(() => {
                 toastNotification.error({
                   title: 'Error',
-                  content:
-                    'La oficina de origen y destino no pueden ser la misma para un movimiento de transferencia.',
+                  content: 'Error al crear el movimiento de inventario.',
                   duration: 5,
                 });
-                return EMPTY;
-              }
-              toastNotification.error({
-                title: 'Error',
-                content: 'Error al crear el movimiento de inventario.',
-                duration: 5,
               });
               return EMPTY;
             }),

@@ -53,10 +53,12 @@ export const AuthStore = signalStore(
             }),
             catchError((err) => {
               if (err.status === 401 || err.status === 404) {
-                toastNotification.error({
-                  title: 'Inicio de sesión fallido',
-                  content: 'Documento o contraseña incorrectos.',
-                  duration: 5,
+                queueMicrotask(() => {
+                  toastNotification.error({
+                    title: 'Inicio de sesión fallido',
+                    content: 'Documento o contraseña incorrectos.',
+                    duration: 5,
+                  });
                 });
               }
               patchState(store, { loading: false });
@@ -93,7 +95,6 @@ export const AuthStore = signalStore(
       patchState(store, (state) => ({
         employee: state.employee ? { ...state.employee, officeId } : null,
       }));
-
     },
     checkSession: rxMethod<void>(
       pipe(

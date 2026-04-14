@@ -26,17 +26,21 @@ export const EmployeeStore = signalStore(
   withMethods(({ authStore, employeeService, toastNotification, ...store }) => ({
     loadEmployees: rxMethod<number>(
       pipe(
-        tap(() =>{patchState(store, { loading: true })}),
+        tap(() => {
+          patchState(store, { loading: true });
+        }),
         switchMap((officeId) => {
           return employeeService.getEmployeesByOffice(officeId).pipe(
             tap((employees) => {
               patchState(store, { employees });
             }),
             catchError((err) => {
-              toastNotification.error({
-                title: 'Error',
-                content: 'Error al cargar los empleados de la oficina.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error',
+                  content: 'Error al cargar los empleados de la oficina.',
+                  duration: 5,
+                });
               });
               return EMPTY;
             }),
@@ -44,7 +48,6 @@ export const EmployeeStore = signalStore(
               patchState(store, { loading: false });
             }),
           );
-          
         }),
       ),
     ),

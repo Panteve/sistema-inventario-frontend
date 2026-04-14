@@ -29,7 +29,7 @@ export const CustomerStore = signalStore(
     customerService: inject(CustomerService),
     toastNotification: inject(NgFastToastService),
   })),
-  withMethods(({ customerService,toastNotification, ...store }) => ({
+  withMethods(({ customerService, toastNotification, ...store }) => ({
     searchCustomer: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { loading: true, customer: null, newCustomer: false })),
@@ -40,11 +40,14 @@ export const CustomerStore = signalStore(
             }),
             catchError((error) => {
               if (error.status === 404) {
-                toastNotification.warn({
-                  title: 'Cliente no encontrado',
-                  content: 'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
-                  duration: 5,
-                })
+                queueMicrotask(() => {
+                  toastNotification.warn({
+                    title: 'Cliente no encontrado',
+                    content:
+                      'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
+                    duration: 5,
+                  });
+                });
                 patchState(store, { newCustomer: true });
               }
               return EMPTY;
@@ -61,21 +64,25 @@ export const CustomerStore = signalStore(
           customerService.createCustomer(customerData).pipe(
             tap((customer) => {
               patchState(store, { customer, newCustomer: false });
-              toastNotification.success({
-                title: 'Cliente creado',
-                content: 'El cliente ha sido creado exitosamente.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.success({
+                  title: 'Cliente creado',
+                  content: 'El cliente ha sido creado exitosamente.',
+                  duration: 5,
+                });
               });
             }),
             catchError((error) => {
               if (error.status === 400) {
                 patchState(store, { newCustomer: true });
-                toastNotification.error({
-                  title: 'Error al crear el cliente',
-                  content: 'Verifique los datos ingresados.',
-                  
-                  duration: 5,
-                })
+                queueMicrotask(() => {
+                  toastNotification.error({
+                    title: 'Error al crear el cliente',
+                    content: 'Verifique los datos ingresados.',
+
+                    duration: 5,
+                  });
+                });
               }
               return EMPTY;
             }),
@@ -90,20 +97,24 @@ export const CustomerStore = signalStore(
         switchMap(({ document, customerData }) =>
           customerService.updateCustomerByDoc(document, customerData).pipe(
             tap((customer) => {
-              toastNotification.success({
-                title: 'Cliente actualizado',
-                content: 'El cliente ha sido actualizado exitosamente.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.success({
+                  title: 'Cliente actualizado',
+                  content: 'El cliente ha sido actualizado exitosamente.',
+                  duration: 5,
+                });
               });
               patchState(store, { customer, editarClienteActivo: false });
             }),
             catchError((error) => {
               if (error.status === 400) {
-                toastNotification.error({
-                  title: 'Error al actualizar el cliente',
-                  content: 'Verifique los datos ingresados.',
-                  duration: 5,
-                })
+                queueMicrotask(() => {
+                  toastNotification.error({
+                    title: 'Error al actualizar el cliente',
+                    content: 'Verifique los datos ingresados.',
+                    duration: 5,
+                  });
+                });
               }
               return EMPTY;
             }),

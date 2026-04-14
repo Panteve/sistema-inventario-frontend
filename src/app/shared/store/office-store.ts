@@ -41,10 +41,12 @@ export const OfficeStore = signalStore(
               patchState(store, { offices });
             }),
             catchError((err) => {
-              toastNotification.error({
-                title: 'Error',
-                content: 'Error al cargar las sucursales.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.error({
+                  title: 'Error',
+                  content: 'Error al cargar las sucursales.',
+                  duration: 5,
+                });
               });
               return EMPTY;
             }),

@@ -146,19 +146,24 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     if (this.authStore.isAdmin()) {
       if (this.movementStore.movementData().type === this.MOVEMENTYPE.IN) {
         if (this.movementStore.movementData().toOfficeId === 0) {
-          this.toastNotification.error({
-            title: 'Falta oficina de destino',
-            content: 'Debe seleccionar una oficina de destino para el movimiento de entrada.',
-            duration: 5,
+          queueMicrotask(() => {
+            this.toastNotification.error({
+              title: 'Falta oficina de destino',
+              content: 'Debe seleccionar una oficina de destino para el movimiento de entrada.',
+              duration: 5,
+            });
           });
+
           return;
         }
       } else if (this.movementStore.movementData().type === this.MOVEMENTYPE.OUT) {
         if (this.movementStore.movementData().fromOfficeId === 0) {
-          this.toastNotification.error({
-            title: 'Falta oficina de origen',
-            content: 'Debe seleccionar una oficina de origen para el movimiento de salida.',
-            duration: 5,
+          queueMicrotask(() => {
+            this.toastNotification.error({
+              title: 'Falta oficina de origen',
+              content: 'Debe seleccionar una oficina de origen para el movimiento de salida.',
+              duration: 5,
+            });
           });
           return;
         }
@@ -167,11 +172,13 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
           this.movementStore.movementData().fromOfficeId === 0 ||
           this.movementStore.movementData().toOfficeId === 0
         ) {
-          this.toastNotification.error({
-            title: 'Falta oficina de origen o destino',
-            content:
-              'Debe seleccionar una oficina de origen y destino para el movimiento de transferencia.',
-            duration: 5,
+          queueMicrotask(() => {
+            this.toastNotification.error({
+              title: 'Falta oficina de origen o destino',
+              content:
+                'Debe seleccionar una oficina de origen y destino para el movimiento de transferencia.',
+              duration: 5,
+            });
           });
           return;
         }

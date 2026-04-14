@@ -24,7 +24,7 @@ export const ExpenseStore = signalStore(
     cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
   })),
-  withMethods(({toastNotification, expenseService, router, cashRegisterStore, ...store }) => ({
+  withMethods(({ toastNotification, expenseService, router, cashRegisterStore, ...store }) => ({
     createExpense: rxMethod<CreateExpenseRequest>(
       pipe(
         tap(() => {
@@ -33,10 +33,12 @@ export const ExpenseStore = signalStore(
         switchMap((expenseData) =>
           expenseService.createExpense(expenseData).pipe(
             tap((response) => {
-              toastNotification.success({
-                title: 'Gasto creado exitosamente',
-                content: 'El gasto ha sido registrado correctamente.',
-                duration: 5,
+              queueMicrotask(() => {
+                toastNotification.success({
+                  title: 'Gasto creado exitosamente',
+                  content: 'El gasto ha sido registrado correctamente.',
+                  duration: 5,
+                });
               });
               patchState(store, { loading: false });
               cashRegisterStore.getCashRegisterSummary();
@@ -51,11 +53,12 @@ export const ExpenseStore = signalStore(
           patchState(store, { loading: false });
         }),
         catchError((err) => {
-          console.error('Error al crear gasto:', err);
-          toastNotification.error({
-            title: 'Error al crear gasto',
-            content: 'Fallo al crear gasto, por favor intente de nuevo.',
-            duration: 5,
+          queueMicrotask(() => {
+            toastNotification.error({
+              title: 'Error al crear gasto',
+              content: 'Fallo al crear gasto, por favor intente de nuevo.',
+              duration: 5,
+            });
           });
           patchState(store, { loading: false });
           return EMPTY;
