@@ -3,7 +3,8 @@ import { AuthStore } from '../../../core/store/auth-store';
 import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
 import { CashRegisterStore } from '../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgFastToastComponent } from 'ng-fast-toast';
+import { ProductStore } from '../../../shared/store/product-store';
+import { OfficeStore } from '../../../shared/store/office-store';
 
 @Component({
   selector: 'app-cash-register',
@@ -15,7 +16,9 @@ import { NgFastToastComponent } from 'ng-fast-toast';
 export class CashRegisterComponent {
   private router = inject(Router);
   private route = inject(ActivatedRoute);
+  officeStore = inject(OfficeStore);
   authStore = inject(AuthStore);
+  productStore = inject(ProductStore);
   cashRegisterStore = inject(CashRegisterStore);
   private currencyPipe = inject(CurrencyPipe);
 
@@ -23,6 +26,7 @@ export class CashRegisterComponent {
   currentHour = new Date().getHours();
   currentMinute = new Date().getMinutes();
   closeConfirmationOpen = signal<boolean>(false);
+  officeId = signal<number>(0);
 
   differenceStatus = computed<'ok' | 'short' | 'over'>(() => {
     const difference = this.cashRegisterStore.cashDifference();
@@ -69,7 +73,7 @@ export class CashRegisterComponent {
   }
 
   openCashRegister() {
-    this.cashRegisterStore.openCashRegister();
+    this.cashRegisterStore.openCashRegister(this.officeId());
   }
 
   requestCloseCashRegister() {
@@ -96,5 +100,8 @@ export class CashRegisterComponent {
       queryParams: { cashModal: null },
       queryParamsHandling: 'merge',
     });
+  }
+  changeOffice(event: Event) {
+    this.officeId.set(Number((event.target as HTMLSelectElement).value));
   }
 }

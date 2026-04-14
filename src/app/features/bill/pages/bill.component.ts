@@ -6,22 +6,26 @@ import { BillStore } from '../store/bill-store';
 import { PaymentMethodStore } from '../store/payment-method-store';
 import { CustomerStore } from '../store/customer-store';
 import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
-import { NgFastToastComponent } from 'ng-fast-toast';
+import { AuthStore } from '../../../core/store/auth-store';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [RouterOutlet, CurrencyPipe, DatePipe, RouterLinkWithHref, NgFastToastComponent],
+  imports: [RouterOutlet, CurrencyPipe, DatePipe, RouterLinkWithHref],
   providers: [BillStore, PaymentMethodStore, CustomerStore],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
 })
-export class BillComponent {
+export class BillComponent{
   constructor() {
     effect(() => {
       document.body.style.overflow = this.panelOpen() ? 'hidden' : '';
     });
+    console.log('BillComponent initialized');
+    console.log(this.cashRegisterStore.cashRegisterIsOpen())
+    console.log(this.authStore.employee())
   }
   customerStore = inject(CustomerStore);
+  authStore = inject(AuthStore);
   cashRegisterStore = inject(CashRegisterStore);
   billStore = inject(BillStore);
   productStore = inject(ProductStore);

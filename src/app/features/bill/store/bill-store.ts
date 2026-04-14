@@ -19,6 +19,7 @@ import {
 } from '../../../shared/interfaces/bill.interface';
 import { CustomerStore } from './customer-store';
 import { NgFastToastService } from 'ng-fast-toast';
+import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
 
 type BillState = {
   productSelected: ProductSelected;
@@ -55,10 +56,11 @@ export const BillStore = signalStore(
   withProps(() => ({
     billService: inject(BillService),
     customerStore: inject(CustomerStore),
+    cashRegisterStore: inject(CashRegisterStore),
     toastNotification: inject(NgFastToastService),
     router: inject(Router),
   })),
-  withMethods(({ toastNotification, ...store }) => ({
+  withMethods(({ toastNotification, cashRegisterStore, ...store }) => ({
     _isValidForSubmit: () => {
       if (store.length() === 0) {
         toastNotification.error({
@@ -81,7 +83,7 @@ export const BillStore = signalStore(
       return true;
     },
   })),
-  withMethods(({ customerStore, billService, toastNotification, router, ...store }) => ({
+  withMethods(({ customerStore, billService, toastNotification, router, cashRegisterStore, ...store }) => ({
     createBill: rxMethod<void>(
       pipe(
         tap(() => {
@@ -104,6 +106,7 @@ export const BillStore = signalStore(
             tap((billId) => {
               patchState(store, { loading: false });
               console.log('Factura creada con ID:', billId);
+              cashRegisterStore.getCashRegisterSummary();
               //router.navigate([`/bill/${billId}`]);
             }),
           );

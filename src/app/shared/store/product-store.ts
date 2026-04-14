@@ -11,11 +11,21 @@ import {
   ProductOnInventoryResponse,
 } from '../interfaces/product.interface';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { inject } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
-import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  EMPTY,
+  filter,
+  finalize,
+  pipe,
+  switchMap,
+  tap,
+} from 'rxjs';
 import { ProductService } from '../services/product.service';
 import { NgFastToastService } from 'ng-fast-toast';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 type ProductState = {
   products: ProductOnInventoryResponse[];
@@ -36,7 +46,7 @@ export const ProductStore = signalStore(
   withProps(() => ({
     authStore: inject(AuthStore),
     productService: inject(ProductService),
-    toastNotification: inject(NgFastToastService)
+    toastNotification: inject(NgFastToastService),
   })),
   withMethods(({ authStore, productService, toastNotification, ...store }) => ({
     loadProductsOnInventory: rxMethod<void>(
@@ -85,11 +95,19 @@ export const ProductStore = signalStore(
     ),
     removeCatalogProducts() {
       patchState(store, { catalogProducts: [] });
-    }
+    },
   })),
   withHooks({
     onInit(store) {
-      store.loadProductsOnInventory();
+      toObservable(computed(() => store.authStore.employee()?.officeId))
+        .pipe(
+          distinctUntilChanged(),
+          filter((id) => !!id),
+        )
+        .subscribe((officeId) => {
+          console.log('officeId cambió a:', officeId);
+          store.loadProductsOnInventory();
+        });
     },
   }),
 );

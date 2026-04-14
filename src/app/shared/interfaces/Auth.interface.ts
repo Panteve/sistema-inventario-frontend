@@ -6,7 +6,6 @@ export interface Employee {
   officeId?: number;
   officeName?: string;
   cashRegisterId: number;
-
 }
 
 export interface LoginResponse {

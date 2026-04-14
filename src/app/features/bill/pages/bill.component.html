@@ -1,12 +1,12 @@
-<div class="du-drawer du-drawer-end z-40">
+<div class="du-drawer du-drawer-end relative z-0">
   <input
     id="my-drawer-1"
     type="checkbox"
     class="du-drawer-toggle"
     (change)="panelOpen.set($any($event.target).checked)"
   />
-  <div class="du-drawer-content relative ">
-    @if (!cashRegisterStore.cashRegisterOpen()) {
+  <div class="du-drawer-content relative">
+    @if (!cashRegisterStore.cashRegisterIsOpen()) {
       <div
         class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs"
       >
@@ -95,6 +95,37 @@
                 </p>
               </div>
             </div>
+            @if (authStore.isAdmin()) {
+              <details
+                class="du-collapse du-collapse-arrow mt-2 rounded-xl border border-warning/35 bg-warning/10 px-0 py-0"
+                name="my-accordion-det-1"
+                close
+              >
+                <summary class="du-collapse-title text-sm font-semibold md:text-base flex gap-1">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="h-6 w-6 shrink-0 stroke-current"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                    />
+                  </svg>
+                  Esta factura se registrara en la sucursal
+                  <p class=" font-bold">
+                    {{ authStore.employee()?.officeName || 'Cargando...' }}.
+                  </p>
+                </summary>
+                <div class="du-collapse-content text-xs font-medium opacity-85 md:text-sm">
+                  Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la caja
+                  abierta del usuario.
+                </div>
+              </details>
+            }
 
             <div class="du-divider my-2"></div>
 
@@ -377,9 +408,6 @@
   </div>
   <form method="dialog" class="du-modal-backdrop">
     <button (click)="panelOpen.set(false)">close</button>
-    <div class="fixed z-999">
-      <ng-fast-toast></ng-fast-toast>
-    </div>
   </form>
 </dialog>
 <!-- Modal para pagar -->
@@ -397,9 +425,5 @@
   </div>
   <form method="dialog" class="du-modal-backdrop">
     <button (click)="panelOpen.set(false)">close</button>
-    <div class="fixed z-999">
-      <ng-fast-toast></ng-fast-toast>
-    </div>
   </form>
 </dialog>
-

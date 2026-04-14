@@ -6,6 +6,7 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { NgFastToastService } from 'ng-fast-toast';
+import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
 
 type ExpenseState = {
   loading: boolean;
@@ -20,9 +21,10 @@ export const ExpenseStore = signalStore(
   withProps(() => ({
     toastNotification: inject(NgFastToastService),
     expenseService: inject(ExpenseService),
+    cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
   })),
-  withMethods(({toastNotification, expenseService, router, ...store }) => ({
+  withMethods(({toastNotification, expenseService, router, cashRegisterStore, ...store }) => ({
     createExpense: rxMethod<CreateExpenseRequest>(
       pipe(
         tap(() => {
@@ -37,6 +39,7 @@ export const ExpenseStore = signalStore(
                 duration: 5,
               });
               patchState(store, { loading: false });
+              cashRegisterStore.getCashRegisterSummary();
               router.navigate([], {
                 queryParams: { expenseModal: 'null' },
                 queryParamsHandling: 'merge',

@@ -3,22 +3,19 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { ProductCatalogResponse, ProductOnInventoryResponse } from '../interfaces/product.interface';
 import { AuthStore } from '../../core/store/auth-store';
-import { OfficeStore } from '../store/office-store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private http = inject(HttpClient);
-  private authStore = inject(AuthStore);
-  private officeStore = inject(OfficeStore);
-
+  private  authStore = inject(AuthStore);
   modalClose = signal<boolean>(false);
 
   loadProductsOnInventory() {
-    const officeId: number = this.authStore.employee()?.officeId || this.officeStore.offices()[0]?.id;
+    const officeId = this.authStore.employee()?.officeId;
     return this.http.get<ProductOnInventoryResponse[]>(
-      `${environment.apiUrl}/office-inventory/${officeId}`,
+      `${environment.apiUrl}/office-inventory/`,{params: { officeId: officeId ? String(officeId) : 0 }}
     );
   }
 

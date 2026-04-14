@@ -15,16 +15,11 @@ import { OfficeStore } from '../../../../shared/store/office-store';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { NgFastToastService } from 'ng-fast-toast';
+import { CashRegisterStore } from '../../../cash-register/store/cash-register-store';
 
 @Component({
   selector: 'app-movement-create.component',
-  imports: [
-    DatePipe,
-    TableProducts,
-    ReactiveFormsModule,
-    TableCatalogProducts,
-    
-  ],
+  imports: [DatePipe, TableProducts, ReactiveFormsModule, TableCatalogProducts],
   providers: [MovementInventoryStore],
   templateUrl: './movement-create.component.html',
 })
@@ -33,6 +28,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   productStore = inject(ProductStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);
+  cashRegisterStore = inject(CashRegisterStore);
   toastNotification = inject(NgFastToastService);
   router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -80,6 +76,9 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.productStore.removeCatalogProducts();
+    if (this.authStore.isAdmin()) {
+      this.cashRegisterStore.setOfficeIdToAuth();
+    }
   }
 
   selectAll(event: FocusEvent) {
@@ -140,7 +139,6 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     const selectElement = (event.target as HTMLSelectElement).value;
     this.movementStore.setFromOfficeId(Number(selectElement));
     this.authStore.setOfficeId(Number(selectElement));
-    this.productStore.loadProductsOnInventory();
     this.movementStore.resetProductsInMovement();
   }
 

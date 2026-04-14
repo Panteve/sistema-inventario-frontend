@@ -1,5 +1,5 @@
 <!-- Block for cash register -->
-@if (!cashRegisterStore.cashRegisterOpen()) {
+@if (!cashRegisterStore.cashRegisterIsOpen()) {
   <div
     class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs"
   >
@@ -168,7 +168,7 @@
           } @else {
             <button
               class="du-btn du-btn-error flex-1 gap-2"
-              [disabled]="!cashRegisterStore.cashRegisterOpen()"
+              [disabled]="!cashRegisterStore.cashRegisterIsOpen()"
               type="submit"
             >
               Crear gasto

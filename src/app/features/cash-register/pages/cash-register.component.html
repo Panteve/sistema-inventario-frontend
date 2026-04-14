@@ -28,7 +28,7 @@
         </svg>
       </div>
       <div>
-        @if (!cashRegisterStore.cashRegisterOpen()) {
+        @if (!cashRegisterStore.cashRegisterIsOpen()) {
           <h1 class="text-xl font-bold tracking-tight">Apertura de caja</h1>
           <p class="text-sm opacity-50">Registra el monto inicial para comenzar la jornada.</p>
         } @else {
@@ -46,7 +46,7 @@
             <p class="text-sm opacity-50">Información de la caja y de la sesión.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-            @if (!cashRegisterStore.cashRegisterOpen()) {
+            @if (!cashRegisterStore.cashRegisterIsOpen()) {
               <span class="du-badge du-badge-warning du-badge-sm md:du-badge-md">Caja cerrada</span>
             } @else {
               <span class="du-badge du-badge-success du-badge-sm md:du-badge-md">Caja abierta</span>
@@ -57,12 +57,46 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-1 sm:grid-cols-2">
+        <div class="grid grid-cols-1 gap-1 sm:grid-cols-3">
           <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
             <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
             <p class="mt-0.5 truncate text-base font-semibold leading-tight">
-              {{ this.authStore.employee()?.name ?? 'Jhon Doe' }}
+              {{ authStore.employee()?.name ?? 'Sin nombre' }}
             </p>
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Oficina</p>
+            @if (cashRegisterStore.cashRegisterIsOpen()) {
+              <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+                {{ authStore.employee()?.officeName }}
+              </p>
+            }@else {
+              <select
+                class="du-select w-full"
+                (change)="changeOffice($event)"
+                [value]="this.officeId()"
+              >
+                <option
+                  value="0"
+                  disabled
+                  selected
+                  [selected]="this.officeId() === 0"
+                >
+                  Seleccionar oficina
+                </option>
+                @if (officeStore.loading()) {
+                  <option disabled>Cargando oficinas...</option>
+                } @else {
+                  @for (office of officeStore.offices(); track office.id) {
+                    <option [value]="office.id">
+                      {{ office.name }}
+                    </option>
+                  } @empty {
+                    <option disabled selected>No hay oficinas disponibles</option>
+                  }
+                }
+              </select>
+            }
           </div>
           <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
             <p class="text-xs uppercase tracking-[0.16em] opacity-60">Hora</p>
@@ -72,7 +106,7 @@
           </div>
         </div>
 
-        @if (!cashRegisterStore.cashRegisterOpen()) {
+        @if (!cashRegisterStore.cashRegisterIsOpen()) {
           <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
             <fieldset
               class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
@@ -383,6 +417,7 @@
         <div class="mt-3 rounded-2xl border border-base-content/10 bg-base-200/40 p-3 text-sm">
           <p class="font-semibold">Resumen actual</p>
           <p class="mt-1 opacity-70">Esperado en caja: $ {{ displayExpectedCash() }}</p>
+          <p class="opacity-70">Efectivo registrado: $ {{ displayAmount() }}</p>
           <p class="opacity-70">Diferencia registrada: $ {{ displayDifference() }}</p>
         </div>
 

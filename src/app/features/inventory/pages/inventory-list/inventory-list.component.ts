@@ -1,10 +1,11 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
+import { CashRegisterStore } from '../../../cash-register/store/cash-register-store';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -12,16 +13,17 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableProducts,],
+  imports: [TableProducts],
   providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })
-export class InventoryListComponent {
+export class InventoryListComponent implements OnDestroy {
   private readonly stockFilterDebounceMs = 350;
   private readonly priceFilterDebounceMs = 350;
 
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
+  cashRegisterStore = inject(CashRegisterStore);
   officeStore = inject(OfficeStore);
   router = inject(Router);
   private currencyPipe = inject(CurrencyPipe);
@@ -79,6 +81,11 @@ export class InventoryListComponent {
       this.maxPriceFilter,
       this.priceFilterDebounceMs,
     );
+  }
+  ngOnDestroy(): void {
+    if (this.authStore.isAdmin()) {
+      this.cashRegisterStore.setOfficeIdToAuth();
+    }
   }
   private setupDebouncedRangeSync(
     draftMinSignal: { (): number | null },
@@ -209,6 +216,5 @@ export class InventoryListComponent {
   }
   changeOffice(event: Event) {
     this.authStore.setOfficeId(Number((event.target as HTMLSelectElement).value));
-    this.productStore.loadProductsOnInventory();
   }
 }

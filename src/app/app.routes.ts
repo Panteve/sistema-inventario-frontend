@@ -5,7 +5,6 @@ import { BillComponent } from './features/bill/pages/bill.component';
 import { authGuard } from './core/guards/auth-guard';
 import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
 import { ProductPricesPanel } from './features/bill/layouts/product-prices-panel/product-prices-panel';
-import { ProductStore } from './shared/store/product-store';
 import { BillStore } from './features/bill/store/bill-store';
 import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
 import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
@@ -29,7 +28,7 @@ export const routes: Routes = [
     component: BillComponent,
     title: 'Crear factura',
     canActivate: [authGuard],
-    providers: [ProductStore, BillStore],
+    providers: [BillStore],
     children: [
       {
         path: 'view-products',
@@ -76,7 +75,7 @@ export const routes: Routes = [
     path: 'inventory',
     title: 'Panel de control',
     canActivate: [authGuard],
-    providers: [ProductStore, OfficeStore],
+    providers: [OfficeStore],
     children: [
       {
         path: 'inventory-office',

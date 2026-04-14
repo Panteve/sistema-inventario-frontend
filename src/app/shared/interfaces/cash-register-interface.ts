@@ -1,5 +1,6 @@
 export interface OpenCashRegisterRequest {
   initialAmount: number;
+  officeId: number;
 }
 
 export interface CashRegisterResponse {
@@ -21,8 +22,8 @@ export interface Payment {
   };
 }
 export interface Expense {
-    id: number;
-    amount: number;
+  id: number;
+  amount: number;
 }
 
 export interface CloseCashRegisterRequest {
@@ -30,11 +31,18 @@ export interface CloseCashRegisterRequest {
   difference: number;
 }
 
-export interface CashRegisterSummaryResponse {
+export interface CashRegisterSummaryResponse extends CashRegisterSummary {
+  office: {
+    id: number;
+    name: string;
+  };
+}
+
+export interface CashRegisterSummary {
   openedAt: string;
   closedAt: string | null;
   initialAmount: number;
   finalAmount: number;
   payments: Payment[];
-  expenses: Expense[]
+  expenses: Expense[];
 }

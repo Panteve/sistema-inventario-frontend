@@ -15,8 +15,8 @@ export class CashRegisterService {
   closeCashRegister(closeCashRegisterData: CloseCashRegisterRequest){
     return this.http.patch(`${environment.apiUrl}/cash-register/close`, closeCashRegisterData);
   }
-  getCashRegisterSummary(cashRegisterId: number){
-    return this.http.get<CashRegisterSummaryResponse>(`${environment.apiUrl}/cash-register/${cashRegisterId}/summary`);
+  getCashRegisterSummary(){
+    return this.http.get<CashRegisterSummaryResponse>(`${environment.apiUrl}/cash-register/summary`);
   }
 
 

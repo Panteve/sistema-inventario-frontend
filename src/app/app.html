@@ -3,7 +3,7 @@
   <div class="du-drawer-content min-h-screen bg-base-content/5">
     <app-navbar />
     <main class="flex-1 px-2 py-2 md:px-3 md:py-3">
-      <div class="fixed z-999">
+      <div class="fixed z-9999">
         <ng-fast-toast></ng-fast-toast>
       </div>
       <router-outlet />
@@ -22,9 +22,6 @@
         </div>
         <form method="dialog" class="du-modal-backdrop">
           <button (click)="closeCashModal()">close</button>
-          <div class="fixed z-999">
-            <ng-fast-toast></ng-fast-toast>
-          </div>
         </form>
       </dialog>
     }
@@ -42,9 +39,6 @@
         </div>
         <form method="dialog" class="du-modal-backdrop">
           <button (click)="closeExpenseModal()">close</button>
-          <div class="fixed z-999">
-            <ng-fast-toast></ng-fast-toast>
-          </div>
         </form>
       </dialog>
     }
@@ -115,12 +109,11 @@
           </li>
           <li>
             <button
-              [class]="
-                cashRegisterStore.cashRegisterOpen()
-                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
-                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-warning justify-start'
+            class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+            [class.du-btn-warning]="!cashRegisterStore.cashRegisterIsOpen()"
+              [attr.data-tip]="
+                cashRegisterStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'
               "
-              [attr.data-tip]="cashRegisterStore.cashRegisterOpen() ? 'Cerrar caja' : 'Abrir caja'"
               (click)="openCashModal()"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
@@ -140,7 +133,7 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">
-                @if (!cashRegisterStore.cashRegisterOpen()) {
+                @if (!cashRegisterStore.cashRegisterIsOpen()) {
                   Apertura de caja
                 } @else {
                   Cierre de caja
@@ -150,11 +143,8 @@
           </li>
           <li>
             <button
-              [class]="
-                cashRegisterStore.cashRegisterOpen()
-                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
-                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
-              "
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
               data-tip="Crear gasto"
               (click)="openExpenseModal()"
             >
@@ -182,13 +172,12 @@
           >
             Acciones
           </p>
+
           <li>
             <button
-              [class]="
-                cashRegisterStore.cashRegisterOpen()
-                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft du-btn-primary justify-start'
-                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
-              "
+            class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+            [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
+            [class.du-btn-primary]="cashRegisterStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
               (click)="router.navigate(['/bill'])"
             >
@@ -206,14 +195,9 @@
             </button>
           </li>
           <li>
-            <!-- Boton para cuando el drawer esta cerrado no mostrar el submenu si no un boton-->
             <button
-              class="du-is-drawer-open:hidden"
-              [class]="
-                cashRegisterStore.cashRegisterOpen()
-                  ? 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start'
-                  : 'du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start opacity-50'
-              "
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
               data-tip="Inventario"
               (click)="router.navigate(['/inventory/inventory-office'])"
             >
@@ -231,36 +215,48 @@
                   />
                 </g>
               </svg>
+
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Inventario</span>
+            </button>
+          </li>
+          <li>
+            <!-- Boton para cuando el drawer esta cerrado no mostrar el submenu si no un boton-->
+            <button
+              class="du-is-drawer-open:hidden du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              data-tip="Movimientos de inventario"
+              (click)="router.navigate(['/inventory/history-movement'])"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 48 48">
+                <path
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="4"
+                  d="m10 8l-6 6l6 6m28 8l6 6l-6 6M4 14h40M4 34h40"
+                />
+              </svg>
             </button>
             <!-- Cuando el drawer esta abierto se muestra el submenu como se debe -->
-            <details
-              class="du-is-drawer-close:hidden"
-              open
-              [class]="cashRegisterStore.cashRegisterOpen() ? '' : 'opacity-50'"
-            >
+            <details class="du-is-drawer-close:hidden" open>
               <summary>
-                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24">
-                  <g
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 48 48">
+                  <path
                     fill="none"
                     stroke="currentColor"
                     stroke-linecap="round"
                     stroke-linejoin="round"
-                    stroke-width="1.5"
-                  >
-                    <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
-                    <path
-                      d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8zM6 13h12M6 17h12"
-                    />
-                  </g>
+                    stroke-width="4"
+                    d="m10 8l-6 6l6 6m28 8l6 6l-6 6M4 14h40M4 34h40"
+                  />
                 </svg>
-                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Inventario</span>
+                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
+                  >Movimientos de inventario</span
+                >
               </summary>
               <ul class="du-is-drawer-close:hidden">
-                <li (click)="router.navigate(['/inventory/inventory-office'])">
-                  <a>Stock actual</a>
-                </li>
                 <li (click)="router.navigate(['/inventory/history-movement'])">
-                  <a>Movimientos</a>
+                  <a>Historial</a>
                 </li>
                 <li (click)="router.navigate(['/inventory/new-movement'])">
                   <a>Nuevo movimiento</a>
@@ -271,7 +267,7 @@
           <!-- Separador de los elementos de arrriba y los de abajo -->
           <div class="flex grow"></div>
           <li>
-            <div class="du-dropdown du-dropdown-center du-dropdown-top ">
+            <div class="du-dropdown du-dropdown-center du-dropdown-top">
               <div tabindex="0" role="button" class="flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 24 24">
                   <path
@@ -279,7 +275,7 @@
                     d="M7.5 6.5C7.5 8.981 9.519 11 12 11s4.5-2.019 4.5-4.5S14.481 2 12 2S7.5 4.019 7.5 6.5M20 21h1v-1c0-3.859-3.141-7-7-7h-4c-3.86 0-7 3.141-7 7v1z"
                   />
                 </svg>
-                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2 ">Perfil</span>
+                <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Perfil</span>
               </div>
               <ul
                 tabindex="-1"
@@ -291,8 +287,8 @@
                 }
                 <li>
                   <a class="du-btn-disabled bg-base-200"
-                    >Documento:
-                    <h6 class="font-bold">{{ authStore.employee()?.document }}</h6></a
+                    >Nombre:
+                    <h6 class="font-bold">{{ authStore.employee()?.name }}</h6></a
                   >
                   <a class="du-btn-disabled bg-base-200"
                     >Oficina:

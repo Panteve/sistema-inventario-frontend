@@ -1,7 +1,9 @@
 import {
+  getState,
   patchState,
   signalStore,
   withComputed,
+  withHooks,
   withMethods,
   withProps,
   withState,
@@ -9,23 +11,24 @@ import {
 import { computed, inject } from '@angular/core';
 import { CashRegisterService } from '../services/cash-register.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
+import { catchError, distinctUntilChanged, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { CashRegisterSummaryResponse } from '../../../shared/interfaces/cash-register-interface';
+import { CashRegisterSummary } from '../../../shared/interfaces/cash-register-interface';
 import { NgFastToastService } from 'ng-fast-toast';
+import { AuthStore } from '../../../core/store/auth-store';
+import { toObservable } from '@angular/core/rxjs-interop';
 
 type CashRegisterState = {
   loading: boolean;
   amountReceived: number;
-  cashRegisterId: number;
   openingCash: number;
-  cashRegisterSummary: CashRegisterSummaryResponse;
+  cashRegisterSummary: CashRegisterSummary;
+  officeToShow: number;
 };
 
 const initialState: CashRegisterState = {
   loading: false,
   amountReceived: 0,
-  cashRegisterId: 0,
   openingCash: 0,
   cashRegisterSummary: {
     openedAt: '',
@@ -35,13 +38,20 @@ const initialState: CashRegisterState = {
     payments: [],
     expenses: [],
   },
+  officeToShow: 0,
 };
 
 export const CashRegisterStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ cashRegisterSummary, amountReceived, cashRegisterId }) => {
-    const cashRegisterOpen = computed(() => cashRegisterId() !== 0);
+  withProps(() => ({
+    authStore: inject(AuthStore),
+    toastNotification: inject(NgFastToastService),
+    cashRegisterService: inject(CashRegisterService),
+    router: inject(Router),
+  })),
+  withComputed(({ cashRegisterSummary, amountReceived, ...store }) => {
+    const cashRegisterIsOpen = computed(() => store.authStore.employee()?.cashRegisterId );
     const totalTransferSales = computed(() =>
       cashRegisterSummary().payments.reduce((sum, payment) => {
         if (!payment.paymentMethod.affectsCash) {
@@ -64,9 +74,14 @@ export const CashRegisterStore = signalStore(
     const expectedCash = computed(
       () => cashRegisterSummary().initialAmount + totalCashSales() - totalExpenses(),
     );
-    const cashDifference = computed(() => amountReceived() - expectedCash());
+    const cashDifference = computed(() => {
+      if (expectedCash() < 0) {
+        return amountReceived() + expectedCash();
+      }
+      return amountReceived() - expectedCash();
+    });
     return {
-      cashRegisterOpen,
+      cashRegisterIsOpen,
       totalTransferSales,
       totalCashSales,
       totalExpenses,
@@ -74,13 +89,8 @@ export const CashRegisterStore = signalStore(
       cashDifference,
     };
   }),
-  withProps(() => ({
-    toastNotification: inject(NgFastToastService),
-    cashRegisterService: inject(CashRegisterService),
-    router: inject(Router),
-  })),
-  withMethods(({ toastNotification, cashRegisterService, router, ...store }) => ({
-    openCashRegister: rxMethod<void>(
+  withMethods(({ authStore, toastNotification, cashRegisterService, router, ...store }) => ({
+    openCashRegister: rxMethod<number | null>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
@@ -90,51 +100,53 @@ export const CashRegisterStore = signalStore(
             toastNotification.error({
               title: 'Monto inicial no válido',
               content: 'El monto inicial no puede ser igual o menor a cero.',
+              duration: 5,
             });
             patchState(store, { loading: false });
             return false;
           }
           return true;
         }),
-        switchMap(() =>
-          cashRegisterService.openCashRegister({ initialAmount: store.amountReceived() }).pipe(
-            tap((response) => {
-              patchState(store, {
+        switchMap((officeId) => {
+          if (officeId === null) {
+            officeId = 0;
+          }
+          return cashRegisterService
+            .openCashRegister({ initialAmount: store.amountReceived(), officeId: officeId })
+            .pipe(
+              tap((response) => {
+                patchState(store, {
                   loading: false,
-                  cashRegisterId: response.id,
                   amountReceived: 0,
                   openingCash: 0,
                 });
-              toastNotification.success({
-                title: 'Caja abierta exitosamente',
-                content: 'La caja ha sido abierta, feliz día.',
-                duration: 5,
-              });
-              router.navigate([], {
-                queryParams: { cashModal: 'null' },
-                queryParamsHandling: 'merge',
-              });
-            }),
-          ),
-        ),
-        finalize(() => {
-          patchState(store, { loading: false, amountReceived: 0, openingCash: 0 });
-        }),
-        catchError((err) => {
-          if (err.status === 409) {
-            toastNotification.error({
-              title: 'Caja ya abierta',
-              content: 'Ya existe una caja abierta para este usuario.',
-              duration: 5,
-            });
-            return EMPTY;
-          }
-          toastNotification.error({
-            title: 'Fallo al abrir caja',
-            content: 'Fallo al abrir caja, por favor intente de nuevo.',
-            duration: 5,
-          });
-          return EMPTY;
+                authStore.setCashRegisterId(response.id);
+                toastNotification.success({
+                  title: 'Caja abierta exitosamente',
+                  content: 'La caja ha sido abierta, feliz día.',
+                  duration: 5,
+                });
+                router.navigate([], {
+                  queryParams: { cashModal: 'null' },
+                  queryParamsHandling: 'merge',
+                });
+              }),
+              catchError((err) => {
+                if (err.status === 409) {
+                  toastNotification.error({
+                    title: 'Caja ya abierta',
+                    content: 'Ya existe una caja abierta para este usuario.',
+                    duration: 5,
+                  });
+                  return EMPTY;
+                }
+
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, { loading: false, amountReceived: 0, openingCash: 0 });
+              }),
+            );
         }),
       ),
     ),
@@ -144,23 +156,26 @@ export const CashRegisterStore = signalStore(
           patchState(store, { loading: true });
         }),
         switchMap(() =>
-          cashRegisterService.getCashRegisterSummary(store.cashRegisterId()).pipe(
+          cashRegisterService.getCashRegisterSummary().pipe(
             tap((response) => {
-              patchState(store, { loading: false, cashRegisterSummary: response });
+              patchState(store, { loading: false, cashRegisterSummary: response, officeToShow: response.office.id });
+              authStore.setOfficeName(response.office.name);
+              authStore.setOfficeId(response.office.id);
+              console.log('Resumen de caja obtenido:', response);
+            }),
+            catchError((err) => {
+              toastNotification.error({
+                title: 'Fallo al obtener resumen de caja',
+                content: 'Fallo al obtener resumen de caja, por favor intente de nuevo.',
+                duration: 5,
+              });
+              return EMPTY;
+            }),
+            finalize(() => {
+              patchState(store, { loading: false });
             }),
           ),
         ),
-        finalize(() => {
-          patchState(store, { loading: false });
-        }),
-        catchError((err) => {
-          toastNotification.error({
-            title: 'Fallo al obtener resumen de caja',
-            content: 'Fallo al obtener resumen de caja, por favor intente de nuevo.',
-            duration: 5,
-          });
-          return EMPTY;
-        }),
       ),
     ),
     closeCashRegister: rxMethod<void>(
@@ -178,10 +193,10 @@ export const CashRegisterStore = signalStore(
               tap((response) => {
                 patchState(store, {
                   loading: false,
-                  cashRegisterId: 0,
                   amountReceived: 0,
                   openingCash: 0,
                 });
+                authStore.setCashRegisterId(0);
                 toastNotification.success({
                   title: 'Caja cerrada exitosamente',
                   content: 'La caja ha sido cerrada correctamente.',
@@ -197,9 +212,6 @@ export const CashRegisterStore = signalStore(
         finalize(() => {
           patchState(store, {
             loading: false,
-            cashRegisterId: 0,
-            amountReceived: 0,
-            openingCash: 0,
           });
         }),
         catchError((err) => {
@@ -215,15 +227,19 @@ export const CashRegisterStore = signalStore(
     changeAmountReceived(amount: number) {
       patchState(store, { amountReceived: amount });
     },
-    setCashRegisterId(id: number) {
-      if (id === 0) {
-        patchState(store, {
-          cashRegisterId: 0,
-          cashRegisterSummary: initialState.cashRegisterSummary,
-        });
-        return;
-      }
-      patchState(store, { cashRegisterId: id });
-    },
+    setOfficeIdToAuth(){
+      const officeId = getState(store).officeToShow;
+      authStore.setOfficeId(officeId);
+    }
   })),
+  withHooks({
+    onInit(store) {
+      toObservable(computed(() => store.authStore.employee()?.cashRegisterId))
+      .pipe(
+        distinctUntilChanged(),
+        filter(id => !!id)
+      )
+      .subscribe(() => {store.getCashRegisterSummary(); console.log('Caja abierta, obteniendo resumen...');});
+    },
+  }),
 );

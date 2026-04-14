@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
@@ -23,6 +23,7 @@ export class App {
   router = inject(Router);
   private route = inject(ActivatedRoute);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
+  
 
   cashModalOpen = toSignal(
     this.route.queryParamMap.pipe(map((params) => params.get('cashModal') === 'open')),
@@ -40,9 +41,6 @@ export class App {
       queryParams: { cashModal: 'open' },
       queryParamsHandling: 'merge',
     });
-    if (this.cashRegisterStore.cashRegisterOpen()) {
-      this.cashRegisterStore.getCashRegisterSummary();
-    }
   }
 
   closeCashModal() {
