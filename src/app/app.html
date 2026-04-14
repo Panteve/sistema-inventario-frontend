@@ -4,7 +4,8 @@
     <app-navbar />
     <main class="flex-1 px-2 py-2 md:px-3 md:py-3">
       <div class="fixed z-9999">
-        <ng-fast-toast></ng-fast-toast>
+        
+        <toast-notifications></toast-notifications>
       </div>
       <router-outlet />
     </main>
@@ -109,8 +110,8 @@
           </li>
           <li>
             <button
-            class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
-            [class.du-btn-warning]="!cashRegisterStore.cashRegisterIsOpen()"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              [class.du-btn-warning]="!cashRegisterStore.cashRegisterIsOpen()"
               [attr.data-tip]="
                 cashRegisterStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'
               "
@@ -175,9 +176,9 @@
 
           <li>
             <button
-            class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
-            [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
-            [class.du-btn-primary]="cashRegisterStore.cashRegisterIsOpen()"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
+              [class.du-btn-primary]="cashRegisterStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
               (click)="router.navigate(['/bill'])"
             >

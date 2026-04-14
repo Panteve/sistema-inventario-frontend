@@ -1,4 +1,4 @@
-import { Component, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
@@ -9,11 +9,11 @@ import { CashRegisterComponent } from './features/cash-register/pages/cash-regis
 import { CashRegisterStore } from './features/cash-register/store/cash-register-store';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense.component';
-import { NgFastToastComponent } from 'ng-fast-toast';
+import { ToastComponent } from './shared/layouts/toast.component/toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CashRegisterComponent, ExpenseComponent, NgFastToastComponent],
+  imports: [RouterOutlet, Navbar, CashRegisterComponent, ExpenseComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })

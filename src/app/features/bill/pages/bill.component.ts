@@ -20,9 +20,6 @@ export class BillComponent{
     effect(() => {
       document.body.style.overflow = this.panelOpen() ? 'hidden' : '';
     });
-    console.log('BillComponent initialized');
-    console.log(this.cashRegisterStore.cashRegisterIsOpen())
-    console.log(this.authStore.employee())
   }
   customerStore = inject(CustomerStore);
   authStore = inject(AuthStore);

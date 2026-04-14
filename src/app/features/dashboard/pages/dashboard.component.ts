@@ -1,5 +1,4 @@
 import { Component, inject } from '@angular/core';
-import { NgFastToastComponent } from 'ng-fast-toast';
 import { OfficeStore } from '../../../shared/store/office-store';
 import { ProductStore } from '../../../shared/store/product-store';
 

@@ -12,7 +12,7 @@ import { AuthStore } from '../../core/store/auth-store';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { OfficeService } from '../services/office.service';
 import { OfficeNameIdResponse } from '../interfaces/office.interface';
-import { NgFastToastService } from 'ng-fast-toast';
+import { ToastService } from '../services/toast.service';
 
 type OfficeState = {
   offices: OfficeNameIdResponse[];
@@ -29,9 +29,9 @@ export const OfficeStore = signalStore(
   withProps(() => ({
     authStore: inject(AuthStore),
     officeService: inject(OfficeService),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
   })),
-  withMethods(({ authStore, officeService, toastNotification, ...store }) => ({
+  withMethods(({ authStore, officeService, toastService, ...store }) => ({
     loadOffices: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true })),
@@ -41,10 +41,10 @@ export const OfficeStore = signalStore(
               patchState(store, { offices });
             }),
             catchError((err) => {
-              toastNotification.error({
+              toastService.show({
                 title: 'Error',
                 content: 'Error al cargar las sucursales.',
-                duration: 5,
+                type: 'error',
               });
               return EMPTY;
             }),

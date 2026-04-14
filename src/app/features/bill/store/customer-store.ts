@@ -7,7 +7,7 @@ import {
   CreateCustomerRequest,
   UpdateCustomerRequest,
 } from '../../../shared/interfaces/customer-interface';
-import { NgFastToastService } from 'ng-fast-toast';
+import { ToastService } from '../../../shared/services/toast.service';
 
 type CustomerState = {
   customer: CreateCustomerRequest | null;
@@ -27,9 +27,9 @@ export const CustomerStore = signalStore(
   withState(initialState),
   withProps(() => ({
     customerService: inject(CustomerService),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
   })),
-  withMethods(({ customerService,toastNotification, ...store }) => ({
+  withMethods(({ customerService, toastService, ...store }) => ({
     searchCustomer: rxMethod<string>(
       pipe(
         tap(() => patchState(store, { loading: true, customer: null, newCustomer: false })),
@@ -40,11 +40,12 @@ export const CustomerStore = signalStore(
             }),
             catchError((error) => {
               if (error.status === 404) {
-                toastNotification.warn({
+                toastService.show({
                   title: 'Cliente no encontrado',
-                  content: 'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
-                  duration: 5,
-                })
+                  content:
+                    'No se encontró un cliente con ese documento, por favor ingrese los datos para crearlo.',
+                  type: 'warning',
+                });
                 patchState(store, { newCustomer: true });
               }
               return EMPTY;
@@ -61,21 +62,20 @@ export const CustomerStore = signalStore(
           customerService.createCustomer(customerData).pipe(
             tap((customer) => {
               patchState(store, { customer, newCustomer: false });
-              toastNotification.success({
+              toastService.show({
                 title: 'Cliente creado',
                 content: 'El cliente ha sido creado exitosamente.',
-                duration: 5,
+                type: 'success',
               });
             }),
             catchError((error) => {
               if (error.status === 400) {
                 patchState(store, { newCustomer: true });
-                toastNotification.error({
+                toastService.show({
                   title: 'Error al crear el cliente',
                   content: 'Verifique los datos ingresados.',
-                  
-                  duration: 5,
-                })
+                  type: 'error',
+                });
               }
               return EMPTY;
             }),
@@ -90,20 +90,20 @@ export const CustomerStore = signalStore(
         switchMap(({ document, customerData }) =>
           customerService.updateCustomerByDoc(document, customerData).pipe(
             tap((customer) => {
-              toastNotification.success({
+              toastService.show({
                 title: 'Cliente actualizado',
                 content: 'El cliente ha sido actualizado exitosamente.',
-                duration: 5,
+                type: 'success',
               });
               patchState(store, { customer, editarClienteActivo: false });
             }),
             catchError((error) => {
               if (error.status === 400) {
-                toastNotification.error({
+                toastService.show({
                   title: 'Error al actualizar el cliente',
                   content: 'Verifique los datos ingresados.',
-                  duration: 5,
-                })
+                  type: 'error',
+                });
               }
               return EMPTY;
             }),

@@ -12,7 +12,8 @@ import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
 import type { Employee } from '../../shared/interfaces/Auth.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { NgFastToastService } from 'ng-fast-toast';
+import { ToastService } from '../../shared/services/toast.service';
+
 
 type AuthState = {
   employee: Employee | null;
@@ -34,9 +35,9 @@ export const AuthStore = signalStore(
   withProps(() => ({
     authService: inject(AuthService),
     router: inject(Router),
-    toastNotification: inject(NgFastToastService),
+    toastService: inject(ToastService),
   })),
-  withMethods(({ authService, router, toastNotification, ...store }) => ({
+  withMethods(({ authService, router, toastService, ...store }) => ({
     login: rxMethod<{ document: string; password: string }>(
       pipe(
         tap(() => {
@@ -53,10 +54,10 @@ export const AuthStore = signalStore(
             }),
             catchError((err) => {
               if (err.status === 401 || err.status === 404) {
-                toastNotification.error({
+                toastService.show({
                   title: 'Inicio de sesión fallido',
                   content: 'Documento o contraseña incorrectos.',
-                  duration: 5,
+                  type: 'error',
                 });
               }
               patchState(store, { loading: false });
@@ -93,11 +94,9 @@ export const AuthStore = signalStore(
       patchState(store, (state) => ({
         employee: state.employee ? { ...state.employee, officeId } : null,
       }));
-
     },
     checkSession: rxMethod<void>(
       pipe(
-        tap(() => patchState(store, { loading: true })),
         switchMap(() =>
           authService.me().pipe(
             tap((response) => {
@@ -106,11 +105,8 @@ export const AuthStore = signalStore(
               });
               router.navigate(['/dashboard']);
             }),
-            finalize(() => {
-              patchState(store, { loading: false });
-            }),
             catchError(() => {
-              patchState(store, { employee: null, loading: false });
+              patchState(store, { employee: null });
               router.navigate(['']);
               return EMPTY;
             }),
