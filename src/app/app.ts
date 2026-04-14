@@ -10,10 +10,11 @@ import { CashRegisterStore } from './features/cash-register/store/cash-register-
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense.component';
 import { NgFastToastComponent } from 'ng-fast-toast';
+import { ToastComponent } from './shared/layouts/toast.component/toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CashRegisterComponent, ExpenseComponent, NgFastToastComponent],
+  imports: [RouterOutlet, Navbar, CashRegisterComponent, ExpenseComponent, NgFastToastComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
