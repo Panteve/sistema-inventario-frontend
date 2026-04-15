@@ -11,10 +11,6 @@ import { AuthStore } from '../../../core/store/auth-store';
 export class LoginComponent {
   authStore = inject(AuthStore);
 
-  loading = signal<boolean>(false);
-  incorrectLogin = signal<boolean>(false);
-  error = signal<string>('');
-
   loginModel = signal<LoginData>({
     document: '123456789',
     password: '123456789',
@@ -29,14 +25,5 @@ export class LoginComponent {
     this.loginModel().document.trim();
     this.loginModel().password.trim();
     this.authStore.login(this.loginModel());
-  }
-  countdown = signal(10); // Initial time
-
-  constructor() {
-    const interval = setInterval(() => {
-      this.countdown.update(c => c > 0 ? c - 1 : 0);
-      if (this.countdown() === 0) clearInterval(interval);
-    }, 1000);
-
   }
 }

@@ -39,29 +39,25 @@ export const ExpenseStore = signalStore(
                 content: 'El gasto ha sido registrado correctamente.',
                 type: 'success',
               });
-
-              patchState(store, { loading: false });
               cashRegisterStore.getCashRegisterSummary();
               router.navigate([], {
                 queryParams: { expenseModal: 'null' },
                 queryParamsHandling: 'merge',
               });
             }),
+            catchError((err) => {
+              toastService.show({
+                title: 'Error al crear gasto',
+                content: 'Fallo al crear gasto, por favor intente de nuevo.',
+                type: 'error',
+              });
+              return EMPTY;
+            }),
+            finalize(() => {
+              patchState(store, { loading: false });
+            }),
           ),
         ),
-        finalize(() => {
-          patchState(store, { loading: false });
-        }),
-        catchError((err) => {
-          toastService.show({
-            title: 'Error al crear gasto',
-            content: 'Fallo al crear gasto, por favor intente de nuevo.',
-            type: 'error',
-          });
-
-          patchState(store, { loading: false });
-          return EMPTY;
-        }),
       ),
     ),
   })),

@@ -107,7 +107,6 @@ export const ProductStore = signalStore(
           filter((id) => !!id),
         )
         .subscribe((officeId) => {
-          console.log('officeId cambió a:', officeId);
           store.loadProductsOnInventory();
         });
     },

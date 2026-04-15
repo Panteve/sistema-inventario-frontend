@@ -149,7 +149,6 @@ export const CashRegisterStore = signalStore(
                   });
                   return EMPTY;
                 }
-
                 return EMPTY;
               }),
               finalize(() => {
@@ -168,13 +167,11 @@ export const CashRegisterStore = signalStore(
           cashRegisterService.getCashRegisterSummary().pipe(
             tap((response) => {
               patchState(store, {
-                loading: false,
                 cashRegisterSummary: response,
                 officeToShow: response.office.id,
               });
               authStore.setOfficeName(response.office.name);
               authStore.setOfficeId(response.office.id);
-              console.log('Resumen de caja obtenido:', response);
             }),
             catchError((err) => {
               toastService.show({
@@ -182,7 +179,6 @@ export const CashRegisterStore = signalStore(
                 content: 'Fallo al obtener resumen de caja, por favor intente de nuevo.',
                 type: 'error',
               });
-
               return EMPTY;
             }),
             finalize(() => {
@@ -255,7 +251,7 @@ export const CashRegisterStore = signalStore(
         )
         .subscribe(() => {
           store.getCashRegisterSummary();
-          console.log('Caja abierta, obteniendo resumen...');
+
         });
     },
   }),

@@ -60,7 +60,6 @@ export const AuthStore = signalStore(
                   type: 'error',
                 });
               }
-              patchState(store, { loading: false });
               return EMPTY;
             }),
             finalize(() => {
