@@ -43,17 +43,7 @@ export const MovementInventoryStore = signalStore(
           patchState(store, { loading: true });
         }),
         switchMap((params) => {
-          const httpParams: ParamsGetInventoryMovements = {
-            startDate: params.startDate,
-            endDate: params.endDate,
-          };
-          if (params.fromOfficeId) httpParams.fromOfficeId = params.fromOfficeId;
-          if (params.toOfficeId) httpParams.toOfficeId = params.toOfficeId;
-          if (params.employeeId) httpParams.employeeId = params.employeeId;
-          if (params.type) httpParams.type = params.type;
-          if (params.limit) httpParams.limit = params.limit;
-          if (params.page) httpParams.page = params.page;
-          return inventoryService.getInventoryMovements(httpParams).pipe(
+          return inventoryService.getInventoryMovements(params).pipe(
             tap((response) => {
               patchState(store, { movementList: response.data, pagination: response.pagination });
             }),

@@ -98,7 +98,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-primary du-btn-soft transition-colors"
                   (click)="changeTypeFilter(undefined)"
-                  [class.du-btn-active]="!typeFilter()"
+                  [class.du-btn-active]="!this.queryParams().typeFilter"
                 >
                   Todo
                 </button>
@@ -106,7 +106,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-success du-btn-soft transition-colors"
                   (click)="changeTypeFilter('IN')"
-                  [class.du-btn-active]="typeFilter() === 'IN'"
+                  [class.du-btn-active]="this.queryParams().typeFilter === 'IN'"
                 >
                   Entrada
                 </button>
@@ -114,7 +114,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-error du-btn-soft transition-colors"
                   (click)="changeTypeFilter('OUT')"
-                  [class.du-btn-active]="typeFilter() === 'OUT'"
+                  [class.du-btn-active]="this.queryParams().typeFilter === 'OUT'"
                 >
                   Salida
                 </button>
@@ -122,7 +122,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-info du-btn-soft transition-colors"
                   (click)="changeTypeFilter('TRANSFER')"
-                  [class.du-btn-active]="typeFilter() === 'TRANSFER'"
+                  [class.du-btn-active]="this.queryParams().typeFilter === 'TRANSFER'"
                 >
                   Transferencia
                 </button>
@@ -140,7 +140,7 @@
                   id="cally1"
                   style="anchor-name: --cally1"
                 >
-                  {{ startDate() | date: 'yyyy-MM-dd' }}
+                  {{ this.queryParams().startDate | date: 'yyyy-MM-dd' }}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -165,7 +165,7 @@
                 >
                   <calendar-date
                     [max]="todayIso"
-                    [focusedDate]="startDate()"
+                    [focusedDate]="this.queryParams().startDate"
                     class="du-cally"
                     (change)="changeStartDate($event)"
                   >
@@ -201,7 +201,7 @@
                   id="cally2"
                   style="anchor-name: --cally2"
                 >
-                  {{ endDate() | date: 'yyyy-MM-dd' }}
+                  {{ this.queryParams().endDate | date: 'yyyy-MM-dd' }}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -225,8 +225,8 @@
                   style="position-anchor: --cally2"
                 >
                   <calendar-date
-                    [min]="startDate()"
-                    [max]="endDateMax()"
+                    [min]="this.queryParams().startDate"
+                    [max]="this.queryParams().endDate"
                     class="du-cally"
                     (change)="changeEndDate($event)"
                   >
@@ -262,7 +262,7 @@
                 <select
                   class="du-select du-select-sm w-full"
                   (change)="changeEmployee($event)"
-                  [value]="employeeFilter() ?? ''"
+                  [value]="this.queryParams().employeeFilter ?? ''"
                 >
                   @if (employeeStore.loading()) {
                     <option selected disabled>Cargando empleados...</option>
@@ -288,7 +288,7 @@
                   <select
                     class="du-select du-select-sm w-full"
                     (change)="changeOffice($event)"
-                    [value]="officeFilter() ?? ''"
+                    [value]="this.queryParams().fromOffice ?? ''"
                   >
                     @if (officeStore.loading()) {
                       <option selected disabled>Cargando oficinas...</option>
@@ -316,7 +316,7 @@
                   class="du-input du-input-sm du-input-bordered w-full"
                   min="5"
                   max="100"
-                  [value]="itemsPerPage()"
+                  [value]="this.queryParams().itemsPerPage"
                   (change)="changeItemsPerPage($event)"
                 />
               </fieldset>
@@ -545,16 +545,16 @@
           <div class="du-join">
             <button
               class="du-join-item du-btn"
-              (click)="changePage(activePage() - 1)"
-              [disabled]="activePage() <= 1"
+              (click)="changePage(-1)"
+              [disabled]="this.queryParams().activePage <= 1"
             >
               «
             </button>
-            <button class="du-join-item du-btn">Pagina {{ activePage() }}</button>
+            <button class="du-join-item du-btn">Pagina {{ this.queryParams().activePage }}</button>
             <button
               class="du-join-item du-btn"
-              (click)="changePage(activePage() + 1)"
-              [disabled]="activePage() >= movementInventoryStore.pagination().totalPages"
+              (click)="changePage(1)"
+              [disabled]="this.queryParams().activePage >= this.movementInventoryStore.pagination().totalPages"
             >
               »
             </button>

@@ -1,14 +1,16 @@
 import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { InventoryService } from '../../services/inventory.service';
-import { InventoryMovement } from '../../../../shared/interfaces/inventoryMovement.interface';
+import {
+  InventoryMovement,
+  ParamsGetInventoryMovements,
+} from '../../../../shared/interfaces/inventoryMovement.interface';
 import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
-
 
 @Component({
   selector: 'app-movement-list.component',
@@ -20,6 +22,7 @@ import { EmployeeStore } from '../../../../shared/store/employee-store';
 export class MovementListComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly defaultItemsPerPage = 20;
+
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
@@ -30,18 +33,23 @@ export class MovementListComponent implements OnInit {
 
   private readonly today = new Date();
   readonly todayIso = this.toIsoDate(this.today);
-  startDate = signal(this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths)));
-  endDate = signal(this.toIsoDate(this.today));
-  typeFilter = signal<'IN' | 'OUT' | 'TRANSFER' | undefined>(undefined);
-  officeFilter = signal<number | undefined>(undefined);
-  employeeFilter = signal<number | undefined>(undefined);
-  itemsPerPage = signal<number>(this.defaultItemsPerPage);
-  activePage = signal<number>(1);
-  filterPanelSticky = signal(true);
+  queryParams = signal({
+    startDate: this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths)),
+    endDate: this.toIsoDate(this.today),
+    typeFilter: undefined as 'IN' | 'OUT' | 'TRANSFER' | undefined,
+    fromOffice: undefined as number | undefined,
+    toOffice: undefined as number | undefined,
+    employeeFilter: undefined as number | undefined,
+    itemsPerPage: this.defaultItemsPerPage,
+    activePage: 1,
+  });
+
   readonly endDateMax = computed(() => {
-    const maxAllowed = this.addMonthsIso(this.startDate(), this.maxRangeMonths);
+    const maxAllowed = this.addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
     return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
   });
+
+  filterPanelSticky = signal(true);
 
   readonly groupedMovements = computed(() => {
     const todayMovements: InventoryMovement[] = [];
@@ -63,38 +71,14 @@ export class MovementListComponent implements OnInit {
   });
 
   constructor() {
-    this.route.queryParams.subscribe((params) => {
-      const startDate = params['startDate'] || this.startDate();
-      const endDate = params['endDate'] || this.endDate();
-      const type = (params['type'] as 'IN' | 'OUT' | 'TRANSFER') || undefined;
-      const fromOfficeId = params['fromOfficeId'] ? Number(params['fromOfficeId']) : undefined;
-      const toOfficeId = params['toOfficeId'] ? Number(params['toOfficeId']) : undefined;
-      const employeeId = params['employeeId'] ? Number(params['employeeId']) : undefined;
-      const itemsPerPage = params['limit'] ? Number(params['limit']) : this.defaultItemsPerPage;
-      const page = params['page'] ? Number(params['page']) : 1;
-
-      this.startDate.set(startDate);
-      this.endDate.set(endDate);
-      this.typeFilter.set(type);
-      this.officeFilter.set(fromOfficeId);
-      this.employeeFilter.set(employeeId);
-      this.itemsPerPage.set(itemsPerPage);
-      this.activePage.set(page);
-
-      this.movementInventoryStore.getInventoyryMovements({
-        startDate,
-        endDate,
-        fromOfficeId,
-        toOfficeId,
-        employeeId,
-        type,
-        page,
-        limit: itemsPerPage,
-      });
+    this.route.queryParams.subscribe(() => {
+      const queryParams = this.route.snapshot.queryParams as ParamsGetInventoryMovements;
+      this.movementInventoryStore.getInventoyryMovements(queryParams);
     });
   }
   ngOnInit(): void {
     this.employeeStore.loadEmployees(0);
+    this.applyFilters();
   }
 
   private toIsoDate(date: Date): string {
@@ -122,14 +106,20 @@ export class MovementListComponent implements OnInit {
   }
 
   changeTypeFilter(type: 'IN' | 'OUT' | 'TRANSFER' | undefined) {
-    this.typeFilter.set(type);
+    this.queryParams.update((params) => ({
+      ...params,
+      typeFilter: type,
+    }));
   }
   changeStartDate(date: Event) {
     const startDate = (date.target as HTMLInputElement).value;
-    this.startDate.set(startDate);
+    this.queryParams.update((params) => ({
+      ...params,
+      startDate,
+    }));
 
     const maxEndDate = this.endDateMax();
-    const currentEndDate = this.endDate();
+    const currentEndDate = this.queryParams().endDate;
     let nextEndDate = currentEndDate;
 
     if (currentEndDate < startDate) {
@@ -141,34 +131,53 @@ export class MovementListComponent implements OnInit {
     }
 
     if (nextEndDate !== currentEndDate) {
-      this.endDate.set(nextEndDate);
+      this.queryParams.update((params) => ({
+        ...params,
+        endDate: nextEndDate,
+      }));
     }
   }
   changeEndDate(date: Event) {
     const endDate = (date.target as HTMLInputElement).value;
-    this.endDate.set(endDate);
+    this.queryParams.update((params) => ({
+      ...params,
+      endDate,
+    }));
   }
   changeOffice(event: Event) {
-    const officeValue = (event.target as HTMLSelectElement).value;
-    const officeId = officeValue ? Number(officeValue) : undefined;
-    this.officeFilter.set(officeId);
+    const officeValue = Number((event.target as HTMLSelectElement).value);
+    const officeId = officeValue || undefined;
+    this.queryParams.update((params) => ({
+      ...params,
+      fromOffice: officeId,
+      toOffice: officeId,
+    }));
     this.employeeStore.loadEmployees(officeId ?? 0);
   }
   changeEmployee(event: Event) {
-    const employeeId = (event.target as HTMLSelectElement).value;
-    this.employeeFilter.set(employeeId ? Number(employeeId) : undefined);
+    const employeeId = Number((event.target as HTMLSelectElement).value);
+    this.queryParams.update((params) => ({
+      ...params,
+      employeeFilter: employeeId || undefined,
+    }));
   }
   changeItemsPerPage(event: Event) {
-    const value = (event.target as HTMLInputElement).value;
-    this.itemsPerPage.set(value ? Number(value) : this.defaultItemsPerPage);
-    console.log('Items per page changed to:', this.itemsPerPage());
+    const value = Number((event.target as HTMLInputElement).value);
+    const itemsPerPage = value > 0 ? value : this.defaultItemsPerPage;
+    this.queryParams.update((params) => ({
+      ...params,
+      itemsPerPage,
+    }));
   }
-
-  changePage(page: number) {
+  changePage(value: number) {
+    const page = this.queryParams().activePage + value;
     if (page < 1 || page > this.movementInventoryStore.pagination().totalPages) {
       return;
     }
-    this.activePage.set(page);
+    this.queryParams.update((params) => ({
+      ...params,
+      activePage: page,
+    }));
     this.applyFilters();
   }
 
@@ -180,15 +189,17 @@ export class MovementListComponent implements OnInit {
     const defaultStartDate = this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths));
     const defaultEndDate = this.todayIso;
 
-    this.startDate.set(defaultStartDate);
-    this.endDate.set(defaultEndDate);
-    this.typeFilter.set(undefined);
-    this.officeFilter.set(undefined);
-    this.employeeFilter.set(undefined);
-    this.itemsPerPage.set(this.defaultItemsPerPage);
-    this.activePage.set(1);
+    this.queryParams.set({
+      startDate: defaultStartDate,
+      endDate: defaultEndDate,
+      typeFilter: undefined,
+      fromOffice: undefined,
+      toOffice: undefined,
+      employeeFilter: undefined,
+      itemsPerPage: this.defaultItemsPerPage,
+      activePage: 1,
+    });
     this.employeeStore.loadEmployees(0);
-
     this.router.navigate([], {
       queryParams: {
         startDate: defaultStartDate,
@@ -205,16 +216,17 @@ export class MovementListComponent implements OnInit {
   }
 
   applyFilters() {
+    console.log('Applying filters with params:', this.queryParams());
     this.router.navigate([], {
       queryParams: {
-        startDate: this.startDate(),
-        endDate: this.endDate(),
-        type: this.typeFilter(),
-        fromOfficeId: this.officeFilter(),
-        toOfficeId: this.officeFilter(),
-        employeeId: this.employeeFilter(),
-        limit: this.itemsPerPage(),
-        page: this.activePage(),
+        startDate: this.queryParams().startDate,
+        endDate: this.queryParams().endDate,
+        type: this.queryParams().typeFilter,
+        fromOfficeId: this.queryParams().fromOffice,
+        toOfficeId: this.queryParams().toOffice,
+        employeeId: this.queryParams().employeeFilter,
+        limit: this.queryParams().itemsPerPage,
+        page: this.queryParams().activePage,
       },
       queryParamsHandling: 'merge',
     });
