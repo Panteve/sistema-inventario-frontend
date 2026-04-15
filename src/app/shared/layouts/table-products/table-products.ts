@@ -177,6 +177,7 @@ export class TableProducts {
   onRowClick(product: ProductOnInventoryResponse) {
     if (!this.enableRowSelect) return;
     this.rowSelected.emit(product);
+    
   }
   isStockCell(columnId: string) {
     return columnId === 'quantity';

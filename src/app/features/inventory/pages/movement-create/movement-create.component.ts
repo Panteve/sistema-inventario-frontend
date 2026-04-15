@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import {
@@ -124,6 +132,12 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
         ),
       }));
     }
+    this.toastService.show({
+      title: 'Producto agregado',
+      content: `El producto ${product.product.name} ha sido agregado al movimiento de inventario.`,
+      type: 'success',
+      duration: 3000,
+    });
   }
   addProductCatalogToMovement(product: ProductCatalogResponse) {
     const exists = this.movementData().products.some((p) => p.productId === product.id);
@@ -141,6 +155,12 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
         ),
       }));
     }
+    this.toastService.show({
+      title: 'Producto agregado',
+      content: `El producto ${product.name} ha sido agregado al movimiento de inventario.`,
+      type: 'success',
+      duration: 3000,
+    });
   }
   modifyingQuantity(event: Event, productId: number) {
     const quantity = Number((event.target as HTMLInputElement).value);
@@ -190,11 +210,11 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     this.movementData.update((data) => ({
       ...data,
       fromOfficeId: selectElement,
-      products:[]
+      products: [],
     }));
     this.authStore.setOfficeId(selectElement);
   }
-  
+
   submitMovement() {
     if (this.authStore.isAdmin()) {
       if (this.movementData().type === this.MOVEMENTYPE.IN) {
@@ -216,10 +236,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
           return;
         }
       } else if (this.movementData().type === this.MOVEMENTYPE.TRANSFER) {
-        if (
-          this.movementData().fromOfficeId === 0 ||
-          this.movementData().toOfficeId === 0
-        ) {
+        if (this.movementData().fromOfficeId === 0 || this.movementData().toOfficeId === 0) {
           this.toastService.show({
             title: 'Falta oficina de origen o destino',
             content:
@@ -227,7 +244,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
             type: 'error',
           });
           return;
-        }else if (this.movementData().fromOfficeId === this.movementData().toOfficeId) {
+        } else if (this.movementData().fromOfficeId === this.movementData().toOfficeId) {
           this.toastService.show({
             title: 'Oficinas iguales',
             content: 'La oficina de origen y destino no pueden ser la misma.',
@@ -244,6 +261,6 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     this.movementData.update((data) => ({
       ...data,
       reason,
-    }))
+    }));
   }
 }
