@@ -10,27 +10,17 @@ import {
   InventoryMovementPagination,
   ParamsGetInventoryMovements,
 } from '../../../shared/interfaces/inventoryMovement.interface';
-import {
-  ProductCatalogResponse,
-  ProductOnInventoryResponse,
-} from '../../../shared/interfaces/product.interface';
+
 import { ToastService } from '../../../shared/services/toast.service';
 
 type MovementInventoryState = {
   loading: boolean;
-  movementData: CreateInventoryMovementRequest;
   movementList: InventoryMovement[];
   pagination: InventoryMovementPagination;
 };
 
 const initialState: MovementInventoryState = {
   loading: false,
-  movementData: {
-    toOfficeId: 0,
-    fromOfficeId: 0,
-    type: 'IN',
-    products: [],
-  },
   movementList: [],
   pagination: {
     totalItems: 0,
@@ -82,34 +72,23 @@ export const MovementInventoryStore = signalStore(
         }),
       ),
     ),
-
-    createMovementInventory: rxMethod<void>(
+    createMovementInventory: rxMethod<CreateInventoryMovementRequest>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
-        switchMap(() => {
-          const movementDataClean = {
-            ...store.movementData(),
-            products: store.movementData().products.map((p) => ({
-              productId: p.productId,
-              quantity: p.quantity,
-            })),
-          };
-          return inventoryService.createMovementInventory(movementDataClean).pipe(
+        switchMap((movementData) => {
+          return inventoryService.createMovementInventory(movementData).pipe(
             tap((response) => {
-              patchState(store, { loading: false });
               toastService.show({
                 title: 'Éxito',
                 content: 'Movimiento de inventario creado exitosamente.',
                 type: 'success',
               });
-
               console.log(response);
               //router.navigate([`/inventory/movement/${response}`]);
             }),
             catchError((error) => {
-              patchState(store, { loading: false });
               toastService.show({
                 title: 'Error',
                 content: 'Error al crear el movimiento de inventario.',
@@ -124,119 +103,5 @@ export const MovementInventoryStore = signalStore(
         }),
       ),
     ),
-    addProductInventoryToMovement(product: ProductOnInventoryResponse) {
-      if (!store.movementData().products.some((p) => p.productId === product.product.id)) {
-        patchState(store, (state) => ({
-          movementData: {
-            ...state.movementData,
-            products: [
-              ...state.movementData.products,
-              { productId: product.product.id, name: product.product.name, quantity: 1 },
-            ],
-          },
-        }));
-      } else {
-        patchState(store, (state) => ({
-          movementData: {
-            ...state.movementData,
-            products: state.movementData.products.map((p) => {
-              if (p.productId === product.product.id) {
-                return { ...p, quantity: p.quantity + 1 };
-              }
-              return p;
-            }),
-          },
-        }));
-      }
-    },
-    addProductCatalogToMovement(product: ProductCatalogResponse) {
-      if (!store.movementData().products.some((p) => p.productId === product.id)) {
-        patchState(store, (state) => ({
-          movementData: {
-            ...state.movementData,
-            products: [
-              ...state.movementData.products,
-              { productId: product.id, name: product.name, quantity: 1 },
-            ],
-          },
-        }));
-      } else {
-        patchState(store, (state) => ({
-          movementData: {
-            ...state.movementData,
-            products: state.movementData.products.map((p) => {
-              if (p.productId === product.id) {
-                return { ...p, quantity: p.quantity + 1 };
-              }
-              return p;
-            }),
-          },
-        }));
-      }
-    },
-    quitProduct(productId: number) {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          products: state.movementData.products.filter((p) => p.productId !== productId),
-        },
-      }));
-    },
-    modifyQuantity(quantity: number, productId: number) {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          products: state.movementData.products.map((p) => {
-            if (p.productId === productId) {
-              return { ...p, quantity };
-            }
-            return p;
-          }),
-        },
-      }));
-    },
-    setMovementType(type: 'IN' | 'OUT' | 'TRANSFER') {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          type,
-        },
-      }));
-      this.resetMovementData();
-    },
-    setToOfficeId(toOfficeId: number) {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          toOfficeId,
-        },
-      }));
-    },
-    setFromOfficeId(fromOfficeId: number) {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          fromOfficeId,
-        },
-      }));
-    },
-    resetMovementData() {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          toOfficeId: 0,
-          fromOfficeId: 0,
-          products: [],
-        },
-      }));
-    },
-    resetProductsInMovement() {
-      patchState(store, (state) => ({
-        movementData: {
-          ...state.movementData,
-          products: [],
-        },
-      }));
-    },
   })),
 );

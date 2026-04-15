@@ -1,8 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { CreateInventoryMovementRequest, InventoryMovementResponse, ParamsGetInventoryMovements } from '../../../shared/interfaces/inventoryMovement.interface';
-
+import {
+  CreateInventoryMovementRequest,
+  InventoryMovementResponse,
+  ParamsGetInventoryMovements,
+} from '../../../shared/interfaces/inventoryMovement.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,11 +14,18 @@ export class InventoryService {
   http = inject(HttpClient);
 
   createMovementInventory(movementData: CreateInventoryMovementRequest) {
-    return this.http.post(`${environment.apiUrl}/inventory-movement`, movementData);
+    const payload = {
+      ...movementData,
+      products: movementData.products.map((p) => ({
+        productId: p.productId,
+        quantity: p.quantity,
+      })),
+    };
+    return this.http.post(`${environment.apiUrl}/inventory-movement`, payload);
   }
   getInventoryMovements(params: ParamsGetInventoryMovements) {
-    return this.http.get<InventoryMovementResponse>(`${environment.apiUrl}/inventory-movement`,{
-      params: { ...params }
+    return this.http.get<InventoryMovementResponse>(`${environment.apiUrl}/inventory-movement`, {
+      params: { ...params },
     });
   }
 }

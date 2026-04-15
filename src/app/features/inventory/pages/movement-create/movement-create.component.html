@@ -33,7 +33,7 @@
             <p
               class="text-xs md:text-sm rounded-full border border-base-content/10 bg-base-100 px-3 py-1"
             >
-              {{ movementStore.movementData().products.length }} productos
+              {{ this.movementData().products.length }} productos
             </p>
           </div>
         </div>
@@ -41,7 +41,7 @@
         <div class="du-divider mt-0 mb-2"></div>
 
         <div
-          [class.sm:grid-cols-3]="movementStore.movementData().type === MOVEMENTYPE.TRANSFER"
+          [class.sm:grid-cols-3]="this.movementData().type === MOVEMENTYPE.TRANSFER"
           class="grid grid-cols-1 sm:grid-cols-2 gap-2"
         >
           <div class="rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3">
@@ -58,12 +58,12 @@
           </div>
 
           <div
-            [class.hidden]="movementStore.movementData().type === MOVEMENTYPE.IN"
+            [class.hidden]="this.movementData().type === MOVEMENTYPE.IN"
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
               {{
-                movementStore.movementData().type === MOVEMENTYPE.TRANSFER
+                this.movementData().type === MOVEMENTYPE.TRANSFER
                   ? 'De'
                   : 'Oficina afectada'
               }}
@@ -77,13 +77,13 @@
               <select
                 class="du-select w-full"
                 (change)="changeFromOffice($event)"
-                [value]="this.movementStore.movementData().fromOfficeId"
+                [value]="this.movementData().fromOfficeId"
               >
                 <option
                   value="0"
                   disabled
                   selected
-                  [selected]="this.movementStore.movementData().fromOfficeId === 0"
+                  [selected]="this.movementData().fromOfficeId === 0"
                 >
                   Seleccionar oficina
                 </option>
@@ -103,12 +103,12 @@
           </div>
 
           <div
-            [class.hidden]="movementStore.movementData().type === MOVEMENTYPE.OUT"
+            [class.hidden]="this.movementData().type === MOVEMENTYPE.OUT"
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
               {{
-                movementStore.movementData().type === MOVEMENTYPE.TRANSFER
+                this.movementData().type === MOVEMENTYPE.TRANSFER
                   ? 'Hacia'
                   : 'Oficina afectada'
               }}
@@ -121,13 +121,13 @@
               <select
                 class="du-select w-full"
                 (change)="changeToOffice($event)"
-                [value]="this.movementStore.movementData().toOfficeId"
+                [value]="this.movementData().toOfficeId"
               >
                 <option
                   value="0"
                   disabled
                   selected
-                  [selected]="this.movementStore.movementData().toOfficeId === 0"
+                  [selected]="this.movementData().toOfficeId === 0"
                 >
                   Seleccionar oficina
                 </option>
@@ -157,6 +157,7 @@
           </legend>
           <textarea
             class="du-textarea du-textarea-bordered h-24 w-full resize-none"
+            (blur)="setReason($event)"
             placeholder="Ejemplo: Entrada por error de salida ..."
           ></textarea>
         </fieldset>
@@ -177,7 +178,7 @@
                 </tr>
               </thead>
               <tbody class="text-sm md:text-base text-center">
-                @for (product of movementStore.movementData().products; track product.productId) {
+                @for (product of this.movementData().products; track product.productId) {
                   <tr class="hover:bg-base-200 transition-colors">
                     <td>{{ product.name }}</td>
                     <td>
@@ -265,7 +266,7 @@
               <button
                 class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
                 [disabled]="officeStore.loading()"
-                (click)="this.movementStore.resetMovementData()"
+                (click)="this.resetMovementData()"
               >
                 Cancelar
               </button>
@@ -318,17 +319,17 @@
               <span class="text-sm opacity-60">Cargando productos...</span>
             </div>
           } @else {
-            @if (this.movementStore.movementData().type === MOVEMENTYPE.IN) {
+            @if (this.movementData().type === MOVEMENTYPE.IN) {
               <app-table-catalog-products
                 [enableRowSelect]="true"
                 [quantityProducts]="10"
-                (rowSelected)="getProductTableCatalog($event)"
+                (rowSelected)="addProductCatalogToMovement($event)"
               ></app-table-catalog-products>
             } @else {
               <app-table-products
                 [enableRowSelect]="true"
                 [quantityProducts]="10"
-                (rowSelected)="getProductTableInventory($event)"
+                (rowSelected)="addProductInventoryToMovement($event)"
               ></app-table-products>
             }
           }

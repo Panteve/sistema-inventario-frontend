@@ -8,6 +8,7 @@ export interface CreateInventoryMovementRequest {
   type: 'IN' | 'OUT' | 'TRANSFER';
   toOfficeId: number; // Solo para TRANSFER
   fromOfficeId: number; // Solo para TRANSFER
+  reason: string;
   products: Product[];
 }
 
