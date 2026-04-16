@@ -22,8 +22,6 @@ import { ProductStore } from '../../../../shared/store/product-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
-
-import { CashRegisterStore } from '../../../cash-register/store/cash-register-store';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/inventoryMovement.interface';
 
@@ -39,7 +37,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   productStore = inject(ProductStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);
-  cashRegisterStore = inject(CashRegisterStore);
+
   toastService = inject(ToastService);
   router = inject(Router);
   private route = inject(ActivatedRoute);
@@ -104,7 +102,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.productStore.removeCatalogProducts();
     if (this.authStore.isAdmin()) {
-      this.cashRegisterStore.setOfficeIdToAuth();
+      this.authStore.resetOfficeIdFromCashRegister();
     }
   }
 

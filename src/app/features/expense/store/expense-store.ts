@@ -5,8 +5,6 @@ import { ExpenseService } from '../service/expense.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-
-import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
 import { ToastService } from '../../../shared/services/toast.service';
 
 type ExpenseState = {
@@ -22,10 +20,9 @@ export const ExpenseStore = signalStore(
   withProps(() => ({
     toastService: inject(ToastService),
     expenseService: inject(ExpenseService),
-    cashRegisterStore: inject(CashRegisterStore),
     router: inject(Router),
   })),
-  withMethods(({ toastService, expenseService, router, cashRegisterStore, ...store }) => ({
+  withMethods(({ toastService, expenseService, router, ...store }) => ({
     createExpense: rxMethod<CreateExpenseRequest>(
       pipe(
         tap(() => {
@@ -39,7 +36,6 @@ export const ExpenseStore = signalStore(
                 content: 'El gasto ha sido registrado correctamente.',
                 type: 'success',
               });
-              cashRegisterStore.getCashRegisterSummary();
               router.navigate([], {
                 queryParams: { expenseModal: 'null' },
                 queryParamsHandling: 'merge',

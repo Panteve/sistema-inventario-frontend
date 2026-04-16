@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ActivatedRoute, Router } from '@angular/router';
 import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
 import { ExpenseStore } from '../store/expense-store';
-import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
+import { AuthStore } from '../../../core/store/auth-store';
 
 @Component({
   selector: 'app-expense',
@@ -19,7 +19,7 @@ export class ExpenseComponent {
   private currencyPipe = inject(CurrencyPipe);
 
   expenseStore = inject(ExpenseStore);
-  cashRegisterStore = inject(CashRegisterStore);
+  authStore = inject(AuthStore);
 
   expenseForm = new FormGroup({
     amount: new FormControl<number>(0, [

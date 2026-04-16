@@ -1,11 +1,10 @@
-import { Component, computed, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
-import { CashRegisterStore } from '../../../cash-register/store/cash-register-store';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -23,7 +22,6 @@ export class InventoryListComponent implements OnDestroy {
 
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
-  cashRegisterStore = inject(CashRegisterStore);
   officeStore = inject(OfficeStore);
   router = inject(Router);
   private currencyPipe = inject(CurrencyPipe);
@@ -84,7 +82,7 @@ export class InventoryListComponent implements OnDestroy {
   }
   ngOnDestroy(): void {
     if (this.authStore.isAdmin()) {
-      this.cashRegisterStore.setOfficeIdToAuth();
+      this.authStore.resetOfficeIdFromCashRegister();
     }
   }
   private setupDebouncedRangeSync(

@@ -9,7 +9,7 @@ import { OfficeStore } from '../../../shared/store/office-store';
 @Component({
   selector: 'app-cash-register',
   imports: [CurrencyPipe, DatePipe, DecimalPipe],
-  providers: [CurrencyPipe],
+  providers: [CurrencyPipe, CashRegisterStore],
   templateUrl: './cash-register.component.html',
   styleUrl: './cash-register.component.css',
 })
@@ -27,9 +27,25 @@ export class CashRegisterComponent {
   currentMinute = new Date().getMinutes();
   closeConfirmationOpen = signal<boolean>(false);
   officeId = signal<number>(0);
+  amountReceived = signal<number>(0);
+
+  expected = computed(() => {
+    return (
+      this.cashRegisterStore.cashRegisterSummary().initialAmount +
+      this.cashRegisterStore.cashRegisterSummary().totalCashSales -
+      this.cashRegisterStore.cashRegisterSummary().totalExpenses
+    );
+  });
+
+  cashDifference = computed(() => {
+    if (this.expected() < 0) {
+      return this.amountReceived() + this.expected();
+    }
+    return this.amountReceived() - this.expected();
+  });
 
   differenceStatus = computed<'ok' | 'short' | 'over'>(() => {
-    const difference = this.cashRegisterStore.cashDifference();
+    const difference = this.cashDifference();
     if (difference === 0) return 'ok';
     return difference < 0 ? 'short' : 'over';
   });
@@ -45,27 +61,24 @@ export class CashRegisterComponent {
   });
 
   displayAmount = computed(() => {
-    return (
-      this.currencyPipe.transform(this.cashRegisterStore.amountReceived(), 'COP', '', '1.0-0') ??
-      '0'
-    );
+    return this.currencyPipe.transform(this.amountReceived(), 'COP', '', '1.0-0') ?? '0';
   });
 
-  displayExpectedCash = computed(
-    () =>
-      this.currencyPipe.transform(this.cashRegisterStore.expectedCash(), 'COP', '', '1.2-2') ??
-      '0.00',
-  );
+  displayExpectedCash = computed(() => {
+    return this.currencyPipe.transform(this.expected(), 'COP', '', '1.2-2') ?? '0.00';
+  });
 
   displayDifference = computed(() => {
-    const diff = this.cashRegisterStore.cashDifference();
-    return this.currencyPipe.transform(Math.abs(diff), 'COP', '', '1.2-2') ?? '0.00';
+    this.cashDifference();
+    return (
+      this.currencyPipe.transform(Math.abs(this.cashDifference()), 'COP', '', '1.2-2') ?? '0.00'
+    );
   });
 
   onAmountReceivedChange(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
     const value = Number(raw);
-    this.cashRegisterStore.changeAmountReceived(isNaN(value) ? 0 : value);
+    this.amountReceived.set(isNaN(value) ? 0 : value);
   }
 
   onAmountClick(event: Event) {
@@ -73,7 +86,10 @@ export class CashRegisterComponent {
   }
 
   openCashRegister() {
-    this.cashRegisterStore.openCashRegister(this.officeId());
+    this.cashRegisterStore.openCashRegister({
+      officeId: this.officeId(),
+      amountReceived: this.amountReceived(),
+    });
   }
 
   requestCloseCashRegister() {
@@ -90,7 +106,7 @@ export class CashRegisterComponent {
 
   confirmCloseCashRegister() {
     this.closeConfirmationOpen.set(false);
-    this.cashRegisterStore.closeCashRegister();
+    this.cashRegisterStore.closeCashRegister(this.amountReceived());
   }
 
   closeCashModal() {

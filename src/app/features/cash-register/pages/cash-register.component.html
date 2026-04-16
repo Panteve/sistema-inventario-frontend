@@ -28,7 +28,7 @@
         </svg>
       </div>
       <div>
-        @if (!cashRegisterStore.cashRegisterIsOpen()) {
+        @if (!authStore.cashRegisterIsOpen()) {
           <h1 class="text-xl font-bold tracking-tight">Apertura de caja</h1>
           <p class="text-sm opacity-50">Registra el monto inicial para comenzar la jornada.</p>
         } @else {
@@ -46,7 +46,7 @@
             <p class="text-sm opacity-50">Información de la caja y de la sesión.</p>
           </div>
           <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-            @if (!cashRegisterStore.cashRegisterIsOpen()) {
+            @if (!authStore.cashRegisterIsOpen()) {
               <span class="du-badge du-badge-warning du-badge-sm md:du-badge-md">Caja cerrada</span>
             } @else {
               <span class="du-badge du-badge-success du-badge-sm md:du-badge-md">Caja abierta</span>
@@ -66,7 +66,7 @@
           </div>
           <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
             <p class="text-xs uppercase tracking-[0.16em] opacity-60">Oficina</p>
-            @if (cashRegisterStore.cashRegisterIsOpen()) {
+            @if (authStore.cashRegisterIsOpen()) {
               <p class="mt-0.5 truncate text-base font-semibold leading-tight">
                 {{ authStore.employee()?.officeName }}
               </p>
@@ -106,7 +106,7 @@
           </div>
         </div>
 
-        @if (!cashRegisterStore.cashRegisterIsOpen()) {
+        @if (!authStore.cashRegisterIsOpen()) {
           <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
             <fieldset
               class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
@@ -205,7 +205,7 @@
                 Transferencias
               </p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.totalTransferSales() | currency: 'COP' : '$' : '1.0-0' }}
+                {{ cashRegisterStore.cashRegisterSummary().totalTransferSales| currency: 'COP' : '$' : '1.0-0' }}
               </p>
             </div>
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
@@ -213,13 +213,13 @@
                 Pagos en efectivo
               </p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.totalCashSales() | currency: 'COP' : '$' : '1.0-0' }}
+                {{ cashRegisterStore.cashRegisterSummary().totalCashSales | currency: 'COP' : '$' : '1.0-0' }}
               </p>
             </div>
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">Gastos</p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight text-error">
-                - {{ cashRegisterStore.totalExpenses() | currency: 'COP' : '$' : '1.0-0' }}
+                - {{ cashRegisterStore.cashRegisterSummary().totalExpenses | currency: 'COP' : '$' : '1.0-0' }}
               </p>
             </div>
           </div>
@@ -231,7 +231,7 @@
               </p>
               <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight">
                 {{
-                  cashRegisterStore.totalTransferSales() + cashRegisterStore.totalCashSales()
+                  cashRegisterStore.cashRegisterSummary().totalTransferSales + cashRegisterStore.cashRegisterSummary().totalCashSales
                     | currency: 'COP' : '$' : '1.0-0'
                 }}
               </p>

@@ -5,7 +5,6 @@ import { ProductStore } from '../../../shared/store/product-store';
 import { BillStore } from '../store/bill-store';
 import { PaymentMethodStore } from '../store/payment-method-store';
 import { CustomerStore } from '../store/customer-store';
-import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
 import { AuthStore } from '../../../core/store/auth-store';
 
 @Component({
@@ -23,7 +22,6 @@ export class BillComponent{
   }
   customerStore = inject(CustomerStore);
   authStore = inject(AuthStore);
-  cashRegisterStore = inject(CashRegisterStore);
   billStore = inject(BillStore);
   productStore = inject(ProductStore);
   private paymentMethodStore = inject(PaymentMethodStore);

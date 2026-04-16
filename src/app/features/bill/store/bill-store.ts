@@ -18,7 +18,6 @@ import {
   ProductSelected,
 } from '../../../shared/interfaces/bill.interface';
 import { CustomerStore } from './customer-store';
-import { CashRegisterStore } from '../../cash-register/store/cash-register-store';
 import { ToastService } from '../../../shared/services/toast.service';
 
 type BillState = {
@@ -56,11 +55,10 @@ export const BillStore = signalStore(
   withProps(() => ({
     billService: inject(BillService),
     customerStore: inject(CustomerStore),
-    cashRegisterStore: inject(CashRegisterStore),
     toastService: inject(ToastService),
     router: inject(Router),
   })),
-  withMethods(({ toastService, cashRegisterStore, ...store }) => ({
+  withMethods(({ toastService, ...store }) => ({
     _isValidForSubmit: () => {
       if (store.length() === 0) {
         toastService.show({
@@ -85,7 +83,7 @@ export const BillStore = signalStore(
     },
   })),
   withMethods(
-    ({ customerStore, billService, toastService, router, cashRegisterStore, ...store }) => ({
+    ({ customerStore, billService, toastService, router, ...store }) => ({
       createBill: rxMethod<void>(
         pipe(
           tap(() => {
@@ -108,7 +106,6 @@ export const BillStore = signalStore(
               tap((billId) => {
                 patchState(store, { loading: false });
                 console.log('Factura creada con ID:', billId);
-                cashRegisterStore.getCashRegisterSummary();
                 //router.navigate([`/bill/${billId}`]);
               }),
             );

@@ -5,7 +5,7 @@ export interface Employee {
   role: string;
   officeId?: number;
   officeName?: string;
-  cashRegisterId: number;
+  cashRegister: boolean;
 }
 
 export interface LoginResponse {

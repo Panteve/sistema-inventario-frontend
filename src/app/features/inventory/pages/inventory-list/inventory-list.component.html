@@ -51,12 +51,12 @@
             @if (authStore.isAdmin()) {
               <select class="du-select du-select-sm w-full" (change)="changeOffice($event)">
                 @if (officeStore.loading()) {
-                  @if(cashRegisterStore.cashRegisterIsOpen()){
+                  @if(authStore.cashRegisterIsOpen()){
                     <option selected>{{authStore.employee()?.officeName}}</option>
                   }
                   <option disabled>Cargando oficinas...</option>
                 } @else {
-                  @if(!cashRegisterStore.cashRegisterIsOpen()){
+                  @if(!authStore.cashRegisterIsOpen()){
                     <option disabled selected>Seleccine una oficina</option>
                   }
                   @for (office of officeStore.offices(); track office.id) {

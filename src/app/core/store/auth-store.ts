@@ -14,14 +14,15 @@ import type { Employee } from '../../shared/interfaces/Auth.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ToastService } from '../../shared/services/toast.service';
 
-
 type AuthState = {
   employee: Employee | null;
+  officeIdFromCashRegister: number | null;
   loading: boolean;
 };
 
 const initialState: AuthState = {
   employee: null,
+  officeIdFromCashRegister: null,
   loading: false,
 };
 
@@ -29,6 +30,7 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed(({ employee }) => ({
+    cashRegisterIsOpen: computed(() => employee()?.cashRegister),
     isAdmin: computed(() => employee()?.role === 'ADMIN'),
     isAuthenticated: computed(() => !!employee()),
   })),
@@ -49,7 +51,9 @@ export const AuthStore = signalStore(
               window.electronAPI.saveToken(access_token);
               patchState(store, {
                 employee: user,
+                officeIdFromCashRegister: user.officeId ?? null,
               });
+
               router.navigate(['/dashboard']);
             }),
             catchError((err) => {
@@ -88,7 +92,17 @@ export const AuthStore = signalStore(
             : ({ ...state.employee, role: 'ADMIN' } as Employee),
       }));
     },
-
+    resetOfficeIdFromCashRegister() {
+      const officeIdFromCashRegister = store.officeIdFromCashRegister() ?? undefined;
+      patchState(store, (state) => ({
+        employee: state.employee
+          ? {
+              ...state.employee,
+              officeIdFromCashRegister,
+            }
+          : null,
+      }));
+    },
     setOfficeId(officeId: number) {
       patchState(store, (state) => ({
         employee: state.employee ? { ...state.employee, officeId } : null,
@@ -96,6 +110,7 @@ export const AuthStore = signalStore(
     },
     checkSession: rxMethod<void>(
       pipe(
+        tap(() => patchState(store, { loading: true })),
         switchMap(() =>
           authService.me().pipe(
             tap((response) => {
@@ -109,18 +124,30 @@ export const AuthStore = signalStore(
               router.navigate(['']);
               return EMPTY;
             }),
+            finalize(() => patchState(store, { loading: false })),
           ),
         ),
       ),
     ),
-    setCashRegisterId(cashRegisterId: number) {
+    setCashRegister(officeId: number, officeName: string) {
       patchState(store, (state) => ({
-        employee: state.employee ? { ...state.employee, cashRegisterId } : null,
+        employee: state.employee
+          ? { ...state.employee, cashRegister: true, officeId, officeName }
+          : null,
+        officeIdFromCashRegister: officeId,
       }));
     },
-    setOfficeName(officeName: string) {
+    resetCashRegister() {
+      if (store.isAdmin()) {
+        patchState(store, (state) => ({
+          employee: state.employee
+            ? { ...state.employee, officeId: undefined, officeName: undefined }
+            : null,
+        }));
+      }
       patchState(store, (state) => ({
-        employee: state.employee ? { ...state.employee, officeName } : null,
+        employee: state.employee ? { ...state.employee, cashRegister: false } : null,
+        officeIdFromCashRegister: null,
       }));
     },
   })),

@@ -216,7 +216,6 @@ export class MovementListComponent implements OnInit {
   }
 
   applyFilters() {
-    console.log('Applying filters with params:', this.queryParams());
     this.router.navigate([], {
       queryParams: {
         startDate: this.queryParams().startDate,

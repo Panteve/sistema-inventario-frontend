@@ -6,7 +6,7 @@
     (change)="panelOpen.set($any($event.target).checked)"
   />
   <div class="du-drawer-content relative">
-    @if (!cashRegisterStore.cashRegisterIsOpen()) {
+    @if (!authStore.cashRegisterIsOpen()) {
       <div
         class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs"
       >

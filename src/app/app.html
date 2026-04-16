@@ -111,9 +111,9 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
-              [class.du-btn-warning]="!cashRegisterStore.cashRegisterIsOpen()"
+              [class.du-btn-warning]="!authStore.cashRegisterIsOpen()"
               [attr.data-tip]="
-                cashRegisterStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'
+                authStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'
               "
               (click)="openCashModal()"
             >
@@ -134,7 +134,7 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">
-                @if (!cashRegisterStore.cashRegisterIsOpen()) {
+                @if (!authStore.cashRegisterIsOpen()) {
                   Apertura de caja
                 } @else {
                   Cierre de caja
@@ -145,7 +145,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
-              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
+              [class.opacity-50]="!authStore.cashRegisterIsOpen()"
               data-tip="Crear gasto"
               (click)="openExpenseModal()"
             >
@@ -177,8 +177,8 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
-              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
-              [class.du-btn-primary]="cashRegisterStore.cashRegisterIsOpen()"
+              [class.opacity-50]="!authStore.cashRegisterIsOpen()"
+              [class.du-btn-primary]="authStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
               (click)="router.navigate(['/bill'])"
             >
@@ -198,7 +198,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
-              [class.opacity-50]="!cashRegisterStore.cashRegisterIsOpen()"
+              [class.opacity-50]="!authStore.cashRegisterIsOpen()"
               data-tip="Inventario"
               (click)="router.navigate(['/inventory/inventory-office'])"
             >
