@@ -46,7 +46,7 @@ export const BillStore = signalStore(
     subtotal: computed(
       () => bill().products?.reduce((acc, p) => acc + (p.priceUnique || 0) * p.quantity, 0) ?? 0,
     ),
-    length: computed(() => bill().products?.length ?? 0),
+    length: computed(() => bill().products.length),
   })),
   withLinkedState(({ subtotal }) => ({
     iva: () => subtotal() * 0.19,
@@ -62,8 +62,8 @@ export const BillStore = signalStore(
     _isValidForSubmit: () => {
       if (store.length() === 0) {
         toastService.show({
-          title: 'Error',
-          content: 'Error al cargar las sucursales.',
+          title: 'Factura vacía',
+          content: 'Agrega productos a la factura.',
           type: 'error',
         });
 
@@ -82,138 +82,135 @@ export const BillStore = signalStore(
       return true;
     },
   })),
-  withMethods(
-    ({ customerStore, billService, toastService, router, ...store }) => ({
-      createBill: rxMethod<void>(
-        pipe(
-          tap(() => {
-            const customer = customerStore.customer();
-            patchState(store, (state) => ({
-              bill: {
-                ...state.bill,
-                customerId: customer ? customer.id : 0,
-              },
-              loading: true,
-            }));
-          }),
-          filter(() => store._isValidForSubmit()),
-          switchMap(() => {
-            const cleanBill = {
-              ...store.bill(),
-              products: store.bill().products.map(({ name, ...rest }) => rest),
-            };
-            return billService.createBill(cleanBill).pipe(
-              tap((billId) => {
-                patchState(store, { loading: false });
-                console.log('Factura creada con ID:', billId);
-                //router.navigate([`/bill/${billId}`]);
-              }),
-            );
-          }),
-          finalize(() => patchState(store, { loading: false })),
-          catchError((error) => {
-            toastService.show({
-              title: 'Error al crear la factura',
-              content: 'Ocurrió un error al crear la factura. Inténtalo de nuevo.',
-              type: 'error',
-            });
-            return EMPTY;
-          }),
-        ),
+  withMethods(({ customerStore, billService, toastService, router, ...store }) => ({
+    createBill: rxMethod<void>(
+      pipe(
+        tap(() => {
+          const customer = customerStore.customer();
+          patchState(store, (state) => ({
+            bill: {
+              ...state.bill,
+              customerId: customer ? customer.id : 0,
+            },
+            loading: true,
+          }));
+        }),
+        filter(() => store._isValidForSubmit()),
+        switchMap(() => {
+          const cleanBill = {
+            ...store.bill(),
+            products: store.bill().products.map(({ name, ...rest }) => rest),
+          };
+          return billService.createBill(cleanBill).pipe(
+            tap((billId) => {
+              console.log('Factura creada con ID:', billId);
+              //router.navigate([`/bill/${billId}`]);
+            }),
+            finalize(() => patchState(store, { loading: false })),
+            catchError((error) => {
+              toastService.show({
+                title: 'Error al crear la factura',
+                content: 'Ocurrió un error al crear la factura. Inténtalo de nuevo.',
+                type: 'error',
+              });
+              return EMPTY;
+            }),
+          );
+        }),
       ),
+    ),
 
-      cancelBill() {
-        customerStore.clearCustomer();
-        patchState(store, { bill: initialState.bill, loading: false });
-      },
-      setSelectedProduct(product: ProductSelected) {
-        patchState(store, { productSelected: product });
-      },
-      setPriceSelected(priceType: string) {
-        patchState(store, (state) => ({
-          productSelected: {
-            ...state.productSelected,
-            priceSelected:
-              priceType === 'unitPrice'
-                ? state.productSelected.product.unitPrice
-                : state.productSelected.product.wholesalePrice || 0,
-          },
-        }));
-      },
-      addProduct() {
-        const productTo: ProductOnBill = {
-          productId: store.productSelected().product.id,
-          name: store.productSelected().product.name,
-          priceUnique: store.productSelected().priceSelected,
-          quantity: 1,
-          taxPercentage: 0.1,
-        };
-        if (!store.bill().products.some((p) => p.productId === productTo.productId)) {
-          patchState(store, (state) => ({
-            bill: {
-              ...state.bill,
-              products: [...state.bill.products, productTo],
-            },
-          }));
-        } else {
-          patchState(store, (state) => ({
-            bill: {
-              ...state.bill,
-              products: state.bill.products.map((p) => {
-                if (p.productId === productTo.productId) {
-                  return { ...p, quantity: p.quantity + 1 };
-                }
-                return p;
-              }),
-            },
-          }));
-        }
-      },
-      quitProduct(productId: number) {
+    cancelBill() {
+      customerStore.clearCustomer();
+      patchState(store, { bill: initialState.bill, loading: false });
+    },
+    setSelectedProduct(product: ProductSelected) {
+      patchState(store, { productSelected: product });
+    },
+    setPriceSelected(priceType: string) {
+      patchState(store, (state) => ({
+        productSelected: {
+          ...state.productSelected,
+          priceSelected:
+            priceType === 'unitPrice'
+              ? state.productSelected.product.unitPrice
+              : state.productSelected.product.wholesalePrice || 0,
+        },
+      }));
+    },
+    addProduct() {
+      const productTo: ProductOnBill = {
+        productId: store.productSelected().product.id,
+        name: store.productSelected().product.name,
+        priceUnique: store.productSelected().priceSelected,
+        quantity: 1,
+        taxPercentage: 0.1,
+      };
+      if (!store.bill().products.some((p) => p.productId === productTo.productId)) {
         patchState(store, (state) => ({
           bill: {
             ...state.bill,
-            products: state.bill.products.filter((p) => p.productId !== productId),
+            products: [...state.bill.products, productTo],
           },
         }));
-      },
-      modifyQuantity(quantity: number, productId: number) {
+      } else {
         patchState(store, (state) => ({
           bill: {
             ...state.bill,
             products: state.bill.products.map((p) => {
-              if (p.productId === productId) {
-                return { ...p, quantity };
+              if (p.productId === productTo.productId) {
+                return { ...p, quantity: p.quantity + 1 };
               }
               return p;
             }),
           },
         }));
-      },
-      modifyPrice(price: number, productId: number) {
-        patchState(store, (state) => ({
-          bill: {
-            ...state.bill,
-            products: state.bill.products.map((p) => {
-              if (price < 1) {
-                return p;
-              }
-              if (p.productId === productId) {
-                return { ...p, priceUnique: Number(price) };
-              }
+      }
+    },
+    quitProduct(productId: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          products: state.bill.products.filter((p) => p.productId !== productId),
+        },
+      }));
+    },
+    modifyQuantity(quantity: number, productId: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          products: state.bill.products.map((p) => {
+            if (p.productId === productId) {
+              return { ...p, quantity };
+            }
+            return p;
+          }),
+        },
+      }));
+    },
+    modifyPrice(price: number, productId: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          products: state.bill.products.map((p) => {
+            if (price < 1) {
               return p;
-            }),
-          },
-        }));
-      },
-      setMethodOfPayment(paymentMethodId: number) {
-        patchState(store, (state) => ({
-          bill: {
-            ...state.bill,
-            paymentMethodId,
-          },
-        }));
-      },
-    }),
-  ),
+            }
+            if (p.productId === productId) {
+              return { ...p, priceUnique: Number(price) };
+            }
+            return p;
+          }),
+        },
+      }));
+    },
+    setMethodOfPayment(paymentMethodId: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          paymentMethodId,
+        },
+      }));
+    },
+  })),
 );

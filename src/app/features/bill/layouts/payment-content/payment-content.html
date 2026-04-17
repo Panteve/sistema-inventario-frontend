@@ -18,19 +18,19 @@
   </div>
 
   <!-- Resumen de totales -->
-  <div class="rounded-xl bg-base-200 p-4 flex flex-col gap-2">
+  <div class="rounded-xl bg-base-200 p-4 flex flex-col gap-2 font-mono">
     <div class="flex justify-between text-sm opacity-70">
-      <span>Subtotal</span>
-      <span>{{ billStore.subtotal() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+      <span class="tracking-[0.16em]">Subtotal</span>
+      <span class="font-mono">{{ billStore.subtotal() | cop }}</span>
     </div>
     <div class="flex justify-between text-sm opacity-70">
-      <span>IVA (19%)</span>
-      <span>{{ billStore.iva() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+      <span class="tracking-[0.16em]">IVA (19%)</span>
+      <span class="font-mono">{{ billStore.iva() | cop }}</span>
     </div>
     <div class="du-divider my-0"></div>
     <div class="flex justify-between text-xl font-bold">
-      <span>Total</span>
-      <span>{{ billStore.total() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}</span>
+      <span class="tracking-[0.16em]">Total</span>
+      <span class="font-mono">{{ billStore.total() | cop }}</span>
     </div>
   </div>
 
@@ -40,27 +40,30 @@
       <label class="du-label">
         <span class="du-label-text font-semibold">Monto recibido</span>
       </label>
-      <input
+      <label class="du-input du-input-bordered w-full text-lg no-spinner font-mono">
+        <input
         type="text"
-        class="du-input du-input-bordered w-full text-lg no-spinner"
+        
         placeholder="0"
         inputmode="numeric"
         [value]="displayAmount()"
         (input)="onAmountReceivedChange($event)"
         (click)="onAmountReceivedClick($event)"
       />
+      </label>
+      
     </div>
 
     <div
-      class="flex justify-between items-center rounded-xl px-4 py-3 transition-colors"
+      class="flex justify-between items-center rounded-xl px-4 py-3 transition-colors font-mono"
       [class]="change() >= 0 ? 'bg-success/10' : 'bg-error/10'"
     >
       <span class="font-semibold">Vueltas</span>
       <span
-        class="text-xl font-bold tabular-nums"
+        class="text-xl font-bold tabular-nums font-mono"
         [class]="change() >= 0 ? 'text-success' : 'text-error'"
       >
-        {{ change() | currency: 'COP' : 'symbol-narrow' : '1.0-0' }}
+        {{ change() | cop }}
       </span>
     </div>
   }

@@ -19,8 +19,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(routes, withRouterConfig({ onSameUrlNavigation: 'reload' })),
     provideHttpClient(withInterceptors([authInterceptor, errorInterceptor])),
-    { provide: LOCALE_ID, useValue: 'es-CO' }, // Opcional: para formato local
-    { provide: DEFAULT_CURRENCY_CODE, useValue: '$' },
+    { provide: LOCALE_ID, useValue: 'es-419' },
+    { provide: DEFAULT_CURRENCY_CODE, useValue: 'COP' },
     provideAppInitializer(async () => {
       const authStore = inject(AuthStore);
       const themeStore = inject(ThemeStore);

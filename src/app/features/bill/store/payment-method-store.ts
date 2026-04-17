@@ -10,7 +10,7 @@ import { PaymentMethodResponse } from '../../../shared/interfaces/paymentMethod.
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { PaymentMethodService } from '../services/payment-method.service';
-import { catchError, finalize, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ToastService } from '../../../shared/services/toast.service';
 
 type PaymentMethodState = {
@@ -39,7 +39,7 @@ export const PaymentMethodStore = signalStore(
         switchMap(() =>
           paymentMethodService.loadPaymentMethods().pipe(
             tap((paymentMethods) => {
-              patchState(store, { paymentMethods, loading: false });
+              patchState(store, { paymentMethods });
             }),
             catchError((error) => {
               toastService.show({
@@ -47,7 +47,7 @@ export const PaymentMethodStore = signalStore(
                 content: 'No se pudieron cargar los métodos de pago. Inténtalo de nuevo.',
                 type: 'error',
               });
-              return [];
+              return EMPTY;
             }),
             finalize(() => patchState(store, { loading: false })),
           ),

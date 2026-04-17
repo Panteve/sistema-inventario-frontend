@@ -70,18 +70,13 @@
               <p class="mt-0.5 truncate text-base font-semibold leading-tight">
                 {{ authStore.employee()?.officeName }}
               </p>
-            }@else {
+            } @else {
               <select
                 class="du-select w-full"
                 (change)="changeOffice($event)"
                 [value]="this.officeId()"
               >
-                <option
-                  value="0"
-                  disabled
-                  selected
-                  [selected]="this.officeId() === 0"
-                >
+                <option value="0" disabled selected [selected]="this.officeId() === 0">
                   Seleccionar oficina
                 </option>
                 @if (officeStore.loading()) {
@@ -205,7 +200,7 @@
                 Transferencias
               </p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.cashRegisterSummary().totalTransferSales| currency: 'COP' : '$' : '1.0-0' }}
+                {{ cashRegisterStore.cashRegisterSummary().totalTransferSales | cop }}
               </p>
             </div>
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
@@ -213,13 +208,13 @@
                 Pagos en efectivo
               </p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.cashRegisterSummary().totalCashSales | currency: 'COP' : '$' : '1.0-0' }}
+                {{ cashRegisterStore.cashRegisterSummary().totalCashSales | cop }}
               </p>
             </div>
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">Gastos</p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight text-error">
-                - {{ cashRegisterStore.cashRegisterSummary().totalExpenses | currency: 'COP' : '$' : '1.0-0' }}
+                - {{ cashRegisterStore.cashRegisterSummary().totalExpenses | cop }}
               </p>
             </div>
           </div>
@@ -231,8 +226,8 @@
               </p>
               <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight">
                 {{
-                  cashRegisterStore.cashRegisterSummary().totalTransferSales + cashRegisterStore.cashRegisterSummary().totalCashSales
-                    | currency: 'COP' : '$' : '1.0-0'
+                  cashRegisterStore.cashRegisterSummary().totalTransferSales +
+                    cashRegisterStore.cashRegisterSummary().totalCashSales | cop
                 }}
               </p>
             </div>
@@ -241,7 +236,7 @@
                 Total esperado en caja
               </p>
               <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight text-accent">
-                $ {{ displayExpectedCash() }}
+                {{ displayExpectedCash() }}
               </p>
             </div>
           </div>
@@ -257,11 +252,10 @@
             <label
               class="du-input du-input-accent flex min-h-12 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 font-mono text-xl shadow-sm"
             >
-              <span class="font-bold opacity-40">$</span>
               <input
                 type="text"
                 class="grow bg-transparent outline-none no-spinner"
-                placeholder="0.00"
+                placeholder="$ 0.00"
                 [value]="displayAmount()"
                 (input)="onAmountReceivedChange($event)"
                 (click)="onAmountClick($event)"
@@ -289,12 +283,7 @@
                   [class.text-error]="differenceStatus() === 'short'"
                   [class.text-warning]="differenceStatus() === 'over'"
                 >
-                  @if (differenceStatus() === 'short') {
-                    -
-                  } @else if (differenceStatus() === 'over') {
-                    +
-                  }
-                  $ {{ displayDifference() }}
+                  {{ displayDifference() }}
                 </p>
               </div>
               <div

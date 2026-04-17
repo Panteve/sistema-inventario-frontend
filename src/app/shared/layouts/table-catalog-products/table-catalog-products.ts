@@ -15,6 +15,7 @@ import {
   ProductCatalogResponse,
   ProductOnInventoryResponse,
 } from '../../interfaces/product.interface';
+import { CopPipe } from '../../pipes/cop.pipes';
 
 type PriceColumnId = 'unitPrice' | 'wholesalePrice';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -28,6 +29,7 @@ type RangeFilterValue = {
 @Component({
   selector: 'app-table-catalog-products',
   imports: [FlexRenderDirective],
+  providers: [CopPipe],
   templateUrl: './table-catalog-products.html',
   styleUrl: './table-catalog-products.css',
 })
@@ -43,6 +45,7 @@ export class TableCatalogProducts {
   filteredProductsCountChanged = output<number>();
 
   productStore = inject(ProductStore);
+  copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
@@ -144,11 +147,6 @@ export class TableCatalogProducts {
     this.productStore.loadProductsCatalog();
   }
 
-  private currencyFormatter = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 2,
-  });
 
   table = createAngularTable(() => ({
     data: this.productStore.catalogProducts(),
@@ -169,7 +167,7 @@ export class TableCatalogProducts {
         id: 'unitPrice',
         filterFn: this.rangeFilterFn,
         cell: (info: CellContext<ProductCatalogResponse, any>) =>
-          this.currencyFormatter.format(info.getValue() as number),
+          this.copPipe.transform(info.getValue()),
       },
       {
         header: 'Precio mayorista',
@@ -177,7 +175,7 @@ export class TableCatalogProducts {
         id: 'wholesalePrice',
         filterFn: this.rangeFilterFn,
         cell: (info: CellContext<ProductCatalogResponse, any>) =>
-          this.currencyFormatter.format(info.getValue() as number),
+          this.copPipe.transform(info.getValue()),
       },
     ],
     state: {

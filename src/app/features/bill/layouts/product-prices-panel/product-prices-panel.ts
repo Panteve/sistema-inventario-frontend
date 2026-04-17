@@ -1,13 +1,12 @@
 import { Component, inject } from '@angular/core';
-
-import { CurrencyPipe } from '@angular/common';
 import { ProductService } from '../../../../shared/services/product.service';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { BillStore } from '../../store/bill-store';
+import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
 @Component({
   selector: 'app-product-prices-panel',
-  imports: [CurrencyPipe],
+  imports: [CopPipe],
   templateUrl: './product-prices-panel.html',
 })
 export class ProductPricesPanel {

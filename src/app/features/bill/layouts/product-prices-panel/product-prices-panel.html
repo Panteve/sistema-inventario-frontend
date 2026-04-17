@@ -13,7 +13,7 @@
       <div class="flex flex-col items-start">
         <span class="text-sm opacity-50 font-normal">Precio unitario</span>
         <span class="text-lg font-semibold">{{
-          billStore.productSelected().product.unitPrice | currency
+          billStore.productSelected().product.unitPrice | cop
         }}</span>
       </div>
       <svg
@@ -40,7 +40,7 @@
       <div class="flex flex-col items-start">
         <span class="text-sm opacity-50 font-normal">Precio mayorista</span>
         <span class="text-lg font-semibold">{{
-          billStore.productSelected().product.wholesalePrice | currency
+          billStore.productSelected().product.wholesalePrice | cop
         }}</span>
       </div>
       <svg

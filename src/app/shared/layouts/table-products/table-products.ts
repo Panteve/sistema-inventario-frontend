@@ -12,6 +12,7 @@ import {
 } from '@tanstack/angular-table';
 import { ProductStore } from '../../store/product-store';
 import { ProductOnInventoryResponse } from '../../interfaces/product.interface';
+import { CopPipe } from '../../pipes/cop.pipes';
 
 type PriceColumnId = 'unitPrice' | 'wholesalePrice';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -25,6 +26,7 @@ type RangeFilterValue = {
 @Component({
   selector: 'app-table-products',
   imports: [FlexRenderDirective],
+  providers: [CopPipe],
   templateUrl: './table-products.html',
   styleUrl: './table-products.css',
 })
@@ -45,6 +47,7 @@ export class TableProducts {
   filteredProductsCountChanged = output<number>();
 
   productStore = inject(ProductStore);
+  copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
@@ -193,11 +196,6 @@ export class TableProducts {
     this.productStore.loadProductsOnInventory();
   }
 
-  private currencyFormatter = new Intl.NumberFormat('es-CO', {
-    style: 'currency',
-    currency: 'COP',
-    minimumFractionDigits: 2,
-  });
 
   table = createAngularTable(() => ({
     data: this.productStore.products(),
@@ -218,7 +216,7 @@ export class TableProducts {
         id: 'unitPrice',
         filterFn: this.rangeFilterFn,
         cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
-          this.currencyFormatter.format(info.getValue() as number),
+          this.copPipe.transform(info.getValue()),
       },
       {
         header: 'Precio mayorista',
@@ -226,7 +224,7 @@ export class TableProducts {
         id: 'wholesalePrice',
         filterFn: this.rangeFilterFn,
         cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
-          this.currencyFormatter.format(info.getValue() as number),
+          this.copPipe.transform(info.getValue()),
       },
       {
         header: 'Stock',

@@ -3,27 +3,33 @@ import { BillStore } from '../../store/bill-store';
 import { PaymentMethodStore } from '../../store/payment-method-store';
 import { CurrencyPipe } from '@angular/common';
 import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMethod.interface';
+import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
 @Component({
   selector: 'app-payment-content',
-  imports: [CurrencyPipe],
+  imports: [CopPipe],
+  providers: [CopPipe],
   templateUrl: './payment-content.html',
   styleUrl: './payment-content.css',
 })
 export class PaymentContent {
   billStore = inject(BillStore);
   paymentMethodStore = inject(PaymentMethodStore);
+  copPipe = inject(CopPipe);
 
   paymentMethods = this.paymentMethodStore.paymentMethods;
 
   selectedMethod = signal<PaymentMethodResponse | null>(null);
   amountReceived = signal<number>(0);
 
-  displayAmount = computed(() => new Intl.NumberFormat('es-CO').format(this.amountReceived()));
+  displayAmount = computed(() => {
+    return this.copPipe.transform(this.amountReceived());
+  });
 
   affectsCash = computed(() => this.selectedMethod()?.affectsCash ?? false);
   change = computed(() => this.amountReceived() - this.billStore.total());
   canConfirm = computed(() => {
+    if(this.billStore.length() === 0) return false;
     if (!this.selectedMethod()) return false;
     if (this.affectsCash() && this.change() < 0) return false;
     return true;

@@ -1,15 +1,16 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { AuthStore } from '../../../core/store/auth-store';
-import { CurrencyPipe, DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe, DecimalPipe } from '@angular/common';
 import { CashRegisterStore } from '../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ProductStore } from '../../../shared/store/product-store';
 import { OfficeStore } from '../../../shared/store/office-store';
+import { CopPipe } from '../../../shared/pipes/cop.pipes';
 
 @Component({
   selector: 'app-cash-register',
-  imports: [CurrencyPipe, DatePipe, DecimalPipe],
-  providers: [CurrencyPipe, CashRegisterStore],
+  imports: [CopPipe, DatePipe, DecimalPipe],
+  providers: [CopPipe, CashRegisterStore],
   templateUrl: './cash-register.component.html',
   styleUrl: './cash-register.component.css',
 })
@@ -20,7 +21,7 @@ export class CashRegisterComponent {
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
   cashRegisterStore = inject(CashRegisterStore);
-  private currencyPipe = inject(CurrencyPipe);
+  private copPipe = inject(CopPipe);
 
   currentDate = Date.now();
   currentHour = new Date().getHours();
@@ -61,17 +62,17 @@ export class CashRegisterComponent {
   });
 
   displayAmount = computed(() => {
-    return this.currencyPipe.transform(this.amountReceived(), 'COP', '', '1.0-0') ?? '0';
+    return this.copPipe.transform(this.amountReceived()) ?? '0';
   });
 
   displayExpectedCash = computed(() => {
-    return this.currencyPipe.transform(this.expected(), 'COP', '', '1.2-2') ?? '0.00';
+    return this.copPipe.transform(this.expected()) ?? '0.00';
   });
 
   displayDifference = computed(() => {
     this.cashDifference();
     return (
-      this.currencyPipe.transform(Math.abs(this.cashDifference()), 'COP', '', '1.2-2') ?? '0.00'
+      this.copPipe.transform(this.cashDifference()) ?? '0.00'
     );
   });
 

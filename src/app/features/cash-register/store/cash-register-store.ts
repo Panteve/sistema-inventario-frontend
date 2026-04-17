@@ -160,11 +160,9 @@ export const CashRegisterStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      store.getCashRegisterSummary();
-      console.log('CashRegisterStore initialized');
-    },
-    onDestroy() {
-      console.log('CashRegisterStore destroyed');
+      if(store.authStore.cashRegisterIsOpen()) {
+        store.getCashRegisterSummary();
+      }
     },
   }),
 );

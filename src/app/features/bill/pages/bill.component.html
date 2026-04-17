@@ -116,9 +116,7 @@
                     />
                   </svg>
                   Esta factura se registrara en la sucursal
-                  <p class=" font-bold">
-                    {{ authStore.employee()?.officeName || 'Cargando...' }}.
-                  </p>
+                  <p class="font-bold">{{ authStore.employee()?.officeName || 'Cargando...' }}.</p>
                 </summary>
                 <div class="du-collapse-content text-xs font-medium opacity-85 md:text-sm">
                   Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la caja
@@ -218,28 +216,26 @@
                       @if (this.modifiyingPrice() && productInputId() === product.productId) {
                         <td>
                           <input
-                            type="number"
+                            type="text"
                             min="1"
                             class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
                             (focus)="selectAll($event)"
-                            (focusout)="finishModifyPrice($event, product.productId)"
-                            (keydown.enter)="finishModifyPrice($event, product.productId)"
-                            [value]="product.priceUnique"
+                            (input)="onModifyPriceChange($event, product.productId)"
+                            (focusout)="finishModifyPrice()"
+                            (keydown.enter)="finishModifyPrice()"
+                            [value]="displayPrice()"
                           />
                         </td>
                       } @else {
                         <td
                           class="text-center hover:text-primary cursor-pointer transition-colors"
-                          (click)="
-                            this.modifiyingPrice.set(true);
-                            this.productInputId.set(product.productId)
-                          "
+                          (click)="this.startModifyPrice(product.productId, product.priceUnique)"
                         >
-                          {{ product.priceUnique | currency }}
+                          {{ product.priceUnique | cop }}
                         </td>
                       }
                       <td class="text-center font-semibold">
-                        {{ product.priceUnique * product.quantity | currency }}
+                        {{ product.priceUnique * product.quantity | cop }}
                       </td>
                       <td class="text-center">
                         <button
@@ -293,17 +289,17 @@
                 class="w-full rounded-2xl border border-base-content/10 bg-base-200/40 p-5 md:w-2/5"
               >
                 <div class="flex justify-between text-base">
-                  <span class="opacity-60">Subtotal</span>
-                  <span class="font-medium">{{ billStore.subtotal() | currency }}</span>
+                  <span class="opacity-60 ">Subtotal</span>
+                  <span class="font-medium">{{ billStore.subtotal() | cop }}</span>
                 </div>
                 <div class="mt-2 flex justify-between text-base">
-                  <span class="opacity-60">IVA (19%)</span>
-                  <span class="font-medium">{{ billStore.iva() | currency }}</span>
+                  <span class="opacity-60 ">IVA (19%)</span>
+                  <span class="font-medium">{{ billStore.iva() | cop }}</span>
                 </div>
                 <div class="du-divider my-1"></div>
                 <div class="flex justify-between text-xl font-semibold">
                   <span>Total</span>
-                  <span>{{ billStore.total() | currency }}</span>
+                  <span>{{ billStore.total() | cop }}</span>
                 </div>
               </div>
             </div>
@@ -351,6 +347,7 @@
                 } @else {
                   <button
                     class="du-btn du-btn-primary du-btn-sm md:du-btn-md w-full sm:w-auto"
+                    [disabled]="billStore.length() === 0"
                     (click)="panelOpen.set(true)"
                     onclick="payment.showModal()"
                     [routerLink]="[{ outlets: { payment: ['payment'] } }]"
