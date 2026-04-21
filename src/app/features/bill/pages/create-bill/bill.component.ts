@@ -1,12 +1,12 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ProductStore } from '../../../shared/store/product-store';
-import { BillStore } from '../store/bill-store';
-import { PaymentMethodStore } from '../store/payment-method-store';
-import { CustomerStore } from '../store/customer-store';
-import { AuthStore } from '../../../core/store/auth-store';
-import { CopPipe } from '../../../shared/pipes/cop.pipes';
+import { ProductStore } from '../../../../shared/store/product-store';
+import { BillStore } from '../../store/bill-store';
+import { PaymentMethodStore } from '../../store/payment-method-store';
+import { CustomerStore } from '../../store/customer-store';
+import { AuthStore } from '../../../../core/store/auth-store';
+import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
 @Component({
   selector: 'app-bill.component',
@@ -45,7 +45,7 @@ export class BillComponent {
   panelOpen = signal<boolean>(false);
 
   currentDate = Date.now();
-
+  billId = 0
   // UI
   selectAll(event: FocusEvent) {
     (event.target as HTMLInputElement).select();
@@ -73,7 +73,6 @@ export class BillComponent {
     this.productPrice.set(0);
   }
   startModifyPrice(productId: number, price: number) {
-
     this.modifiyingPrice.set(true);
     this.productInputId.set(productId);
     this.productPrice.set(price);

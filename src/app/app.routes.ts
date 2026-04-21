@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { LoginComponent } from './features/login/pages/login.component';
 import { DashboardComponent } from './features/dashboard/pages/dashboard.component';
-import { BillComponent } from './features/bill/pages/bill.component';
+import { BillComponent } from './features/bill/pages/create-bill/bill.component';
 import { authGuard } from './core/guards/auth-guard';
 import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
 import { ProductPricesPanel } from './features/bill/layouts/product-prices-panel/product-prices-panel';
@@ -14,6 +14,7 @@ import { MovementInventoryStore } from './features/inventory/store/movement-inve
 import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
+import { ViewBillComponent } from './features/bill/pages/view-bill.component/view-bill.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -24,7 +25,7 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'bill',
+    path: 'create-bill',
     component: BillComponent,
     title: 'Crear factura',
     canActivate: [authGuard],
@@ -57,6 +58,7 @@ export const routes: Routes = [
         component: AgregarCliente,
       },
     ],
+    
   },
   {
     path: 'view-bills',
@@ -66,8 +68,7 @@ export const routes: Routes = [
       {
         path: 'bill/:billId',
         title: 'Informacion de la factura',
-        outlet: 'view-bill',
-        component: AgregarCliente,
+        component: ViewBillComponent,
       },
     ],
   },
