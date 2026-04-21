@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { CreateBillRequest } from '../../../shared/interfaces/bill.interface';
+import { BillResponse, CreateBillRequest } from '../../../shared/interfaces/bill.interface';
 import { environment } from '../../../../environments/environment';
 
 
@@ -14,4 +14,9 @@ export class BillService {
   createBill(bill: CreateBillRequest) {
     return this.http.post(`${environment.apiUrl}/bills/bill`, bill);
   }
+
+  getBillById(billId: number) {
+    return this.http.get<BillResponse>(`${environment.apiUrl}/bills/${billId}`);
+  }
+
 }

@@ -103,8 +103,7 @@ export const BillStore = signalStore(
           };
           return billService.createBill(cleanBill).pipe(
             tap((billId) => {
-              console.log('Factura creada con ID:', billId);
-              //router.navigate([`/bill/${billId}`]);
+              router.navigate(['/view-bills/bill', billId]);
             }),
             finalize(() => patchState(store, { loading: false })),
             catchError((error) => {
