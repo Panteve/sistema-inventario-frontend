@@ -8,7 +8,7 @@ import { map } from 'rxjs/operators';
 import { CashRegisterComponent } from './features/cash-register/pages/cash-register.component';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense.component';
-import { ToastComponent } from './shared/layouts/toast.component/toast.component';
+import { ToastComponent } from './shared/layouts/toast/toast.component';
 
 @Component({
   selector: 'app-root',
