@@ -20,7 +20,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/inventoryMovement.interface';
@@ -37,10 +37,17 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   productStore = inject(ProductStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);
-
   toastService = inject(ToastService);
   router = inject(Router);
   private route = inject(ActivatedRoute);
+
+  readonly MOVEMENTYPE = {
+    IN: 'IN',
+    OUT: 'OUT',
+    TRANSFER: 'TRANSFER',
+  };
+  reason = new FormControl('');
+  currentDate = Date.now();
 
   movementData = signal<CreateInventoryMovementRequest>({
     toOfficeId: 0,
@@ -49,12 +56,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     reason: '',
     products: [],
   });
-  readonly MOVEMENTYPE = {
-    IN: 'IN',
-    OUT: 'OUT',
-    TRANSFER: 'TRANSFER',
-  };
-  currentDate = Date.now();
+
   canConfirm = computed(() => {
     if (this.notSelectedOffice()) return false;
     if (this.movementData().products.length <= 0) return false;
@@ -252,10 +254,28 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
         }
       }
     }
+    if (this.movementData().products.length <= 0) {
+      this.toastService.show({
+        title: 'Faltan productos',
+        content: 'Debe agregar al menos un producto para el movimiento de transferencia.',
+        type: 'error',
+      });
+      return;
+    }
+    if (this.movementData().reason.trim() === '') {
+      this.toastService.show({
+        title: 'Falta razón del movimiento',
+        content: 'Debe ingresar una razón para el movimiento de transferencia.',
+        type: 'error',
+      });
+      return;
+    }
     this.movementStore.createMovementInventory(this.movementData());
   }
+
   setReason(event: Event) {
     const reason = (event.target as HTMLTextAreaElement).value;
+
     this.movementData.update((data) => ({
       ...data,
       reason,

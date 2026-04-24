@@ -159,6 +159,8 @@
             class="du-textarea du-textarea-bordered h-24 w-full resize-none"
             (blur)="setReason($event)"
             placeholder="Ejemplo: Entrada por error de salida ..."
+            [formControl]="reason"
+            required
           ></textarea>
         </fieldset>
 

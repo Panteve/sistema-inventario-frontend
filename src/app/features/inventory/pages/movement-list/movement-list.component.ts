@@ -1,6 +1,6 @@
 import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { InventoryMovement } from '../../../../shared/interfaces/inventoryMovement.interface';
+import { InventoryMovement, ParamsGetInventoryMovements } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'cally';
@@ -31,7 +31,7 @@ export class MovementListComponent implements OnInit {
 
   private readonly today = new Date();
   readonly todayIso = this.toIsoDate(this.today);
-  queryParams = signal({
+  queryParams = signal<ParamsGetInventoryMovements>({
     startDate: this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths)),
     endDate: this.toIsoDate(this.today),
     type: undefined as 'IN' | 'OUT' | 'TRANSFER' | undefined,
@@ -171,7 +171,7 @@ export class MovementListComponent implements OnInit {
     }
     this.queryParams.update((params) => ({
       ...params,
-      activePage: page,
+      page,
     }));
     this.applyFilters();
   }
@@ -219,5 +219,6 @@ export class MovementListComponent implements OnInit {
       queryParams: { viewModal: null },
       queryParamsHandling: 'merge',
     });
+    this.movementSelected.set(null);
   }
 }

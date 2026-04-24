@@ -186,10 +186,10 @@ export class TableProducts {
     return columnId === 'quantity';
   }
   isNegativeStock(quantity: number) {
-    return this.enableStockStatus() && quantity < 0;
+    return this.enableStockStatus() && quantity <= 0;
   }
   isLowStock(quantity: number) {
-    return this.enableStockStatus() && quantity >= 0 && quantity <= this.lowStockThreshold();
+    return this.enableStockStatus() && quantity > 0 && quantity <= this.lowStockThreshold();
   }
   loadProducts() {
     this.globalFilter.set('');

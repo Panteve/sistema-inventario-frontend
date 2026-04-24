@@ -78,6 +78,7 @@ export const MovementInventoryStore = signalStore(
               router.navigate([`/inventory/history-movement/`]);
             }),
             catchError((error) => {
+              console.error('Error creating inventory movement:', error);
               toastService.show({
                 title: 'Error',
                 content: 'Error al crear el movimiento de inventario.',
