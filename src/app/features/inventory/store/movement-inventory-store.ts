@@ -75,8 +75,7 @@ export const MovementInventoryStore = signalStore(
                 content: 'Movimiento de inventario creado exitosamente.',
                 type: 'success',
               });
-              console.log(response);
-              //router.navigate([`/inventory/movement/${response}`]);
+              router.navigate([`/inventory/history-movement/`]);
             }),
             catchError((error) => {
               toastService.show({

@@ -1,20 +1,19 @@
 import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
-import { InventoryService } from '../../services/inventory.service';
-import {
-  InventoryMovement,
-  ParamsGetInventoryMovements,
-} from '../../../../shared/interfaces/inventoryMovement.interface';
+import { InventoryMovement } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { map } from 'rxjs';
+import { ViewMovementComponent } from '../../layouts/view-movement/view-movement.component';
 
 @Component({
   selector: 'app-movement-list.component',
-  imports: [DatePipe],
+  imports: [DatePipe, ViewMovementComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './movement-list.component.html',
@@ -26,31 +25,33 @@ export class MovementListComponent implements OnInit {
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
-  router = inject(Router);
-  route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private route = inject(ActivatedRoute);
   movementInventoryStore = inject(MovementInventoryStore);
-  service = inject(InventoryService);
 
   private readonly today = new Date();
   readonly todayIso = this.toIsoDate(this.today);
   queryParams = signal({
     startDate: this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths)),
     endDate: this.toIsoDate(this.today),
-    typeFilter: undefined as 'IN' | 'OUT' | 'TRANSFER' | undefined,
-    fromOffice: undefined as number | undefined,
-    toOffice: undefined as number | undefined,
-    employeeFilter: undefined as number | undefined,
-    itemsPerPage: this.defaultItemsPerPage,
-    activePage: 1,
+    type: undefined as 'IN' | 'OUT' | 'TRANSFER' | undefined,
+    fromOfficeId: undefined as number | undefined,
+    toOfficeId: undefined as number | undefined,
+    employeeId: undefined as number | undefined,
+    limit: this.defaultItemsPerPage,
+    page: 1,
   });
-
+  movementSelected = signal<InventoryMovement | null>(null);
   readonly endDateMax = computed(() => {
     const maxAllowed = this.addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
     return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
   });
 
-  filterPanelSticky = signal(true);
-
+  filterPanelSticky = signal(false);
+  viewModalOpen = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
+    { initialValue: false },
+  );
   readonly groupedMovements = computed(() => {
     const todayMovements: InventoryMovement[] = [];
     const olderMovements: InventoryMovement[] = [];
@@ -70,12 +71,6 @@ export class MovementListComponent implements OnInit {
     };
   });
 
-  constructor() {
-    this.route.queryParams.subscribe(() => {
-      const queryParams = this.route.snapshot.queryParams as ParamsGetInventoryMovements;
-      this.movementInventoryStore.getInventoyryMovements(queryParams);
-    });
-  }
   ngOnInit(): void {
     this.employeeStore.loadEmployees(0);
     this.applyFilters();
@@ -108,7 +103,7 @@ export class MovementListComponent implements OnInit {
   changeTypeFilter(type: 'IN' | 'OUT' | 'TRANSFER' | undefined) {
     this.queryParams.update((params) => ({
       ...params,
-      typeFilter: type,
+      type,
     }));
   }
   changeStartDate(date: Event) {
@@ -149,8 +144,8 @@ export class MovementListComponent implements OnInit {
     const officeId = officeValue || undefined;
     this.queryParams.update((params) => ({
       ...params,
-      fromOffice: officeId,
-      toOffice: officeId,
+      fromOfficeId: officeId,
+      toOfficeId: officeId,
     }));
     this.employeeStore.loadEmployees(officeId ?? 0);
   }
@@ -158,7 +153,7 @@ export class MovementListComponent implements OnInit {
     const employeeId = Number((event.target as HTMLSelectElement).value);
     this.queryParams.update((params) => ({
       ...params,
-      employeeFilter: employeeId || undefined,
+      employeeId: employeeId || undefined,
     }));
   }
   changeItemsPerPage(event: Event) {
@@ -166,11 +161,11 @@ export class MovementListComponent implements OnInit {
     const itemsPerPage = value > 0 ? value : this.defaultItemsPerPage;
     this.queryParams.update((params) => ({
       ...params,
-      itemsPerPage,
+      limit: itemsPerPage,
     }));
   }
   changePage(value: number) {
-    const page = this.queryParams().activePage + value;
+    const page = this.queryParams().page + value;
     if (page < 1 || page > this.movementInventoryStore.pagination().totalPages) {
       return;
     }
@@ -192,41 +187,36 @@ export class MovementListComponent implements OnInit {
     this.queryParams.set({
       startDate: defaultStartDate,
       endDate: defaultEndDate,
-      typeFilter: undefined,
-      fromOffice: undefined,
-      toOffice: undefined,
-      employeeFilter: undefined,
-      itemsPerPage: this.defaultItemsPerPage,
-      activePage: 1,
+      type: undefined,
+      fromOfficeId: undefined,
+      toOfficeId: undefined,
+      employeeId: undefined,
+      limit: this.defaultItemsPerPage,
+      page: 1,
     });
     this.employeeStore.loadEmployees(0);
+  }
+
+  applyFilters() {
+    this.movementInventoryStore.getInventoyryMovements(this.queryParams());
+  }
+
+  setMovementSelected(movement: InventoryMovement) {
+    this.movementSelected.set(movement);
+  }
+
+  openViewModal() {
     this.router.navigate([], {
-      queryParams: {
-        startDate: defaultStartDate,
-        endDate: defaultEndDate,
-        type: null,
-        fromOfficeId: null,
-        toOfficeId: null,
-        employeeId: null,
-        limit: this.defaultItemsPerPage,
-        page: 1,
-      },
+      relativeTo: this.route,
+      queryParams: { viewModal: 'open' },
       queryParamsHandling: 'merge',
     });
   }
 
-  applyFilters() {
+  closeViewModal() {
     this.router.navigate([], {
-      queryParams: {
-        startDate: this.queryParams().startDate,
-        endDate: this.queryParams().endDate,
-        type: this.queryParams().typeFilter,
-        fromOfficeId: this.queryParams().fromOffice,
-        toOfficeId: this.queryParams().toOffice,
-        employeeId: this.queryParams().employeeFilter,
-        limit: this.queryParams().itemsPerPage,
-        page: this.queryParams().activePage,
-      },
+      relativeTo: this.route,
+      queryParams: { viewModal: null },
       queryParamsHandling: 'merge',
     });
   }

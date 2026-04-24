@@ -98,7 +98,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-primary du-btn-soft transition-colors"
                   (click)="changeTypeFilter(undefined)"
-                  [class.du-btn-active]="!this.queryParams().typeFilter"
+                  [class.du-btn-active]="!queryParams().type"
                 >
                   Todo
                 </button>
@@ -106,7 +106,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-success du-btn-soft transition-colors"
                   (click)="changeTypeFilter('IN')"
-                  [class.du-btn-active]="this.queryParams().typeFilter === 'IN'"
+                  [class.du-btn-active]="queryParams().type === 'IN'"
                 >
                   Entrada
                 </button>
@@ -114,7 +114,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-error du-btn-soft transition-colors"
                   (click)="changeTypeFilter('OUT')"
-                  [class.du-btn-active]="this.queryParams().typeFilter === 'OUT'"
+                  [class.du-btn-active]="queryParams().type === 'OUT'"
                 >
                   Salida
                 </button>
@@ -122,7 +122,7 @@
                   type="button"
                   class="du-btn du-btn-sm du-btn-info du-btn-soft transition-colors"
                   (click)="changeTypeFilter('TRANSFER')"
-                  [class.du-btn-active]="this.queryParams().typeFilter === 'TRANSFER'"
+                  [class.du-btn-active]="queryParams().type === 'TRANSFER'"
                 >
                   Transferencia
                 </button>
@@ -140,7 +140,7 @@
                   id="cally1"
                   style="anchor-name: --cally1"
                 >
-                  {{ this.queryParams().startDate | date: 'yyyy-MM-dd' }}
+                  {{ queryParams().startDate | date: 'yyyy-MM-dd' }}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -165,7 +165,7 @@
                 >
                   <calendar-date
                     [max]="todayIso"
-                    [focusedDate]="this.queryParams().startDate"
+                    [focusedDate]="queryParams().startDate"
                     class="du-cally"
                     (change)="changeStartDate($event)"
                   >
@@ -201,7 +201,7 @@
                   id="cally2"
                   style="anchor-name: --cally2"
                 >
-                  {{ this.queryParams().endDate | date: 'yyyy-MM-dd' }}
+                  {{ queryParams().endDate | date: 'yyyy-MM-dd' }}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -225,8 +225,8 @@
                   style="position-anchor: --cally2"
                 >
                   <calendar-date
-                    [min]="this.queryParams().startDate"
-                    [max]="this.queryParams().endDate"
+                    [min]="queryParams().startDate"
+                    [max]="endDateMax()"
                     class="du-cally"
                     (change)="changeEndDate($event)"
                   >
@@ -262,7 +262,7 @@
                 <select
                   class="du-select du-select-sm w-full"
                   (change)="changeEmployee($event)"
-                  [value]="this.queryParams().employeeFilter ?? ''"
+                  [value]="queryParams().employeeId ?? ''"
                 >
                   @if (employeeStore.loading()) {
                     <option selected disabled>Cargando empleados...</option>
@@ -288,7 +288,7 @@
                   <select
                     class="du-select du-select-sm w-full"
                     (change)="changeOffice($event)"
-                    [value]="this.queryParams().fromOffice ?? ''"
+                    [value]="queryParams().fromOfficeId ?? ''"
                   >
                     @if (officeStore.loading()) {
                       <option selected disabled>Cargando oficinas...</option>
@@ -316,7 +316,7 @@
                   class="du-input du-input-sm du-input-bordered w-full"
                   min="5"
                   max="100"
-                  [value]="this.queryParams().itemsPerPage"
+                  [value]="queryParams().limit"
                   (change)="changeItemsPerPage($event)"
                 />
               </fieldset>
@@ -352,8 +352,7 @@
                 @for (movement of grouped.todayMovements; track movement.id) {
                   <article
                     class="rounded-2xl border border-base-content/10 bg-base-100 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-base-content/20 cursor-pointer"
-                    [attr.data-movement-id]="movement.id"
-                    (click)="router.navigate(['/inventory/movement', movement.id])"
+                    (click)="openViewModal(); movementSelected.set(movement)"
                   >
                     <div class="flex items-start justify-between gap-2 mb-3">
                       <span
@@ -452,8 +451,7 @@
                 @for (movement of grouped.olderMovements; track movement.id) {
                   <article
                     class="rounded-2xl border border-base-content/10 bg-base-100 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-base-content/20 cursor-pointer"
-                    [attr.data-movement-id]="movement.id"
-                    (click)="router.navigate(['/inventory/movement', movement.id])"
+                    (click)="openViewModal(); movementSelected.set(movement)"
                   >
                     <div class="flex items-start justify-between gap-2 mb-3">
                       <span
@@ -546,15 +544,17 @@
             <button
               class="du-join-item du-btn"
               (click)="changePage(-1)"
-              [disabled]="this.queryParams().activePage <= 1"
+              [disabled]="queryParams().page <= 1"
             >
               «
             </button>
-            <button class="du-join-item du-btn">Pagina {{ this.queryParams().activePage }}</button>
+            <button class="du-join-item du-btn">Pagina {{ queryParams().page }}</button>
             <button
               class="du-join-item du-btn"
               (click)="changePage(1)"
-              [disabled]="this.queryParams().activePage >= this.movementInventoryStore.pagination().totalPages"
+              [disabled]="
+                queryParams().page >= movementInventoryStore.pagination().totalPages
+              "
             >
               »
             </button>
@@ -564,5 +564,22 @@
     </div>
   </div>
 </section>
-
-
+@if (viewModalOpen()) {
+  <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeViewModal()">
+    <div class="du-modal-box rounded-3xl w-11/12 max-w-4xl max-h-[85vh] overflow-y-auto">
+      <div class="mb-2 flex justify-end">
+        <button
+          class="du-btn du-btn-sm du-btn-circle du-btn-ghost"
+          aria-label="close"
+          (click)="closeViewModal()"
+        >
+          ✕
+        </button>
+      </div>
+      <app-view-movement [movementSelected]="movementSelected()"></app-view-movement>
+    </div>
+    <form method="dialog" class="du-modal-backdrop">
+      <button (click)="closeViewModal()">close</button>
+    </form>
+  </dialog>
+}
