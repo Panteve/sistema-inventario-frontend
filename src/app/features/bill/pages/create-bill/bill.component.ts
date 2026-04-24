@@ -3,7 +3,7 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { ProductStore } from '../../../../shared/store/product-store';
 import { BillStore } from '../../store/bill-store';
-import { PaymentMethodStore } from '../../store/payment-method-store';
+import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { CustomerStore } from '../../store/customer-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -45,7 +45,7 @@ export class BillComponent {
   panelOpen = signal<boolean>(false);
 
   currentDate = Date.now();
-  billId = 0
+  billId = 0;
   // UI
   selectAll(event: FocusEvent) {
     (event.target as HTMLInputElement).select();

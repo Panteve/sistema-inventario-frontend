@@ -15,6 +15,8 @@ import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill.component/view-bill.component';
+import { PaymentMethodComponent } from './features/admin/pages/payment-method.component/payment-method.component';
+import { adminChildGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -34,6 +36,7 @@ export const routes: Routes = [
       {
         path: 'view-products',
         title: 'Productos disponibles',
+        canActivate: [authGuard],
         component: ProductPanel,
         outlet: 'view-products-table',
         children: [
@@ -41,6 +44,7 @@ export const routes: Routes = [
             path: 'product-prices',
             title: 'Detalle del producto',
             outlet: 'select-product-price',
+            canActivate: [authGuard],
             component: ProductPricesPanel,
           },
         ],
@@ -48,6 +52,7 @@ export const routes: Routes = [
       {
         path: 'payment',
         title: 'Metodo de pago',
+        canActivate: [authGuard],
         component: PaymentContent,
         outlet: 'payment',
       },
@@ -55,43 +60,57 @@ export const routes: Routes = [
         path: 'add-client',
         title: 'Agregar cliente',
         outlet: 'add-client-info',
+        canActivate: [authGuard],
         component: AgregarCliente,
       },
     ],
-    
   },
   {
     path: 'view-bills',
     title: 'Ver facturas',
-    canActivate: [authGuard],
     children: [
       {
         path: 'bill/:billId',
         title: 'Informacion de la factura',
+        canActivate: [authGuard],
         component: ViewBillComponent,
+      },
+    ],
+  },
+  {
+    path: 'admin',
+    title: 'Ver facturas',
+    canActivateChild: [adminChildGuard],
+    children: [
+      {
+        path: 'payment-methods',
+        title: 'Informacion de la factura',
+        component: PaymentMethodComponent,
       },
     ],
   },
   {
     path: 'inventory',
     title: 'Panel de control',
-    canActivate: [authGuard],
     providers: [OfficeStore],
     children: [
       {
         path: 'inventory-office',
         title: 'Inventario de la oficina',
+        canActivate: [authGuard],
         component: InventoryListComponent,
       },
       {
         path: 'new-movement',
         title: 'Nuevo movimiento',
+        canActivate: [authGuard],
         providers: [MovementInventoryStore],
         component: MovementCreateComponent,
       },
       {
         path: 'history-movement',
         title: 'Historial de movimientos',
+        canActivate: [authGuard],
         providers: [MovementInventoryStore, EmployeeStore],
         component: MovementListComponent,
       },

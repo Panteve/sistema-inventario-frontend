@@ -10,7 +10,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
-  billIdParams = input.required<string>({alias: 'billId'});
+  billIdParams = input.required<string>({ alias: 'billId' });
   loading = signal<boolean>(true);
   bill = signal<BillResponse>({
     id: 0,
