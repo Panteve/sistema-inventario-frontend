@@ -6,12 +6,13 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
-import { PaymentMethodResponse } from '../../../shared/interfaces/paymentMethod.interface';
+import { PaymentMethodResponse } from '../interfaces/paymentMethod.interface';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { PaymentMethodService } from '../services/payment-method.service';
+
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
-import { ToastService } from '../../../shared/services/toast.service';
+import { ToastService } from '../services/toast.service';
+import { PaymentMethodService } from '../services/payment-method.service';
 
 type PaymentMethodState = {
   paymentMethods: PaymentMethodResponse[];
@@ -24,6 +25,7 @@ const initialState: PaymentMethodState = {
 };
 
 export const PaymentMethodStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withProps(() => ({
     paymentMethodService: inject(PaymentMethodService),

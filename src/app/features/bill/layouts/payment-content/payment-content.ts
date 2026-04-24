@@ -1,7 +1,6 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { BillStore } from '../../store/bill-store';
-import { PaymentMethodStore } from '../../store/payment-method-store';
-import { CurrencyPipe } from '@angular/common';
+import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMethod.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
@@ -29,7 +28,7 @@ export class PaymentContent {
   affectsCash = computed(() => this.selectedMethod()?.affectsCash ?? false);
   change = computed(() => this.amountReceived() - this.billStore.total());
   canConfirm = computed(() => {
-    if(this.billStore.length() === 0) return false;
+    if (this.billStore.length() === 0) return false;
     if (!this.selectedMethod()) return false;
     if (this.affectsCash() && this.change() < 0) return false;
     return true;

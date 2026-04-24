@@ -51,7 +51,7 @@ export class TableProducts {
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
-  private lastFilteredCount = signal<number>(-1);
+  private lastProductsFilteredCount = signal<number>(-1);
 
   private createRangeFilter(columnId: string, min: number | null, max: number | null) {
     return {
@@ -170,9 +170,9 @@ export class TableProducts {
       this.sorting();
 
       const filteredCount = this.table.getFilteredRowModel().rows.length;
-      if (filteredCount === this.lastFilteredCount()) return;
+      if (filteredCount === this.lastProductsFilteredCount()) return;
 
-      this.lastFilteredCount.set(filteredCount);
+      this.lastProductsFilteredCount.set(filteredCount);
       this.filteredProductsCountChanged.emit(filteredCount);
     });
   }
