@@ -24,8 +24,26 @@ export class InventoryService {
     return this.http.post(`${environment.apiUrl}/inventory-movement`, payload);
   }
   getInventoryMovements(params: ParamsGetInventoryMovements) {
+    const queryParams: any = {
+      startDate: params.startDate,
+      endDate: params.endDate,
+      page: params.page,
+      limit: params.limit,
+    };
+    if (params.type) {
+      queryParams.type = params.type;
+    }
+    if (params.fromOfficeId) {
+      queryParams.fromOfficeId = params.fromOfficeId;
+    }
+    if (params.toOfficeId) {
+      queryParams.toOfficeId = params.toOfficeId;
+    }
+    if (params.employeeId) {
+      queryParams.employeeId = params.employeeId;
+    }
     return this.http.get<InventoryMovementResponse>(`${environment.apiUrl}/inventory-movement`, {
-      params: { ...params },
+      params: queryParams,
     });
   }
 }

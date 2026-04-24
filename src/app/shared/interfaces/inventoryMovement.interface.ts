@@ -58,6 +58,6 @@ export interface ParamsGetInventoryMovements {
   toOfficeId?: number;
   employeeId?: number;
   type?: 'IN' | 'OUT' | 'TRANSFER';
-  page?: number;
-  limit?: number;
+  page: number;
+  limit: number;
 }
