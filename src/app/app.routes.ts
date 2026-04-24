@@ -15,7 +15,7 @@ import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill.component/view-bill.component';
-import { PaymentMethodComponent } from './features/admin/pages/payment-method.component/payment-method.component';
+import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
 import { adminChildGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
