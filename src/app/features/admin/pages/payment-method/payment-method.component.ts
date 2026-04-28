@@ -110,6 +110,17 @@ export class PaymentMethodComponent {
     this.numberPage.update((n) => n - 1);
   }
 
+  onRowClick(paymentMethod: PaymentMethodResponse) {
+    this.methodExist.set(true);
+    this.paymentMethodForm.setValue({
+      id: paymentMethod.id,
+      name: paymentMethod.name,
+      code: paymentMethod.code,
+      affectsCash: paymentMethod.affectsCash,
+      status: paymentMethod.status,
+    });
+  }
+
   paymentMethodForm = new FormGroup({
     id: new FormControl<number>(0, {
       nonNullable: true,
@@ -213,14 +224,5 @@ export class PaymentMethodComponent {
         });
     }
   }
-  onRowClick(paymentMethod: PaymentMethodResponse) {
-    this.methodExist.set(true);
-    this.paymentMethodForm.setValue({
-      id: paymentMethod.id,
-      name: paymentMethod.name,
-      code: paymentMethod.code,
-      affectsCash: paymentMethod.affectsCash,
-      status: paymentMethod.status,
-    });
-  }
+  
 }

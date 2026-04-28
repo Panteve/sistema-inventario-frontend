@@ -14,8 +14,7 @@ export class PaymentMethodService {
    createPaymentMethod(payload: CreatePaymentMethodRequest) {
     return this.http.post<PaymentMethodResponse>(`${environment.apiUrl}/payment-method/create`, payload);
   }
-
-
+  
   loadPaymentMethods() {
     return this.http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`);
   }
