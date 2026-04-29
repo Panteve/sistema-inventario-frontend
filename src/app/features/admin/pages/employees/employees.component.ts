@@ -12,6 +12,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { EmployeeAction, EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { finalize } from 'rxjs';
 import { ManageEmployeeComponent } from '../../layouts/manage-employee.component/manage-employee.component';
+import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-employees.component',
@@ -124,7 +125,6 @@ export class EmployeesComponent implements OnInit {
       },
     },
   }));
-  //TOCA REVISAR SI SE PUEDE HACER QUE NO SE RECARGUEN LO EMPLEADOS SI SE CREA O EDITA UN EMPLEADO, SOLO ACTUALIZAR EL EMPLEADO DE LA LISTA
   resetViewTable() {
     this.table.setPageIndex(0);
     this.numberPage.set(1);

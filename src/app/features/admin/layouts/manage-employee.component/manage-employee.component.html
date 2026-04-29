@@ -84,19 +84,6 @@
       @if (selectedEmployee()?.status === false) {
         <fieldset class="du-fieldset">
           <div class="du-alert du-alert-success border-2 border-success/30 bg-success/5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-              ></path>
-            </svg>
             <div>
               <h3 class="font-bold text-success">Reactivar empleado</h3>
               <div class="text-sm text-success/80">
@@ -111,7 +98,7 @@
                     [value]="understandAction()"
                     (change)="understandToggleStatus($event)"
                   />
-                  <span class="du-label-text text-success whitespace-normal break-words">
+                  <span class="du-label-text text-success whitespace-normal wrap-break-word">
                     Confirmo que deseo dar de alta este empleado
                   </span>
                 </label>
@@ -121,21 +108,7 @@
         </fieldset>
       } @else {
         <fieldset class="du-fieldset">
-          <legend class="du-fieldset-legend text-error">Zona de riesgo</legend>
           <div class="du-alert du-alert-error border-2 border-error/30 bg-error/5">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="h-6 w-6 shrink-0 stroke-current"
-              fill="none"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 9v2m0 4v2m0 0v2m0-4v0m-6-4h.01M7 16h10m-1-7h.01M7 7h.01"
-              ></path>
-            </svg>
             <div>
               <h3 class="font-bold text-error">Dar de baja al empleado</h3>
               <div class="text-sm text-error/80">
@@ -150,7 +123,7 @@
                     [value]="understandAction()"
                     (change)="understandToggleStatus($event)"
                   />
-                  <span class="du-label-text text-error whitespace-normal break-words">
+                  <span class="du-label-text text-error whitespace-normal wrap-break-word">
                     Confirmo que deseo dar de baja este empleado
                   </span>
                 </label>
@@ -237,7 +210,7 @@
 
         <fieldset class="du-fieldset">
           <legend class="du-fieldset-legend">Rol</legend>
-          <select class="du-select du-select-bordered w-full" formControlName="role" >
+          <select class="du-select du-select-bordered w-full" formControlName="role">
             <option value="CASHIER">Cajero</option>
             <option value="ADMIN">Administrador</option>
           </select>
