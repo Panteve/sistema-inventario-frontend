@@ -329,13 +329,10 @@
     </div>
   </div>
 </div>
-<dialog
-  id="employee_modal"
-  class="du-modal rounded-3xl"
-  (close)="closeEmployeeModal()"
-  (cancel)="preventModalCancel($event)"
->
-  <div class="du-modal-box relative rounded-3xl w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto">
+<dialog id="employee_modal" class="du-modal rounded-3xl" (cancel)="preventModalCancel($event)">
+  <div
+    class="du-modal-box relative rounded-3xl w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden"
+  >
     @if (loadingModal()) {
       <div class="absolute inset-0 z-50 flex items-center justify-center">
         <div class="absolute inset-0 rounded-3xl bg-base-100/50 backdrop-blur-sm"></div>
@@ -356,8 +353,8 @@
     <app-manage-employee
       [selectedEmployee]="selectedEmployee()"
       [currentAction]="currentAction()"
-      (close)="closeEmployeeModal()"
       (refresh)="loadEmployees()"
+      (employeeChanged)="onEmployeeChanged($event)"
       (loadingModal)="setLoadingModal($event)"
     ></app-manage-employee>
   </div>

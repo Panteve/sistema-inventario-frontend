@@ -48,7 +48,7 @@
     </span>
   }
 </div>
-<form class="space-y-4" [formGroup]="employeeForm" (ngSubmit)="saveEmployee()">
+<form class="space-y-4 min-w-0" [formGroup]="employeeForm" (ngSubmit)="saveEmployee()">
   @switch (currentAction()) {
     @case ('change-password') {
       <div class="grid grid-cols-1 gap-4">
@@ -104,14 +104,14 @@
                   El empleado está actualmente inactivo. Actívalo nuevamente para que pueda acceder
                   al sistema.
                 </p>
-                <label class="du-label justify-start gap-3">
+                <label class="du-label justify-start items-start gap-3 flex-wrap">
                   <input
                     type="checkbox"
                     class="du-checkbox du-checkbox-sm du-checkbox-success"
                     [value]="understandAction()"
                     (change)="understandToggleStatus($event)"
                   />
-                  <span class="du-label-text text-success">
+                  <span class="du-label-text text-success whitespace-normal break-words">
                     Confirmo que deseo dar de alta este empleado
                   </span>
                 </label>
@@ -143,14 +143,14 @@
                   Esta es una operación crítica. El empleado será desactivado y no podrá acceder al
                   sistema.
                 </p>
-                <label class="du-label justify-start gap-3">
+                <label class="du-label justify-start items-start gap-3 flex-wrap">
                   <input
                     type="checkbox"
                     class="du-checkbox du-checkbox-sm du-checkbox-error"
                     [value]="understandAction()"
                     (change)="understandToggleStatus($event)"
                   />
-                  <span class="du-label-text text-error">
+                  <span class="du-label-text text-error whitespace-normal break-words">
                     Confirmo que deseo dar de baja este empleado
                   </span>
                 </label>
@@ -237,7 +237,7 @@
 
         <fieldset class="du-fieldset">
           <legend class="du-fieldset-legend">Rol</legend>
-          <select class="du-select du-select-bordered w-full" formControlName="role">
+          <select class="du-select du-select-bordered w-full" formControlName="role" >
             <option value="CASHIER">Cajero</option>
             <option value="ADMIN">Administrador</option>
           </select>
