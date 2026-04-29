@@ -1,4 +1,4 @@
-import { Component, inject, input, output, effect, signal } from '@angular/core';
+import { Component, inject, input, output, effect, signal, computed } from '@angular/core';
 import {
   EmployeeAction,
   EmployeeResponse,
@@ -10,6 +10,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { OfficeStore } from '../../../../shared/store/office-store';
+import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   selector: 'app-manage-employee',
@@ -20,17 +21,34 @@ export class ManageEmployeeComponent {
   officeStore = inject(OfficeStore);
   employeeService = inject(EmployeeService);
   toastService = inject(ToastService);
+  authStore = inject(AuthStore);
 
   selectedEmployee = input<EmployeeResponse | null>(null);
   currentAction = input<EmployeeAction | null>(null);
-  close = output<void>();
   refresh = output<void>();
+  employeeChanged = output<EmployeeResponse>();
   loadingModal = output<boolean>();
+
   isLoading = signal<boolean>(false);
   showPassword = signal<boolean>(false);
   understandAction = signal<boolean>(false);
+  sameUser = computed(() => this.selectedEmployee()?.id === this.authStore.employee()?.id);
 
   constructor() {
+    effect(() => {
+      if (this.currentAction() === EmployeeAction.EDIT_INFO) {
+        this.employeeForm.get('document')?.disable();
+      } else {
+        this.employeeForm.get('document')?.enable();
+      }
+    });
+    effect(() => {
+      if (this.sameUser()) {
+        this.employeeForm.get('role')?.disable();
+      } else {
+        this.employeeForm.get('role')?.enable();
+      }
+    });
     effect(() => {
       this.employeeForm.reset({
         document: this.selectedEmployee()?.document ?? '',
@@ -100,7 +118,6 @@ export class ManageEmployeeComponent {
   closeEmployeeModal() {
     this.understandAction.set(false);
     this.showPassword.set(false);
-    this.close.emit();
   }
 
   togglePasswordVisibility() {
@@ -129,6 +146,7 @@ export class ManageEmployeeComponent {
     if (formValue.role !== this.selectedEmployee()?.role) {
       payload.role = formValue.role;
     }
+
     this.employeeService
       .updateEmployee(this.selectedEmployee()!.id, payload)
       .pipe(
@@ -144,8 +162,18 @@ export class ManageEmployeeComponent {
             content: 'La informacion del empleado fue actualizada correctamente.',
             type: 'success',
           });
-          this.close.emit();
-          this.refresh.emit();
+          const selectedEmployee = this.selectedEmployee()
+          if (selectedEmployee) {
+            const updatedEmployee: EmployeeResponse = {
+              ...selectedEmployee,
+              ...payload,
+            };
+            this.employeeChanged.emit(updatedEmployee);
+          }
+
+          if (this.sameUser()) {
+            this.authStore.checkSession();
+          }
         },
         error: () => {
           this.toastService.show({
@@ -173,7 +201,6 @@ export class ManageEmployeeComponent {
             content: 'El empleado fue creado correctamente.',
             type: 'success',
           });
-          this.close.emit();
           this.refresh.emit();
         },
         error: () => {
@@ -212,7 +239,6 @@ export class ManageEmployeeComponent {
             content: 'La contraseña del empleado fue cambiada correctamente.',
             type: 'success',
           });
-          this.close.emit();
         },
         error: () => {
           this.toastService.show({
@@ -235,6 +261,14 @@ export class ManageEmployeeComponent {
       return;
     }
     const action = selectedEmployee.status ? 'desactivado' : 'reactivado';
+    if (this.sameUser() && action === 'desactivado') {
+      this.toastService.show({
+        title: `Error`,
+        content: `No se puede desactivar el administrador actual.`,
+        type: 'error',
+      });
+      return;
+    }
     this.employeeService
       .toggleStatus(selectedEmployee.id)
       .pipe(
@@ -250,8 +284,10 @@ export class ManageEmployeeComponent {
             content: `El empleado fue ${action} correctamente.`,
             type: 'success',
           });
-          this.close.emit();
-          this.refresh.emit();
+          this.employeeChanged.emit({
+            ...selectedEmployee,
+            status: !selectedEmployee.status,
+          });
         },
         error: () => {
           this.toastService.show({
@@ -264,7 +300,6 @@ export class ManageEmployeeComponent {
   }
 
   saveEmployee() {
-    console.log('saveEmployee called with action:', this.currentAction());
     if (this.employeeForm.invalid && this.currentAction() !== EmployeeAction.STATUS_TOGGLE) {
       this.employeeForm.markAllAsTouched();
       return;
@@ -287,12 +322,12 @@ export class ManageEmployeeComponent {
         break;
       default:
         this.loadingModal.emit(false);
+        this.isLoading.set(false);
         this.toastService.show({
           title: 'Error',
           content: 'Acción no válida.',
           type: 'error',
         });
     }
-    this.closeEmployeeModal();
   }
 }

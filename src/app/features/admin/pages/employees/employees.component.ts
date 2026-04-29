@@ -124,7 +124,7 @@ export class EmployeesComponent implements OnInit {
       },
     },
   }));
-
+  //TOCA REVISAR SI SE PUEDE HACER QUE NO SE RECARGUEN LO EMPLEADOS SI SE CREA O EDITA UN EMPLEADO, SOLO ACTUALIZAR EL EMPLEADO DE LA LISTA
   resetViewTable() {
     this.table.setPageIndex(0);
     this.numberPage.set(1);
@@ -161,8 +161,14 @@ export class EmployeesComponent implements OnInit {
     this.currentAction.set(EmployeeAction.STATUS_TOGGLE);
   }
 
-  closeEmployeeModal() {
-    this.selectedEmployee.set(null);
+  onEmployeeChanged(updated: EmployeeResponse) {
+    this.employees.update((employees) =>
+      employees.map((employee) => (employee.id === updated.id ? updated : employee)),
+    );
+    const selected = this.selectedEmployee();
+    if (selected?.id === updated.id) {
+      this.selectedEmployee.set(updated);
+    }
   }
 
   clearSelectedEmployee(event: Event) {
