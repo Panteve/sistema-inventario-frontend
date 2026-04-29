@@ -1,0 +1,311 @@
+<div class="mb-5 flex items-start justify-between gap-3 pr-12">
+  <div>
+    <h3 class="text-xl font-bold tracking-tight">
+      @switch (currentAction()) {
+        @case ('edit-info') {
+          Editar información del empleado
+        }
+        @case ('change-password') {
+          Cambiar contraseña
+        }
+        @case ('status-toggle') {
+          {{ selectedEmployee()?.status ? 'Dar de baja' : 'Dar de alta' }}
+        }
+        @default {
+          Crear empleado
+        }
+      }
+    </h3>
+    <p class="text-sm text-base-content/60">
+      @switch (currentAction()) {
+        @case ('edit-info') {
+          Modifica la información básica del empleado.
+        }
+        @case ('change-password') {
+          Ingresa la nueva contraseña para el empleado.
+        }
+        @case ('status-toggle') {
+          {{
+            selectedEmployee()?.status
+              ? 'Desactiva el empleado del sistema.'
+              : 'Reactiva el empleado en el sistema.'
+          }}
+        }
+        @default {
+          Completa los campos básicos para registrar un nuevo empleado
+        }
+      }
+    </p>
+  </div>
+
+  @if (selectedEmployee(); as employee) {
+    <span
+      class="du-badge mt-1 shrink-0"
+      [class.du-badge-success]="employee.status"
+      [class.du-badge-ghost]="!employee.status"
+    >
+      {{ employee.status ? 'Activo' : 'Inactivo' }}
+    </span>
+  }
+</div>
+<form class="space-y-4 min-w-0" [formGroup]="employeeForm" (ngSubmit)="saveEmployee()">
+  @switch (currentAction()) {
+    @case ('change-password') {
+      <div class="grid grid-cols-1 gap-4">
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Nueva contraseña</legend>
+          <div class="relative">
+            <input
+              [type]="showPassword() ? 'text' : 'password'"
+              class="du-input du-input-bordered w-full pr-16"
+              formControlName="password"
+              placeholder="Ingresa la nueva contraseña"
+            />
+            <button
+              type="button"
+              class="absolute right-2 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium text-base-content/60 transition hover:text-base-content"
+              (click)="togglePasswordVisibility()"
+            >
+              {{ showPassword() ? 'Ocultar' : 'Ver' }}
+            </button>
+          </div>
+          <p class="mt-1 text-xs text-base-content/60">
+            Mínimo 6 caracteres. Se actualizará al guardar.
+          </p>
+          @if (employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              La contraseña es obligatoria y debe tener al menos 6 caracteres.
+            </span>
+          }
+        </fieldset>
+      </div>
+    }
+    @case ('status-toggle') {
+      @if (selectedEmployee()?.status === false) {
+        <fieldset class="du-fieldset">
+          <div class="du-alert du-alert-success border-2 border-success/30 bg-success/5">
+            <div>
+              <h3 class="font-bold text-success">Reactivar empleado</h3>
+              <div class="text-sm text-success/80">
+                <p class="mb-3">
+                  El empleado está actualmente inactivo. Actívalo nuevamente para que pueda acceder
+                  al sistema.
+                </p>
+                <label class="du-label justify-start items-start gap-3 flex-wrap">
+                  <input
+                    type="checkbox"
+                    class="du-checkbox du-checkbox-sm du-checkbox-success"
+                    [value]="understandAction()"
+                    (change)="understandToggleStatus($event)"
+                  />
+                  <span class="du-label-text text-success whitespace-normal wrap-break-word">
+                    Confirmo que deseo dar de alta este empleado
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      } @else {
+        <fieldset class="du-fieldset">
+          <div class="du-alert du-alert-error border-2 border-error/30 bg-error/5">
+            <div>
+              <h3 class="font-bold text-error">Dar de baja al empleado</h3>
+              <div class="text-sm text-error/80">
+                <p class="mb-3">
+                  Esta es una operación crítica. El empleado será desactivado y no podrá acceder al
+                  sistema.
+                </p>
+                <label class="du-label justify-start items-start gap-3 flex-wrap">
+                  <input
+                    type="checkbox"
+                    class="du-checkbox du-checkbox-sm du-checkbox-error"
+                    [value]="understandAction()"
+                    (change)="understandToggleStatus($event)"
+                  />
+                  <span class="du-label-text text-error whitespace-normal wrap-break-word">
+                    Confirmo que deseo dar de baja este empleado
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </fieldset>
+      }
+    }
+    @default {
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Nombre</legend>
+          <input
+            type="text"
+            class="du-input du-input-bordered w-full"
+            formControlName="name"
+            placeholder="Ej: Juan Perez"
+          />
+          @if (employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              Ingresa un nombre válido de al menos 3 caracteres.
+            </span>
+          }
+        </fieldset>
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Documento</legend>
+          <input
+            type="text"
+            class="du-input du-input-bordered w-full"
+            formControlName="document"
+            placeholder="Ej: 123456789"
+          />
+          @if (employeeForm.get('document')?.invalid && employeeForm.get('document')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              El documento es obligatorio y debe tener al menos 8 caracteres.
+            </span>
+          }
+        </fieldset>
+
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Correo</legend>
+          <input
+            type="email"
+            class="du-input du-input-bordered w-full"
+            formControlName="email"
+            placeholder="Ej: usuario@empresa.com"
+          />
+          @if (employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error"> Ingresa un correo válido. </span>
+          }
+        </fieldset>
+
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Telefono</legend>
+          <input
+            type="tel"
+            class="du-input du-input-bordered w-full"
+            formControlName="phone"
+            placeholder="Ej: 3001234567"
+          />
+          @if (employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              El teléfono es obligatorio y solo debe contener números.
+            </span>
+          }
+        </fieldset>
+
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Sucursal</legend>
+          <select class="du-select du-select-bordered w-full" formControlName="officeId">
+            @if (this.employeeForm.getRawValue().role !== 'ADMIN') {
+              @for (office of officeStore.offices(); track office.id) {
+                <option [ngValue]="office.id">{{ office.name }}</option>
+              }
+            }
+          </select>
+          @if (employeeForm.get('officeId')?.invalid && employeeForm.get('officeId')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              Selecciona una sucursal válida.
+            </span>
+          }
+        </fieldset>
+
+        <fieldset class="du-fieldset">
+          <legend class="du-fieldset-legend">Rol</legend>
+          <select class="du-select du-select-bordered w-full" formControlName="role">
+            <option value="CASHIER">Cajero</option>
+            <option value="ADMIN">Administrador</option>
+          </select>
+          @if (employeeForm.get('role')?.invalid && employeeForm.get('role')?.touched) {
+            <span class="mt-0.5 text-xs font-medium text-error">
+              Selecciona un rol para continuar.
+            </span>
+          }
+        </fieldset>
+        @if (currentAction() === 'create') {
+          <fieldset class="du-fieldset md:col-span-2">
+            <legend class="du-fieldset-legend">Contraseña</legend>
+            <div class="relative">
+              <input
+                [type]="showPassword() ? 'text' : 'password'"
+                class="du-input du-input-bordered w-full pr-16"
+                formControlName="password"
+                placeholder="Contraseña inicial"
+              />
+              <button
+                type="button"
+                class="absolute right-2 top-1/2 -translate-y-1/2 rounded-md px-2 py-1 text-xs font-medium text-base-content/60 transition hover:text-base-content"
+                (click)="togglePasswordVisibility()"
+              >
+                {{ showPassword() ? 'Ocultar' : 'Ver' }}
+              </button>
+            </div>
+            @if (employeeForm.get('password')?.invalid && employeeForm.get('password')?.touched) {
+              <span class="mt-0.5 text-xs font-medium text-error">
+                La contraseña debe tener al menos 6 caracteres.
+              </span>
+            }
+          </fieldset>
+        }
+      </div>
+    }
+  }
+
+  <div>
+    <form method="dialog" class="flex flex-col-reverse gap-2 pt-1 sm:flex-row">
+      <button
+        class="du-btn du-btn-soft flex-1"
+        [disabled]="isLoading()"
+        (click)="closeEmployeeModal()"
+      >
+        Cancelar
+      </button>
+      @switch (currentAction()) {
+        @case ('edit-info') {
+          <button
+            class="du-btn du-btn-primary flex-1 gap-2"
+            [disabled]="employeeForm.invalid || isLoading()"
+            (click)="saveEmployee()"
+          >
+            Guardar cambios
+          </button>
+        }
+        @case ('change-password') {
+          <button
+            class="du-btn du-btn-primary flex-1 gap-2"
+            [disabled]="isLoading() || employeeForm.get('password')?.invalid"
+            (click)="saveEmployee()"
+          >
+            Cambiar contraseña
+          </button>
+        }
+        @case ('status-toggle') {
+          @if (selectedEmployee()?.status === false) {
+            <button
+              class="du-btn du-btn-success flex-1 gap-2"
+              [disabled]="isLoading() || !understandAction()"
+              (click)="saveEmployee()"
+            >
+              Dar de alta al empleado
+            </button>
+          } @else {
+            <button
+              class="du-btn du-btn-error flex-1 gap-2"
+              [disabled]="isLoading() || !understandAction()"
+              (click)="saveEmployee()"
+            >
+              Dar de baja al empleado
+            </button>
+          }
+        }
+        @default {
+          <button
+            class="du-btn du-btn-primary flex-1 gap-2"
+            [disabled]="isLoading() || employeeForm.invalid"
+            (click)="saveEmployee()"
+          >
+            Crear empleado
+          </button>
+        }
+      }
+    </form>
+  </div>
+</form>

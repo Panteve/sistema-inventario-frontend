@@ -15,8 +15,9 @@ import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill.component/view-bill.component';
-import { PaymentMethodComponent } from './features/admin/pages/payment-method.component/payment-method.component';
+import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
 import { adminChildGuard } from './core/guards/admin-guard';
+import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -86,6 +87,11 @@ export const routes: Routes = [
         path: 'payment-methods',
         title: 'Informacion de la factura',
         component: PaymentMethodComponent,
+      },
+      {
+        path: 'employee-management',
+        title: 'Administración de empleados',
+        component: EmployeesComponent,
       },
     ],
   },

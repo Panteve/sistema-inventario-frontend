@@ -52,7 +52,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
   movementData = signal<CreateInventoryMovementRequest>({
     toOfficeId: 0,
     fromOfficeId: 0,
-    type: 'IN',
+    type: this.MOVEMENTYPE.IN as 'IN' | 'OUT' | 'TRANSFER',
     reason: '',
     products: [],
   });
