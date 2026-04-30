@@ -201,11 +201,6 @@ export class TableProducts {
     data: this.productStore.products(),
     columns: [
       {
-        header: 'ID',
-        accessorKey: 'product.id',
-        id: 'id',
-      },
-      {
         header: 'Producto',
         accessorKey: 'product.name',
         id: 'name',

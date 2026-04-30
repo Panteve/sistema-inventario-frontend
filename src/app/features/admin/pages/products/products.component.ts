@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -10,7 +10,7 @@ import { finalize } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { ProductCatalogStore } from '../../../../shared/store/product-catalog-store';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-products.component',
@@ -22,6 +22,7 @@ export class ProductsComponent implements OnInit {
   productCatalogStore = inject(ProductCatalogStore);
   productService = inject(ProductService);
   private toastService = inject(ToastService);
+  private destroyRef = inject(DestroyRef);
 
   productExist = computed(() => this.productSelected() !== null);
   loading = signal<boolean>(false);
@@ -69,35 +70,37 @@ export class ProductsComponent implements OnInit {
     );
   });
 
-  
   constructor() {
-    this.productForm.get('status')?.valueChanges.subscribe((value) => {
-      if (value) {
-        if (this.productSelected()?.status === true) {
-          this.productForm.get('name')?.enable({ emitEvent: false });
-          this.productForm.get('description')?.enable({ emitEvent: false });
-          this.productForm.get('unitPrice')?.enable({ emitEvent: false });
-          this.productForm.get('wholesalePrice')?.enable({ emitEvent: false });
+    this.productForm
+      .get('status')
+      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((value) => {
+        if (value) {
+          if (this.productSelected()?.status === true) {
+            this.productForm.get('name')?.enable({ emitEvent: false });
+            this.productForm.get('description')?.enable({ emitEvent: false });
+            this.productForm.get('unitPrice')?.enable({ emitEvent: false });
+            this.productForm.get('wholesalePrice')?.enable({ emitEvent: false });
+          }
+        } else {
+          this.productForm.get('name')?.disable({ emitEvent: false });
+          this.productForm
+            .get('name')
+            ?.setValue(this.productSelected()?.name ?? '', { emitEvent: false });
+          this.productForm.get('description')?.disable({ emitEvent: false });
+          this.productForm
+            .get('description')
+            ?.setValue(this.productSelected()?.description ?? '', { emitEvent: false });
+          this.productForm.get('unitPrice')?.disable({ emitEvent: false });
+          this.productForm
+            .get('unitPrice')
+            ?.setValue(this.productSelected()?.unitPrice ?? 0, { emitEvent: false });
+          this.productForm.get('wholesalePrice')?.disable({ emitEvent: false });
+          this.productForm
+            .get('wholesalePrice')
+            ?.setValue(this.productSelected()?.wholesalePrice ?? 0, { emitEvent: false });
         }
-      } else {
-        this.productForm.get('name')?.disable({ emitEvent: false });
-        this.productForm
-          .get('name')
-          ?.setValue(this.productSelected()?.name ?? '', { emitEvent: false });
-        this.productForm.get('description')?.disable({ emitEvent: false });
-        this.productForm
-          .get('description')
-          ?.setValue(this.productSelected()?.description ?? '', { emitEvent: false });
-        this.productForm.get('unitPrice')?.disable({ emitEvent: false });
-        this.productForm
-          .get('unitPrice')
-          ?.setValue(this.productSelected()?.unitPrice ?? 0, { emitEvent: false });
-        this.productForm.get('wholesalePrice')?.disable({ emitEvent: false });
-        this.productForm
-          .get('wholesalePrice')
-          ?.setValue(this.productSelected()?.wholesalePrice ?? 0, { emitEvent: false });
-      }
-    });
+      });
 
     effect(() => {
       if (!this.productExist()) {
