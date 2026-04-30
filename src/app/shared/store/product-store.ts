@@ -73,32 +73,8 @@ export const ProductStore = signalStore(
         ),
       ),
     ),
-    loadProductsCatalog: rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { loading: true })),
-        switchMap(() =>
-          productService.loadProductsCatalog().pipe(
-            tap((catalogProducts) => {
-              patchState(store, { catalogProducts });
-            }),
-            catchError((err) => {
-              toastService.show({
-                title: 'Error al cargar el catálogo de productos',
-                content: 'No se pudieron cargar los productos. Inténtalo de nuevo.',
-                type: 'error',
-              });
-
-              return EMPTY;
-            }),
-            finalize(() => patchState(store, { loading: false })),
-          ),
-        ),
-      ),
-    ),
-    removeCatalogProducts() {
-      patchState(store, { catalogProducts: [] });
-    },
   })),
+  
   withHooks({
     onInit(store) {
       toObservable(computed(() => store.authStore.employee()?.officeId))
@@ -106,7 +82,7 @@ export const ProductStore = signalStore(
           distinctUntilChanged(),
           filter((id) => !!id),
         )
-        .subscribe((officeId) => {
+        .subscribe(() => {
           store.loadProductsOnInventory();
         });
     },

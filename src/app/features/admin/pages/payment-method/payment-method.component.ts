@@ -128,7 +128,7 @@ export class PaymentMethodComponent {
     }),
     name: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_ ]+$/)],
+      validators: [Validators.required, Validators.pattern(/^[\p{L}\p{N}_ ]+$/u)],
     }),
     code: new FormControl<string>('', {
       nonNullable: true,
@@ -160,7 +160,7 @@ export class PaymentMethodComponent {
           .deletePaymentMethod(id)
           .pipe(finalize(() => this.loading.set(false)))
           .subscribe({
-            next: (response) => {
+            next: () => {
               this.toastService.show({
                 title: 'Método de pago desactivado',
                 content: 'El método de pago ha sido desactivado exitosamente.',
@@ -183,7 +183,7 @@ export class PaymentMethodComponent {
         .updatePaymentMethod(id, paymentMethod)
         .pipe(finalize(() => this.loading.set(false)))
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.toastService.show({
               title: 'Método de pago actualizado',
               content: 'El método de pago ha sido actualizado exitosamente.',
@@ -205,7 +205,7 @@ export class PaymentMethodComponent {
         .createPaymentMethod(paymentMethod)
         .pipe(finalize(() => this.loading.set(false)))
         .subscribe({
-          next: (response) => {
+          next: () => {
             this.toastService.show({
               title: 'Método de pago creado',
               content: 'El método de pago ha sido creado exitosamente.',

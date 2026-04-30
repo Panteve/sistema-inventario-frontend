@@ -1,0 +1,145 @@
+<div class="flex justify-center px-4 py-10 md:py-14" >
+  <div class="w-full max-w-7xl mx-auto" (click)="clearProductSelected($event)">
+    <div class="flex items-center gap-3 mb-1 px-1">
+      <div class="bg-primary/10 rounded-full p-2.5">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 16 16"
+          class="text-primary"
+        >
+          <path
+            fill="currentColor"
+            d="M10.5 10a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zM1 5.5A2.5 2.5 0 0 1 3.5 3h9A2.5 2.5 0 0 1 15 5.5v5a2.5 2.5 0 0 1-2.5 2.5h-9A2.5 2.5 0 0 1 1 10.5zM14 6v-.5A1.5 1.5 0 0 0 12.5 4h-9A1.5 1.5 0 0 0 2 5.5V6zM2 7v3.5A1.5 1.5 0 0 0 3.5 12h9a1.5 1.5 0 0 0 1.5-1.5V7z"
+          />
+        </svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold tracking-tight">Productos</h2>
+        <p class="text-xs text-base-content/50">Administra el catálogo de productos del sistema</p>
+      </div>
+    </div>
+
+    <div class="du-divider m-0 mb-2"></div>
+
+    <div class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <div class="du-card-body p-4 md:p-6">
+        <div
+          class="grid grid-cols-1 lg:grid-cols-[340px_auto_1fr] gap-4 lg:gap-6 items-start lg:items-center"
+        >
+          <div
+            class="rounded-xl border border-base-content/10 bg-base-100 p-4"
+            data-keep-product-selected
+          >
+            <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
+              Producto
+            </h3>
+
+            <form class="space-y-3" [formGroup]="productForm" (ngSubmit)="onSubmit()">
+              <fieldset class="du-fieldset">
+                <legend class="du-fieldset-legend">Nombre</legend>
+                <input
+                  type="text"
+                  class="du-input w-full"
+                  formControlName="name"
+                  placeholder="Ej: Mouse inalámbrico"
+                />
+              </fieldset>
+
+              <fieldset class="du-fieldset">
+                <legend class="du-fieldset-legend">Descripción</legend>
+                <textarea
+                  class="du-textarea w-full resize-none max-h-32 overflow-y-auto"
+                  formControlName="description"
+                  placeholder="Ej: Mouse inalámbrico 2.4G con batería recargable"
+                  maxlength="256"
+                  rows="2"
+                ></textarea>
+                <div class="flex justify-end">
+                  <span class="text-[11px] text-base-content/60">
+                    {{ productForm.get('description')?.value?.length ?? 0 }}/256
+                  </span>
+                </div>
+              </fieldset>
+
+              <fieldset class="du-fieldset">
+                <legend class="du-fieldset-legend">Precio unitario</legend>
+                <input
+                  copMoneyInput
+                  type="text"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  class="du-input w-full no-spinner"
+                  formControlName="unitPrice"
+                />
+              </fieldset>
+              <fieldset class="du-fieldset">
+                <legend class="du-fieldset-legend">Precio por mayor</legend>
+                <input
+                  copMoneyInput
+                  type="text"
+                  autocomplete="off"
+                  inputmode="numeric"
+                  class="du-input w-full no-spinner"
+                  formControlName="wholesalePrice"
+                />
+              </fieldset>
+
+              <fieldset class="du-fieldset w-fit">
+                <legend class="du-fieldset-legend">Status</legend>
+                <label class="du-label justify-start gap-3">
+                  <input
+                    type="checkbox"
+                    class="du-toggle du-toggle-success"
+                    formControlName="status"
+                    [value]="productForm.get('status')?.value"
+                  />
+                  <span class="du-label-text">
+                    {{ productForm.get('status')?.value ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </label>
+              </fieldset>
+
+              <div class="flex gap-2 pt-2">
+                <button
+                  class="du-btn du-btn-soft flex-1"
+                  type="button"
+                  (click)="onProductFormReset()"
+                >
+                  Limpiar
+                </button>
+                <button
+                  class="du-btn du-btn-primary flex-1"
+                  type="submit"
+                  [disabled]="productForm.invalid || !hasChanges()"
+                >
+                  {{ this.productExist() ? 'Guardar' : 'Crear' }}
+                </button>
+              </div>
+            </form>
+          </div>
+
+          <div class="hidden lg:flex h-full items-center justify-center">
+            <div class="du-divider du-divider-horizontal my-0"></div>
+          </div>
+
+          @if (productCatalogStore.loading()) {
+            <div class="text-center py-10 opacity-50">
+              <span class="du-loading du-loading-dots du-loading-xl"></span>
+              <p>Cargando productos...</p>
+            </div>
+          } @else {
+            <div class="min-w-0" data-keep-product-selected>
+              <app-table-catalog-products
+                [manageProduct]="true"
+                [showDelete]="true"
+                (rowSelected)="setProductSelected($event)"
+              />
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

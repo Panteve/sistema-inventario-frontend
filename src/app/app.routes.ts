@@ -18,6 +18,7 @@ import { ViewBillComponent } from './features/bill/pages/view-bill.component/vie
 import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
 import { adminChildGuard } from './core/guards/admin-guard';
 import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
+import { ProductsComponent } from './features/admin/pages/products/products.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -93,12 +94,16 @@ export const routes: Routes = [
         title: 'Administración de empleados',
         component: EmployeesComponent,
       },
+      {
+        path: 'products',
+        title: 'Administración de productos',
+        component: ProductsComponent,
+      }
     ],
   },
   {
     path: 'inventory',
     title: 'Panel de control',
-    providers: [OfficeStore],
     children: [
       {
         path: 'inventory-office',

@@ -62,11 +62,7 @@
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{
-                this.movementData().type === MOVEMENTYPE.TRANSFER
-                  ? 'De'
-                  : 'Oficina afectada'
-              }}
+              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'De' : 'Oficina afectada' }}
             </p>
 
             @if (!authStore.isAdmin()) {
@@ -107,11 +103,7 @@
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{
-                this.movementData().type === MOVEMENTYPE.TRANSFER
-                  ? 'Hacia'
-                  : 'Oficina afectada'
-              }}
+              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'Hacia' : 'Oficina afectada' }}
             </p>
             @if (!authStore.isAdmin()) {
               <p class="text-sm font-semibold leading-tight text-center">
@@ -290,7 +282,7 @@
             </div>
           </div>
 
-          @if (!canConfirm() || notSelectedOffice() ) {
+          @if (!canConfirm() || notSelectedOffice()) {
             <p class="mt-2 text-xs opacity-60">
               Selecciona una oficina y agrega al menos un producto para habilitar la creación del
               movimiento.
@@ -323,8 +315,8 @@
           } @else {
             @if (this.movementData().type === MOVEMENTYPE.IN) {
               <app-table-catalog-products
-                [enableRowSelect]="true"
                 [quantityProducts]="10"
+                [showDelete]="false"
                 (rowSelected)="addProductCatalogToMovement($event)"
               ></app-table-catalog-products>
             } @else {

@@ -1,12 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  computed,
-  inject,
-  OnDestroy,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import {
@@ -24,6 +16,7 @@ import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/inventoryMovement.interface';
+import { ProductCatalogStore } from '../../../../shared/store/product-catalog-store';
 
 @Component({
   selector: 'app-movement-create.component',
@@ -32,9 +25,11 @@ import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/in
   templateUrl: './movement-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovementCreateComponent implements OnInit, OnDestroy {
+export class MovementCreateComponent implements OnInit{
+  
   authStore = inject(AuthStore);
   productStore = inject(ProductStore);
+  productCatalogStore = inject(ProductCatalogStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);
   toastService = inject(ToastService);
@@ -81,6 +76,10 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     { initialValue: false },
   );
 
+  ngOnInit(): void {
+    this.productCatalogStore.loadProductsCatalog(false);
+  }
+
   openProductsModal() {
     this.router.navigate([], {
       relativeTo: this.route,
@@ -97,12 +96,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit(): void {
-    this.productStore.loadProductsCatalog();
-  }
-
   ngOnDestroy(): void {
-    this.productStore.removeCatalogProducts();
     if (this.authStore.isAdmin()) {
       this.authStore.resetOfficeIdFromCashRegister();
     }
@@ -201,7 +195,7 @@ export class MovementCreateComponent implements OnInit, OnDestroy {
       ...data,
       toOfficeId: selectElement,
     }));
-    if (this.movementData().type !== this.MOVEMENTYPE.TRANSFER) {
+    if (this.movementData().type === this.MOVEMENTYPE.OUT) {
       this.authStore.setOfficeId(Number(selectElement));
     }
   }
