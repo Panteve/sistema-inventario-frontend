@@ -24,10 +24,6 @@ export class ProductsComponent implements OnInit {
   private toastService = inject(ToastService);
   private destroyRef = inject(DestroyRef);
 
-  productExist = computed(() => this.productSelected() !== null);
-  loading = signal<boolean>(false);
-  productSelected = signal<ProductCatalogResponse | null>(null);
-
   productForm = new FormGroup({
     id: new FormControl<number>(0, {
       nonNullable: true,
@@ -54,9 +50,14 @@ export class ProductsComponent implements OnInit {
     }),
   });
 
+  productExist = computed(() => this.productSelected() !== null);
+  loading = signal<boolean>(false);
+  productSelected = signal<ProductCatalogResponse | null>(null);
+
   private formValue = toSignal(this.productForm.valueChanges, {
     initialValue: this.productForm.getRawValue(),
   });
+
   hasChanges = computed(() => {
     const selected = this.productSelected();
     if (!selected) return false;
@@ -71,6 +72,19 @@ export class ProductsComponent implements OnInit {
   });
 
   constructor() {
+    effect(() => {
+      if (!this.productExist()) {
+        this.productForm.get('status')?.setValue(true);
+        this.productForm.get('status')?.disable();
+      } else {
+        this.productForm.get('status')?.enable();
+      }
+    });
+  }
+
+  ngOnInit(): void {
+    this.productCatalogStore.loadProductsCatalog(true);
+
     this.productForm
       .get('status')
       ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
@@ -101,15 +115,22 @@ export class ProductsComponent implements OnInit {
             ?.setValue(this.productSelected()?.wholesalePrice ?? 0, { emitEvent: false });
         }
       });
+  }
 
-    effect(() => {
-      if (!this.productExist()) {
-        this.productForm.get('status')?.setValue(true);
-        this.productForm.get('status')?.disable();
-      } else {
-        this.productForm.get('status')?.enable();
-      }
-    });
+  clearProductSelected(event: Event) {
+    const target = event.target as HTMLElement | null;
+    if (!target) {
+      return;
+    }
+
+    if (
+      target.closest(
+        '[data-keep-product-selected], button, input, select, textarea, label, a, tr, td, th, dialog',
+      )
+    ) {
+      return;
+    }
+    this.onProductFormReset();
   }
 
   setProductSelected(product: ProductCatalogResponse = this.productSelected()!) {
@@ -241,9 +262,5 @@ export class ProductsComponent implements OnInit {
     } else {
       this.createProduct(productData);
     }
-  }
-
-  ngOnInit(): void {
-    this.productCatalogStore.loadProductsCatalog(true);
   }
 }
