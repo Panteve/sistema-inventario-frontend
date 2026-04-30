@@ -1,6 +1,7 @@
 import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import {
   CellContext,
+  ColumnDef,
   ColumnFiltersState,
   createAngularTable,
   FlexRenderDirective,
@@ -10,12 +11,9 @@ import {
   getSortedRowModel,
   SortingState,
 } from '@tanstack/angular-table';
-import { ProductStore } from '../../store/product-store';
-import {
-  ProductCatalogResponse,
-  ProductOnInventoryResponse,
-} from '../../interfaces/product.interface';
+import { ProductCatalogResponse } from '../../interfaces/product.interface';
 import { CopPipe } from '../../pipes/cop.pipes';
+import { ProductCatalogStore } from '../../store/product-catalog-store';
 
 type PriceColumnId = 'unitPrice' | 'wholesalePrice';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -34,7 +32,6 @@ type RangeFilterValue = {
   styleUrl: './table-catalog-products.css',
 })
 export class TableCatalogProducts {
-  enableRowSelect = input<boolean>(false);
   quantityProducts = input<number>(10);
   selectedOrderGeneral = input<string>('none');
   selectedPriceFilterType = input<PriceColumnId | 'none'>('none');
@@ -43,13 +40,20 @@ export class TableCatalogProducts {
   maxPriceFilter = input<number | null>(null);
   rowSelected = output<ProductCatalogResponse>();
   filteredProductsCountChanged = output<number>();
+  manageProduct = input<boolean>(false);
+  showDelete = input<boolean>(false);
 
-  productStore = inject(ProductStore);
+  productCatalogStore = inject(ProductCatalogStore);
   copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
   private lastFilteredCount = signal<number>(-1);
+
+  private rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
+    const value = row.getValue(columnId) as number;
+    return this.matchesRangeFilter(filterValue, value);
+  };
 
   private createRangeFilter(columnId: string, min: number | null, max: number | null) {
     return {
@@ -69,11 +73,6 @@ export class TableCatalogProducts {
     const max = filterValue?.max ?? null;
     return this.isValueInRange(value, min, max);
   }
-
-  private rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
-    const value = row.getValue(columnId) as number;
-    return this.matchesRangeFilter(filterValue, value);
-  };
 
   private isValueInRange(value: number, min: number | null, max: number | null) {
     if (min !== null && value < min) return false;
@@ -118,13 +117,15 @@ export class TableCatalogProducts {
       this.selectedPriceOrder();
       this.minPriceFilter();
       this.maxPriceFilter();
+      this.productCatalogStore.catalogProducts();
+
       this.resetViewTable();
     });
     effect(() => {
       this.table.setPageSize(this.quantityProducts());
     });
     effect(() => {
-      this.productStore.catalogProducts();
+      this.productCatalogStore.catalogProducts();
       this.globalFilter();
       this.columnFilters();
       this.sorting();
@@ -138,24 +139,15 @@ export class TableCatalogProducts {
   }
 
   onRowClick(product: ProductCatalogResponse) {
-    if (!this.enableRowSelect) return;
     this.rowSelected.emit(product);
   }
 
   loadProducts() {
     this.globalFilter.set('');
-    this.productStore.loadProductsCatalog();
+    this.productCatalogStore.loadProductsCatalog(this.showDelete());
   }
-
-
-  table = createAngularTable(() => ({
-    data: this.productStore.catalogProducts(),
-    columns: [
-      {
-        header: 'ID',
-        accessorKey: 'id',
-        id: 'id',
-      },
+  columns = computed(() => {
+    const columns: ColumnDef<ProductCatalogResponse, any>[] = [
       {
         header: 'Producto',
         accessorKey: 'name',
@@ -177,7 +169,19 @@ export class TableCatalogProducts {
         cell: (info: CellContext<ProductCatalogResponse, any>) =>
           this.copPipe.transform(info.getValue()),
       },
-    ],
+    ];
+    if (this.manageProduct()) {
+      columns.push({
+        header: 'Status',
+        accessorKey: 'status',
+        id: 'status',
+      });
+    }
+    return columns;
+  });
+  table = createAngularTable(() => ({
+    data: this.productCatalogStore.catalogProducts(),
+    columns: this.columns(),
     state: {
       globalFilter: this.globalFilter(),
       sorting: this.sorting(),

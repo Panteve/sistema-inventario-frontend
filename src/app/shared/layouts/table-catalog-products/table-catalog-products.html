@@ -36,26 +36,39 @@
   <table class="du-table du-table-zebra du-table-md w-full">
     <thead class="bg-base-200">
       <tr>
-        <th class="text-center">ID</th>
-        <th class="text-center">Nombre</th>
-        <th class="text-center">Precio</th>
-        <th class="text-center">P. Mayor</th>
+        @for (column of columns(); track $index) {
+          <th class="text-center">{{ column.header }}</th>
+        }
       </tr>
     </thead>
     <tbody>
       @for (row of table.getRowModel().rows; track row.id) {
         <tr
-          class="hover:bg-base-300 transition-colors"
-          [class.cursor-pointer]="enableRowSelect()"
+          class="hover:bg-base-300 transition-colors cursor-pointer"
+          [class.opacity-60]="!row.original.status"
           (click)="onRowClick(row.original)"
         >
           @for (cell of row.getVisibleCells(); track cell.id) {
             <td class="text-center">
-              <ng-container
-                *flexRender="cell.column.columnDef.cell; props: cell.getContext(); let renderedCell"
-              >
-              {{ renderedCell }}
-              </ng-container>
+              @if (cell.column.id === 'status') {
+                <span
+                  class="du-badge"
+                  [class.du-badge-success]="row.original.status"
+                  [class.du-badge-error]="!row.original.status"
+                >
+                  {{ row.original.status ? 'Activo' : 'Inactivo' }}
+                </span>
+              } @else {
+                <ng-container
+                  *flexRender="
+                    cell.column.columnDef.cell;
+                    props: cell.getContext();
+                    let renderedCell
+                  "
+                >
+                  {{ renderedCell }}
+                </ng-container>
+              }
             </td>
           }
         </tr>

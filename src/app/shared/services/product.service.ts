@@ -1,7 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { ProductCatalogResponse, ProductOnInventoryResponse } from '../interfaces/product.interface';
+import { CreateProductRequest, ProductCatalogResponse, ProductOnInventoryResponse } from '../interfaces/product.interface';
 import { AuthStore } from '../../core/store/auth-store';
 
 @Injectable({
@@ -19,11 +19,23 @@ export class ProductService {
     );
   }
 
-  loadProductsCatalog() {
-    return this.http.get<ProductCatalogResponse[]>(`${environment.apiUrl}/products`);
+  loadProductsCatalog(showDeleted: boolean = false) {
+    const queryParams = showDeleted ? { showDeleted: true } : { showDeleted: false};
+    return this.http.get<ProductCatalogResponse[]>(`${environment.apiUrl}/products`,{
+      params: queryParams,
+    });
   }
 
-  createProduct(product: ProductOnInventoryResponse) {
+  createProduct(product: CreateProductRequest) {
     return this.http.post<void>(`${environment.apiUrl}/products/product`, product);
   }
+
+  updateProduct(id: number, product: Partial<CreateProductRequest>) {
+    return this.http.patch<void>(`${environment.apiUrl}/products/update/${id}`, product);
+  }
+
+  toggleStatusProduct(id: number) {
+    return this.http.patch<void>(`${environment.apiUrl}/products/toggle-status/${id}`, {});
+  }
+
 }

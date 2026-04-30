@@ -10,8 +10,12 @@ export interface ProductOnInventoryResponse {
   };
 }
 
-export interface ProductCatalogResponse {
+export interface ProductCatalogResponse extends CreateProductRequest {
   id: number;
+  status: boolean;
+}
+
+export interface CreateProductRequest {
   name: string;
   description?: string;
   unitPrice: number;
