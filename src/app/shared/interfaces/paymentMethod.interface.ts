@@ -1,9 +1,9 @@
 export interface PaymentMethodResponse extends CreatePaymentMethodRequest {
   id: number;
+  status: boolean;
 }
 
 export interface CreatePaymentMethodRequest {
-  status: boolean;
   name: string;
   code: string;
   affectsCash: boolean;

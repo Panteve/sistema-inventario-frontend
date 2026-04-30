@@ -12,7 +12,6 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { EmployeeAction, EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { finalize } from 'rxjs';
 import { ManageEmployeeComponent } from '../../layouts/manage-employee.component/manage-employee.component';
-import { AsyncPipe } from '@angular/common';
 
 @Component({
   selector: 'app-employees.component',

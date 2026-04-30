@@ -23,8 +23,8 @@ export class PaymentMethodService {
     return this.http.patch(`${environment.apiUrl}/payment-method/update/${id}`, payload);
   }
 
-  deletePaymentMethod(id: number) {
-    return this.http.delete(`${environment.apiUrl}/payment-method/delete/${id}`);
+  setStatusPaymentMethod(id: number, status: boolean) {
+    return this.http.patch(`${environment.apiUrl}/payment-method/status/${id}`, { status });
   } 
 
 }

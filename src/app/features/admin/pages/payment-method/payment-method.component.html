@@ -1,4 +1,4 @@
-<div class="flex justify-center px-4 py-10 md:py-14">
+<div class="flex justify-center px-4 py-10 md:py-14" (click)="clearPaymentMethodSelected($event)">
   <div class="w-full max-w-7xl mx-auto">
     <div class="flex items-center gap-3 mb-1 px-1">
       <div class="bg-primary/10 rounded-full p-2.5">
@@ -85,7 +85,7 @@
                 <button
                   class="du-btn du-btn-primary flex-1"
                   type="submit"
-                  [disabled]="!paymentMethodForm.valid"
+                  [disabled]="!paymentMethodForm.valid || !hasChanges()"
                 >
                   {{ this.methodExist() ? 'Guardar' : 'Crear' }}
                 </button>
@@ -156,7 +156,6 @@
                   <table class="du-table du-table-zebra du-table-md w-full min-w-170">
                     <thead class="bg-base-200">
                       <tr>
-                        <th class="text-center">ID</th>
                         <th class="text-center">Metodo de pago</th>
                         <th class="text-center">Codigo</th>
                         <th class="text-center">Afecta caja</th>

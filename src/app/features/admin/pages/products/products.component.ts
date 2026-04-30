@@ -27,7 +27,6 @@ export class ProductsComponent implements OnInit {
   productForm = new FormGroup({
     id: new FormControl<number>(0, {
       nonNullable: true,
-      validators: Validators.required,
     }),
     name: new FormControl<string>('', {
       nonNullable: true,
@@ -60,15 +59,15 @@ export class ProductsComponent implements OnInit {
 
   hasChanges = computed(() => {
     const selected = this.productSelected();
-    if (!selected) return false;
     const formValue = this.formValue();
-    return (
+    if (selected) {return (
       selected.name !== formValue.name ||
       selected.description !== formValue.description ||
       selected.unitPrice !== formValue.unitPrice ||
       selected.wholesalePrice !== formValue.wholesalePrice ||
       selected.status !== formValue.status
-    );
+    );};
+    return true
   });
 
   constructor() {
@@ -119,7 +118,7 @@ export class ProductsComponent implements OnInit {
 
   clearProductSelected(event: Event) {
     const target = event.target as HTMLElement | null;
-    if (!target) {
+    if (!target || this.productSelected() === null) {
       return;
     }
 
@@ -222,9 +221,10 @@ export class ProductsComponent implements OnInit {
       });
   }
 
-  private createProduct(product: CreateProductRequest) {
+  private createProduct(product: ProductCatalogResponse) {
+    const {id, status, ...productData} = product
     this.productService
-      .createProduct(product)
+      .createProduct(productData)
       .pipe(
         finalize(() => {
           this.loading.set(false);
