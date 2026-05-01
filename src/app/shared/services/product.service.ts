@@ -20,7 +20,10 @@ export class ProductService {
   }
 
   loadProductsCatalog(showDeleted: boolean = false) {
-    const queryParams = showDeleted ? { showDeleted: true } : { showDeleted: false};
+    let queryParams = {};
+    if (showDeleted) {
+      queryParams = { showDeleted: true };
+    }
     return this.http.get<ProductCatalogResponse[]>(`${environment.apiUrl}/products`,{
       params: queryParams,
     });
@@ -34,8 +37,8 @@ export class ProductService {
     return this.http.patch<void>(`${environment.apiUrl}/products/update/${id}`, product);
   }
 
-  toggleStatusProduct(id: number) {
-    return this.http.patch<void>(`${environment.apiUrl}/products/toggle-status/${id}`, {});
+  setStatusProduct(id: number, status: boolean) {
+    return this.http.patch<void>(`${environment.apiUrl}/products/status/${id}`, { status });
   }
 
 }

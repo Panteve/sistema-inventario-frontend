@@ -26,7 +26,7 @@ export class EmployeeService {
   updateEmployeePassword(employeeId: number, newPassword: string) {
     return this.http.patch(`${environment.apiUrl}/employees/employee/${employeeId}/password`, { newPassword });
   }
-  toggleStatus(employeeId: number) {
-    return this.http.patch(`${environment.apiUrl}/employees/employee/${employeeId}`, {});
+  setStatus(employeeId: number, status: boolean) {
+    return this.http.patch(`${environment.apiUrl}/employees/employee/${employeeId}`, { status });
   }
 }

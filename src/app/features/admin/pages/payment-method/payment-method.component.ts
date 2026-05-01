@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, inject, signal } from '@angular/core';
+import { Component, computed, DestroyRef, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import {
   createAngularTable,
@@ -23,7 +23,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
   imports: [FlexRenderDirective, ReactiveFormsModule],
   templateUrl: './payment-method.component.html',
 })
-export class PaymentMethodComponent {
+export class PaymentMethodComponent implements OnDestroy, OnInit{
   paymentMethodStore = inject(PaymentMethodStore);
   paymentMethodService = inject(PaymentMethodService);
   toastService = inject(ToastService);
@@ -108,9 +108,15 @@ export class PaymentMethodComponent {
         }
       });
   }
+  ngOnInit(): void {
+    this.paymentMethodStore.loadPaymentMethods(true);
+  }
+  ngOnDestroy(): void {
+    this.paymentMethodStore.loadPaymentMethods(false);
+  }
   loadPaymentMethods() {
     this.globalFilter.set('');
-    this.paymentMethodStore.loadPaymentMethods();
+    this.paymentMethodStore.loadPaymentMethods(true);
   }
 
   table = createAngularTable(() => ({
@@ -175,6 +181,9 @@ export class PaymentMethodComponent {
   }
 
   onRowClick(paymentMethod: PaymentMethodResponse) {
+    if(paymentMethod.id === this.paymentMethodSelected()?.id){
+      return this.clearForm();
+    }
     this.methodExist.set(true);
     this.paymentMethodSelected.set(paymentMethod);
     this.paymentMethodForm.setValue({

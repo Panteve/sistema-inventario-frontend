@@ -11,7 +11,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
   templateUrl: './payment-content.html',
   styleUrl: './payment-content.css',
 })
-export class PaymentContent {
+export class PaymentContent{
   billStore = inject(BillStore);
   paymentMethodStore = inject(PaymentMethodStore);
   copPipe = inject(CopPipe);

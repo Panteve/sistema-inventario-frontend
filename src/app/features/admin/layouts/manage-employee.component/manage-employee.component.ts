@@ -159,7 +159,7 @@ export class ManageEmployeeComponent {
         next: () => {
           this.toastService.show({
             title: 'Empleado actualizado',
-            content: 'La informacion del empleado fue actualizada correctamente.',
+            content: `La informacion del empleado ${this.selectedEmployee()?.name} fue actualizada correctamente.`,
             type: 'success',
           });
           const selectedEmployee = this.selectedEmployee()
@@ -236,7 +236,7 @@ export class ManageEmployeeComponent {
         next: () => {
           this.toastService.show({
             title: 'Contraseña actualizada',
-            content: 'La contraseña del empleado fue cambiada correctamente.',
+            content: `La contraseña del empleado ${this.selectedEmployee()?.name} fue cambiada correctamente.`,
             type: 'success',
           });
         },
@@ -270,7 +270,7 @@ export class ManageEmployeeComponent {
       return;
     }
     this.employeeService
-      .toggleStatus(selectedEmployee.id)
+      .setStatus(selectedEmployee.id, !selectedEmployee.status)
       .pipe(
         finalize(() => {
           this.loadingModal.emit(false);
@@ -281,7 +281,7 @@ export class ManageEmployeeComponent {
         next: () => {
           this.toastService.show({
             title: `Empleado ${action}`,
-            content: `El empleado fue ${action} correctamente.`,
+            content: `El empleado ${this.selectedEmployee()?.name} fue ${action} correctamente.`,
             type: 'success',
           });
           this.employeeChanged.emit({

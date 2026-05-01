@@ -32,14 +32,14 @@ export const PaymentMethodStore = signalStore(
     toastService: inject(ToastService),
   })),
 
-  withMethods(({ paymentMethodService, toastService, ...store }) => ({
-    loadPaymentMethods: rxMethod<void>(
+  withMethods(({ paymentMethodService, toastService, ...store }) => {
+    const _loadPaymentMethodsTrigger = rxMethod<boolean>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
-        switchMap(() =>
-          paymentMethodService.loadPaymentMethods().pipe(
+        switchMap((showDelete) =>
+          paymentMethodService.loadPaymentMethods(showDelete).pipe(
             tap((paymentMethods) => {
               patchState(store, { paymentMethods });
             }),
@@ -55,8 +55,13 @@ export const PaymentMethodStore = signalStore(
           ),
         ),
       ),
-    ),
-  })),
+    );
+    return {
+      loadPaymentMethods(showDelete = false) {
+        _loadPaymentMethodsTrigger(showDelete);
+      },
+    };
+  }),
   withHooks({
     onInit(store) {
       store.loadPaymentMethods();

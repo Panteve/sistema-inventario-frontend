@@ -132,9 +132,11 @@ export class ProductsComponent implements OnInit {
     this.onProductFormReset();
   }
 
-  setProductSelected(product: ProductCatalogResponse = this.productSelected()!) {
+  setProductSelected(product: ProductCatalogResponse) {
+    if(product.id === this.productSelected()?.id){
+      return this.onProductFormReset();
+    }
     this.productSelected.set(product);
-
     this.productForm.patchValue({
       id: product.id,
       name: product.name,
@@ -157,9 +159,9 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  private toggleStatus(product: ProductCatalogResponse) {
+  private setStatus(product: ProductCatalogResponse) {
     this.productService
-      .toggleStatusProduct(product.id)
+      .setStatusProduct(product.id, product.status)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
@@ -255,7 +257,7 @@ export class ProductsComponent implements OnInit {
     const productData = this.productForm.getRawValue() as ProductCatalogResponse;
     if (this.productExist()) {
       if (productData.status !== this.productSelected()?.status) {
-        this.toggleStatus(productData);
+        this.setStatus(productData);
       } else {
         this.updateProduct(productData);
       }
