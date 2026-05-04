@@ -273,71 +273,82 @@
             <span class="du-loading du-loading-spinner du-loading-lg"></span>
           </div>
         } @else {
-          @if (bills().length === 0) {
-            <div
-              class="rounded-2xl border border-dashed border-base-content/20 bg-base-200/30 p-8 text-center"
-            >
-              <p class="font-medium">No hay facturas para mostrar</p>
-              <p class="text-sm opacity-60 mt-1">Ajusta tus filtros para ver resultados.</p>
-            </div>
-          } @else {
-            <div
-              class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
-            >
-              <div class="overflow-x-auto">
-                <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
-                  <thead class="bg-base-200/90">
-                    <tr>
-                      <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                        ID
-                      </th>
-                      <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                        Fecha
-                      </th>
-                      <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                        Cliente
-                      </th>
-                      <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                        Empleado
-                      </th>
-                      <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
-                        Total
-                      </th>
-                      <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                        Estado
-                      </th>
+          <div
+            class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
+          >
+            <div class="overflow-x-auto">
+              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                <thead class="bg-base-200/90">
+                  <tr>
+                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                      ID
+                    </th>
+                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                      Fecha
+                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                      Cliente
+                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                      Empleado
+                    </th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
+                      Total
+                    </th>
+                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                      Estado
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (bill of bills(); track bill.id) {
+                    <tr
+                      class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
+                      [class.opacity-70]="!bill.status"
+                      (click)="openBillDetail(bill.id)"
+                    >
+                      <td class="text-center">#{{ bill.id }}</td>
+                      <td class="text-center">{{ bill.createdAt | date: 'dd MMM y' }}</td>
+                      <td class="text-left">
+                        {{ bill.customer?.name || 'Sin cliente' }}
+                      </td>
+                      <td class="text-left">{{ bill.employee.name }}</td>
+                      <td class="text-right font-semibold">{{ bill.total | cop }}</td>
+                      <td class="text-center">
+                        <span
+                          class="du-badge"
+                          [class.du-badge-success]="bill.status"
+                          [class.du-badge-error]="!bill.status"
+                        >
+                          {{ bill.status ? 'Activa' : 'Anulada' }}
+                        </span>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    @for (bill of bills(); track bill.id) {
-                      <tr
-                        class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
-                        [class.opacity-70]="!bill.status"
-                        (click)="openBillDetail(bill.id)"
-                      >
-                        <td class="text-center">#{{ bill.id }}</td>
-                        <td class="text-center">{{ bill.createdAt | date: 'dd MMM y' }}</td>
-                        <td class="text-left">
-                          {{ bill.customer?.name || 'Sin cliente' }}
-                        </td>
-                        <td class="text-left">{{ bill.employee.name }}</td>
-                        <td class="text-right font-semibold">{{ bill.total | cop }}</td>
-                        <td class="text-center">
-                          <span
-                            class="du-badge"
-                            [class.du-badge-success]="bill.status"
-                            [class.du-badge-error]="!bill.status"
-                          >
-                            {{ bill.status ? 'Activa' : 'Anulada' }}
-                          </span>
-                        </td>
-                      </tr>
-                    }
-                  </tbody>
-                </table>
-              </div>
+                  } @empty {
+                    <tr>
+                      <td colspan="7" class="py-10 text-center opacity-55">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="mx-auto mb-2 h-11 w-11 opacity-35"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                          />
+                        </svg>
+                        <p class="text-sm">No se encontraron facturas.</p>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
             </div>
-          }
+          </div>
         }
 
         <div class="du-divider my-4"></div>

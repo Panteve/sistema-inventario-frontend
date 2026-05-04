@@ -3,10 +3,11 @@ import { inject } from '@angular/core';
 import { AuthStore } from '../store/auth-store';
 
 export const authGuard: CanActivateFn = () => {
+  const router = inject(Router);
   const authStore = inject(AuthStore);
 
   if (!authStore.isAuthenticated()) {
-    authStore.logout();
+    router.navigate(['']);
     return false;
   }
   return true;
