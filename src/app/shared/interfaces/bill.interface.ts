@@ -23,7 +23,6 @@ export interface ProductSelected {
   quantity: number;
 }
 
-
 export interface BillsHistoryResponse {
   id: number;
   status: boolean;
@@ -34,7 +33,17 @@ export interface BillsHistoryResponse {
   } | null;
   employee: {
     name: string;
-  }
+  };
+}
+
+export interface BillsHistoryPagination {
+  totalItems: number;
+  totalPages: number;
+}
+
+export interface BillsHistoryListResponse {
+  data: BillsHistoryResponse[];
+  pagination: BillsHistoryPagination;
 }
 
 export interface ParamsGetBills {
@@ -46,8 +55,6 @@ export interface ParamsGetBills {
   page: number;
   limit: number;
 }
-
-
 
 export interface BillResponse {
   id: number;

@@ -82,6 +82,7 @@ export const routes: Routes = [
         path: 'list',
         title: 'Historial de facturas',
         canActivate: [authGuard],
+        providers: [EmployeeStore],
         component: BillListComponent,
       },
     ],
@@ -105,7 +106,7 @@ export const routes: Routes = [
         path: 'products',
         title: 'Administración de productos',
         component: ProductsComponent,
-      }
+      },
     ],
   },
   {
