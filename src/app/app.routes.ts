@@ -14,11 +14,12 @@ import { MovementInventoryStore } from './features/inventory/store/movement-inve
 import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
-import { ViewBillComponent } from './features/bill/pages/view-bill.component/view-bill.component';
+import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
 import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
 import { adminChildGuard } from './core/guards/admin-guard';
 import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
 import { ProductsComponent } from './features/admin/pages/products/products.component';
+import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -76,6 +77,12 @@ export const routes: Routes = [
         title: 'Informacion de la factura',
         canActivate: [authGuard],
         component: ViewBillComponent,
+      },
+      {
+        path: 'list',
+        title: 'Historial de facturas',
+        canActivate: [authGuard],
+        component: BillListComponent,
       },
     ],
   },

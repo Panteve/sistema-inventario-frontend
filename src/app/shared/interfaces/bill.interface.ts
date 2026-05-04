@@ -23,6 +23,32 @@ export interface ProductSelected {
   quantity: number;
 }
 
+
+export interface BillsHistoryResponse {
+  id: number;
+  status: boolean;
+  total: number;
+  createdAt: string;
+  customer: {
+    name: string;
+  } | null;
+  employee: {
+    name: string;
+  }
+}
+
+export interface ParamsGetBills {
+  startDate: string;
+  endDate: string;
+  officeId?: number;
+  employeeId?: number;
+  customerKeyword?: string;
+  page: number;
+  limit: number;
+}
+
+
+
 export interface BillResponse {
   id: number;
   status: boolean;
