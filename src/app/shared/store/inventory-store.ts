@@ -27,20 +27,18 @@ import { ProductService } from '../services/product.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ToastService } from '../services/toast.service';
 
-type ProductState = {
+type InventoryState = {
   products: ProductOnInventoryResponse[];
-  catalogProducts: ProductCatalogResponse[];
   modalClose: boolean;
   loading: boolean;
 };
 
-const initialState: ProductState = {
+const initialState: InventoryState = {
   products: [],
-  catalogProducts: [],
   modalClose: false,
   loading: false,
 };
-export const ProductStore = signalStore(
+export const InventoryStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withProps(() => ({

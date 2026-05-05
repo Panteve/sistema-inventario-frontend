@@ -1,6 +1,6 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
-import { ProductStore } from '../../../../shared/store/product-store';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
@@ -21,7 +21,7 @@ export class InventoryListComponent implements OnDestroy {
   private readonly priceFilterDebounceMs = 350;
 
   authStore = inject(AuthStore);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   officeStore = inject(OfficeStore);
   router = inject(Router);
   private currencyPipe = inject(CurrencyPipe);

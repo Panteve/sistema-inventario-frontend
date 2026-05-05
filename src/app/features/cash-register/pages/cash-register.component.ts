@@ -3,7 +3,7 @@ import { AuthStore } from '../../../core/store/auth-store';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { CashRegisterStore } from '../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { ProductStore } from '../../../shared/store/product-store';
+import { InventoryStore } from '../../../shared/store/inventory-store';
 import { OfficeStore } from '../../../shared/store/office-store';
 import { CopPipe } from '../../../shared/pipes/cop.pipes';
 
@@ -19,7 +19,7 @@ export class CashRegisterComponent {
   private route = inject(ActivatedRoute);
   officeStore = inject(OfficeStore);
   authStore = inject(AuthStore);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   cashRegisterStore = inject(CashRegisterStore);
   private copPipe = inject(CopPipe);
 
@@ -71,9 +71,7 @@ export class CashRegisterComponent {
 
   displayDifference = computed(() => {
     this.cashDifference();
-    return (
-      this.copPipe.transform(this.cashDifference()) ?? '0.00'
-    );
+    return this.copPipe.transform(this.cashDifference()) ?? '0.00';
   });
 
   onAmountReceivedChange(event: Event) {

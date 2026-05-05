@@ -1,7 +1,7 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
-import { ProductStore } from '../../../../shared/store/product-store';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { CustomerStore } from '../../store/customer-store';
@@ -24,7 +24,7 @@ export class BillComponent {
   customerStore = inject(CustomerStore);
   authStore = inject(AuthStore);
   billStore = inject(BillStore);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   private paymentMethodStore = inject(PaymentMethodStore);
   router = inject(Router);
   cop = inject(CopPipe);

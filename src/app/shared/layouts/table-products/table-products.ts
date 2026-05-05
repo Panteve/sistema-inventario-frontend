@@ -10,7 +10,7 @@ import {
   getSortedRowModel,
   SortingState,
 } from '@tanstack/angular-table';
-import { ProductStore } from '../../store/product-store';
+import { InventoryStore } from '../../store/inventory-store';
 import { ProductOnInventoryResponse } from '../../interfaces/product.interface';
 import { CopPipe } from '../../pipes/cop.pipes';
 
@@ -46,7 +46,7 @@ export class TableProducts {
   rowSelected = output<ProductOnInventoryResponse>();
   filteredProductsCountChanged = output<number>();
 
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
@@ -164,7 +164,7 @@ export class TableProducts {
       this.table.setPageSize(this.quantityProducts());
     });
     effect(() => {
-      this.productStore.products();
+      this.inventoryStore.products();
       this.globalFilter();
       this.columnFilters();
       this.sorting();
@@ -180,7 +180,6 @@ export class TableProducts {
   onRowClick(product: ProductOnInventoryResponse) {
     if (!this.enableRowSelect) return;
     this.rowSelected.emit(product);
-    
   }
   isStockCell(columnId: string) {
     return columnId === 'quantity';
@@ -193,12 +192,11 @@ export class TableProducts {
   }
   loadProducts() {
     this.globalFilter.set('');
-    this.productStore.loadProductsOnInventory();
+    this.inventoryStore.loadProductsOnInventory();
   }
 
-
   table = createAngularTable(() => ({
-    data: this.productStore.products(),
+    data: this.inventoryStore.products(),
     columns: [
       {
         header: 'Producto',

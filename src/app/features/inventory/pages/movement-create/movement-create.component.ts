@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import {
@@ -10,7 +17,7 @@ import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
-import { ProductStore } from '../../../../shared/store/product-store';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
@@ -25,10 +32,9 @@ import { ProductCatalogStore } from '../../../../shared/store/product-catalog-st
   templateUrl: './movement-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class MovementCreateComponent implements OnInit{
-  
+export class MovementCreateComponent implements OnInit {
   authStore = inject(AuthStore);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   productCatalogStore = inject(ProductCatalogStore);
   officeStore = inject(OfficeStore);
   movementStore = inject(MovementInventoryStore);

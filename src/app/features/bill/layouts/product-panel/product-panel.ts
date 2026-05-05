@@ -3,7 +3,7 @@ import { ProductService } from '../../../../shared/services/product.service';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
-import { ProductStore } from '../../../../shared/store/product-store';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 
@@ -24,7 +24,7 @@ export class ProductPanel {
 
   private productService = inject(ProductService);
   private route = inject(ActivatedRoute);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   billStore = inject(BillStore);
   router = inject(Router);
 

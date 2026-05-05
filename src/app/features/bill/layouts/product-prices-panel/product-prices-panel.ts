@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { ProductService } from '../../../../shared/services/product.service';
-import { ProductStore } from '../../../../shared/store/product-store';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
@@ -11,7 +11,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 })
 export class ProductPricesPanel {
   private productService = inject(ProductService);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   billStore = inject(BillStore);
 
   addProductToBill(price: string) {

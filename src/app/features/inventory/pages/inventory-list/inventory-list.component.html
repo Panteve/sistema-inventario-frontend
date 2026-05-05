@@ -37,13 +37,13 @@
           <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
             <p class="text-[11px] uppercase tracking-wide opacity-60">Productos</p>
             <p class="text-lg font-semibold leading-tight">
-              {{ productStore.loading() ? 0 : visibleProductsCount() }}
+              {{ inventoryStore.loading() ? 0 : visibleProductsCount() }}
             </p>
           </div>
           <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
             <p class="text-[11px] uppercase tracking-wide opacity-60">Estado</p>
             <p class="text-sm font-semibold leading-tight">
-              {{ productStore.loading() ? 'Cargando' : 'Actualizado' }}
+              {{ inventoryStore.loading() ? 'Cargando' : 'Actualizado' }}
             </p>
           </div>
           <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
@@ -317,7 +317,7 @@
           </section>
         </div>
         <div class="rounded-2xl border border-base-content/10 p-3 md:p-4 bg-base-100">
-          @if (this.productStore.loading()) {
+          @if (this.inventoryStore.loading()) {
             <div
               class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/70 backdrop-blur-[1px] rounded-2xl"
             >

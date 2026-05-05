@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { OfficeStore } from '../../../shared/store/office-store';
-import { ProductStore } from '../../../shared/store/product-store';
+import { InventoryStore } from '../../../shared/store/inventory-store';
 import { Router } from '@angular/router';
 
 @Component({
@@ -11,11 +11,10 @@ import { Router } from '@angular/router';
 })
 export class DashboardComponent {
   officeStore = inject(OfficeStore);
-  productStore = inject(ProductStore);
+  inventoryStore = inject(InventoryStore);
   private router = inject(Router);
 
   view() {
-    this.router.navigate(['/view-bills/bill',10]);
+    this.router.navigate(['/view-bills/bill', 10]);
   }
-
 }
