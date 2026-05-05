@@ -21,7 +21,6 @@ export class InventoryService {
         quantity: p.quantity,
       })),
     };
-    console.log('Payload for creating inventory movement:', payload);
     return this.http.post(`${environment.apiUrl}/inventory-movement`, payload);
   }
   getInventoryMovements(params: ParamsGetInventoryMovements) {

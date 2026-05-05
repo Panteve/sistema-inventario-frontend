@@ -24,7 +24,7 @@ import { BillService } from '../../services/bill.service';
 })
 export class BillListComponent implements OnInit {
   readonly maxRangeMonths = 3;
-  readonly defaultItemsPerPage = 20;
+  readonly defaultItemsPerPage = 30;
   private readonly filtersStorageKey = 'billFilters';
 
   authStore = inject(AuthStore);
@@ -67,14 +67,9 @@ export class BillListComponent implements OnInit {
       : sourceParams.endDate;
     const officeIdFromQuery = this.parseNumber(params.get('officeId')) ?? sourceParams.officeId;
     const employeeId = this.parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
-    const limitFromQuery = this.parseNumber(params.get('limit'));
-    const pageFromQuery = this.parseNumber(params.get('page'));
-    const customerKeyword =
-      params.get('customerKeyword')?.trim() || sourceParams.customerKeyword || undefined;
-    const limitFallback = sourceParams.limit ?? defaults.limit;
-    const pageFallback = sourceParams.page ?? defaults.page;
-    const limit = limitFromQuery && limitFromQuery > 0 ? limitFromQuery : limitFallback;
-    const page = pageFromQuery && pageFromQuery > 0 ? pageFromQuery : pageFallback;
+    const limit = this.parseNumber(params.get('limit')) ?? sourceParams.limit;
+    const page = this.parseNumber(params.get('page')) ?? sourceParams.page;
+    const customerKeyword = params.get('customerKeyword')?.trim() ?? sourceParams.customerKeyword;
     const officeId = this.authStore.isAdmin() ? officeIdFromQuery : defaults.officeId;
     const nextParams: ParamsGetBills = {
       ...defaults,
@@ -247,7 +242,7 @@ export class BillListComponent implements OnInit {
     this.queryParams.set(this.buildDefaultParams());
     this.loadEmployeesForOffice();
     this.clearSavedFilters();
-    this.applyFilters()
+    this.applyFilters();
   }
 
   applyFilters() {
