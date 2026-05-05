@@ -53,10 +53,13 @@ export class BillListComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // Priority: URL (AI deep links) > saved filters > defaults.
+    // Priority: URL filters > saved filters > defaults.
     const defaults = this.buildDefaultParams();
     const params = this.route.snapshot.queryParamMap;
-    const savedFilters = this.loadSavedFilters();
+    const hasNonDateParams = ['officeId', 'employeeId', 'customerKeyword', 'page', 'limit'].some(
+      (key) => params.has(key),
+    );
+    const savedFilters = hasNonDateParams ? null : this.loadSavedFilters();
     const sourceParams = savedFilters ?? defaults;
 
     const startDate = this.isIsoDate(params.get('startDate'))

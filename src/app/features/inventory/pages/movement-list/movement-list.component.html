@@ -267,9 +267,14 @@
                   @if (employeeStore.loading()) {
                     <option selected disabled>Cargando empleados...</option>
                   } @else {
-                    <option value="">Todos</option>
+                    <option value="" [selected]="queryParams().employeeId === undefined">
+                      Todos
+                    </option>
                     @for (employee of employeeStore.employees(); track employee.id) {
-                      <option [value]="employee.id">
+                      <option
+                        [value]="employee.id"
+                        [selected]="employee.id === queryParams().employeeId"
+                      >
                         {{ employee.name }}
                       </option>
                     } @empty {
@@ -293,9 +298,14 @@
                     @if (officeStore.loading()) {
                       <option selected disabled>Cargando oficinas...</option>
                     } @else {
-                      <option value="">Todas</option>
+                      <option value="" [selected]="queryParams().fromOfficeId === undefined">
+                        Todas
+                      </option>
                       @for (office of officeStore.offices(); track office.id) {
-                        <option [value]="office.id">
+                        <option
+                          [value]="office.id"
+                          [selected]="office.id === queryParams().fromOfficeId"
+                        >
                           {{ office.name }}
                         </option>
                       } @empty {
@@ -552,9 +562,7 @@
             <button
               class="du-join-item du-btn"
               (click)="changePage(1)"
-              [disabled]="
-                queryParams().page >= movementInventoryStore.pagination().totalPages
-              "
+              [disabled]="queryParams().page >= movementInventoryStore.pagination().totalPages"
             >
               »
             </button>
