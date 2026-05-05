@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
-import { InventoryService } from '../services/inventory.service';
+import { MovementInventoryService } from '../services/inventory-movement.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import {
@@ -32,18 +32,18 @@ export const MovementInventoryStore = signalStore(
   withState(initialState),
   withProps(() => ({
     toastService: inject(ToastService),
-    inventoryService: inject(InventoryService),
+    movementInventoryService: inject(MovementInventoryService),
     router: inject(Router),
   })),
 
-  withMethods(({ toastService, inventoryService, router, ...store }) => ({
+  withMethods(({ toastService, movementInventoryService, router, ...store }) => ({
     getInventoyryMovements: rxMethod<ParamsGetInventoryMovements>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
         switchMap((params) => {
-          return inventoryService.getInventoryMovements(params).pipe(
+          return movementInventoryService.getInventoryMovements(params).pipe(
             tap((response) => {
               patchState(store, { movementList: response.data, pagination: response.pagination });
             }),
@@ -68,7 +68,7 @@ export const MovementInventoryStore = signalStore(
           patchState(store, { loading: true });
         }),
         switchMap((movementData) => {
-          return inventoryService.createMovementInventory(movementData).pipe(
+          return movementInventoryService.createMovementInventory(movementData).pipe(
             tap((response) => {
               toastService.show({
                 title: 'Éxito',

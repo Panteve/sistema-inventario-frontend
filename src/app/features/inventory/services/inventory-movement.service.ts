@@ -10,7 +10,7 @@ import {
 @Injectable({
   providedIn: 'root',
 })
-export class InventoryService {
+export class MovementInventoryService {
   http = inject(HttpClient);
 
   createMovementInventory(movementData: CreateInventoryMovementRequest) {

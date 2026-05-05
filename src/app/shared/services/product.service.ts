@@ -1,23 +1,13 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { CreateProductRequest, ProductCatalogResponse, ProductOnInventoryResponse } from '../interfaces/product.interface';
-import { AuthStore } from '../../core/store/auth-store';
+import { CreateProductRequest, ProductCatalogResponse } from '../interfaces/product.interface';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductService {
   private http = inject(HttpClient);
-  private  authStore = inject(AuthStore);
-  modalClose = signal<boolean>(false);
-
-  loadProductsOnInventory() {
-    const officeId = this.authStore.employee()?.officeId;
-    return this.http.get<ProductOnInventoryResponse[]>(
-      `${environment.apiUrl}/office-inventory/`,{params: { officeId: officeId ? String(officeId) : 0 }}
-    );
-  }
 
   loadProductsCatalog(showDeleted: boolean = false) {
     let queryParams = {};

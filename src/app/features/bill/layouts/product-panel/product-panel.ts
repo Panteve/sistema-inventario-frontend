@@ -1,11 +1,11 @@
 import { Component, effect, ElementRef, inject, ViewChild } from '@angular/core';
-import { ProductService } from '../../../../shared/services/product.service';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
+import { InventoryService } from '../../../../shared/services/inventory.service';
 
 @Component({
   selector: 'app-product-panel',
@@ -16,13 +16,13 @@ import { TableProducts } from '../../../../shared/layouts/table-products/table-p
 export class ProductPanel {
   constructor() {
     effect(() => {
-      if (this.productService.modalClose()) {
+      if (this.inventoryService.modalClose()) {
         this.btnCerrar.nativeElement.click();
       }
     });
   }
 
-  private productService = inject(ProductService);
+  private inventoryService = inject(InventoryService);
   private route = inject(ActivatedRoute);
   inventoryStore = inject(InventoryStore);
   billStore = inject(BillStore);
@@ -32,7 +32,7 @@ export class ProductPanel {
   @ViewChild('my_modal_2') productModal!: ElementRef<HTMLDialogElement>;
 
   async getProductTable(product: ProductOnInventoryResponse) {
-    this.productService.modalClose.set(false);
+    this.inventoryService.modalClose.set(false);
 
     const productSelected: ProductSelected = {
       product: {

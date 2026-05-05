@@ -26,6 +26,7 @@ import {
 import { ProductService } from '../services/product.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ToastService } from '../services/toast.service';
+import { InventoryService } from '../services/inventory.service';
 
 type InventoryState = {
   products: ProductOnInventoryResponse[];
@@ -43,15 +44,15 @@ export const InventoryStore = signalStore(
   withState(initialState),
   withProps(() => ({
     authStore: inject(AuthStore),
-    productService: inject(ProductService),
+    inventoryService: inject(InventoryService),
     toastService: inject(ToastService),
   })),
-  withMethods(({ authStore, productService, toastService, ...store }) => ({
+  withMethods(({ authStore, inventoryService, toastService, ...store }) => ({
     loadProductsOnInventory: rxMethod<void>(
       pipe(
         tap(() => patchState(store, { loading: true })),
         switchMap(() =>
-          productService.loadProductsOnInventory().pipe(
+          inventoryService.loadInventory().pipe(
             tap((products) => {
               patchState(store, { products });
             }),
