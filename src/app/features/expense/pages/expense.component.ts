@@ -14,9 +14,9 @@ import { AuthStore } from '../../../core/store/auth-store';
   styleUrl: './expense.component.css',
 })
 export class ExpenseComponent {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
-  private currencyPipe = inject(CurrencyPipe);
+  #router = inject(Router);
+  #route = inject(ActivatedRoute);
+  #currencyPipe = inject(CurrencyPipe);
 
   expenseStore = inject(ExpenseStore);
   authStore = inject(AuthStore);
@@ -36,7 +36,7 @@ export class ExpenseComponent {
 
   displayAmount() {
     const amount = this.expenseForm.get('amount')?.value ?? 0;
-    return this.currencyPipe.transform(amount, 'COP', '', '1.0-0') ?? '0';
+    return this.#currencyPipe.transform(amount, 'COP', '', '1.0-0') ?? '0';
   }
 
   onAmountInput(event: Event) {
@@ -66,8 +66,8 @@ export class ExpenseComponent {
   }
 
   closeExpenseModal() {
-    this.router.navigate([], {
-      relativeTo: this.route,
+    this.#router.navigate([], {
+      relativeTo: this.#route,
       queryParams: { expenseModal: null },
       queryParamsHandling: 'merge',
     });

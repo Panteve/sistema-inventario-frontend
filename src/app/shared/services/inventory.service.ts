@@ -8,13 +8,13 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class InventoryService {
-  private http = inject(HttpClient);
-  private authStore = inject(AuthStore);
+  #http = inject(HttpClient);
+  #authStore = inject(AuthStore);
   modalClose = signal<boolean>(false);
 
   loadInventory() {
-    const officeId = this.authStore.employee()?.officeId;
-    return this.http.get<ProductOnInventoryResponse[]>(`${environment.apiUrl}/office-inventory/`, {
+    const officeId = this.#authStore.employee()?.officeId;
+    return this.#http.get<ProductOnInventoryResponse[]>(`${environment.apiUrl}/office-inventory/`, {
       params: { officeId: officeId ? String(officeId) : 0 },
     });
   }

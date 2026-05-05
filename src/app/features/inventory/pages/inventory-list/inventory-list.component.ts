@@ -17,14 +17,14 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
   templateUrl: './inventory-list.component.html',
 })
 export class InventoryListComponent implements OnDestroy {
-  private readonly stockFilterDebounceMs = 350;
-  private readonly priceFilterDebounceMs = 350;
+  readonly #stockFilterDebounceMs = 350;
+  readonly #priceFilterDebounceMs = 350;
 
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   officeStore = inject(OfficeStore);
   router = inject(Router);
-  private currencyPipe = inject(CurrencyPipe);
+  #currencyPipe = inject(CurrencyPipe);
 
   visibleProductsCount = signal(0);
   selectedOrderGeneral = signal('none');
@@ -52,7 +52,7 @@ export class InventoryListComponent implements OnDestroy {
       const val = this.draftMinPriceFilter();
       return val === null ? '' : String(val);
     }
-    return this.currencyPipe.transform(this.draftMinPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
+    return this.#currencyPipe.transform(this.draftMinPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
   });
 
   displayMaxPrice = computed(() => {
@@ -60,24 +60,24 @@ export class InventoryListComponent implements OnDestroy {
       const val = this.draftMaxPriceFilter();
       return val === null ? '' : String(val);
     }
-    return this.currencyPipe.transform(this.draftMaxPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
+    return this.#currencyPipe.transform(this.draftMaxPriceFilter(), 'COP', '', '1.2-2') ?? '0,00';
   });
 
   constructor() {
-    this.setupDebouncedRangeSync(
+    this.#setupDebouncedRangeSync(
       this.draftMinStockFilter,
       this.draftMaxStockFilter,
       this.minStockFilter,
       this.maxStockFilter,
-      this.stockFilterDebounceMs,
+      this.#stockFilterDebounceMs,
     );
 
-    this.setupDebouncedRangeSync(
+    this.#setupDebouncedRangeSync(
       this.draftMinPriceFilter,
       this.draftMaxPriceFilter,
       this.minPriceFilter,
       this.maxPriceFilter,
-      this.priceFilterDebounceMs,
+      this.#priceFilterDebounceMs,
     );
   }
   ngOnDestroy(): void {
@@ -85,7 +85,7 @@ export class InventoryListComponent implements OnDestroy {
       this.authStore.resetOfficeIdFromCashRegister();
     }
   }
-  private setupDebouncedRangeSync(
+  #setupDebouncedRangeSync(
     draftMinSignal: { (): number | null },
     draftMaxSignal: { (): number | null },
     targetMinSignal: { set: (value: number | null) => void },
@@ -107,7 +107,7 @@ export class InventoryListComponent implements OnDestroy {
 
   changeQuantityProducts(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    const parsedValue = this.parseNullableNumber(value);
+    const parsedValue = this.#parseNullableNumber(value);
     if (parsedValue === null || parsedValue < 0 || parsedValue > 50) {
       return;
     }
@@ -117,7 +117,7 @@ export class InventoryListComponent implements OnDestroy {
   changeLowStockThreshold(event: Event) {
     if (this.enableStatusStockHighlight()) {
       const value = (event.target as HTMLInputElement).value;
-      this.lowStockThreshold.set(this.parseNullableNumber(value) || 5);
+      this.lowStockThreshold.set(this.#parseNullableNumber(value) || 5);
     }
   }
 
@@ -128,12 +128,12 @@ export class InventoryListComponent implements OnDestroy {
 
   changeStockFilterMin(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.draftMinStockFilter.set(this.parseNullableNumber(value));
+    this.draftMinStockFilter.set(this.#parseNullableNumber(value));
   }
 
   changeStockFilterMax(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.draftMaxStockFilter.set(this.parseNullableNumber(value));
+    this.draftMaxStockFilter.set(this.#parseNullableNumber(value));
   }
 
   changePriceFilterType(event: Event) {
@@ -143,7 +143,7 @@ export class InventoryListComponent implements OnDestroy {
     this.selectedPriceFilterType.set(nextType);
 
     if (nextType === 'none') {
-      this.resetPriceFilters();
+      this.#resetPriceFilters();
     }
   }
 
@@ -154,12 +154,12 @@ export class InventoryListComponent implements OnDestroy {
 
   changePriceFilterMin(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.draftMinPriceFilter.set(this.parseNullableNumber(value));
+    this.draftMinPriceFilter.set(this.#parseNullableNumber(value));
   }
 
   changePriceFilterMax(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    this.draftMaxPriceFilter.set(this.parseNullableNumber(value));
+    this.draftMaxPriceFilter.set(this.#parseNullableNumber(value));
   }
 
   toggleStockStatus(status: StockStatusFilter) {
@@ -180,8 +180,8 @@ export class InventoryListComponent implements OnDestroy {
 
   clearFilters() {
     this.selectedOrderGeneral.set('none');
-    this.resetStockFilters();
-    this.resetPriceFilters();
+    this.#resetStockFilters();
+    this.#resetPriceFilters();
     this.clearStockStatusFilters();
   }
 
@@ -189,14 +189,14 @@ export class InventoryListComponent implements OnDestroy {
     this.visibleProductsCount.set(count);
   }
 
-  private parseNullableNumber(value: string) {
+  #parseNullableNumber(value: string) {
     if (value === '') return null;
 
     const parsedValue = Number(value);
     return Number.isFinite(parsedValue) ? parsedValue : null;
   }
 
-  private resetStockFilters() {
+  #resetStockFilters() {
     this.draftMinStockFilter.set(null);
     this.draftMaxStockFilter.set(null);
     this.minStockFilter.set(null);
@@ -204,7 +204,7 @@ export class InventoryListComponent implements OnDestroy {
     this.selectedStockStatuses.set([]);
   }
 
-  private resetPriceFilters() {
+  #resetPriceFilters() {
     this.selectedPriceFilterType.set('none');
     this.selectedPriceOrder.set('none');
     this.draftMinPriceFilter.set(null);

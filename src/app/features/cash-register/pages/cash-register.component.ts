@@ -15,13 +15,13 @@ import { CopPipe } from '../../../shared/pipes/cop.pipes';
   styleUrl: './cash-register.component.css',
 })
 export class CashRegisterComponent {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  #router = inject(Router);
+  #route = inject(ActivatedRoute);
   officeStore = inject(OfficeStore);
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   cashRegisterStore = inject(CashRegisterStore);
-  private copPipe = inject(CopPipe);
+  #copPipe = inject(CopPipe);
 
   currentDate = Date.now();
   currentHour = new Date().getHours();
@@ -62,16 +62,16 @@ export class CashRegisterComponent {
   });
 
   displayAmount = computed(() => {
-    return this.copPipe.transform(this.amountReceived()) ?? '0';
+    return this.#copPipe.transform(this.amountReceived()) ?? '0';
   });
 
   displayExpectedCash = computed(() => {
-    return this.copPipe.transform(this.expected()) ?? '0.00';
+    return this.#copPipe.transform(this.expected()) ?? '0.00';
   });
 
   displayDifference = computed(() => {
     this.cashDifference();
-    return this.copPipe.transform(this.cashDifference()) ?? '0.00';
+    return this.#copPipe.transform(this.cashDifference()) ?? '0.00';
   });
 
   onAmountReceivedChange(event: Event) {
@@ -110,8 +110,8 @@ export class CashRegisterComponent {
 
   closeCashModal() {
     this.closeConfirmationOpen.set(false);
-    this.router.navigate([], {
-      relativeTo: this.route,
+    this.#router.navigate([], {
+      relativeTo: this.#route,
       queryParams: { cashModal: null },
       queryParamsHandling: 'merge',
     });

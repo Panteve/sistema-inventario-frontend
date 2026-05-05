@@ -1,4 +1,13 @@
-import { Component, computed, DestroyRef, effect, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import {
   createAngularTable,
@@ -23,11 +32,11 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
   imports: [FlexRenderDirective, ReactiveFormsModule],
   templateUrl: './payment-method.component.html',
 })
-export class PaymentMethodComponent implements OnDestroy, OnInit{
+export class PaymentMethodComponent implements OnDestroy, OnInit {
   paymentMethodStore = inject(PaymentMethodStore);
   paymentMethodService = inject(PaymentMethodService);
   toastService = inject(ToastService);
-  private destroyRef = inject(DestroyRef);
+  #destroyRef = inject(DestroyRef);
 
   paymentMethodSelected = signal<PaymentMethodResponse | null>(null);
   globalFilter = signal<string>('');
@@ -55,12 +64,12 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
     }),
   });
 
-  private formValue = toSignal(this.paymentMethodForm.valueChanges, {
+  #formValue = toSignal(this.paymentMethodForm.valueChanges, {
     initialValue: this.paymentMethodForm.getRawValue(),
   });
   hasChanges = computed(() => {
     const selected = this.paymentMethodSelected();
-    const formValue = this.formValue();
+    const formValue = this.#formValue();
     if (selected) {
       return (
         selected.name !== formValue.name ||
@@ -84,7 +93,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
 
     this.paymentMethodForm
       .get('status')
-      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((value) => {
         if (value) {
           if (this.paymentMethodSelected()?.status === true) {
@@ -181,7 +190,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
   }
 
   onRowClick(paymentMethod: PaymentMethodResponse) {
-    if(paymentMethod.id === this.paymentMethodSelected()?.id){
+    if (paymentMethod.id === this.paymentMethodSelected()?.id) {
       return this.clearForm();
     }
     this.methodExist.set(true);
@@ -206,7 +215,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
     this.methodExist.set(false);
   }
 
-  private setStatus(paymentMethod: PaymentMethodResponse) {
+  #setStatus(paymentMethod: PaymentMethodResponse) {
     this.paymentMethodService
       .setStatusPaymentMethod(paymentMethod.id, paymentMethod.status)
       .pipe(finalize(() => this.loading.set(false)))
@@ -230,7 +239,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
       });
   }
 
-  private updatePaymentMethod(paymentMethod: PaymentMethodResponse) {
+  #updatePaymentMethod(paymentMethod: PaymentMethodResponse) {
     const payload: Partial<CreatePaymentMethodRequest> = {};
 
     if (paymentMethod.name !== this.paymentMethodSelected()?.name) {
@@ -266,7 +275,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
       });
   }
 
-  private createPaymentMethod(paymentMethod: CreatePaymentMethodRequest) {
+  #createPaymentMethod(paymentMethod: CreatePaymentMethodRequest) {
     this.paymentMethodService
       .createPaymentMethod(paymentMethod)
       .pipe(finalize(() => this.loading.set(false)))
@@ -295,12 +304,12 @@ export class PaymentMethodComponent implements OnDestroy, OnInit{
     const paymentMethod = this.paymentMethodForm.getRawValue();
     if (this.methodExist()) {
       if (paymentMethod.status !== this.paymentMethodSelected()?.status) {
-        this.setStatus(paymentMethod);
+        this.#setStatus(paymentMethod);
       } else {
-        this.updatePaymentMethod(paymentMethod);
+        this.#updatePaymentMethod(paymentMethod);
       }
     } else {
-      this.createPaymentMethod(paymentMethod);
+      this.#createPaymentMethod(paymentMethod);
     }
   }
 

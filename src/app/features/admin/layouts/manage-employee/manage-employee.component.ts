@@ -124,7 +124,7 @@ export class ManageEmployeeComponent {
     this.showPassword.update((value) => !value);
   }
 
-  private updateEmployeeInfo() {
+  #updateEmployeeInfo() {
     const formValue = this.employeeForm.getRawValue();
     const payload: UpdateEmployeeRequest = {};
 
@@ -162,7 +162,7 @@ export class ManageEmployeeComponent {
             content: `La informacion del empleado ${this.selectedEmployee()?.name} fue actualizada correctamente.`,
             type: 'success',
           });
-          const selectedEmployee = this.selectedEmployee()
+          const selectedEmployee = this.selectedEmployee();
           if (selectedEmployee) {
             const updatedEmployee: EmployeeResponse = {
               ...selectedEmployee,
@@ -184,7 +184,7 @@ export class ManageEmployeeComponent {
         },
       });
   }
-  private createEmployee() {
+  #createEmployee() {
     const { status, ...data } = this.employeeForm.getRawValue();
     this.employeeService
       .createEmployee(data)
@@ -213,7 +213,7 @@ export class ManageEmployeeComponent {
       });
   }
 
-  private savePasswordOnly() {
+  #savePasswordOnly() {
     const newPassword = this.employeeForm.getRawValue().password;
     const selectedEmployee = this.selectedEmployee();
     if (!selectedEmployee) {
@@ -250,7 +250,7 @@ export class ManageEmployeeComponent {
       });
   }
 
-  private toggleStatus() {
+  #toggleStatus() {
     const selectedEmployee = this.selectedEmployee();
     if (!selectedEmployee) {
       this.toastService.show({
@@ -309,16 +309,16 @@ export class ManageEmployeeComponent {
     this.isLoading.set(true);
     switch (this.currentAction()) {
       case EmployeeAction.CREATE:
-        this.createEmployee();
+        this.#createEmployee();
         break;
       case EmployeeAction.EDIT_INFO:
-        this.updateEmployeeInfo();
+        this.#updateEmployeeInfo();
         break;
       case EmployeeAction.CHANGE_PASSWORD:
-        this.savePasswordOnly();
+        this.#savePasswordOnly();
         break;
       case EmployeeAction.STATUS_TOGGLE:
-        this.toggleStatus();
+        this.#toggleStatus();
         break;
       default:
         this.loadingModal.emit(false);

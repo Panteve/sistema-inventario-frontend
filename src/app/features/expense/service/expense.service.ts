@@ -7,9 +7,9 @@ import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interfa
   providedIn: 'root',
 })
 export class ExpenseService {
-  private http  = inject(HttpClient);
+  #http = inject(HttpClient);
 
   createExpense(expense: CreateExpenseRequest) {
-    return this.http.post(`${environment.apiUrl}/expenses`, expense);
+    return this.#http.post(`${environment.apiUrl}/expenses`, expense);
   }
 }

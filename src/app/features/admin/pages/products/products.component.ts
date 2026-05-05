@@ -21,8 +21,8 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 export class ProductsComponent implements OnInit {
   productCatalogStore = inject(ProductCatalogStore);
   productService = inject(ProductService);
-  private toastService = inject(ToastService);
-  private destroyRef = inject(DestroyRef);
+  #toastService = inject(ToastService);
+  #destroyRef = inject(DestroyRef);
 
   productForm = new FormGroup({
     id: new FormControl<number>(0, {
@@ -53,21 +53,23 @@ export class ProductsComponent implements OnInit {
   loading = signal<boolean>(false);
   productSelected = signal<ProductCatalogResponse | null>(null);
 
-  private formValue = toSignal(this.productForm.valueChanges, {
+  #formValue = toSignal(this.productForm.valueChanges, {
     initialValue: this.productForm.getRawValue(),
   });
 
   hasChanges = computed(() => {
     const selected = this.productSelected();
-    const formValue = this.formValue();
-    if (selected) {return (
-      selected.name !== formValue.name ||
-      selected.description !== formValue.description ||
-      selected.unitPrice !== formValue.unitPrice ||
-      selected.wholesalePrice !== formValue.wholesalePrice ||
-      selected.status !== formValue.status
-    );};
-    return true
+    const formValue = this.#formValue();
+    if (selected) {
+      return (
+        selected.name !== formValue.name ||
+        selected.description !== formValue.description ||
+        selected.unitPrice !== formValue.unitPrice ||
+        selected.wholesalePrice !== formValue.wholesalePrice ||
+        selected.status !== formValue.status
+      );
+    }
+    return true;
   });
 
   constructor() {
@@ -86,7 +88,7 @@ export class ProductsComponent implements OnInit {
 
     this.productForm
       .get('status')
-      ?.valueChanges.pipe(takeUntilDestroyed(this.destroyRef))
+      ?.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((value) => {
         if (value) {
           if (this.productSelected()?.status === true) {
@@ -133,7 +135,7 @@ export class ProductsComponent implements OnInit {
   }
 
   setProductSelected(product: ProductCatalogResponse) {
-    if(product.id === this.productSelected()?.id){
+    if (product.id === this.productSelected()?.id) {
       return this.onProductFormReset();
     }
     this.productSelected.set(product);
@@ -159,14 +161,14 @@ export class ProductsComponent implements OnInit {
     });
   }
 
-  private setStatus(product: ProductCatalogResponse) {
+  #setStatus(product: ProductCatalogResponse) {
     this.productService
       .setStatusProduct(product.id, product.status)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
           const action = product.status ? 'activado' : 'desactivado';
-          this.toastService.show({
+          this.#toastService.show({
             title: `Producto ${action}`,
             content: `El producto ${product.name} ha sido ${action} exitosamente.`,
             type: 'success',
@@ -176,7 +178,7 @@ export class ProductsComponent implements OnInit {
         },
         error: () => {
           const action = product.status ? 'activar' : 'desactivar';
-          this.toastService.show({
+          this.#toastService.show({
             title: `Error al ${action} producto`,
             content: `No se pudo ${action} el producto. Inténtalo de nuevo.`,
             type: 'error',
@@ -185,7 +187,7 @@ export class ProductsComponent implements OnInit {
       });
   }
 
-  private updateProduct(product: ProductCatalogResponse) {
+  #updateProduct(product: ProductCatalogResponse) {
     const payload: Partial<CreateProductRequest> = {};
     const currentProduct = this.productSelected();
     if (product.name !== currentProduct?.name) {
@@ -205,7 +207,7 @@ export class ProductsComponent implements OnInit {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Producto actualizado',
             content: `El producto ${product.name} ha sido actualizado exitosamente.`,
             type: 'success',
@@ -214,7 +216,7 @@ export class ProductsComponent implements OnInit {
           this.productCatalogStore.changeProductOnCatalog(product);
         },
         error: () => {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al actualizar producto',
             content: 'No se pudo actualizar el producto. Inténtalo de nuevo.',
             type: 'error',
@@ -223,8 +225,8 @@ export class ProductsComponent implements OnInit {
       });
   }
 
-  private createProduct(product: ProductCatalogResponse) {
-    const {id, status, ...productData} = product
+  #createProduct(product: ProductCatalogResponse) {
+    const { id, status, ...productData } = product;
     this.productService
       .createProduct(productData)
       .pipe(
@@ -234,7 +236,7 @@ export class ProductsComponent implements OnInit {
       )
       .subscribe({
         next: () => {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Producto creado',
             content: `El producto ${product.name} ha sido creado exitosamente.`,
             type: 'success',
@@ -243,7 +245,7 @@ export class ProductsComponent implements OnInit {
           this.productCatalogStore.loadProductsCatalog(true);
         },
         error: () => {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al crear producto',
             content: `No se pudo crear el producto. Inténtalo de nuevo.`,
             type: 'error',
@@ -257,12 +259,12 @@ export class ProductsComponent implements OnInit {
     const productData = this.productForm.getRawValue() as ProductCatalogResponse;
     if (this.productExist()) {
       if (productData.status !== this.productSelected()?.status) {
-        this.setStatus(productData);
+        this.#setStatus(productData);
       } else {
-        this.updateProduct(productData);
+        this.#updateProduct(productData);
       }
     } else {
-      this.createProduct(productData);
+      this.#createProduct(productData);
     }
   }
 }

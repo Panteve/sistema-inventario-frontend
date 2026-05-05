@@ -12,9 +12,9 @@ import { Router } from '@angular/router';
 export class DashboardComponent {
   officeStore = inject(OfficeStore);
   inventoryStore = inject(InventoryStore);
-  private router = inject(Router);
+  #router = inject(Router);
 
   view() {
-    this.router.navigate(['/view-bills/bill', 10]);
+    this.#router.navigate(['/view-bills/bill', 10]);
   }
 }

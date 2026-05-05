@@ -12,10 +12,10 @@ import { environment } from '../../../../environments/environment';
   providedIn: 'root',
 })
 export class BillService {
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
   createBill(bill: CreateBillRequest) {
-    return this.http.post(`${environment.apiUrl}/bills/bill`, bill);
+    return this.#http.post(`${environment.apiUrl}/bills/bill`, bill);
   }
 
   getBills(params: ParamsGetBills) {
@@ -36,12 +36,12 @@ export class BillService {
       queryParams.customerKeyword = params.customerKeyword;
     }
 
-    return this.http.get<BillsHistoryListResponse>(`${environment.apiUrl}/bills`, {
+    return this.#http.get<BillsHistoryListResponse>(`${environment.apiUrl}/bills`, {
       params: queryParams,
     });
   }
 
   getBillById(billId: number) {
-    return this.http.get<BillResponse>(`${environment.apiUrl}/bills/${billId}`);
+    return this.#http.get<BillResponse>(`${environment.apiUrl}/bills/${billId}`);
   }
 }

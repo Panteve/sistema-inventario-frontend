@@ -19,44 +19,43 @@ import { CopPipe } from '../pipes/cop.pipes';
   },
 })
 export class CopMoneyInputDirective implements ControlValueAccessor {
-  private el = inject<ElementRef<HTMLInputElement>>(ElementRef);
-  private copPipe = inject(CopPipe);
+  #el = inject<ElementRef<HTMLInputElement>>(ElementRef);
+  #copPipe = inject(CopPipe);
 
-  private onChange: (value: number) => void = () => {};
-  private onTouched: () => void = () => {};
+  #onChange: (value: number) => void = () => {};
+  #onTouched: () => void = () => {};
 
   writeValue(value: number | null): void {
     const n = typeof value === 'number' && !Number.isNaN(value) ? value : 0;
-    this.el.nativeElement.value = this.copPipe.transform(n);
+    this.#el.nativeElement.value = this.#copPipe.transform(n);
   }
 
   registerOnChange(fn: (value: number) => void): void {
-    this.onChange = fn;
+    this.#onChange = fn;
   }
 
   registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
+    this.#onTouched = fn;
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.el.nativeElement.disabled = isDisabled;
+    this.#el.nativeElement.disabled = isDisabled;
   }
 
-  private parseToNumber(raw: string): number {
+  #parseToNumber(raw: string): number {
     const digits = raw.replace(/\D/g, '');
     const n = digits === '' ? 0 : Number.parseInt(digits, 10);
     return Number.isNaN(n) ? 0 : n;
   }
 
   onInput(): void {
-    const raw = this.el.nativeElement.value;
-    const value = this.parseToNumber(raw);
-    this.onChange(value);
-    this.el.nativeElement.value = this.copPipe.transform(value);
+    const raw = this.#el.nativeElement.value;
+    const value = this.#parseToNumber(raw);
+    this.#onChange(value);
+    this.#el.nativeElement.value = this.#copPipe.transform(value);
   }
 
   onBlur(): void {
-    this.onTouched();
+    this.#onTouched();
   }
 }
-

@@ -25,53 +25,53 @@ import { BillService } from '../../services/bill.service';
 export class BillListComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly defaultItemsPerPage = 30;
-  private readonly filtersStorageKey = 'billFilters';
+  readonly #filtersStorageKey = 'billFilters';
 
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
   billService = inject(BillService);
   toastService = inject(ToastService);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  #router = inject(Router);
+  #route = inject(ActivatedRoute);
 
-  private readonly today = new Date();
-  readonly todayIso = this.toIsoDate(this.today);
+  readonly #today = new Date();
+  readonly todayIso = this.#toIsoDate(this.#today);
 
   bills = signal<BillsHistoryResponse[]>([]);
   pagination = signal<BillsHistoryPagination>({ totalItems: 0, totalPages: 0 });
   loading = signal(false);
 
-  queryParams = signal<ParamsGetBills>(this.buildDefaultParams());
+  queryParams = signal<ParamsGetBills>(this.#buildDefaultParams());
 
   readonly endDateMax = computed(() => {
     if (this.authStore.isAdmin()) {
       return this.todayIso;
     }
-    const maxAllowed = this.addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
+    const maxAllowed = this.#addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
     return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
   });
 
   ngOnInit(): void {
     // Priority: URL filters > saved filters > defaults.
-    const defaults = this.buildDefaultParams();
-    const params = this.route.snapshot.queryParamMap;
+    const defaults = this.#buildDefaultParams();
+    const params = this.#route.snapshot.queryParamMap;
     const hasNonDateParams = ['officeId', 'employeeId', 'customerKeyword', 'page', 'limit'].some(
       (key) => params.has(key),
     );
-    const savedFilters = hasNonDateParams ? null : this.loadSavedFilters();
+    const savedFilters = hasNonDateParams ? null : this.#loadSavedFilters();
     const sourceParams = savedFilters ?? defaults;
 
-    const startDate = this.isIsoDate(params.get('startDate'))
+    const startDate = this.#isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
       : sourceParams.startDate;
-    const endDate = this.isIsoDate(params.get('endDate'))
+    const endDate = this.#isIsoDate(params.get('endDate'))
       ? params.get('endDate')!
       : sourceParams.endDate;
-    const officeIdFromQuery = this.parseNumber(params.get('officeId')) ?? sourceParams.officeId;
-    const employeeId = this.parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
-    const limit = this.parseNumber(params.get('limit')) ?? sourceParams.limit;
-    const page = this.parseNumber(params.get('page')) ?? sourceParams.page;
+    const officeIdFromQuery = this.#parseNumber(params.get('officeId')) ?? sourceParams.officeId;
+    const employeeId = this.#parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
+    const limit = this.#parseNumber(params.get('limit')) ?? sourceParams.limit;
+    const page = this.#parseNumber(params.get('page')) ?? sourceParams.page;
     const customerKeyword = params.get('customerKeyword')?.trim() ?? sourceParams.customerKeyword;
     const officeId = this.authStore.isAdmin() ? officeIdFromQuery : defaults.officeId;
     const nextParams: ParamsGetBills = {
@@ -84,14 +84,14 @@ export class BillListComponent implements OnInit {
       limit,
       page,
     };
-    this.queryParams.set(this.normalizeDateRange(nextParams));
-    this.loadEmployeesForOffice();
+    this.queryParams.set(this.#normalizeDateRange(nextParams));
+    this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 
-  private buildDefaultParams(): ParamsGetBills {
-    const startDate = this.toIsoDate(this.subtractMonths(this.today, this.maxRangeMonths));
-    const endDate = this.toIsoDate(this.today);
+  #buildDefaultParams(): ParamsGetBills {
+    const startDate = this.#toIsoDate(this.#subtractMonths(this.#today, this.maxRangeMonths));
+    const endDate = this.#toIsoDate(this.#today);
     const officeId = this.authStore.isAdmin() ? undefined : this.authStore.employee()?.officeId;
 
     return {
@@ -105,22 +105,22 @@ export class BillListComponent implements OnInit {
     };
   }
 
-  private loadEmployeesForOffice(): void {
+  #loadEmployeesForOffice(): void {
     const officeId = this.queryParams().officeId ?? 0;
     this.employeeStore.loadEmployees(officeId);
   }
 
-  private isIsoDate(value: string | null): value is string {
+  #isIsoDate(value: string | null): value is string {
     return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
 
-  private parseNumber(value: string | null): number | undefined {
+  #parseNumber(value: string | null): number | undefined {
     if (value === null || value.trim() === '') return undefined;
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : undefined;
   }
 
-  private normalizeDateRange(params: ParamsGetBills): ParamsGetBills {
+  #normalizeDateRange(params: ParamsGetBills): ParamsGetBills {
     let { startDate, endDate } = params;
 
     if (startDate > this.todayIso) {
@@ -129,7 +129,7 @@ export class BillListComponent implements OnInit {
 
     const maxEndDate = this.authStore.isAdmin()
       ? this.todayIso
-      : this.addMonthsIso(startDate, this.maxRangeMonths);
+      : this.#addMonthsIso(startDate, this.maxRangeMonths);
     const cappedMaxEndDate = maxEndDate > this.todayIso ? this.todayIso : maxEndDate;
 
     if (endDate < startDate) {
@@ -146,30 +146,30 @@ export class BillListComponent implements OnInit {
     };
   }
 
-  private toIsoDate(date: Date): string {
+  #toIsoDate(date: Date): string {
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     const day = String(date.getDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
   }
 
-  private subtractMonths(date: Date, months: number): Date {
+  #subtractMonths(date: Date, months: number): Date {
     const copy = new Date(date);
     copy.setMonth(copy.getMonth() - months);
     return copy;
   }
 
-  private addMonthsIso(isoDate: string, months: number): string {
+  #addMonthsIso(isoDate: string, months: number): string {
     const [year, month, day] = isoDate.split('-').map(Number);
     const date = new Date(year, month - 1, day);
     date.setMonth(date.getMonth() + months);
-    return this.toIsoDate(date);
+    return this.#toIsoDate(date);
   }
 
   changeStartDate(event: Event) {
     const startDate = (event.target as HTMLInputElement).value;
     this.queryParams.update((params) =>
-      this.normalizeDateRange({
+      this.#normalizeDateRange({
         ...params,
         startDate,
         page: 1,
@@ -180,7 +180,7 @@ export class BillListComponent implements OnInit {
   changeEndDate(event: Event) {
     const endDate = (event.target as HTMLInputElement).value;
     this.queryParams.update((params) =>
-      this.normalizeDateRange({
+      this.#normalizeDateRange({
         ...params,
         endDate,
         page: 1,
@@ -242,14 +242,14 @@ export class BillListComponent implements OnInit {
   }
 
   clearFilters() {
-    this.queryParams.set(this.buildDefaultParams());
-    this.loadEmployeesForOffice();
-    this.clearSavedFilters();
+    this.queryParams.set(this.#buildDefaultParams());
+    this.#loadEmployeesForOffice();
+    this.#clearSavedFilters();
     this.applyFilters();
   }
 
   applyFilters() {
-    this.saveFilters();
+    this.#saveFilters();
     this.loading.set(true);
     this.billService
       .getBills(this.queryParams())
@@ -270,28 +270,28 @@ export class BillListComponent implements OnInit {
   }
 
   openBillDetail(billId: number) {
-    this.router.navigate(['/view-bills/bill', billId]);
+    this.#router.navigate(['/view-bills/bill', billId]);
   }
 
-  private saveFilters(): void {
+  #saveFilters(): void {
     try {
-      localStorage.setItem(this.filtersStorageKey, JSON.stringify(this.queryParams()));
+      localStorage.setItem(this.#filtersStorageKey, JSON.stringify(this.queryParams()));
     } catch (error) {
       console.error('Failed to save filters to localStorage:', error);
     }
   }
 
-  private loadSavedFilters(): ParamsGetBills | null {
+  #loadSavedFilters(): ParamsGetBills | null {
     try {
-      const raw = localStorage.getItem(this.filtersStorageKey);
+      const raw = localStorage.getItem(this.#filtersStorageKey);
       if (!raw) return null;
       const parsed = JSON.parse(raw) as Partial<ParamsGetBills>;
       const startDate =
-        typeof parsed.startDate === 'string' && this.isIsoDate(parsed.startDate)
+        typeof parsed.startDate === 'string' && this.#isIsoDate(parsed.startDate)
           ? parsed.startDate
           : null;
       const endDate =
-        typeof parsed.endDate === 'string' && this.isIsoDate(parsed.endDate)
+        typeof parsed.endDate === 'string' && this.#isIsoDate(parsed.endDate)
           ? parsed.endDate
           : null;
 
@@ -301,16 +301,16 @@ export class BillListComponent implements OnInit {
 
       const officeId =
         typeof parsed.officeId === 'string'
-          ? this.parseNumber(parsed.officeId)
+          ? this.#parseNumber(parsed.officeId)
           : (parsed.officeId ?? undefined);
       const employeeId =
         typeof parsed.employeeId === 'string'
-          ? this.parseNumber(parsed.employeeId)
+          ? this.#parseNumber(parsed.employeeId)
           : (parsed.employeeId ?? undefined);
       const parsedLimit =
-        typeof parsed.limit === 'string' ? this.parseNumber(parsed.limit) : parsed.limit;
+        typeof parsed.limit === 'string' ? this.#parseNumber(parsed.limit) : parsed.limit;
       const parsedPage =
-        typeof parsed.page === 'string' ? this.parseNumber(parsed.page) : parsed.page;
+        typeof parsed.page === 'string' ? this.#parseNumber(parsed.page) : parsed.page;
       const limit =
         typeof parsedLimit === 'number' && Number.isFinite(parsedLimit)
           ? parsedLimit
@@ -332,9 +332,9 @@ export class BillListComponent implements OnInit {
     }
   }
 
-  private clearSavedFilters(): void {
+  #clearSavedFilters(): void {
     try {
-      localStorage.removeItem(this.filtersStorageKey);
+      localStorage.removeItem(this.#filtersStorageKey);
     } catch (error) {
       console.error('Failed to clear filters from localStorage:', error);
     }

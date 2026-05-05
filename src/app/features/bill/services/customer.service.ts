@@ -11,27 +11,27 @@ import {
   providedIn: 'root',
 })
 export class CustomerService {
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
   searchCustomerByDoc(document: string) {
-    return this.http.get<CustomerResponse>(
+    return this.#http.get<CustomerResponse>(
       `${environment.apiUrl}/customers/customer/doc/${document}`,
     );
   }
   createCustomer(customerData: CreateCustomerRequest) {
-    return this.http.post<CustomerResponse>(
+    return this.#http.post<CustomerResponse>(
       `${environment.apiUrl}/customers/customer`,
       customerData,
     );
   }
   updateCustomerByDoc(document: string, customerData: UpdateCustomerRequest) {
-    return this.http.patch<CustomerResponse>(
+    return this.#http.patch<CustomerResponse>(
       `${environment.apiUrl}/customers/update/doc/${document}`,
       customerData,
     );
   }
   updateCustomerByID(id: number, customerData: UpdateCustomerRequest) {
-    return this.http.patch<CustomerResponse>(
+    return this.#http.patch<CustomerResponse>(
       `${environment.apiUrl}/customers/update/id/${id}`,
       customerData,
     );

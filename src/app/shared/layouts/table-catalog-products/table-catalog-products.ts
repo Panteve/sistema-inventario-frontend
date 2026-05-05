@@ -48,33 +48,33 @@ export class TableCatalogProducts {
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
-  private lastFilteredCount = signal<number>(-1);
+  #lastFilteredCount = signal<number>(-1);
 
-  private rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
+  #rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
     const value = row.getValue(columnId) as number;
-    return this.matchesRangeFilter(filterValue, value);
+    return this.#matchesRangeFilter(filterValue, value);
   };
 
-  private createRangeFilter(columnId: string, min: number | null, max: number | null) {
+  #createRangeFilter(columnId: string, min: number | null, max: number | null) {
     return {
       id: columnId,
       value: { min, max },
     };
   }
 
-  private getGeneralSortingRules(option: string): SortingState {
+  #getGeneralSortingRules(option: string): SortingState {
     if (option === 'name-asc') return [{ id: 'name', desc: false }];
     if (option === 'name-desc') return [{ id: 'name', desc: true }];
     return [];
   }
 
-  private matchesRangeFilter(filterValue: RangeFilterValue, value: number) {
+  #matchesRangeFilter(filterValue: RangeFilterValue, value: number) {
     const min = filterValue?.min ?? null;
     const max = filterValue?.max ?? null;
-    return this.isValueInRange(value, min, max);
+    return this.#isValueInRange(value, min, max);
   }
 
-  private isValueInRange(value: number, min: number | null, max: number | null) {
+  #isValueInRange(value: number, min: number | null, max: number | null) {
     if (min !== null && value < min) return false;
     if (max !== null && value > max) return false;
     return true;
@@ -84,7 +84,7 @@ export class TableCatalogProducts {
     const selectedPriceOrder = this.selectedPriceOrder();
     const selectedPriceFilterType = this.selectedPriceFilterType();
     const sortingRules: SortingState = [
-      ...this.getGeneralSortingRules(this.selectedOrderGeneral()),
+      ...this.#getGeneralSortingRules(this.selectedOrderGeneral()),
     ];
 
     if (selectedPriceFilterType !== 'none' && selectedPriceOrder !== 'none') {
@@ -104,7 +104,7 @@ export class TableCatalogProducts {
     const filters: ColumnFiltersState = [];
 
     if (selectedPriceFilterType !== 'none' && (minPrice !== null || maxPrice !== null)) {
-      filters.push(this.createRangeFilter(selectedPriceFilterType, minPrice, maxPrice));
+      filters.push(this.#createRangeFilter(selectedPriceFilterType, minPrice, maxPrice));
     }
 
     return filters;
@@ -131,9 +131,9 @@ export class TableCatalogProducts {
       this.sorting();
 
       const filteredCount = this.table.getFilteredRowModel().rows.length;
-      if (filteredCount === this.lastFilteredCount()) return;
+      if (filteredCount === this.#lastFilteredCount()) return;
 
-      this.lastFilteredCount.set(filteredCount);
+      this.#lastFilteredCount.set(filteredCount);
       this.filteredProductsCountChanged.emit(filteredCount);
     });
   }
@@ -157,7 +157,7 @@ export class TableCatalogProducts {
         header: 'Precio unitario',
         accessorKey: 'unitPrice',
         id: 'unitPrice',
-        filterFn: this.rangeFilterFn,
+        filterFn: this.#rangeFilterFn,
         cell: (info: CellContext<ProductCatalogResponse, any>) =>
           this.copPipe.transform(info.getValue()),
       },
@@ -165,7 +165,7 @@ export class TableCatalogProducts {
         header: 'Precio mayorista',
         accessorKey: 'wholesalePrice',
         id: 'wholesalePrice',
-        filterFn: this.rangeFilterFn,
+        filterFn: this.#rangeFilterFn,
         cell: (info: CellContext<ProductCatalogResponse, any>) =>
           this.copPipe.transform(info.getValue()),
       },

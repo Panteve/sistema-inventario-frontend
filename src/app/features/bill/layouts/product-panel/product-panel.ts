@@ -16,14 +16,14 @@ import { InventoryService } from '../../../../shared/services/inventory.service'
 export class ProductPanel {
   constructor() {
     effect(() => {
-      if (this.inventoryService.modalClose()) {
+      if (this.#inventoryService.modalClose()) {
         this.btnCerrar.nativeElement.click();
       }
     });
   }
 
-  private inventoryService = inject(InventoryService);
-  private route = inject(ActivatedRoute);
+  #inventoryService = inject(InventoryService);
+  #route = inject(ActivatedRoute);
   inventoryStore = inject(InventoryStore);
   billStore = inject(BillStore);
   router = inject(Router);
@@ -32,7 +32,7 @@ export class ProductPanel {
   @ViewChild('my_modal_2') productModal!: ElementRef<HTMLDialogElement>;
 
   async getProductTable(product: ProductOnInventoryResponse) {
-    this.inventoryService.modalClose.set(false);
+    this.#inventoryService.modalClose.set(false);
 
     const productSelected: ProductSelected = {
       product: {
@@ -48,7 +48,7 @@ export class ProductPanel {
 
     const navigated = await this.router.navigate(
       [{ outlets: { 'select-product-price': ['product-prices'] } }],
-      { relativeTo: this.route },
+      { relativeTo: this.#route },
     );
 
     if (navigated) {

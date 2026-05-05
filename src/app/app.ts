@@ -19,23 +19,22 @@ import { ToastComponent } from './shared/layouts/toast/toast.component';
 export class App {
   authStore = inject(AuthStore);
   router = inject(Router);
-  private route = inject(ActivatedRoute);
+  #route = inject(ActivatedRoute);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
-  
 
   cashModalOpen = toSignal(
-    this.route.queryParamMap.pipe(map((params) => params.get('cashModal') === 'open')),
+    this.#route.queryParamMap.pipe(map((params) => params.get('cashModal') === 'open')),
     { initialValue: false },
   );
 
   expenseModalOpen = toSignal(
-    this.route.queryParamMap.pipe(map((params) => params.get('expenseModal') === 'open')),
+    this.#route.queryParamMap.pipe(map((params) => params.get('expenseModal') === 'open')),
     { initialValue: false },
   );
 
   openCashModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { cashModal: 'open' },
       queryParamsHandling: 'merge',
     });
@@ -43,7 +42,7 @@ export class App {
 
   closeCashModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { cashModal: null },
       queryParamsHandling: 'merge',
     });
@@ -51,7 +50,7 @@ export class App {
 
   openExpenseModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { expenseModal: 'open' },
       queryParamsHandling: 'merge',
     });
@@ -59,7 +58,7 @@ export class App {
 
   closeExpenseModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { expenseModal: null },
       queryParamsHandling: 'merge',
     });

@@ -40,7 +40,7 @@ export class MovementCreateComponent implements OnInit {
   movementStore = inject(MovementInventoryStore);
   toastService = inject(ToastService);
   router = inject(Router);
-  private route = inject(ActivatedRoute);
+  #route = inject(ActivatedRoute);
 
   readonly MOVEMENTYPE = {
     IN: 'IN',
@@ -78,7 +78,7 @@ export class MovementCreateComponent implements OnInit {
   });
 
   productsModalOpen = toSignal(
-    this.route.queryParamMap.pipe(map((params) => params.get('productsModal') === 'open')),
+    this.#route.queryParamMap.pipe(map((params) => params.get('productsModal') === 'open')),
     { initialValue: false },
   );
 
@@ -88,7 +88,7 @@ export class MovementCreateComponent implements OnInit {
 
   openProductsModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { productsModal: 'open' },
       queryParamsHandling: 'merge',
     });
@@ -96,7 +96,7 @@ export class MovementCreateComponent implements OnInit {
 
   closeProductsModal() {
     this.router.navigate([], {
-      relativeTo: this.route,
+      relativeTo: this.#route,
       queryParams: { productsModal: null },
       queryParamsHandling: 'merge',
     });

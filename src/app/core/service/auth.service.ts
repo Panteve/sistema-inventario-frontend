@@ -7,16 +7,16 @@ import { Employee, LoginResponse } from '../../shared/interfaces/Auth.interface'
   providedIn: 'root',
 })
 export class AuthService {
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
   login(document: string, password: string) {
-    return this.http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
+    return this.#http.post<LoginResponse>(`${environment.apiUrl}/auth/login`, {
       document,
       password,
     });
   }
 
   me() {
-    return this.http.get<Employee>(`${environment.apiUrl}/auth/profile`);
+    return this.#http.get<Employee>(`${environment.apiUrl}/auth/profile`);
   }
 }

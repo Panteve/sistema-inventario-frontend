@@ -10,10 +10,10 @@ import { environment } from '../../../environments/environment';
   providedIn: 'root',
 })
 export class PaymentMethodService {
-  private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
   createPaymentMethod(payload: CreatePaymentMethodRequest) {
-    return this.http.post<PaymentMethodResponse>(
+    return this.#http.post<PaymentMethodResponse>(
       `${environment.apiUrl}/payment-method/create`,
       payload,
     );
@@ -24,16 +24,16 @@ export class PaymentMethodService {
     if (showDeleted) {
       queryParams = { showDeleted: true };
     }
-    return this.http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`, {
+    return this.#http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`, {
       params: queryParams,
     });
   }
 
   updatePaymentMethod(id: number, payload: CreatePaymentMethodRequest) {
-    return this.http.patch(`${environment.apiUrl}/payment-method/update/${id}`, payload);
+    return this.#http.patch(`${environment.apiUrl}/payment-method/update/${id}`, payload);
   }
 
   setStatusPaymentMethod(id: number, status: boolean) {
-    return this.http.patch(`${environment.apiUrl}/payment-method/status/${id}`, { status });
+    return this.#http.patch(`${environment.apiUrl}/payment-method/status/${id}`, { status });
   }
 }

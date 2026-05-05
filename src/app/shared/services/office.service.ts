@@ -7,10 +7,9 @@ import { OfficeNameIdResponse } from '../interfaces/office.interface';
   providedIn: 'root',
 })
 export class OfficeService {
- private http = inject(HttpClient);
+  #http = inject(HttpClient);
 
- getOffices() {
-    return this.http.get<OfficeNameIdResponse[]>(`${environment.apiUrl}/offices/names/all`);
- }
-  
+  getOffices() {
+    return this.#http.get<OfficeNameIdResponse[]>(`${environment.apiUrl}/offices/names/all`);
+  }
 }

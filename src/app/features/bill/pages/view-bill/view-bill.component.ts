@@ -29,7 +29,7 @@ export class ViewBillComponent implements OnInit {
       phone: '',
     },
   });
-  private billService = inject(BillService);
+  #billService = inject(BillService);
 
   subtotal = computed(() =>
     this.bill().products.reduce(
@@ -41,7 +41,7 @@ export class ViewBillComponent implements OnInit {
     this.bill().products.reduce((acc, product) => acc + product.taxAmount, 0),
   );
   ngOnInit(): void {
-    this.billService
+    this.#billService
       .getBillById(Number(this.billIdParams()))
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({

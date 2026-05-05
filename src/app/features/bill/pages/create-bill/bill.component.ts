@@ -25,11 +25,11 @@ export class BillComponent {
   authStore = inject(AuthStore);
   billStore = inject(BillStore);
   inventoryStore = inject(InventoryStore);
-  private paymentMethodStore = inject(PaymentMethodStore);
+  #paymentMethodStore = inject(PaymentMethodStore);
   router = inject(Router);
   cop = inject(CopPipe);
 
-  paymentMethods = this.paymentMethodStore.paymentMethods();
+  paymentMethods = this.#paymentMethodStore.paymentMethods();
 
   // Signals for UI state
   productInputId = signal<number>(0);

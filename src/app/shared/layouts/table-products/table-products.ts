@@ -51,23 +51,23 @@ export class TableProducts {
 
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
-  private lastProductsFilteredCount = signal<number>(-1);
+  #lastProductsFilteredCount = signal<number>(-1);
 
-  private createRangeFilter(columnId: string, min: number | null, max: number | null) {
+  #createRangeFilter(columnId: string, min: number | null, max: number | null) {
     return {
       id: columnId,
       value: { min, max },
     };
   }
 
-  private createStockFilter(min: number | null, max: number | null, statuses: StockStatusFilter[]) {
+  #createStockFilter(min: number | null, max: number | null, statuses: StockStatusFilter[]) {
     return {
       id: 'quantity',
       value: { min, max, statuses },
     };
   }
 
-  private getGeneralSortingRules(option: string): SortingState {
+  #getGeneralSortingRules(option: string): SortingState {
     if (option === 'name-asc') return [{ id: 'name', desc: false }];
     if (option === 'name-desc') return [{ id: 'name', desc: true }];
     if (option === 'quantity-asc') return [{ id: 'quantity', desc: false }];
@@ -75,37 +75,37 @@ export class TableProducts {
     return [];
   }
 
-  private matchesStockStatus(quantity: number, status: StockStatusFilter) {
+  #matchesStockStatus(quantity: number, status: StockStatusFilter) {
     if (status === 'normal') return quantity > this.lowStockThreshold();
     if (status === 'low') return quantity > 0 && quantity <= this.lowStockThreshold();
     return quantity <= 0;
   }
 
-  private matchesAnyStockStatus(quantity: number, statuses: StockStatusFilter[]) {
+  #matchesAnyStockStatus(quantity: number, statuses: StockStatusFilter[]) {
     if (statuses.length === 0) return true;
-    return statuses.some((status) => this.matchesStockStatus(quantity, status));
+    return statuses.some((status) => this.#matchesStockStatus(quantity, status));
   }
 
-  private matchesRangeFilter(filterValue: RangeFilterValue, value: number) {
+  #matchesRangeFilter(filterValue: RangeFilterValue, value: number) {
     const min = filterValue?.min ?? null;
     const max = filterValue?.max ?? null;
-    return this.isValueInRange(value, min, max);
+    return this.#isValueInRange(value, min, max);
   }
 
-  private rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
+  #rangeFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
     const value = row.getValue(columnId) as number;
-    return this.matchesRangeFilter(filterValue, value);
+    return this.#matchesRangeFilter(filterValue, value);
   };
 
-  private stockFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
+  #stockFilterFn = (row: any, columnId: string, filterValue: RangeFilterValue) => {
     const quantity = row.getValue(columnId) as number;
     const statuses = filterValue?.statuses ?? [];
 
-    if (!this.matchesRangeFilter(filterValue, quantity)) return false;
-    return this.matchesAnyStockStatus(quantity, statuses);
+    if (!this.#matchesRangeFilter(filterValue, quantity)) return false;
+    return this.#matchesAnyStockStatus(quantity, statuses);
   };
 
-  private isValueInRange(value: number, min: number | null, max: number | null) {
+  #isValueInRange(value: number, min: number | null, max: number | null) {
     if (min !== null && value < min) return false;
     if (max !== null && value > max) return false;
     return true;
@@ -115,7 +115,7 @@ export class TableProducts {
     const selectedPriceOrder = this.selectedPriceOrder();
     const selectedPriceFilterType = this.selectedPriceFilterType();
     const sortingRules: SortingState = [
-      ...this.getGeneralSortingRules(this.selectedOrderGeneral()),
+      ...this.#getGeneralSortingRules(this.selectedOrderGeneral()),
     ];
 
     if (selectedPriceFilterType !== 'none' && selectedPriceOrder !== 'none') {
@@ -138,11 +138,11 @@ export class TableProducts {
     const filters: ColumnFiltersState = [];
 
     if (min !== null || max !== null || selectedStockStatuses.length > 0) {
-      filters.push(this.createStockFilter(min, max, selectedStockStatuses));
+      filters.push(this.#createStockFilter(min, max, selectedStockStatuses));
     }
 
     if (selectedPriceFilterType !== 'none' && (minPrice !== null || maxPrice !== null)) {
-      filters.push(this.createRangeFilter(selectedPriceFilterType, minPrice, maxPrice));
+      filters.push(this.#createRangeFilter(selectedPriceFilterType, minPrice, maxPrice));
     }
 
     return filters;
@@ -170,9 +170,9 @@ export class TableProducts {
       this.sorting();
 
       const filteredCount = this.table.getFilteredRowModel().rows.length;
-      if (filteredCount === this.lastProductsFilteredCount()) return;
+      if (filteredCount === this.#lastProductsFilteredCount()) return;
 
-      this.lastProductsFilteredCount.set(filteredCount);
+      this.#lastProductsFilteredCount.set(filteredCount);
       this.filteredProductsCountChanged.emit(filteredCount);
     });
   }
@@ -207,7 +207,7 @@ export class TableProducts {
         header: 'Precio unitario',
         accessorKey: 'product.unitPrice',
         id: 'unitPrice',
-        filterFn: this.rangeFilterFn,
+        filterFn: this.#rangeFilterFn,
         cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
           this.copPipe.transform(info.getValue()),
       },
@@ -215,7 +215,7 @@ export class TableProducts {
         header: 'Precio mayorista',
         accessorKey: 'product.wholesalePrice',
         id: 'wholesalePrice',
-        filterFn: this.rangeFilterFn,
+        filterFn: this.#rangeFilterFn,
         cell: (info: CellContext<ProductOnInventoryResponse, any>) =>
           this.copPipe.transform(info.getValue()),
       },
@@ -223,7 +223,7 @@ export class TableProducts {
         header: 'Stock',
         accessorKey: 'quantity',
         id: 'quantity',
-        filterFn: this.stockFilterFn,
+        filterFn: this.#stockFilterFn,
       },
     ],
     state: {
