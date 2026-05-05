@@ -76,6 +76,11 @@ export const AuthStore = signalStore(
 
     async logout() {
       await window.electronAPI.deleteToken();
+      try {
+        localStorage.removeItem('billFilters');
+      } catch (error) {
+        console.error('Failed to clear filters from localStorage:', error);
+      }
       patchState(store, { employee: null });
       router.navigate(['']);
     },
