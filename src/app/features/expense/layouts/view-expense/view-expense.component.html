@@ -1,0 +1,95 @@
+@if (expenseSelected(); as expense) {
+	<section class="space-y-3">
+		<header class="rounded-2xl border border-base-content/10 bg-base-200/40 p-3 md:p-4">
+			<div class="flex flex-wrap items-start justify-between gap-3">
+				<div>
+					<p class="text-[11px] uppercase tracking-[0.18em] opacity-60">Detalle del gasto</p>
+					<h2 class="text-lg md:text-xl font-bold tracking-tight">Gasto #{{ expense.id }}</h2>
+				</div>
+				<div class="rounded-2xl border border-base-content/10 bg-base-100 px-4 py-2 shadow-sm">
+					<p class="text-[10px] uppercase tracking-[0.18em] opacity-60">Valor</p>
+					<p class="text-lg md:text-2xl font-semibold tracking-tight">
+						{{ expense.amount | cop }}
+					</p>
+				</div>
+			</div>
+		</header>
+
+		<section
+			class="rounded-2xl border border-base-content/10 bg-base-200/60 p-4"
+			aria-labelledby="reason-title"
+		>
+			<h3 id="reason-title" class="text-xs font-semibold uppercase tracking-[0.16em] opacity-70">
+				Motivo del gasto
+			</h3>
+			<p class="mt-2 text-base md:text-lg font-semibold leading-relaxed">
+				{{ expense.reason || 'Sin motivo' }}
+			</p>
+		</section>
+
+		<div class="grid grid-cols-2 gap-2 lg:grid-cols-4">
+			<article class="rounded-xl border border-base-content/10 bg-base-100 p-2.5">
+				<p class="text-[11px] uppercase tracking-[0.14em] opacity-60">Fecha</p>
+				<p class="mt-0.5 text-xs font-semibold md:text-sm">
+					{{ expense.createdAt | date: 'dd MMM y' }}
+				</p>
+			</article>
+
+			<article class="rounded-xl border border-base-content/10 bg-base-100 p-2.5">
+				<p class="text-[11px] uppercase tracking-[0.14em] opacity-60">Hora</p>
+				<p class="mt-0.5 text-xs font-semibold md:text-sm">
+					{{ expense.createdAt | date: 'hh:mm a' }}
+				</p>
+			</article>
+
+			<article class="rounded-xl border border-base-content/10 bg-base-100 p-2.5">
+				<p class="text-[11px] uppercase tracking-[0.14em] opacity-60">Oficina</p>
+				<p class="mt-0.5 text-xs font-semibold md:text-sm">
+					{{ expense.office.name || 'Sin oficina' }}
+				</p>
+			</article>
+
+			<article class="rounded-xl border border-base-content/10 bg-base-100 p-2.5">
+				<p class="text-[11px] uppercase tracking-[0.14em] opacity-60">Caja</p>
+				<p class="mt-0.5 text-xs font-semibold md:text-sm">
+					#{{ expense.cashRegister.id || 'N/A' }}
+				</p>
+			</article>
+		</div>
+
+		<div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
+			<article class="rounded-2xl border border-base-content/10 bg-base-100 p-3">
+				<h3 class="text-xs font-semibold uppercase tracking-[0.14em] opacity-70">Responsable</h3>
+				<div class="mt-2 space-y-1.5">
+					<p class="text-sm font-semibold md:text-base">{{ expense.employee.name }}</p>
+					<p class="text-xs md:text-sm opacity-70">
+						Documento: {{ expense.employee.document || 'N/A' }}
+					</p>
+					<p class="text-xs md:text-sm opacity-70">ID: {{ expense.employee.id || 'N/A' }}</p>
+				</div>
+			</article>
+
+			<article class="rounded-2xl border border-base-content/10 bg-base-100 p-3">
+				<h3 class="text-xs font-semibold uppercase tracking-[0.14em] opacity-70">Caja</h3>
+				<div class="mt-2 space-y-1.5">
+					<p class="text-xs md:text-sm opacity-70">Apertura de caja</p>
+					<p class="text-sm font-semibold md:text-base">
+						{{ expense.cashRegister.openedAt | date: 'dd MMM y' }}
+					</p>
+					<p class="text-xs md:text-sm opacity-70">Hora</p>
+					<p class="text-sm font-semibold md:text-base">
+						{{ expense.cashRegister.openedAt | date: 'hh:mm a' }}
+					</p>
+				</div>
+			</article>
+		</div>
+
+	</section>
+} @else {
+	<section
+		class="rounded-2xl border border-dashed border-base-content/20 bg-base-200/40 p-6 text-center"
+	>
+		<h2 class="text-lg font-semibold">No hay gasto seleccionado</h2>
+		<p class="mt-1 text-sm opacity-70">Selecciona un gasto para ver su detalle.</p>
+	</section>
+}

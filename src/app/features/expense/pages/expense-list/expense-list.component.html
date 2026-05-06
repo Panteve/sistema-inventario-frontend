@@ -1,1 +1,489 @@
-<p>expense-list.component works!</p>
+<section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
+  <div class="w-full max-w-5xl md:max-w-7xl">
+    <div class="flex items-center gap-3 mb-5">
+      <div
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path
+            class="w-5 h-5 text-primary"
+            fill="currentColor"
+            d="M7 3h10a2 2 0 0 1 2 2v4H5V5a2 2 0 0 1 2-2m-2 8h14v8a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2zm5 2v2h4v-2z"
+          />
+        </svg>
+      </div>
+      <div>
+        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Historial de gastos</h1>
+        <p class="text-xs md:text-sm opacity-60">Consulta los gastos con filtros avanzados.</p>
+      </div>
+    </div>
+
+    <div class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+      <div class="du-card-body p-4 md:p-6 lg:p-8">
+        <div
+          class="z-10 rounded-2xl border border-base-content/10 bg-base-200/50 backdrop-blur-xs p-3 md:p-4"
+        >
+          <div class="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 class="text-sm md:text-base font-semibold">Filtros</h2>
+              <p class="text-xs opacity-60">Refina los gastos por fecha, motivo y contexto.</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-2">
+              <button type="button" class="du-btn du-btn-sm du-btn-ghost" (click)="clearFilters()">
+                Limpiar filtros
+              </button>
+              <button
+                type="button"
+                class="du-btn du-btn-sm du-btn-primary"
+                (click)="applyFilters()"
+              >
+                Buscar
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 gap-3">
+            <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
+              <fieldset
+                class="du-fieldset lg:col-span-7 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Fecha y motivo
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Desde
+                    </legend>
+                    <button
+                      popovertarget="cally-popover1"
+                      class="du-input du-input-sm du-input-bordered w-full justify-between cursor-pointer"
+                      id="cally1"
+                      style="anchor-name: --cally1"
+                    >
+                      {{ queryParams().startDate | date: 'yyyy-MM-dd' }}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      popover
+                      id="cally-popover1"
+                      class="du-dropdown bg-base-100 rounded-box shadow-lg"
+                      style="position-anchor: --cally1"
+                    >
+                      <calendar-date
+                        [max]="todayIso"
+                        [focusedDate]="queryParams().startDate"
+                        class="du-cally"
+                        (change)="changeStartDate($event)"
+                      >
+                        <svg
+                          aria-label="Previous"
+                          class="fill-current size-4"
+                          slot="previous"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
+                        </svg>
+                        <svg
+                          aria-label="Next"
+                          class="fill-current size-4"
+                          slot="next"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+                        </svg>
+                        <calendar-month></calendar-month>
+                      </calendar-date>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Hasta
+                    </legend>
+                    <button
+                      popovertarget="cally-popover2"
+                      class="du-input du-input-sm du-input-bordered w-full justify-between cursor-pointer"
+                      id="cally2"
+                      style="anchor-name: --cally2"
+                    >
+                      {{ queryParams().endDate | date: 'yyyy-MM-dd' }}
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
+                        />
+                        <path
+                          fill="currentColor"
+                          d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
+                        />
+                      </svg>
+                    </button>
+                    <div
+                      popover
+                      id="cally-popover2"
+                      class="du-dropdown bg-base-100 rounded-box shadow-lg"
+                      style="position-anchor: --cally2"
+                    >
+                      <calendar-date
+                        [min]="queryParams().startDate"
+                        [max]="endDateMax()"
+                        class="du-cally"
+                        (change)="changeEndDate($event)"
+                      >
+                        <svg
+                          aria-label="Previous"
+                          class="fill-current size-4"
+                          slot="previous"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
+                        </svg>
+                        <svg
+                          aria-label="Next"
+                          class="fill-current size-4"
+                          slot="next"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 24 24"
+                        >
+                          <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+                        </svg>
+                        <calendar-month></calendar-month>
+                      </calendar-date>
+                    </div>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset sm:col-span-2">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Motivo
+                    </legend>
+                    <input
+                      type="text"
+                      class="du-input du-input-sm du-input-bordered w-full"
+                      placeholder="Motivo o palabra clave"
+                      [value]="queryParams().reasonKeyword ?? ''"
+                      (input)="changeReasonKeyword($event)"
+                    />
+                  </fieldset>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset lg:col-span-5 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Montos
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Monto min
+                    </legend>
+                    <input
+                      type="text"
+                      class="du-input du-input-sm du-input-bordered w-full"
+                      placeholder="0"
+                      inputmode="numeric"
+                      [copMoneyInput]="queryParams().amountMin ?? null"
+                      (input)="changeAmountMin($event)"
+                    />
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Monto max
+                    </legend>
+                    <input
+                      type="text"
+                      class="du-input du-input-sm du-input-bordered w-full"
+                      placeholder="0"
+                      inputmode="numeric"
+                      [copMoneyInput]="queryParams().amountMax ?? null"
+                      (input)="changeAmountMax($event)"
+                    />
+                  </fieldset>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset lg:col-span-7 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Contexto
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Empleado
+                    </legend>
+                    <select
+                      class="du-select du-select-sm w-full"
+                      (change)="changeEmployee($event)"
+                      [value]="queryParams().employeeId ?? ''"
+                    >
+                      @if (employeeStore.loading()) {
+                        <option selected disabled>Cargando empleados...</option>
+                      } @else {
+                        <option value="" [selected]="queryParams().employeeId === undefined">
+                          Todos
+                        </option>
+                        @for (employee of employeeStore.employees(); track employee.id) {
+                          <option
+                            [value]="employee.id"
+                            [selected]="employee.id === queryParams().employeeId"
+                          >
+                            {{ employee.name }}
+                          </option>
+                        } @empty {
+                          <option disabled selected>No hay empleados disponibles</option>
+                        }
+                      }
+                    </select>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Oficina
+                    </legend>
+                    @if (authStore.isAdmin()) {
+                      <select
+                        class="du-select du-select-sm w-full"
+                        (change)="changeOffice($event)"
+                        [value]="queryParams().officeId ?? ''"
+                      >
+                        @if (officeStore.loading()) {
+                          <option selected disabled>Cargando oficinas...</option>
+                        } @else {
+                          <option value="" [selected]="queryParams().officeId === undefined">
+                            Todas
+                          </option>
+                          @for (office of officeStore.offices(); track office.id) {
+                            <option
+                              [value]="office.id"
+                              [selected]="office.id === queryParams().officeId"
+                            >
+                              {{ office.name }}
+                            </option>
+                          } @empty {
+                            <option disabled selected>No hay oficinas disponibles</option>
+                          }
+                        }
+                      </select>
+                    } @else {
+                      <input
+                        type="text"
+                        class="du-input du-input-sm du-input-bordered w-full"
+                        [value]="authStore.employee()?.officeName || 'Sin oficina'"
+                        disabled
+                      />
+                    }
+                  </fieldset>
+                </div>
+              </fieldset>
+
+              <fieldset
+                class="du-fieldset lg:col-span-5 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+              >
+                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+                  Orden y pagina
+                </legend>
+                <div class="grid grid-cols-1 gap-2 sm:grid-cols-3">
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Ordenar por
+                    </legend>
+                    <select
+                      class="du-select du-select-sm w-full"
+                      (change)="changeOrderBy($event)"
+                      [value]="queryParams().orderBy"
+                    >
+                      <option value="createdAt">Fecha de creacion</option>
+                      <option value="amount">Monto</option>
+                    </select>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Direccion
+                    </legend>
+                    <select
+                      class="du-select du-select-sm w-full"
+                      (change)="changeOrderDirection($event)"
+                      [value]="queryParams().orderDirection"
+                    >
+                      <option value="desc">Descendente</option>
+                      <option value="asc">Ascendente</option>
+                    </select>
+                  </fieldset>
+
+                  <fieldset class="du-fieldset">
+                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                      Por pagina
+                    </legend>
+                    <input
+                      type="number"
+                      class="du-input du-input-sm du-input-bordered w-full"
+                      min="5"
+                      max="100"
+                      [value]="queryParams().limit"
+                      (change)="changeItemsPerPage($event)"
+                    />
+                  </fieldset>
+                </div>
+              </fieldset>
+            </div>
+          </div>
+        </div>
+
+        <div class="du-divider my-4"></div>
+
+        @if (loading()) {
+          <div class="flex items-center justify-center py-14">
+            <span class="du-loading du-loading-spinner du-loading-lg"></span>
+          </div>
+        } @else {
+          <div
+            class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
+          >
+            <div class="overflow-x-auto">
+              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                <thead class="bg-base-200/90">
+                  <tr>
+                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                      ID
+                    </th>
+                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                      Fecha
+                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                      Motivo
+                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                      Empleado
+                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                      Oficina
+                    </th>
+                    <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
+                      Monto
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (expense of expenses(); track expense.id) {
+                    <tr
+                      class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
+                      (click)="openViewModal(); expenseSelected.set(expense)"
+                    >
+                      <td class="text-center">#{{ expense.id }}</td>
+                      <td class="text-center">
+                        {{ expense.createdAt | date: 'dd MMM y' }}
+                      </td>
+                      <td class="text-left">
+                        <span class="du-tooltip" [attr.data-tip]="expense.reason">
+                          {{
+                            expense.reason.length > 10
+                              ? (expense.reason | slice: 0 : 7) + '...'
+                              : expense.reason
+                          }}
+                        </span>
+                      </td>
+                      <td class="text-left">{{ expense.employee.name || 'Sin empleado' }}</td>
+                      <td class="text-left">{{ expense.office.name || 'Sin oficina' }}</td>
+                      <td class="text-right font-semibold">{{ expense.amount | cop }}</td>
+                    </tr>
+                  } @empty {
+                    <tr>
+                      <td colspan="6" class="py-10 text-center opacity-55">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="mx-auto mb-2 h-11 w-11 opacity-35"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                        >
+                          <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                          />
+                        </svg>
+                        <p class="text-sm">No se encontraron gastos.</p>
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </div>
+        }
+
+        <div class="du-divider my-4"></div>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <div class="du-join">
+            <button
+              class="du-join-item du-btn"
+              (click)="changePage(-1)"
+              [disabled]="queryParams().page <= 1"
+            >
+              <<
+            </button>
+            <button class="du-join-item du-btn">
+              Pagina {{ queryParams().page }} de {{ pagination().totalPages || 1 }}
+            </button>
+            <button
+              class="du-join-item du-btn"
+              (click)="changePage(1)"
+              [disabled]="queryParams().page >= (pagination().totalPages || 1)"
+            >
+              >>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+@if (viewModalOpen()) {
+  <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeViewModal()">
+    <div class="du-modal-box rounded-3xl w-11/12 max-w-4xl max-h-[85vh] overflow-y-auto">
+      <div class="mb-2 flex justify-end">
+        <button
+          class="du-btn du-btn-sm du-btn-circle du-btn-ghost"
+          aria-label="close"
+          (click)="closeViewModal()"
+        >
+          ✕
+        </button>
+      </div>
+      <app-view-expense [expenseSelected]="expenseSelected()"></app-view-expense>
+    </div>
+    <form method="dialog" class="du-modal-backdrop">
+      <button (click)="closeViewModal()">close</button>
+    </form>
+  </dialog>
+}

@@ -16,6 +16,7 @@ export interface ExpenseResponse {
 export interface Expense {
   id: number;
   amount: number;
+  createdAt: string;
   reason: string;
   office: {
     id: number;
@@ -32,13 +33,16 @@ export interface Expense {
   };
 }
 
-export interface ParamsGetBills {
+export interface ParamsGetExpenses {
   startDate: string;
   endDate: string;
   officeId?: number;
   employeeId?: number;
   amountMin?: number;
   amountMax?: number;
+  reasonKeyword?: string;
+  orderBy: 'createdAt' | 'amount';
+  orderDirection: 'asc' | 'desc';
   page: number;
   limit: number;
 }

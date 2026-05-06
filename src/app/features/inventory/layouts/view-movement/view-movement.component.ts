@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { InventoryMovement } from '../../../../shared/interfaces/inventoryMovement.interface';
 
 @Component({
