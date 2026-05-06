@@ -11,7 +11,6 @@ import { PaymentContent } from './features/bill/layouts/payment-content/payment-
 import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
 import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
 import { MovementInventoryStore } from './features/inventory/store/movement-inventory-store';
-import { OfficeStore } from './shared/store/office-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
@@ -20,6 +19,7 @@ import { adminChildGuard } from './core/guards/admin-guard';
 import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
 import { ProductsComponent } from './features/admin/pages/products/products.component';
 import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
+import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -134,6 +134,13 @@ export const routes: Routes = [
         component: MovementListComponent,
       },
     ],
+  },
+  {
+    path: 'expense-list',
+    component: ExpenseListComponent,
+    providers: [EmployeeStore],
+    title: 'Lista de gastos',
+    canActivate: [authGuard],
   },
   {
     path: '**',

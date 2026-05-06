@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef, inject } from '@angular/core';
+import { Directive, ElementRef, forwardRef, inject, Input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CopPipe } from '../pipes/cop.pipes';
 
@@ -57,5 +57,11 @@ export class CopMoneyInputDirective implements ControlValueAccessor {
 
   onBlur(): void {
     this.#onTouched();
+  }
+
+  @Input() set copMoneyInput(value: number | string | null | undefined) {
+    if (value === null || value === undefined) return;
+    const n = typeof value === 'number' ? value : this.#parseToNumber(String(value));
+    this.#el.nativeElement.value = this.#copPipe.transform(n);
   }
 }

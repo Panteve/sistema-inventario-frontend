@@ -23,10 +23,6 @@ export interface Payment {
     affectsCash: boolean;
   };
 }
-export interface Expense {
-  id: number;
-  amount: number;
-}
 
 
 export interface CashRegisterSummaryResponse extends CashRegisterSummary {

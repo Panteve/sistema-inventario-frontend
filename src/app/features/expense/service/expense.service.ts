@@ -1,7 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
+import {
+  CreateExpenseRequest,
+  ExpenseResponse,
+  ParamsGetExpenses,
+} from '../../../shared/interfaces/expense.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -11,5 +15,35 @@ export class ExpenseService {
 
   createExpense(expense: CreateExpenseRequest) {
     return this.#http.post(`${environment.apiUrl}/expenses`, expense);
+  }
+
+  getExpenses(params: ParamsGetExpenses) {
+    const queryParams: any = {
+      startDate: params.startDate,
+      endDate: params.endDate,
+      page: params.page,
+      limit: params.limit,
+      orderBy: params.orderBy,
+      orderDirection: params.orderDirection,
+    };
+
+    if (params.officeId !== undefined) {
+      queryParams.officeId = params.officeId;
+    }
+    if (params.employeeId !== undefined) {
+      queryParams.employeeId = params.employeeId;
+    }
+    if (params.amountMin !== undefined) {
+      queryParams.amountMin = params.amountMin;
+    }
+    if (params.amountMax !== undefined) {
+      queryParams.amountMax = params.amountMax;
+    }
+    if (params.reasonKeyword) {
+      queryParams.reasonKeyWord = params.reasonKeyword;
+    }
+    return this.#http.get<ExpenseResponse>(`${environment.apiUrl}/expenses`, {
+      params: queryParams,
+    });
   }
 }

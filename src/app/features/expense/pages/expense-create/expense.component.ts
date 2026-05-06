@@ -2,9 +2,9 @@ import { CurrencyPipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { CreateExpenseRequest } from '../../../shared/interfaces/expense.interface';
-import { ExpenseStore } from '../store/expense-store';
-import { AuthStore } from '../../../core/store/auth-store';
+import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
+import { ExpenseStore } from '../../store/expense-store';
+import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   selector: 'app-expense',
