@@ -1,11 +1,11 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { AuthStore } from '../../../core/store/auth-store';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { CashRegisterStore } from '../store/cash-register-store';
+import { CashRegisterStore } from '../../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { InventoryStore } from '../../../shared/store/inventory-store';
-import { OfficeStore } from '../../../shared/store/office-store';
-import { CopPipe } from '../../../shared/pipes/cop.pipes';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
+import { OfficeStore } from '../../../../shared/store/office-store';
+import { CopPipe } from '../../../../shared/pipes/cop.pipes';
+import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   selector: 'app-cash-register',

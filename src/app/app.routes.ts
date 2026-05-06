@@ -20,6 +20,8 @@ import { EmployeesComponent } from './features/admin/pages/employees/employees.c
 import { ProductsComponent } from './features/admin/pages/products/products.component';
 import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
+import { CashRegisterListComponent } from './features/cash-register/pages/cash-register-list/cash-register-list.component';
+
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -84,6 +86,24 @@ export const routes: Routes = [
         canActivate: [authGuard],
         providers: [EmployeeStore],
         component: BillListComponent,
+      },
+    ],
+  },
+  {
+    path: 'view-cash-registers',
+    title: 'Ver registros de caja',
+    children: [
+      /* {
+        path: 'cash-register/:cashRegisterId',
+        title: 'Informacion de la factura',
+        canActivate: [authGuard],
+      }*/
+      {
+        path: 'list',
+        title: 'Historial de registros de caja',
+        canActivate: [authGuard],
+        providers: [EmployeeStore],
+        component: CashRegisterListComponent,
       },
     ],
   },

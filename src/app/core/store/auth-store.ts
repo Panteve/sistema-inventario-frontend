@@ -78,6 +78,7 @@ export const AuthStore = signalStore(
       await window.electronAPI.deleteToken();
       try {
         localStorage.removeItem('billFilters');
+        localStorage.removeItem('cashRegisterFilters');
       } catch (error) {
         console.error('Failed to clear filters from localStorage:', error);
       }
