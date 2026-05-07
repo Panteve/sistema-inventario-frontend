@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import 'cally';
@@ -8,41 +8,42 @@ import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import {
-  BillsHistoryPagination,
-  BillsHistoryResponse,
-  ParamsGetBills,
-} from '../../../../shared/interfaces/bill.interface';
+  CashRegisterHistory,
+  CashRegisterHistoryPagination,
+  ParamsGetCashRegisters,
+} from '../../../../shared/interfaces/cash-register-interface';
 import { ToastService } from '../../../../shared/services/toast.service';
-import { BillService } from '../../services/bill.service';
+import { CashRegisterService } from '../../services/cash-register.service';
 
 @Component({
-  selector: 'app-bill-list.component',
+  selector: 'app-cash-register-list',
+  standalone: true,
   imports: [DatePipe, CopPipe],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
-  templateUrl: './bill-list.component.html',
+  templateUrl: './cash-register-list.component.html',
 })
-export class BillListComponent implements OnInit {
+export class CashRegisterListComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly defaultItemsPerPage = 30;
-  readonly #filtersStorageKey = 'billFilters';
+  readonly #filtersStorageKey = 'cashRegisterFilters';
 
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
-  billService = inject(BillService);
+  cashRegisterService = inject(CashRegisterService);
   toastService = inject(ToastService);
-  #router = inject(Router);
   #route = inject(ActivatedRoute);
+  #router = inject(Router)
 
   readonly #today = new Date();
   readonly todayIso = this.#toIsoDate(this.#today);
 
-  bills = signal<BillsHistoryResponse[]>([]);
-  pagination = signal<BillsHistoryPagination>({ totalItems: 0, totalPages: 0 });
+  cashRegisters = signal<CashRegisterHistory[]>([]);
+  pagination = signal<CashRegisterHistoryPagination>({ totalItems: 0, totalPages: 0 });
   loading = signal(false);
 
-  queryParams = signal<ParamsGetBills>(this.#buildDefaultParams());
+  queryParams = signal<ParamsGetCashRegisters>(this.#buildDefaultParams());
 
   readonly endDateMax = computed(() => {
     if (this.authStore.isAdmin()) {
@@ -53,43 +54,44 @@ export class BillListComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    // Priority: URL filters > saved filters > defaults.
     const defaults = this.#buildDefaultParams();
+    const savedFilters = this.#loadSavedFilters();
     const params = this.#route.snapshot.queryParamMap;
-    const hasNonDateParams = ['officeId', 'employeeId', 'customerKeyword', 'page', 'limit'].some(
-      (key) => params.has(key),
-    );
-    const savedFilters = hasNonDateParams ? null : this.#loadSavedFilters();
-    const sourceParams = savedFilters ?? defaults;
 
     const startDate = this.#isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
-      : sourceParams.startDate;
+      : (savedFilters?.startDate ?? defaults.startDate);
     const endDate = this.#isIsoDate(params.get('endDate'))
       ? params.get('endDate')!
-      : sourceParams.endDate;
-    const officeIdFromQuery = this.#parseNumber(params.get('officeId')) ?? sourceParams.officeId;
-    const employeeId = this.#parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
-    const limit = this.#parseNumber(params.get('limit')) ?? sourceParams.limit;
-    const page = this.#parseNumber(params.get('page')) ?? sourceParams.page;
-    const customerKeyword = params.get('customerKeyword')?.trim() ?? sourceParams.customerKeyword;
-    const officeId = this.authStore.isAdmin() ? officeIdFromQuery : defaults.officeId;
-    const nextParams: ParamsGetBills = {
+      : (savedFilters?.endDate ?? defaults.endDate);
+    const officeIdFromQuery = this.#parseNumber(params.get('officeId'));
+    const employeeIdFromQuery = this.#parseNumber(params.get('employeeId'));
+    const statusFromQuery = this.#parseStatus(params.get('status'));
+    const limitFromQuery = this.#parseNumber(params.get('limit'));
+    const pageFromQuery = this.#parseNumber(params.get('page'));
+
+    const nextParams: ParamsGetCashRegisters = {
       ...defaults,
+      ...savedFilters,
       startDate,
       endDate,
-      officeId,
-      employeeId,
-      customerKeyword,
-      limit,
-      page,
+      officeId: officeIdFromQuery ?? savedFilters?.officeId ?? defaults.officeId,
+      employeeId: employeeIdFromQuery ?? savedFilters?.employeeId ?? defaults.employeeId,
+      status: statusFromQuery ?? savedFilters?.status ?? defaults.status,
+      limit: limitFromQuery ?? savedFilters?.limit ?? defaults.limit,
+      page: pageFromQuery ?? savedFilters?.page ?? defaults.page,
     };
+
+    if (!this.authStore.isAdmin()) {
+      nextParams.officeId = defaults.officeId;
+    }
+
     this.queryParams.set(this.#normalizeDateRange(nextParams));
     this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 
-  #buildDefaultParams(): ParamsGetBills {
+  #buildDefaultParams(): ParamsGetCashRegisters {
     const startDate = this.#toIsoDate(this.#subtractMonths(this.#today, this.maxRangeMonths));
     const endDate = this.#toIsoDate(this.#today);
     const officeId = this.authStore.isAdmin() ? undefined : this.authStore.employee()?.officeId;
@@ -99,7 +101,7 @@ export class BillListComponent implements OnInit {
       endDate,
       officeId,
       employeeId: undefined,
-      customerKeyword: undefined,
+      status: undefined,
       limit: this.defaultItemsPerPage,
       page: 1,
     };
@@ -120,7 +122,13 @@ export class BillListComponent implements OnInit {
     return Number.isFinite(parsed) ? parsed : undefined;
   }
 
-  #normalizeDateRange(params: ParamsGetBills): ParamsGetBills {
+  #parseStatus(value: string | null): boolean | undefined {
+    if (value === 'true') return true;
+    if (value === 'false') return false;
+    return undefined;
+  }
+
+  #normalizeDateRange(params: ParamsGetCashRegisters): ParamsGetCashRegisters {
     let { startDate, endDate } = params;
 
     if (startDate > this.todayIso) {
@@ -197,7 +205,7 @@ export class BillListComponent implements OnInit {
       employeeId: undefined,
       page: 1,
     }));
-    this.employeeStore.loadEmployees(officeId ?? 0);
+    this.#loadEmployeesForOffice();
   }
 
   changeEmployee(event: Event) {
@@ -209,11 +217,10 @@ export class BillListComponent implements OnInit {
     }));
   }
 
-  changeCustomerKeyword(event: Event) {
-    const customerKeyword = (event.target as HTMLInputElement).value.trim();
+  setStatusFilter(status: boolean | undefined) {
     this.queryParams.update((params) => ({
       ...params,
-      customerKeyword: customerKeyword || undefined,
+      status,
       page: 1,
     }));
   }
@@ -251,26 +258,22 @@ export class BillListComponent implements OnInit {
   applyFilters() {
     this.#saveFilters();
     this.loading.set(true);
-    this.billService
-      .getBills(this.queryParams())
+    this.cashRegisterService
+      .getAllCashRegisters(this.queryParams())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => {
-          this.bills.set(response.data);
+          this.cashRegisters.set(response.data);
           this.pagination.set(response.pagination);
         },
         error: () => {
           this.toastService.show({
             title: 'Error',
-            content: 'Error al obtener las facturas',
+            content: 'Error al obtener los registros de caja',
             type: 'error',
           });
         },
       });
-  }
-
-  openBillDetail(billId: number) {
-    this.#router.navigate(['..', 'bill', billId], {relativeTo: this.#route});
   }
 
   #saveFilters(): void {
@@ -281,11 +284,11 @@ export class BillListComponent implements OnInit {
     }
   }
 
-  #loadSavedFilters(): ParamsGetBills | null {
+  #loadSavedFilters(): ParamsGetCashRegisters | null {
     try {
       const raw = localStorage.getItem(this.#filtersStorageKey);
       if (!raw) return null;
-      const parsed = JSON.parse(raw) as Partial<ParamsGetBills>;
+      const parsed = JSON.parse(raw) as Partial<ParamsGetCashRegisters>;
       const startDate =
         typeof parsed.startDate === 'string' && this.#isIsoDate(parsed.startDate)
           ? parsed.startDate
@@ -316,6 +319,8 @@ export class BillListComponent implements OnInit {
           ? parsedLimit
           : this.defaultItemsPerPage;
       const page = typeof parsedPage === 'number' && Number.isFinite(parsedPage) ? parsedPage : 1;
+      const status =
+        typeof parsed.status === 'string' ? this.#parseStatus(parsed.status) : parsed.status;
 
       return {
         ...parsed,
@@ -323,6 +328,7 @@ export class BillListComponent implements OnInit {
         endDate,
         officeId,
         employeeId,
+        status,
         limit,
         page,
       };
@@ -339,4 +345,9 @@ export class BillListComponent implements OnInit {
       console.error('Failed to clear filters from localStorage:', error);
     }
   }
+
+  openCashRegisterDetail(cashRegisterId: number) {
+    this.#router.navigate(['..', 'cash-register', cashRegisterId], {relativeTo: this.#route});
+  }
+
 }
