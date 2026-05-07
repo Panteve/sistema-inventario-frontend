@@ -29,6 +29,7 @@ export class ViewBillComponent implements OnInit {
       phone: '',
     },
   });
+  
   #billService = inject(BillService);
 
   subtotal = computed(() =>

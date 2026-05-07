@@ -17,17 +17,7 @@ export interface PostCashRegisterResponse {
   };
 }
 
-export interface CashRegisterPagination {
-  totalItems: number;
-  totalPages: number;
-}
-
-export interface CashRegisterResponse {
-  data: CashRegister[];
-  pagination: CashRegisterPagination;
-}
-
-export interface CashRegister {
+export interface CashRegisterFullHistoryResponse {
   id: number;
   openedAt: string;
   closedAt?: string;
@@ -42,6 +32,32 @@ export interface CashRegister {
   operateBy: {
     name: string;
   };
+  bills: {
+    id: number;
+    createdAt: string;
+    customer?: {
+      name: string;
+    };
+    total: number;
+    payments: {
+      amount: number;
+    }[];
+  }[];
+  expenses: {
+    id: number;
+    createdAt: string;
+    amount: number;
+    reason: string;
+  }[];
+  totalCashSales: number;
+  totalTransferSales: number;
+  totalSales: number;
+  totalExpenses: number;
+  topProducts: {
+    name: string;
+    totalQuantity: number;
+    totalAmount: number;
+  }[];
 }
 
 export interface CashRegisterHistory {

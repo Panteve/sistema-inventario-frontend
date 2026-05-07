@@ -7,6 +7,7 @@ import {
   OpenCashRegisterRequest,
   CashRegisterHistoryResponse,
   ParamsGetCashRegisters,
+  CashRegisterFullHistoryResponse,
 } from '../../../shared/interfaces/cash-register-interface';
 
 @Injectable({
@@ -30,7 +31,11 @@ export class CashRegisterService {
     );
   }
 
-  getCashRegisters(params: ParamsGetCashRegisters) {
+  getCashRegisterHistory(id: number) {
+    return this.#http.get<CashRegisterFullHistoryResponse>(`${environment.apiUrl}/cash-register/history/${id}`);
+  }
+
+  getAllCashRegisters(params: ParamsGetCashRegisters) {
     const queryParams: any = {
       startDate: params.startDate,
       endDate: params.endDate,
@@ -51,9 +56,5 @@ export class CashRegisterService {
     return this.#http.get<CashRegisterHistoryResponse>(`${environment.apiUrl}/cash-register`, {
       params: queryParams,
     });
-  }
-
-  getAllCashRegisters() {
-    return this.#http.get<CashRegisterHistoryResponse>(`${environment.apiUrl}/cash-register`);
   }
 }

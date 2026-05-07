@@ -366,7 +366,7 @@
                 </thead>
                 <tbody>
                   @for (cashRegister of cashRegisters(); track cashRegister.id) {
-                    <tr class="transition-colors duration-200 hover:bg-base-300/80">
+                    <tr class="transition-colors duration-200 hover:bg-base-300/80 hover:cursor-pointer" (click)="openCashRegisterDetail(cashRegister.id)">
                       <td class="text-left">{{ cashRegister.office.name }}</td>
                       <td class="text-left">{{ cashRegister.operateBy.name }}</td>
                       <td class="text-center">

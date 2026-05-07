@@ -1,6 +1,6 @@
 import { DatePipe } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, computed, inject, OnInit, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -34,6 +34,7 @@ export class CashRegisterListComponent implements OnInit {
   cashRegisterService = inject(CashRegisterService);
   toastService = inject(ToastService);
   #route = inject(ActivatedRoute);
+  #router = inject(Router)
 
   readonly #today = new Date();
   readonly todayIso = this.#toIsoDate(this.#today);
@@ -258,7 +259,7 @@ export class CashRegisterListComponent implements OnInit {
     this.#saveFilters();
     this.loading.set(true);
     this.cashRegisterService
-      .getCashRegisters(this.queryParams())
+      .getAllCashRegisters(this.queryParams())
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: (response) => {
@@ -344,4 +345,9 @@ export class CashRegisterListComponent implements OnInit {
       console.error('Failed to clear filters from localStorage:', error);
     }
   }
+
+  openCashRegisterDetail(cashRegisterId: number) {
+    this.#router.navigate(['..', 'cash-register', cashRegisterId], {relativeTo: this.#route});
+  }
+
 }

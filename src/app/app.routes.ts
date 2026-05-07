@@ -21,6 +21,7 @@ import { ProductsComponent } from './features/admin/pages/products/products.comp
 import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
 import { CashRegisterListComponent } from './features/cash-register/pages/cash-register-list/cash-register-list.component';
+import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register.component/view-cash-register.component';
 
 
 export const routes: Routes = [
@@ -93,11 +94,12 @@ export const routes: Routes = [
     path: 'view-cash-registers',
     title: 'Ver registros de caja',
     children: [
-      /* {
+      {
         path: 'cash-register/:cashRegisterId',
         title: 'Informacion de la factura',
         canActivate: [authGuard],
-      }*/
+        component: ViewCashRegisterComponent
+      },
       {
         path: 'list',
         title: 'Historial de registros de caja',
