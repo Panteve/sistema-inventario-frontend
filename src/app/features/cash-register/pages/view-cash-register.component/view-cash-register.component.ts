@@ -3,6 +3,7 @@ import { DatePipe } from '@angular/common';
 import { CashRegisterService } from '../../services/cash-register.service';
 import { CashRegisterFullHistoryResponse } from '../../../../shared/interfaces/cash-register-interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-view-cash-register.component',
@@ -12,6 +13,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 export class ViewCashRegisterComponent implements OnInit {
   cashRegisterIdParams = input.required<string>({ alias: 'cashRegisterId' });
   #cashRegisterService = inject(CashRegisterService);
+  #router = inject(Router);
 
   loading = signal(true);
 
@@ -72,4 +74,9 @@ export class ViewCashRegisterComponent implements OnInit {
         },
       });
   }
+
+  openBillDetail(billId: number) {
+    this.#router.navigate(['/view-bills/bill', billId]);
+  }
+
 }
