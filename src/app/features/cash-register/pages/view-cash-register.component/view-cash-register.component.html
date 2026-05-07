@@ -1,1 +1,421 @@
-<p>view-cash-register.component works!</p>
+<section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
+  <div class="w-full max-w-5xl md:max-w-7xl">
+    <!-- Header -->
+    @if (loading()) {
+      <div class="mb-5 flex items-center gap-3">
+        <div class="du-skeleton h-10 w-10 rounded-full"></div>
+        <div class="flex-1">
+          <div class="du-skeleton h-7 w-40 rounded-full mb-2"></div>
+          <div class="du-skeleton h-4 w-60 rounded-full"></div>
+        </div>
+      </div>
+    } @else {
+      <div class="flex items-center gap-3 mb-5">
+        <div
+          class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+            <path
+              class="w-5 h-5 text-primary"
+              fill="currentColor"
+              d="M4 6h16v12H4zm2 2v8h12V8zm2 1h4v2H8zm0 3h8v2H8z"
+            />
+          </svg>
+        </div>
+        <div class="flex-1">
+          <h1 class="text-xl md:text-2xl font-bold tracking-tight">
+            Caja #{{ cashRegisterHistory().id }}
+          </h1>
+          <p class="text-xs md:text-sm opacity-60">Detalle del historial de caja</p>
+        </div>
+      </div>
+    }
+
+    <div class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+      <div class="du-card-body p-4 md:p-6">
+        @if (!loading()) {
+          <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap gap-3">
+              <div class="rounded-full bg-base-200/70 px-4 py-2 text-sm font-semibold opacity-80">
+                {{ cashRegisterHistory().office.name }}
+              </div>
+              <div class="rounded-full bg-base-200/70 px-4 py-2 text-sm font-semibold opacity-80">
+                {{ cashRegisterHistory().operateBy.name }}
+              </div>
+            </div>
+            <div class="flex flex-wrap items-center gap-3">
+              @if (cashRegisterHistory().status) {
+                <span class="du-badge du-badge-success du-badge-lg">Abierta</span>
+              } @else {
+                <span class="du-badge du-badge-error du-badge-lg">Cerrada</span>
+              }
+            </div>
+          </div>
+        }
+
+        <!-- Time Section -->
+        @if (!loading()) {
+          <div class="mb-6 rounded-3xl border border-base-content/10 bg-base-200/30 p-3">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <!-- Opened Time -->
+              <div
+                class="flex flex-col items-center justify-center md:border-r md:border-base-content/10"
+              >
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Apertura</p>
+                <p class="font-mono text-sm md:text-base font-semibold">
+                  {{ cashRegisterHistory().openedAt | date: 'HH:mm' }}
+                </p>
+                <p class="text-xs opacity-60 mt-1">
+                  {{ cashRegisterHistory().openedAt | date: 'dd/MM/yyyy' }}
+                </p>
+              </div>
+
+              <!-- Closed Time -->
+              <div
+                class="flex flex-col items-center justify-center md:border-r md:border-base-content/10"
+              >
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Cierre</p>
+                @if (cashRegisterHistory().closedAt) {
+                  <p class="font-mono text-sm md:text-base font-semibold">
+                    {{ cashRegisterHistory().closedAt | date: 'HH:mm' }}
+                  </p>
+                  <p class="text-xs opacity-60 mt-1">
+                    {{ cashRegisterHistory().closedAt | date: 'dd/MM/yyyy' }}
+                  </p>
+                } @else {
+                  <p class="font-mono text-sm md:text-base font-semibold opacity-40">—</p>
+                  <p class="text-xs opacity-40 mt-1">Abierta</p>
+                }
+              </div>
+
+              <!-- Duration -->
+              <div class="flex flex-col items-center justify-center">
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Duración</p>
+                <p class="font-mono text-sm md:text-base font-semibold">
+                  {{ duration() }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Total Ventas</p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().totalSales | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">
+                  Monto recibido
+                </p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().amountRecived | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">
+                  Monto esperado
+                </p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().finalAmount | cop }}
+                </p>
+              }
+            </div>
+          </article>
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Diferencia</p>
+                <p
+                  class="text-lg md:text-xl font-bold font-mono"
+                  [class.text-warning]="cashRegisterHistory().difference > 0"
+                  [class.text-error]="cashRegisterHistory().difference < 0"
+                  [class.opacity-70]="cashRegisterHistory().difference === 0"
+                >
+                  {{ cashRegisterHistory().difference | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">
+                  Ventas en transferencia
+                </p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().totalTransferSales | cop }}
+                </p>
+              }
+            </div>
+          </article>
+          
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">
+                  Ventas en efectivo
+                </p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().totalCashSales | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <!-- Expenses -->
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Gastos</p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().totalExpenses | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <!-- Total Sales -->
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-5">
+              @if (loading()) {
+                <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
+                <div class="du-skeleton h-6 w-32 rounded-full"></div>
+              } @else {
+                <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto inicial</p>
+                <p class="text-lg md:text-xl font-bold font-mono">
+                  {{ cashRegisterHistory().initialAmount | cop }}
+                </p>
+              }
+            </div>
+          </article>
+
+          <!-- Difference -->
+        </div>
+
+        <!-- Two Columns Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+          <!-- Top Products -->
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-6">
+              <h3 class="text-lg font-bold tracking-tight mb-4">Top productos</h3>
+              @if (loading()) {
+                <div class="space-y-3">
+                  @for (i of [1, 2, 3, 4]; track i) {
+                    <div
+                      class="flex items-center justify-between p-2 border border-base-content/5 rounded-lg"
+                    >
+                      <div class="flex-1">
+                        <div class="du-skeleton h-3 w-32 rounded-full mb-1"></div>
+                        <div class="du-skeleton h-3 w-20 rounded-full"></div>
+                      </div>
+                      <div class="du-skeleton h-4 w-24 rounded-full"></div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="overflow-x-auto">
+                  <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                    <thead>
+                      <tr>
+                        <th class="text-[11px] uppercase tracking-[0.12em]">Producto</th>
+                        <th class="text-[11px] uppercase tracking-[0.12em] text-right">Cantidad</th>
+                        <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @if (cashRegisterHistory().topProducts.length > 0) {
+                        @for (product of cashRegisterHistory().topProducts; track product.name) {
+                          <tr>
+                            <td class="text-sm">{{ product.name }}</td>
+                            <td class="text-sm text-right font-mono">
+                              {{ product.totalQuantity }}
+                            </td>
+                            <td class="text-sm text-right font-mono">
+                              {{ product.totalAmount | cop }}
+                            </td>
+                          </tr>
+                        }
+                      } @else {
+                        <tr>
+                          <td colspan="3" class="text-center py-4 opacity-60">Sin productos</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          </article>
+
+          <!-- Expenses -->
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+            <div class="du-card-body p-4 md:p-6">
+              <h3 class="text-lg font-bold tracking-tight mb-4">Gastos</h3>
+              @if (loading()) {
+                <div class="space-y-3">
+                  @for (i of [1, 2, 3, 4]; track i) {
+                    <div
+                      class="flex items-center justify-between p-2 border border-base-content/5 rounded-lg"
+                    >
+                      <div class="flex-1">
+                        <div class="du-skeleton h-3 w-32 rounded-full mb-1"></div>
+                        <div class="du-skeleton h-3 w-20 rounded-full"></div>
+                      </div>
+                      <div class="du-skeleton h-4 w-24 rounded-full"></div>
+                    </div>
+                  }
+                </div>
+              } @else {
+                <div class="overflow-x-auto">
+                  <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                    <thead>
+                      <tr>
+                        <th class="text-[11px] uppercase tracking-[0.12em]">Razón</th>
+                        <th class="text-[11px] uppercase tracking-[0.12em] text-right">Monto</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @if (cashRegisterHistory().expenses.length > 0) {
+                        @for (expense of cashRegisterHistory().expenses; track expense.id) {
+                          <tr>
+                            <td class="text-sm">{{ expense.reason }}</td>
+                            <td class="text-sm text-right font-mono">{{ expense.amount | cop }}</td>
+                          </tr>
+                        }
+                      } @else {
+                        <tr>
+                          <td colspan="2" class="text-center py-4 opacity-60">Sin gastos</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              }
+            </div>
+          </article>
+        </div>
+
+        <!-- Sales Table -->
+        <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <div class="du-card-body p-4 md:p-6">
+            <div class="mb-4">
+              <h3 class="text-lg font-bold tracking-tight">Ventas</h3>
+              @if (!loading()) {
+                <p class="text-xs opacity-60 mt-1">
+                  {{ cashRegisterHistory().bills.length }} facturas
+                </p>
+              }
+            </div>
+
+            @if (loading()) {
+              <div class="overflow-x-auto">
+                <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                  <thead>
+                    <tr>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">#</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">Cliente</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">Método de pago</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (i of [1, 2, 3, 4, 5]; track i) {
+                      <tr>
+                        <td><div class="du-skeleton h-3 w-8 rounded-full"></div></td>
+                        <td><div class="du-skeleton h-3 w-24 rounded-full"></div></td>
+                        <td><div class="du-skeleton h-3 w-20 rounded-full"></div></td>
+                        <td class="text-right">
+                          <div class="du-skeleton h-3 w-20 rounded-full"></div>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            } @else {
+              <div class="overflow-x-auto">
+                <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+                  <thead>
+                    <tr>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">#</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">Cliente</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em]">Método de pago</th>
+                      <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if (cashRegisterHistory().bills.length > 0) {
+                      @for (bill of cashRegisterHistory().bills; track bill.id) {
+                        <tr>
+                          <td class="text-sm font-mono">{{ bill.id }}</td>
+                          <td class="text-sm">{{ bill.customer?.name ?? '—' }}</td>
+                          <td class="text-sm">
+                            @if (bill.payments.length > 0) {
+                              {{ bill.payments[0].paymentMethod.name }}
+                              @if (bill.payments.length > 1) {
+                                <span class="text-xs opacity-60">
+                                  +{{ bill.payments.length - 1 }}</span
+                                >
+                              }
+                            } @else {
+                              <span class="opacity-60">—</span>
+                            }
+                          </td>
+                          <td class="text-sm text-right font-mono">{{ bill.total | cop }}</td>
+                        </tr>
+                      }
+                    } @else {
+                      <tr>
+                        <td colspan="4" class="text-center py-4 opacity-60">
+                          Sin ventas registradas
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            }
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>

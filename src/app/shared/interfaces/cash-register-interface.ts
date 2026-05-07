@@ -23,7 +23,7 @@ export interface CashRegisterFullHistoryResponse {
   closedAt?: string;
   initialAmount: number;
   finalAmount: number;
-  amountReceived: number;
+  amountRecived: number;
   difference: number;
   status: boolean;
   office: {
