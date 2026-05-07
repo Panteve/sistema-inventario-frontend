@@ -40,7 +40,9 @@ export interface CashRegisterFullHistoryResponse {
     };
     total: number;
     payments: {
-      amount: number;
+      paymentMethod: {
+        name: string;
+      };
     }[];
   }[];
   expenses: {
