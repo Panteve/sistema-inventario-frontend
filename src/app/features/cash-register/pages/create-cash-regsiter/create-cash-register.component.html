@@ -57,50 +57,87 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 gap-1 sm:grid-cols-3">
-          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
-            <p class="mt-0.5 truncate text-base font-semibold leading-tight">
-              {{ authStore.employee()?.name ?? 'Sin nombre' }}
-            </p>
-          </div>
-          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Oficina</p>
-            @if (authStore.cashRegisterIsOpen()) {
+        <div class="grid grid-cols-1 gap-1 md:grid-cols-3">
+          <div class="grid grid-cols-1 gap-1 md:flex-row">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+              <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
               <p class="mt-0.5 truncate text-base font-semibold leading-tight">
-                {{ authStore.employee()?.officeName }}
+                {{ authStore.employee()?.name ?? 'Sin nombre' }}
               </p>
-            } @else {
-              <select
-                class="du-select w-full"
-                (change)="changeOffice($event)"
-                [value]="this.officeId()"
-              >
-                <option value="0" disabled selected [selected]="this.officeId() === 0">
-                  Seleccionar oficina
-                </option>
-                @if (officeStore.loading()) {
-                  <option disabled>Cargando oficinas...</option>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+              <p class="text-xs uppercase tracking-[0.16em] opacity-60">Officina</p>
+              <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+                @if (authStore.cashRegisterIsOpen()) {
+                  <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+                    {{ authStore.employee()?.officeName }}
+                  </p>
                 } @else {
-                  @for (office of officeStore.offices(); track office.id) {
-                    <option [value]="office.id">
-                      {{ office.name }}
+                  <select
+                    class="du-select w-full"
+                    (change)="changeOffice($event)"
+                    [value]="this.officeId()"
+                  >
+                    <option value="0" disabled selected [selected]="this.officeId() === 0">
+                      Seleccionar oficina
                     </option>
-                  } @empty {
-                    <option disabled selected>No hay oficinas disponibles</option>
-                  }
+                    @if (officeStore.loading()) {
+                      <option disabled>Cargando oficinas...</option>
+                    } @else {
+                      @for (office of officeStore.offices(); track office.id) {
+                        <option [value]="office.id">
+                          {{ office.name }}
+                        </option>
+                      } @empty {
+                        <option disabled selected>No hay oficinas disponibles</option>
+                      }
+                    }
+                  </select>
                 }
-              </select>
-            }
+              </p>
+            </div>
           </div>
-          <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-            <p class="text-xs uppercase tracking-[0.16em] opacity-60">Hora</p>
-            <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-              {{ currentHour | number: '2.0-0' }}:{{ currentMinute | number: '2.0-0' }}
-            </p>
+          <div class="grid grid-cols-1 gap-1 md:flex-row">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+              <p class="text-xs uppercase tracking-[0.16em] opacity-60">fecha apertura</p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                @if (!authStore.cashRegisterIsOpen()) {
+                  {{ currentDate | date: 'dd/MM/yyyy HH:mm' }}
+                } @else {
+                  {{ cashRegisterStore.cashRegisterSummary().openedAt | date: 'dd/MM/yyyy HH:mm' }}
+                }
+              </p>
+            </div>
+            
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+              <p class="text-xs uppercase tracking-[0.16em] opacity-60">Hora cierre</p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                {{ currentDate | date: 'dd/MM/yyyy HH:mm' }}
+              </p>
+            </div>
           </div>
+          @if (authStore.cashRegisterIsOpen()) {
+            <div class="grid grid-cols-1 gap-1 md:flex-row">
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Transferencias
+              </p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                {{ cashRegisterStore.cashRegisterSummary().totalTransferSales | cop }}
+              </p>
+            </div>
+            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
+              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
+                Pagos en efectivo
+              </p>
+              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
+                {{ cashRegisterStore.cashRegisterSummary().totalCashSales | cop }}
+              </p>
+            </div>
+          </div>
+          }
+          
         </div>
-
         @if (!authStore.cashRegisterIsOpen()) {
           <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
             <fieldset
@@ -148,7 +185,7 @@
                   Total apertura
                 </p>
                 <p class="mt-0.5 break-all font-mono text-xl font-bold leading-tight text-accent">
-                  $ {{ displayAmount() }}
+                  {{ displayAmount() }}
                 </p>
               </div>
               <div class="du-badge du-badge-accent du-badge-lg">Inicial</div>
@@ -197,18 +234,10 @@
           <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-3">
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
-                Transferencias
+                Monto inicial en caja
               </p>
               <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.cashRegisterSummary().totalTransferSales | cop }}
-              </p>
-            </div>
-            <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
-              <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
-                Pagos en efectivo
-              </p>
-              <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-                {{ cashRegisterStore.cashRegisterSummary().totalCashSales | cop }}
+                {{ cashRegisterStore.cashRegisterSummary().initialAmount | cop }}
               </p>
             </div>
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
@@ -217,9 +246,6 @@
                 - {{ cashRegisterStore.cashRegisterSummary().totalExpenses | cop }}
               </p>
             </div>
-          </div>
-
-          <div class="mt-1 grid grid-cols-1 gap-1 md:grid-cols-2">
             <div class="rounded-2xl border border-base-content/10 bg-base-200/50 p-2.5">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
                 Ventas totales
@@ -231,6 +257,8 @@
                 }}
               </p>
             </div>
+          </div>
+          <div class="mt-1 grid grid-cols-1 gap-1 md:grid-cols-3">
             <div class="rounded-2xl border border-accent/20 bg-accent/5 p-2.5">
               <p class="text-xs font-semibold uppercase tracking-[0.16em] opacity-50">
                 Total esperado en caja

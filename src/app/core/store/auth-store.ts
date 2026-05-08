@@ -30,7 +30,7 @@ export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
   withComputed(({ employee }) => ({
-    cashRegisterIsOpen: computed(() => employee()?.cashRegister),
+    cashRegisterIsOpen: computed(() => !employee()?.cashRegister),
     isAdmin: computed(() => employee()?.role === 'ADMIN'),
     isAuthenticated: computed(() => !!employee()),
   })),

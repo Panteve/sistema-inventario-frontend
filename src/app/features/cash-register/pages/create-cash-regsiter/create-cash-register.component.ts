@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { CashRegisterStore } from '../../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
@@ -9,12 +9,12 @@ import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   selector: 'app-cash-register',
-  imports: [CopPipe, DatePipe, DecimalPipe],
+  imports: [CopPipe, DatePipe],
   providers: [CopPipe, CashRegisterStore],
-  templateUrl: './cash-register.component.html',
-  styleUrl: './cash-register.component.css',
+  templateUrl: './create-cash-register.component.html',
+  styleUrl: './create-cash-register.component.css',
 })
-export class CashRegisterComponent {
+export class CreateCashRegisterComponent {
   #router = inject(Router);
   #route = inject(ActivatedRoute);
   officeStore = inject(OfficeStore);
@@ -24,8 +24,6 @@ export class CashRegisterComponent {
   #copPipe = inject(CopPipe);
 
   currentDate = Date.now();
-  currentHour = new Date().getHours();
-  currentMinute = new Date().getMinutes();
   closeConfirmationOpen = signal<boolean>(false);
   officeId = signal<number>(0);
   amountReceived = signal<number>(0);
