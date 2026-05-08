@@ -67,8 +67,8 @@ export interface CashRegisterHistory {
   id: number;
   openedAt: string;
   closedAt?: string;
-  initialAmount: number;
   finalAmount: number;
+  totalSales: number;
   difference: number;
   status: boolean;
   office: {

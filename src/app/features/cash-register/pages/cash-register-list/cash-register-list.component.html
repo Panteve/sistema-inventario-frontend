@@ -338,9 +338,7 @@
               <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
                 <thead class="bg-base-200/90">
                   <tr>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      ID
-                    </th>
+                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">ID</th>
                     <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
                       Oficina
                     </th>
@@ -354,10 +352,10 @@
                       Cerrada
                     </th>
                     <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
-                      Monto inicial
+                      Monto final
                     </th>
                     <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
-                      Monto final
+                      Total ventas
                     </th>
                     <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
                       Diferencia
@@ -369,7 +367,10 @@
                 </thead>
                 <tbody>
                   @for (cashRegister of cashRegisters(); track cashRegister.id) {
-                    <tr class="transition-colors duration-200 hover:bg-base-300/80 hover:cursor-pointer" (click)="openCashRegisterDetail(cashRegister.id)">
+                    <tr
+                      class="transition-colors duration-200 hover:bg-base-300/80 hover:cursor-pointer"
+                      (click)="openCashRegisterDetail(cashRegister.id)"
+                    >
                       <td class="text-left">{{ cashRegister.id }}</td>
                       <td class="text-left">{{ cashRegister.office.name }}</td>
                       <td class="text-left">{{ cashRegister.operateBy.name }}</td>
@@ -388,14 +389,10 @@
                         }
                       </td>
                       <td class="text-right font-semibold">
-                        {{ cashRegister.initialAmount | cop }}
+                        {{ cashRegister.finalAmount | cop }}
                       </td>
                       <td class="text-right font-semibold">
-                        @if (cashRegister.status) {
-                          0
-                        } @else {
-                          {{ cashRegister.finalAmount | cop }}
-                        }
+                        {{ cashRegister.totalSales | cop }}
                       </td>
                       <td
                         class="text-right font-semibold"
