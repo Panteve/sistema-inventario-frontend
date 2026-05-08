@@ -8,9 +8,10 @@ export interface PostCashRegisterResponse {
   id: number;
   openedAt: string;
   closedAt?: string;
-  closedById?: number;
   initialAmount: number;
   finalAmount: number;
+  difference: number;
+  status: boolean;
   office: {
     id: number;
     name: string;
@@ -99,14 +100,8 @@ export interface ParamsGetCashRegisters {
   limit: number;
 }
 
-export interface CashRegisterSummaryResponse extends CashRegisterSummary {
-  office: {
-    id: number;
-    name: string;
-  };
-}
 
-export interface CashRegisterSummary {
+export interface CashRegisterSummaryResponse {
   openedAt: string;
   initialAmount: number;
   totalCashSales: number;

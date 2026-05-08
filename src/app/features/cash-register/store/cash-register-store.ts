@@ -1,8 +1,6 @@
 import {
-  getState,
   patchState,
   signalStore,
-  withComputed,
   withHooks,
   withMethods,
   withProps,
@@ -13,17 +11,19 @@ import { CashRegisterService } from '../services/cash-register.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { CashRegisterSummary } from '../../../shared/interfaces/cash-register-interface';
+import { CashRegisterSummaryResponse } from '../../../shared/interfaces/cash-register-interface';
 import { AuthStore } from '../../../core/store/auth-store';
 import { ToastService } from '../../../shared/services/toast.service';
 
 type CashRegisterState = {
   loading: boolean;
-  cashRegisterSummary: CashRegisterSummary;
+  loadingSummary: boolean;
+  cashRegisterSummary: CashRegisterSummaryResponse;
 };
 
 const initialState: CashRegisterState = {
   loading: false,
+  loadingSummary: false,
   cashRegisterSummary: {
     openedAt: '',
     initialAmount: 0,
@@ -42,13 +42,13 @@ export const CashRegisterStore = signalStore(
     router: inject(Router),
   })),
   withMethods(({ authStore, toastService, cashRegisterService, router, ...store }) => ({
-    openCashRegister: rxMethod<{ officeId: number; amountReceived: number }>(
+    openCashRegister: rxMethod<{ officeId: number; initialAmount: number }>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
         filter((data) => {
-          if (data.amountReceived <= 0) {
+          if (data.initialAmount <= 0) {
             toastService.show({
               title: 'Monto inicial no válido',
               content: 'El monto inicial no puede ser igual o menor a cero.',
@@ -61,7 +61,7 @@ export const CashRegisterStore = signalStore(
         }),
         switchMap((data) => {
           return cashRegisterService
-            .openCashRegister({ initialAmount: data.amountReceived, officeId: data.officeId })
+            .openCashRegister({ initialAmount: data.initialAmount, officeId: data.officeId })
             .pipe(
               tap((response) => {
                 authStore.setCashRegister(response.office.id, response.office.name);
@@ -77,6 +77,7 @@ export const CashRegisterStore = signalStore(
               }),
               catchError((err) => {
                 if (err.status === 409) {
+                  //MANEJAR MEJOR ESTE ERROR YA QUE PUEDE SER POR CAJA ABIERTA O POR ABIR CAJA SIN UNA OFICINA ASIGNADA
                   toastService.show({
                     title: 'Caja ya abierta',
                     content: 'Ya existe una caja abierta para este usuario.',
@@ -96,7 +97,7 @@ export const CashRegisterStore = signalStore(
     getCashRegisterSummary: rxMethod<void>(
       pipe(
         tap(() => {
-          patchState(store, { loading: true });
+          patchState(store, { loadingSummary: true });
         }),
         switchMap(() =>
           cashRegisterService.getCashRegisterSummary().pipe(
@@ -114,7 +115,7 @@ export const CashRegisterStore = signalStore(
               return EMPTY;
             }),
             finalize(() => {
-              patchState(store, { loading: false });
+              patchState(store, { loadingSummary: false });
             }),
           ),
         ),
