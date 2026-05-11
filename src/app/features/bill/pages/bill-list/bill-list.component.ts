@@ -270,7 +270,10 @@ export class BillListComponent implements OnInit {
   }
 
   openBillDetail(billId: number) {
-    this.#router.navigate(['..', 'bill', billId], {relativeTo: this.#route});
+    this.#router.navigate(['..', 'bill', billId], {
+      relativeTo: this.#route,
+      queryParams: { from: '/view-bills/list' },
+    });
   }
 
   #saveFilters(): void {

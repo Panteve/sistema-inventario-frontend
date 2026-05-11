@@ -3,14 +3,20 @@ import { BillService } from '../../services/bill.service';
 import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
+import { RouterLink } from "@angular/router";
 
 @Component({
   selector: 'app-view-bill.component',
-  imports: [CopPipe],
+  imports: [CopPipe, RouterLink],
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
   billIdParams = input.required<string>({ alias: 'billId' });
+  readonly from = input<string>();
+
+  readonly breadcrumb = computed(() =>
+    this.from() === '/view-bills/list' ? 'Historial de ventas' : 'Punto de venta',
+  );
   loading = signal<boolean>(true);
   bill = signal<BillResponse>({
     id: 0,
@@ -29,7 +35,7 @@ export class ViewBillComponent implements OnInit {
       phone: '',
     },
   });
-  
+
   #billService = inject(BillService);
 
   subtotal = computed(() =>
