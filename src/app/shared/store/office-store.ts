@@ -36,7 +36,7 @@ export const OfficeStore = signalStore(
       pipe(
         tap(() => patchState(store, { loading: true })),
         switchMap(() =>
-          officeService.getOffices().pipe(
+          officeService.getNameOffices().pipe(
             tap((offices) => {
               patchState(store, { offices });
             }),

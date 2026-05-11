@@ -319,7 +319,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
       return;
     }
 
-    if (target.closest('button, input, select, textarea, label, a, tr, dialog')) {
+    if (target.closest('button, input, select, textarea, label, a, tr, dialog, [data-exception]')) {
       return;
     }
 

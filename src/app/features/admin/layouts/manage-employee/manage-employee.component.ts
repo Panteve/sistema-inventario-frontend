@@ -55,7 +55,7 @@ export class ManageEmployeeComponent {
         email: this.selectedEmployee()?.email ?? '',
         name: this.selectedEmployee()?.name ?? '',
         phone: this.selectedEmployee()?.phone ?? '',
-        officeId: this.selectedEmployee()?.officeId ?? 0,
+        officeId: this.selectedEmployee()?.office?.id ?? 0,
         role: this.selectedEmployee()?.role ?? 'CASHIER',
         status: this.selectedEmployee()?.status ?? true,
       });
@@ -138,7 +138,7 @@ export class ManageEmployeeComponent {
       payload.phone = formValue.phone.trim();
     }
     if (
-      Number(formValue.officeId) !== this.selectedEmployee()?.officeId &&
+      Number(formValue.officeId) !== this.selectedEmployee()?.office?.id &&
       formValue.officeId !== 0
     ) {
       payload.officeId = Number(formValue.officeId);
