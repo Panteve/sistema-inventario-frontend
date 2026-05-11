@@ -3,11 +3,11 @@ import { DatePipe } from '@angular/common';
 import { CashRegisterService } from '../../services/cash-register.service';
 import { CashRegisterFullHistoryResponse } from '../../../../shared/interfaces/cash-register-interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-view-cash-register.component',
-  imports: [DatePipe, CopPipe],
+  imports: [DatePipe, CopPipe, RouterLink],
   templateUrl: './view-cash-register.component.html',
 })
 export class ViewCashRegisterComponent implements OnInit {
