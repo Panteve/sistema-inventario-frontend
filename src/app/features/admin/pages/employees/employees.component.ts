@@ -79,6 +79,11 @@ export class EmployeesComponent implements OnInit {
         id: 'email',
       },
       {
+        header: 'Oficina',
+        accessorKey: 'office.name',
+        id: 'officeName',
+      },
+      {
         header: 'Rol',
         accessorKey: 'role',
         id: 'role',
@@ -110,6 +115,7 @@ export class EmployeesComponent implements OnInit {
         employee.name,
         employee.document,
         employee.email,
+        employee.office?.name ? employee.office.name : 'sin oficina',
         this.getRoleLabel(employee.role),
         employee.status ? 'activo' : 'inactivo',
       ];
@@ -176,7 +182,7 @@ export class EmployeesComponent implements OnInit {
       return;
     }
 
-    if (target.closest('button, input, select, textarea, label, a, tr, dialog')) {
+    if (target.closest('button, input, select, textarea, label, a, tr, dialog, [data-exception]')) {
       return;
     }
 

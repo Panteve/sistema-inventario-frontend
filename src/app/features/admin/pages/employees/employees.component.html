@@ -30,7 +30,7 @@
         <div
           class="grid grid-cols-1 lg:grid-cols-[340px_auto_1fr] gap-4 lg:gap-6 items-start lg:items-center"
         >
-          <div class="rounded-xl border border-base-content/10 bg-base-100 p-4">
+          <div data-exception class="rounded-xl border border-base-content/10 bg-base-100 p-4">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
               Resumen del equipo
             </h3>
@@ -226,6 +226,7 @@
                         <th class="text-center">Nombre</th>
                         <th class="text-center">Documento</th>
                         <th class="text-center">Correo</th>
+                        <th class="text-center">Oficina</th>
                         <th class="text-center">Rol</th>
                         <th class="text-center">Status</th>
                       </tr>
@@ -255,6 +256,8 @@
                                 >
                                   {{ row.original.status ? 'Activo' : 'Inactivo' }}
                                 </span>
+                              } @else if (cell.column.id === 'officeName') {
+                                {{ row.original.office?.name ? row.original.office?.name : 'Sin oficina' }}
                               } @else {
                                 <ng-container
                                   *flexRender="

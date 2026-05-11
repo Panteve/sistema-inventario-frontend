@@ -64,7 +64,6 @@ export class ViewCashRegisterComponent implements OnInit {
       .getCashRegisterHistory(Number(this.cashRegisterIdParams()))
       .subscribe({
         next: (data) => {
-          console.log(data);
           this.cashRegisterHistory.set(data);
           this.loading.set(false);
         },

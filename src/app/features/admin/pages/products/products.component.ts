@@ -126,7 +126,7 @@ export class ProductsComponent implements OnInit {
 
     if (
       target.closest(
-        '[data-keep-product-selected], button, input, select, textarea, label, a, tr, td, th, dialog',
+        'button, input, select, textarea, label, a, tr, td, th, dialog, [data-exception]',
       )
     ) {
       return;

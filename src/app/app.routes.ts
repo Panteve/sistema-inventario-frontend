@@ -22,6 +22,7 @@ import { BillListComponent } from './features/bill/pages/bill-list/bill-list.com
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
 import { CashRegisterListComponent } from './features/cash-register/pages/cash-register-list/cash-register-list.component';
 import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register/view-cash-register.component';
+import { OfficeComponent } from './features/admin/pages/offices/office.component';
 
 
 export const routes: Routes = [
@@ -116,7 +117,7 @@ export const routes: Routes = [
     children: [
       {
         path: 'payment-methods',
-        title: 'Informacion de la factura',
+        title: 'Administración de métodos de pago',
         component: PaymentMethodComponent,
       },
       {
@@ -128,6 +129,11 @@ export const routes: Routes = [
         path: 'products',
         title: 'Administración de productos',
         component: ProductsComponent,
+      },
+      {
+        path: 'offices',
+        title: 'Administración de sucursales',
+        component: OfficeComponent,
       },
     ],
   },

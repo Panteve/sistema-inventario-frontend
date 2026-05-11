@@ -19,7 +19,10 @@ export interface EmployeeResponse {
   password: string;
   status: boolean;
   createdAt: string;
-  officeId?: number;
+  office?: {
+    id: number;
+    name: string;
+  }
   role: 'ADMIN' | 'CASHIER';
 }
 
