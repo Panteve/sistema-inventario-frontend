@@ -1,16 +1,15 @@
 /* You can add global styles to this file, and also import other style files */
-@import "tailwindcss";
- @plugin "daisyui" {
+@import 'tailwindcss';
+@plugin "daisyui" {
   themes: dark, dracula, light;
-  prefix: "du-";
+  prefix: 'du-';
 }
 
-
 @plugin "daisyui/theme" {
-  name: "light";
+  name: 'light';
   default: true;
   prefersdark: false;
-  color-scheme: "light";
+  color-scheme: 'light';
   --color-base-100: oklch(98% 0.002 247.839);
   --color-base-200: oklch(96% 0.003 264.542);
   --color-base-300: oklch(92% 0.006 264.531);
@@ -40,7 +39,6 @@
   --depth: 0;
   --noise: 0;
 }
-
 
 .enter-animation-izquierdaDerecha {
   animation: slide-fade-izquierdaDerecha 2s;
@@ -72,4 +70,28 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* Drawer scrollbar */
+.drawer-scrollbar {
+  color: var(--color-base-content);
+  scrollbar-width: thin;
+  scrollbar-gutter: auto;
+  scrollbar-color: var(--color-base-content);
+}
+
+.drawer-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.drawer-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-base-content);
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background-clip: content-box;
+}
+
+.drawer-scrollbar::-webkit-scrollbar-track {
+  background-color: var(--color-base-content);
 }
