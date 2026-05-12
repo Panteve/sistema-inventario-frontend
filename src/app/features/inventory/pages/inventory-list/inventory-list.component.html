@@ -5,12 +5,25 @@
       <div
         class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
       >
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-          <path
-            class="w-5 h-5 text-primary"
-            fill="currentColor"
-            d="M5 22q-.825 0-1.412-.587T3 20V8.725q-.45-.275-.725-.712T2 7V4q0-.825.588-1.412T4 2h16q.825 0 1.413.588T22 4v3q0 .575-.275 1.013T21 8.724V20q0 .825-.587 1.413T19 22zM5 9v11h14V9zM4 7h16V4H4zm6 7h4q.425 0 .713-.288T15 13t-.288-.712T14 12h-4q-.425 0-.712.288T9 13t.288.713T10 14m2 .5"
-          />
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          class="text-primary"
+        >
+          <g
+            fill="none"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+          >
+            <path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11" />
+            <path
+              d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8zM6 13h12M6 17h12"
+            />
+          </g>
         </svg>
       </div>
       <div>
@@ -51,22 +64,24 @@
             @if (authStore.isAdmin()) {
               <select class="du-select du-select-sm w-full" (change)="changeOffice($event)">
                 @if (officeStore.loading()) {
-                  @if(authStore.cashRegisterIsOpen()){
-                    <option selected>{{authStore.employee()?.officeName}}</option>
+                  @if (authStore.cashRegisterIsOpen()) {
+                    <option selected>{{ authStore.employee()?.officeName }}</option>
                   }
                   <option disabled>Cargando oficinas...</option>
                 } @else {
-                  @if(!authStore.cashRegisterIsOpen()){
+                  @if (!authStore.cashRegisterIsOpen()) {
                     <option disabled selected>Seleccine una oficina</option>
                   }
                   @for (office of officeStore.offices(); track office.id) {
-                    <option [selected]="authStore.employee()?.officeId === office.id" [value]="office.id">
+                    <option
+                      [selected]="authStore.employee()?.officeId === office.id"
+                      [value]="office.id"
+                    >
                       {{ office.name }}
                     </option>
                   } @empty {
                     <option disabled selected>No hay oficinas disponibles</option>
                   }
-                  
                 }
               </select>
             } @else {
