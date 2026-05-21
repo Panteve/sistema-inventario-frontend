@@ -1,7 +1,0 @@
-User-agent: *
-Allow: /
-
-# Bloquear áreas administrativas y privadas
-Disallow: /admin/
-Disallow: /private/
-Disallow: /api/
