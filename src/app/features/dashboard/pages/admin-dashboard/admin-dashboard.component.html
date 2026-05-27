@@ -1,170 +1,9 @@
 <section class="min-h-screen">
   <div class="mx-auto max-w-6xl space-y-6 px-4 py-8">
-    <div class="flex flex-col gap-3 md:flex-row md:items-stretch">
-      <div class="grid flex-1 items-stretch gap-3 lg:grid-cols-5">
-        <div class="w-full">
-          <select
-            class="du-select du-select-bordered du-select-sm w-full"
-            (change)="changeOffice($event)"
-            [value]="queryParams().officeId ?? ''"
-          >
-            @if (officeStore.loading()) {
-              <option disabled selected>Cargando sucursales...</option>
-            } @else {
-              <option value="" [selected]="queryParams().officeId === undefined">
-                Todas las sucursales
-              </option>
-              @for (office of officeStore.offices(); track office.id) {
-                <option [value]="office.id" [selected]="office.id === queryParams().officeId">
-                  {{ office.name }}
-                </option>
-              } @empty {
-                <option disabled selected>No hay sucursales disponibles</option>
-              }
-            }
-          </select>
-        </div>
-        <div class="w-full">
-          <div class="du-join w-full">
-            <button
-              class="du-btn du-btn-sm du-join-item flex-1"
-              [class.du-btn-active]="isTodayRange()"
-              (click)="setTodayRange()"
-              type="button"
-            >
-              Hoy
-            </button>
-            <button
-              class="du-btn du-btn-sm du-join-item flex-1"
-              [class.du-btn-active]="isCurrentWeekRange()"
-              (click)="setCurrentWeekRange()"
-              type="button"
-            >
-              Semana
-            </button>
-            <button
-              class="du-btn du-btn-sm du-join-item flex-1"
-              [class.du-btn-active]="isCurrentMonthRange()"
-              (click)="setCurrentMonthRange()"
-              type="button"
-            >
-              Mes
-            </button>
-          </div>
-        </div>
-        <fieldset class="w-full">
-          <button
-            class="du-input du-input-bordered du-input-sm flex w-full items-center justify-between gap-2 not-first:cursor-pointer"
-            popovertarget="cally-popover1"
-            id="cally1"
-            style="anchor-name: --cally1"
-          >
-            {{ queryParams().startDate | date: 'yyyy-MM-dd' }} -
-            {{ queryParams().endDate | date: 'yyyy-MM-dd' }}
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
-              <path
-                fill="currentColor"
-                d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
-              />
-              <path
-                fill="currentColor"
-                d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
-              />
-            </svg>
-          </button>
-          <div
-            popover
-            id="cally-popover1"
-            class="du-dropdown bg-base-100 rounded-box shadow-lg p-4 overflow-visible w-fit"
-            style="position-anchor: --cally1"
-          >
-            <calendar-range
-              months="2"
-              [max]="todayIso"
-              [value]="rangeValue"
-              (rangestart)="changeStartDate($event)"
-              (rangeend)="changeEndDate($event)"
-            >
-              <svg
-                aria-label="Previous"
-                slot="previous"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                style="width: 16px; height: 16px"
-              >
-                <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
-              </svg>
-              <svg
-                aria-label="Next"
-                slot="next"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-                style="width: 16px; height: 16px"
-              >
-                <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
-              </svg>
-              <div style="display: flex; gap: 1rem">
-                <calendar-month></calendar-month>
-                <calendar-month offset="1"></calendar-month>
-              </div>
-            </calendar-range>
-          </div>
-        </fieldset>
-        <div class="w-full">
-          <select
-            class="du-select du-select-bordered du-select-sm w-full"
-            (change)="changeEmployee($event)"
-            [value]="queryParams().employeeId ?? ''"
-          >
-            @if (employeeStore.loading()) {
-              <option disabled selected>Cargando empleados...</option>
-            } @else {
-              <option value="" [selected]="queryParams().employeeId === undefined">
-                Todos los empleados
-              </option>
-              @for (employee of employeeStore.employees(); track employee.id) {
-                <option [value]="employee.id" [selected]="employee.id === queryParams().employeeId">
-                  {{ employee.name }}
-                </option>
-              } @empty {
-                <option disabled selected>No hay empleados disponibles</option>
-              }
-            }
-          </select>
-        </div>
-        <div class="w-full">
-          <select
-            class="du-select du-select-bordered du-select-sm w-full"
-            (change)="changePaymentMethod($event)"
-            [value]="queryParams().paymentMethodId ?? ''"
-          >
-            @if (paymentMethodStore.loading()) {
-              <option disabled selected>Cargando métodos de pago...</option>
-            } @else {
-              <option value="" [selected]="queryParams().paymentMethodId === undefined">
-                Todos los metodos
-              </option>
-              @for (method of paymentMethodStore.paymentMethods(); track method.id) {
-                <option
-                  [value]="method.id"
-                  [selected]="method.id === queryParams().paymentMethodId"
-                >
-                  {{ method.name }}
-                </option>
-              } @empty {
-                <option disabled selected>No hay metodos disponibles</option>
-              }
-            }
-          </select>
-        </div>
-      </div>
-      <div class="w-auto self-end md:ml-1">
-        <button type="button" class="du-btn du-btn-sm du-btn-ghost px-4" (click)="clearFilters()">
-          Limpiar filtros
-        </button>
-      </div>
-    </div>
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <app-admin-dashboard-filters
+      (filtersChange)="onFiltersChange($event)"
+    ></app-admin-dashboard-filters>
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4 mt-4">
       <div
         class="du-card relative overflow-hidden border border-success/20 bg-linear-to-br from-success/10 via-base-100 to-base-200 shadow-sm"
       >
@@ -172,7 +11,8 @@
         <div class="du-card-body gap-4 p-5">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-xs uppercase tracking-[0.24em] opacity-60">Ventas totales</p>
+              <p class="text-xs uppercase tracking-[0.24em] opacity-60">Ventas</p>
+              <p class="text-xs uppercase tracking-[0.24em] opacity-60">totales</p>
               <p class="mt-2 text-3xl font-semibold tracking-tight">
                 {{ dashboardSummary().totalSales.current | cop }}
               </p>
@@ -253,7 +93,8 @@
         <div class="du-card-body gap-4 p-5">
           <div class="flex items-start justify-between gap-4">
             <div>
-              <p class="text-xs uppercase tracking-[0.24em] opacity-60">Ticket promedio</p>
+              <p class="text-xs uppercase tracking-[0.24em] opacity-60">Ticket</p>
+              <p class="text-xs uppercase tracking-[0.24em] opacity-60">promedio</p>
               <p class="mt-2 text-3xl font-semibold tracking-tight">
                 {{ dashboardSummary().averageBill.current | cop }}
               </p>
@@ -428,28 +269,39 @@
 
     <div class="grid gap-6 lg:grid-cols-2">
       <div class="du-card border border-base-300 bg-base-100">
-        <div class="du-card-body space-y-4 justify-start">
-          <div class="text-xs uppercase tracking-[0.2em] opacity-60">Cajas activas</div>
-          <div class="grid grid-cols-3 items-start gap-4 text-xs font-semibold opacity-60">
+        <div class="du-card-body gap-4 justify-start">
+          <div class="flex items-center justify-between gap-4">
+            <div class="flex items-center gap-2 text-xs uppercase tracking-[0.2em] opacity-60">
+              <span>Cajas activas</span>
+            </div>
+            <span
+              class="rounded-full border border-neutral/30 bg-base-200/80 px-3 py-1 text-xs font-semibold"
+            >
+              {{ dashboardSummary().activeCashRegisters.length }} abiertas
+            </span>
+          </div>
+          <div
+            class="grid grid-cols-3 items-center gap-4 rounded-2xl border border-base-200/70 bg-base-200/50 px-3 py-2 text-xs font-semibold uppercase tracking-[0.12em] opacity-70"
+          >
             <span>Cajero</span>
             <span>Sucursal</span>
             <span>Desde</span>
           </div>
-          <div class="space-y-3 text-sm">
+          <div class="space-y-2 text-sm">
             @for (register of dashboardSummary().activeCashRegisters; track register.id) {
               <div
-                class="grid grid-cols-3 items-start gap-4 cursor-pointer hover:bg-base-300 rounded-lg p-1"
+                class="grid grid-cols-3 items-start gap-4 rounded-xl border border-transparent px-3 py-2 transition-colors hover:border-base-300 hover:bg-base-200/90 cursor-pointer"
                 (click)="navigateToCashRegister(register.id)"
               >
-                <span>{{ register.operateByName }}</span>
-                <span>{{ register.officeName }}</span>
-                <span class="whitespace-nowrap">{{
+                <span class="font-medium">{{ register.operateByName }}</span>
+                <span class="opacity-80">{{ register.officeName }}</span>
+                <span class="whitespace-nowrap font-mono text-xs opacity-70">{{
                   register.openedAt | date: 'dd/MM/yyyy HH:mm'
                 }}</span>
               </div>
             } @empty {
               <div
-                class="rounded-2xl border border-dashed border-base-300 px-4 py-6 text-center text-sm opacity-60"
+                class="rounded-2xl border border-dashed border-base-300 bg-base-200/40 px-4 py-6 text-center text-sm opacity-60"
               >
                 No hay cajas activas.
               </div>

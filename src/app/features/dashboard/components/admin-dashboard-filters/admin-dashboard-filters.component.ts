@@ -1,0 +1,342 @@
+import { DatePipe } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
+import 'cally';
+import { OfficeStore } from '../../../../shared/store/office-store';
+import { EmployeeStore } from '../../../../shared/store/employee-store';
+import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
+import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.interfacce';
+
+@Component({
+  selector: 'app-admin-dashboard-filters',
+  imports: [DatePipe],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
+  templateUrl: './admin-dashboard-filters.component.html',
+  styleUrl: './admin-dashboard-filters.component.css',
+})
+export class AdminDashboardFiltersComponent implements OnInit {
+  readonly maxRangeMonths = 3;
+  readonly #filtersStorageKey = 'adminDashboardFilters';
+
+  officeStore = inject(OfficeStore);
+  employeeStore = inject(EmployeeStore);
+  paymentMethodStore = inject(PaymentMethodStore);
+  #route = inject(ActivatedRoute);
+
+  readonly #today = new Date();
+  readonly todayIso = this.#toIsoDate(this.#today);
+
+  filters = signal<ParamsGetDashboard>(this.#buildDefaultParams());
+  filtersChange = output<ParamsGetDashboard>();
+
+  get rangeValue(): string {
+    return `${this.filters().startDate}/${this.filters().endDate}`;
+  }
+
+  ngOnInit(): void {
+    const defaults = this.#buildDefaultParams();
+    const params = this.#route.snapshot.queryParamMap;
+    const hasNonDateParams = ['officeId', 'employeeId', 'paymentMethodId'].some((key) =>
+      params.has(key),
+    );
+    const savedFilters = hasNonDateParams ? null : this.#loadSavedFilters();
+    const sourceParams = savedFilters ?? defaults;
+
+    const startDate = this.#isIsoDate(params.get('startDate'))
+      ? params.get('startDate')!
+      : sourceParams.startDate;
+    const endDate = this.#isIsoDate(params.get('endDate'))
+      ? params.get('endDate')!
+      : sourceParams.endDate;
+    const officeId = this.#parseNumber(params.get('officeId')) ?? sourceParams.officeId;
+    const employeeId = this.#parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
+    const paymentMethodId =
+      this.#parseNumber(params.get('paymentMethodId')) ?? sourceParams.paymentMethodId;
+
+    this.filters.set(
+      this.#normalizeDateRange({
+        ...defaults,
+        startDate,
+        endDate,
+        officeId,
+        employeeId,
+        paymentMethodId,
+      }),
+    );
+    this.#loadEmployeesForOffice();
+    this.#emitFilters();
+  }
+
+  changeStartDate(event: Event) {
+    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!startDate) return;
+    this.filters.update((filters) =>
+      this.#normalizeDateRange({
+        ...filters,
+        startDate,
+      }),
+    );
+    this.#emitFilters();
+  }
+
+  changeEndDate(event: Event) {
+    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!endDate) return;
+    this.filters.update((filters) =>
+      this.#normalizeDateRange({
+        ...filters,
+        endDate,
+      }),
+    );
+    this.#emitFilters();
+  }
+
+  changeOffice(event: Event) {
+    const officeValue = Number((event.target as HTMLSelectElement).value);
+    const officeId = officeValue || undefined;
+    this.filters.update((filters) => ({
+      ...filters,
+      officeId,
+      employeeId: undefined,
+    }));
+    this.employeeStore.loadEmployees(officeId ?? 0);
+    this.#emitFilters();
+  }
+
+  changeEmployee(event: Event) {
+    const employeeId = Number((event.target as HTMLSelectElement).value);
+    this.filters.update((filters) => ({
+      ...filters,
+      employeeId: employeeId || undefined,
+    }));
+    this.#emitFilters();
+  }
+
+  changePaymentMethod(event: Event) {
+    const paymentMethodId = Number((event.target as HTMLSelectElement).value);
+    this.filters.update((filters) => ({
+      ...filters,
+      paymentMethodId: paymentMethodId || undefined,
+    }));
+    this.#emitFilters();
+  }
+
+  setTodayRange() {
+    const today = this.todayIso;
+    this.filters.update((filters) =>
+      this.#normalizeDateRange({
+        ...filters,
+        startDate: today,
+        endDate: today,
+      }),
+    );
+    this.#emitFilters();
+  }
+
+  setCurrentWeekRange() {
+    const startDate = this.#toIsoDate(this.#startOfWeek(this.#today));
+    this.filters.update((filters) =>
+      this.#normalizeDateRange({
+        ...filters,
+        startDate,
+        endDate: this.todayIso,
+      }),
+    );
+    this.#emitFilters();
+  }
+
+  setCurrentMonthRange() {
+    const startDate = this.#toIsoDate(this.#startOfMonth(this.#today));
+    this.filters.update((filters) =>
+      this.#normalizeDateRange({
+        ...filters,
+        startDate,
+        endDate: this.todayIso,
+      }),
+    );
+    this.#emitFilters();
+  }
+
+  isTodayRange(): boolean {
+    return this.filters().startDate === this.todayIso && this.filters().endDate === this.todayIso;
+  }
+
+  isCurrentWeekRange(): boolean {
+    const weekStart = this.#toIsoDate(this.#startOfWeek(this.#today));
+    return this.filters().startDate === weekStart && this.filters().endDate === this.todayIso;
+  }
+
+  isCurrentMonthRange(): boolean {
+    const monthStart = this.#toIsoDate(this.#startOfMonth(this.#today));
+    return this.filters().startDate === monthStart && this.filters().endDate === this.todayIso;
+  }
+
+  clearFilters() {
+    this.filters.set(this.#buildDefaultParams());
+    this.#loadEmployeesForOffice();
+    this.#clearSavedFilters();
+    this.#emitFilters();
+  }
+
+  #emitFilters() {
+    this.#saveFilters();
+    this.filtersChange.emit(this.filters());
+  }
+
+  #buildDefaultParams(): ParamsGetDashboard {
+    const startDate = this.todayIso;
+    const endDate = this.todayIso;
+
+    return {
+      startDate,
+      endDate,
+      officeId: undefined,
+      employeeId: undefined,
+      paymentMethodId: undefined,
+    };
+  }
+
+  #loadEmployeesForOffice(): void {
+    const officeId = this.filters().officeId ?? 0;
+    this.employeeStore.loadEmployees(officeId);
+  }
+
+  #normalizeDateRange(filters: ParamsGetDashboard): ParamsGetDashboard {
+    let { startDate, endDate } = filters;
+
+    if (startDate > this.todayIso) {
+      startDate = this.todayIso;
+    }
+
+    const maxEndDate = this.#addMonthsIso(startDate, this.maxRangeMonths);
+    const cappedMaxEndDate = maxEndDate > this.todayIso ? this.todayIso : maxEndDate;
+
+    if (endDate < startDate) {
+      endDate = startDate;
+    }
+    if (endDate > cappedMaxEndDate) {
+      endDate = cappedMaxEndDate;
+    }
+
+    return {
+      ...filters,
+      startDate,
+      endDate,
+    };
+  }
+
+  #coerceIsoDate(value: unknown): string | null {
+    if (value instanceof Date) {
+      return this.#toIsoDateUtc(value);
+    }
+    if (typeof value === 'string' && this.#isIsoDate(value)) {
+      return value;
+    }
+    return null;
+  }
+
+  #isIsoDate(value: string | null | undefined): value is string {
+    return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
+  }
+
+  #parseNumber(value: string | null | undefined): number | undefined {
+    if (value === null || value === undefined || value.trim() === '') return undefined;
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  #saveFilters(): void {
+    try {
+      localStorage.setItem(this.#filtersStorageKey, JSON.stringify(this.filters()));
+    } catch (error) {
+      console.error('Failed to save filters to localStorage:', error);
+    }
+  }
+
+  #loadSavedFilters(): ParamsGetDashboard | null {
+    try {
+      const raw = localStorage.getItem(this.#filtersStorageKey);
+      if (!raw) return null;
+      const parsed = JSON.parse(raw) as Partial<ParamsGetDashboard>;
+      const startDate =
+        typeof parsed.startDate === 'string' && this.#isIsoDate(parsed.startDate)
+          ? parsed.startDate
+          : null;
+      const endDate =
+        typeof parsed.endDate === 'string' && this.#isIsoDate(parsed.endDate)
+          ? parsed.endDate
+          : null;
+
+      if (!startDate || !endDate) {
+        return null;
+      }
+
+      const officeId =
+        typeof parsed.officeId === 'string'
+          ? this.#parseNumber(parsed.officeId)
+          : (parsed.officeId ?? undefined);
+      const employeeId =
+        typeof parsed.employeeId === 'string'
+          ? this.#parseNumber(parsed.employeeId)
+          : (parsed.employeeId ?? undefined);
+      const paymentMethodId =
+        typeof parsed.paymentMethodId === 'string'
+          ? this.#parseNumber(parsed.paymentMethodId)
+          : (parsed.paymentMethodId ?? undefined);
+
+      return {
+        ...parsed,
+        startDate,
+        endDate,
+        officeId,
+        employeeId,
+        paymentMethodId,
+      } as ParamsGetDashboard;
+    } catch (error) {
+      console.error('Failed to load filters from localStorage:', error);
+      return null;
+    }
+  }
+
+  #clearSavedFilters(): void {
+    try {
+      localStorage.removeItem(this.#filtersStorageKey);
+    } catch (error) {
+      console.error('Failed to clear filters from localStorage:', error);
+    }
+  }
+
+  #toIsoDate(date: Date): string {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  #toIsoDateUtc(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  #startOfWeek(date: Date): Date {
+    const copy = new Date(date);
+    const day = copy.getDay();
+    const diff = day === 0 ? -6 : 1 - day;
+    copy.setDate(copy.getDate() + diff);
+    copy.setHours(0, 0, 0, 0);
+    return copy;
+  }
+
+  #startOfMonth(date: Date): Date {
+    return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  #addMonthsIso(isoDate: string, months: number): string {
+    const [year, month, day] = isoDate.split('-').map(Number);
+    const date = new Date(year, month - 1, day);
+    date.setMonth(date.getMonth() + months);
+    return this.#toIsoDate(date);
+  }
+}
