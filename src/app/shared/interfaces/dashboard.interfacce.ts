@@ -33,3 +33,52 @@ export interface DashboardSummary {
     openedAt: string;
   }[];
 }
+
+export interface DashboardProduct {
+  topSellingProductsByQuantity: {
+    productId: number;
+    name: string;
+    quantity: number;
+  }[];
+  topSellingProductsByRevenue: {
+    productId: number;
+    name: string;
+    quantity: number;
+  }[];
+
+  lowStockProducts: {
+    name: string;
+    officeName: string;
+    quantity: number;
+  }[];
+
+  outOfStockProducts: {
+    name: string;
+    officeName: string;
+    quantity: number;
+  }[];
+}
+
+export interface DashboardCharts {
+  currentOfficeSales: {
+    officeId: number;
+    officeName: string;
+    total: number;
+  }[];
+  previousOfficeSales: {
+    officeId: number;
+    officeName: string;
+    total: number;
+  }[];
+  paymentMethodDistribution: {
+    paymentMethodId: number;
+    paymentMethodName: string;
+    paymentMethodCode: string;
+    count: number;
+  }[];
+  salesByHour: {
+    hour: number;
+    total: number;
+    count: number;
+  }[];
+}

@@ -12,6 +12,10 @@
         "node",
         "%USERPROFILE%/.console-ninja/mcp/"
       ]
+    },
+    "apexcharts": {
+      "command": "npx",
+      "args": ["-y", "apexcharts-mcp"]
     }
   
 }
