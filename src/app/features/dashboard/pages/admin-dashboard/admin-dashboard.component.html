@@ -179,57 +179,19 @@
       <div class="du-card border border-base-300 bg-base-100 lg:col-span-5">
         <div class="du-card-body space-y-4">
           <p class="text-xs uppercase tracking-[0.2em] opacity-60">Metodos de pago</p>
-          <div class="flex flex-wrap items-center gap-6">
-            <div
-              class="h-32 w-32 rounded-full border border-dashed border-base-300"
-              aria-hidden="true"
-            ></div>
-            <div class="space-y-3 text-sm">
-              <div class="flex items-center justify-between gap-6">
-                <span>Efectivo</span>
-                <span class="opacity-60">62%</span>
-              </div>
-              <div class="flex items-center justify-between gap-6">
-                <span>Tarjeta</span>
-                <span class="opacity-60">28%</span>
-              </div>
-              <div class="flex items-center justify-between gap-6">
-                <span>Transf.</span>
-                <span class="opacity-60">10%</span>
-              </div>
-            </div>
-          </div>
+          <app-admin-dashboard-pie-chart
+            [dashboardCharts]="dashboardCharts()"
+          ></app-admin-dashboard-pie-chart>
         </div>
       </div>
     </div>
 
-    <div class="grid gap-6 lg:grid-cols-2">
-      <div class="du-card border border-base-300 bg-base-100">
-        <div class="du-card-body space-y-4">
-          <p class="text-xs uppercase tracking-[0.2em] opacity-60">Ventas por sucursal</p>
-          <div class="du-table w-full">
-            <div id="chart">
-              <apx-chart
-                [series]="chartOptions.series!"
-                [chart]="chartOptions.chart!"
-                [colors]="chartOptions.colors!"
-                [plotOptions]="chartOptions.plotOptions!"
-                [dataLabels]="chartOptions.dataLabels!"
-                [stroke]="chartOptions.stroke!"
-                [xaxis]="chartOptions.xaxis!"
-                [yaxis]="chartOptions.yaxis!"
-                [grid]="chartOptions.grid!"
-                [fill]="chartOptions.fill!"
-                [tooltip]="chartOptions.tooltip!"
-                [legend]="chartOptions.legend!"
-              ></apx-chart>
-            </div>
+    <div class="grid gap-6 lg:grid-cols-12">
+      <div class="du-card border border-base-300 bg-base-100 lg:col-span-5">
+        <div class="du-card-body gap-4">
+          <div>
+            <p class="text-xs uppercase tracking-[0.2em] opacity-60">Top productos</p>
           </div>
-        </div>
-      </div>
-      <div class="du-card border border-base-300 bg-base-100">
-        <div class="du-card-body space-y-4">
-          <p class="text-xs uppercase tracking-[0.2em] opacity-60">Top productos</p>
           <div class="space-y-3">
             <label
               class="flex items-center gap-2 rounded-full border border-base-300 px-3 py-1 justify-center text-xs font-semibold uppercase tracking-[0.12em]"
@@ -246,24 +208,22 @@
             </label>
             @if (topProductsByRevenue()) {
               @for (item of dashboardProducts().topSellingProductsByRevenue; track item.productId) {
-                <div>
-                  <div class="flex items-center justify-between text-sm">
-                    <span>{{ item.name }}</span>
-                    <span class="opacity-60">{{ item.quantity | cop }}</span>
-                  </div>
-                  <div
-                    class="h-2 w-full overflow-hidden rounded-full bg-base-content/10"
-                    role="progressbar"
-                    aria-label="Revenue del producto"
-                    aria-valuemin="0"
-                    [attr.aria-valuemax]="topRevenueMax()"
-                    [attr.aria-valuenow]="safeProgressValue(item.quantity)"
-                  >
-                    <span
-                      class="block h-full rounded-full bg-linear-to-r from-primary to-secondary shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
-                      [style.width.%]="animatedProgressPercent(item.quantity, topRevenueMax())"
-                    ></span>
-                  </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span>{{ item.name }}</span>
+                  <span class="opacity-60">{{ item.quantity | cop }}</span>
+                </div>
+                <div
+                  class="h-2 w-full overflow-hidden rounded-full bg-base-content/10"
+                  role="progressbar"
+                  aria-label="Revenue del producto"
+                  aria-valuemin="0"
+                  [attr.aria-valuemax]="topRevenueMax()"
+                  [attr.aria-valuenow]="safeProgressValue(item.quantity)"
+                >
+                  <span
+                    class="block h-full rounded-full bg-linear-to-r from-primary to-secondary shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
+                    [style.width.%]="animatedProgressPercent(item.quantity, topRevenueMax())"
+                  ></span>
                 </div>
               }
             } @else {
@@ -271,46 +231,50 @@
                 item of dashboardProducts().topSellingProductsByQuantity;
                 track item.productId
               ) {
-                <div>
-                  <div class="flex items-center justify-between text-sm">
-                    <span>{{ item.name }}</span>
-                    <span class="opacity-60">{{ item.quantity }}u</span>
-                  </div>
-                  <div
-                    class="h-2 w-full overflow-hidden rounded-full bg-base-content/10"
-                    role="progressbar"
-                    aria-label="Cantidad vendida del producto"
-                    aria-valuemin="0"
-                    [attr.aria-valuemax]="topQuantityMax()"
-                    [attr.aria-valuenow]="safeProgressValue(item.quantity)"
-                  >
-                    <span
-                      class="block h-full rounded-full bg-linear-to-r from-primary to-secondary shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
-                      [style.width.%]="animatedProgressPercent(item.quantity, topQuantityMax())"
-                    ></span>
-                  </div>
+                <div class="flex items-center justify-between text-sm">
+                  <span>{{ item.name }}</span>
+                  <span class="opacity-60">{{ item.quantity }}u</span>
+                </div>
+                <div
+                  class="h-2 w-full overflow-hidden rounded-full bg-base-content/10"
+                  role="progressbar"
+                  aria-label="Cantidad vendida del producto"
+                  aria-valuemin="0"
+                  [attr.aria-valuemax]="topQuantityMax()"
+                  [attr.aria-valuenow]="safeProgressValue(item.quantity)"
+                >
+                  <span
+                    class="block h-full rounded-full bg-linear-to-r from-primary to-secondary shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
+                    [style.width.%]="animatedProgressPercent(item.quantity, topQuantityMax())"
+                  ></span>
                 </div>
               }
             }
           </div>
         </div>
       </div>
+      <div class="du-card border border-base-300 bg-base-100 lg:col-span-7">
+        <div class="du-card-body space-y-4">
+          <p class="text-xs uppercase tracking-[0.2em] opacity-60">Ventas por sucursal</p>
+          <app-admin-dashboard-bar-chart
+            [dashboardCharts]="dashboardCharts()"
+          ></app-admin-dashboard-bar-chart>
+        </div>
+      </div>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-2">
       <div class="du-card border border-base-300 bg-base-100">
-        <div class="du-card-body gap-4 justify-start">
+        <div class="du-card-body gap-4">
           <div class="flex items-center justify-between gap-4">
-            <div class="flex items-center gap-2 text-xs uppercase tracking-[0.2em] opacity-60">
-              <span>Cajas activas</span>
-            </div>
+            <p class="text-xs uppercase tracking-[0.2em] opacity-60">Cajas activas</p>
             <span
               class="rounded-full border border-neutral/30 bg-base-200/80 px-3 py-1 text-xs font-semibold"
             >
               {{ dashboardSummary().activeCashRegisters.length }} abiertas
             </span>
           </div>
-          <div class="max-h-64 overflow-y-auto overflow-x-auto pr-1">
+          <div class="overflow-y-auto overflow-x-auto pr-1">
             <table class="du-table w-full">
               <thead>
                 <tr class="text-xs font-semibold uppercase tracking-[0.12em] opacity-60">

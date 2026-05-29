@@ -12,7 +12,6 @@ import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.inte
   imports: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-dashboard-filters.component.html',
-  styleUrl: './admin-dashboard-filters.component.css',
 })
 export class AdminDashboardFiltersComponent implements OnInit {
   readonly maxRangeMonths = 3;

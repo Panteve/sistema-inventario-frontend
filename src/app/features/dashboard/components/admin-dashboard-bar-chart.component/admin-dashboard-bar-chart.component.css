@@ -30,7 +30,7 @@
 }
 
 :host ::ng-deep .apexcharts-menu-icon:hover {
-  border-color: color-mix(in oklab, var(--color-primary) 45%, transparent);
+  border-color: var(--color-base-200);
   background: var(--color-base-200);
   color: var(--color-primary);
 }
