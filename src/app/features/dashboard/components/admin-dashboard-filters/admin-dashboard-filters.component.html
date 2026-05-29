@@ -25,24 +25,27 @@
     <div class="w-full">
       <div class="du-join w-full">
         <button
-          class="du-btn du-btn-sm du-join-item flex-1"
-          [class.du-btn-active]="isTodayRange()"
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isTodayRange()"
+          [class.du-btn-outline]="!isTodayRange()"
           (click)="setTodayRange()"
           type="button"
         >
           Hoy
         </button>
         <button
-          class="du-btn du-btn-sm du-join-item flex-1"
-          [class.du-btn-active]="isCurrentWeekRange()"
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isCurrentWeekRange()"
+          [class.du-btn-outline]="!isCurrentWeekRange()"
           (click)="setCurrentWeekRange()"
           type="button"
         >
           Semana
         </button>
         <button
-          class="du-btn du-btn-sm du-join-item flex-1"
-          [class.du-btn-active]="isCurrentMonthRange()"
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isCurrentMonthRange()"
+          [class.du-btn-outline]="!isCurrentMonthRange()"
           (click)="setCurrentMonthRange()"
           type="button"
         >
@@ -155,7 +158,11 @@
     </div>
   </div>
   <div class="w-auto self-end md:ml-1">
-    <button type="button" class="du-btn du-btn-sm du-btn-ghost px-4" (click)="clearFilters()">
+    <button
+      type="button"
+      class="du-btn du-btn-sm du-btn-outline du-btn-secondary px-4"
+      (click)="clearFilters()"
+    >
       Limpiar filtros
     </button>
   </div>

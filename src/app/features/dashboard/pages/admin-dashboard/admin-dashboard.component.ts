@@ -12,6 +12,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { DashboardService } from '../../services/dashboard.service';
 import { AdminDashboardFiltersComponent } from '../../components/admin-dashboard-filters/admin-dashboard-filters.component';
+import { AdminDashboardAreaChartComponent } from '../../components/admin-dashboard-area-chart.component/admin-dashboard-area-chart.component';
 import { AdminDashboardBarChartComponent } from '../../components/admin-dashboard-bar-chart.component/admin-dashboard-bar-chart.component';
 import { AdminDashboardPieChartComponent } from '../../components/admin-dashboard-pie-chart.component/admin-dashboard-pie-chart.component';
 
@@ -21,6 +22,7 @@ import { AdminDashboardPieChartComponent } from '../../components/admin-dashboar
     AdminDashboardFiltersComponent,
     DatePipe,
     CopPipe,
+    AdminDashboardAreaChartComponent,
     AdminDashboardBarChartComponent,
     AdminDashboardPieChartComponent,
   ],
@@ -151,6 +153,18 @@ export class AdminDashboardComponent implements OnDestroy {
         this.safeProgressValue(item.quantity),
       ),
     );
+  }
+
+  progressBarClass(index: number): string {
+    const gradients = [
+      'bg-linear-to-r from-success to-emerald-400',
+      'bg-linear-to-r from-primary to-secondary',
+      'bg-linear-to-r from-info to-cyan-400',
+      'bg-linear-to-r from-warning to-amber-400',
+      'bg-linear-to-r from-accent to-teal-400',
+      'bg-linear-to-r from-error to-rose-400',
+    ];
+    return gradients[index % gradients.length];
   }
 
   navigateToCashRegister(registerId: number) {

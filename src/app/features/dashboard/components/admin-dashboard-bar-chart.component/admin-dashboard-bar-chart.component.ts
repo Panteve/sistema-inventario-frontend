@@ -1,15 +1,22 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { NgApexchartsModule } from 'ng-apexcharts';
 import { DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
-
 import { ChartOptions } from '../../types/chart-options.type';
-import { NgApexchartsModule } from 'ng-apexcharts';
+import {
+  dashboardChartAppearance,
+  dashboardChartApexTheme,
+  dashboardChartLegend,
+  dashboardChartToolbar,
+  dashboardChartTooltip,
+} from '../../utils/dashboard-chart-theme';
+
 @Component({
   selector: 'app-admin-dashboard-bar-chart',
   imports: [NgApexchartsModule],
   providers: [CopPipe],
   templateUrl: './admin-dashboard-bar-chart.component.html',
-  styleUrl: './admin-dashboard-bar-chart.component.css',
+  styleUrl: '../../styles/dashboard-chart.styles.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardBarChartComponent {
@@ -35,23 +42,14 @@ export class AdminDashboardBarChartComponent {
           data: previousSeries,
         },
       ],
+      theme: dashboardChartApexTheme(),
       chart: {
         type: 'bar',
         height: 320,
-        background: 'transparent',
-        foreColor: 'var(--color-base-content)',
+        width: '100%',
+        ...dashboardChartAppearance(),
         toolbar: {
-          show: true,
-          offsetY: -6,
-          tools: {
-            download: true,
-            selection: false,
-            zoom: false,
-            zoomin: false,
-            zoomout: false,
-            pan: false,
-            reset: false,
-          },
+          ...dashboardChartToolbar('ventas-por-sucursal'),
           export: {
             csv: {
               filename: 'ventas-por-sucursal',
@@ -59,12 +57,8 @@ export class AdminDashboardBarChartComponent {
               headerCategory: 'Sucursal',
               headerValue: 'Ventas',
             },
-            png: {
-              filename: 'ventas-por-sucursal',
-            },
-            svg: {
-              filename: 'ventas-por-sucursal',
-            },
+            png: { filename: 'ventas-por-sucursal' },
+            svg: { filename: 'ventas-por-sucursal' },
           },
         },
         selection: {
@@ -75,8 +69,8 @@ export class AdminDashboardBarChartComponent {
       plotOptions: {
         bar: {
           horizontal: false,
-          columnWidth: '55%',
-          borderRadius: 6,
+          columnWidth: '48%',
+          borderRadius: 8,
           borderRadiusApplication: 'end',
         },
       },
@@ -91,29 +85,36 @@ export class AdminDashboardBarChartComponent {
       xaxis: {
         categories,
         axisBorder: {
-          color: 'var(--color-base-300)',
+          show: false,
         },
         axisTicks: {
-          color: 'var(--color-base-300)',
+          show: false,
         },
         labels: {
           style: {
             colors: 'var(--color-base-content)',
+            fontSize: '12px',
+            fontFamily: 'inherit',
           },
         },
       },
-
       yaxis: {
         labels: {
           style: {
-            colors: 'var(--color-base-content)',
+            colors: 'color-mix(in oklab, var(--color-base-content) 70%, transparent)',
+            fontSize: '11px',
+            fontFamily: 'inherit',
           },
           formatter: (value) => this.#copPipe.transform(value),
         },
       },
       grid: {
-        borderColor: 'var(--color-base-content)',
+        borderColor: 'color-mix(in oklab, var(--color-base-content) 10%, transparent)',
         strokeDashArray: 4,
+        padding: {
+          left: 8,
+          right: 8,
+        },
         xaxis: {
           lines: {
             show: false,
@@ -126,25 +127,29 @@ export class AdminDashboardBarChartComponent {
         },
       },
       fill: {
-        opacity: 1,
+        opacity: [1, 0.55],
+        type: 'solid',
       },
       tooltip: {
+        ...dashboardChartTooltip(),
         shared: true,
         intersect: false,
         y: {
           formatter: (value) => this.#copPipe.transform(value),
         },
       },
-      legend: {
-        position: 'bottom',
-        horizontalAlign: 'center',
-        offsetY: 6,
-        itemMargin: {
-          horizontal: 12,
-          vertical: 6,
+      legend: dashboardChartLegend('bottom'),
+      states: {
+        hover: {
+          filter: {
+            type: 'darken',
+          },
         },
-        labels: {
-          colors: 'var(--color-base-content)',
+        active: {
+          allowMultipleDataPointsSelection: false,
+          filter: {
+            type: 'darken',
+          },
         },
       },
     };
