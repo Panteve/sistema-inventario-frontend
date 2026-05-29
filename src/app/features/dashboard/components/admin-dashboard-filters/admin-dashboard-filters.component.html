@@ -1,0 +1,169 @@
+<div class="flex flex-col gap-3 md:flex-row md:items-stretch">
+  <div class="grid flex-1 items-stretch gap-3 lg:grid-cols-5">
+    <div class="w-full">
+      <select
+        class="du-select du-select-bordered du-select-sm w-full"
+        (change)="changeOffice($event)"
+        [value]="filters().officeId ?? ''"
+      >
+        @if (officeStore.loading()) {
+          <option disabled selected>Cargando sucursales...</option>
+        } @else {
+          <option value="" [selected]="filters().officeId === undefined">
+            Todas las sucursales
+          </option>
+          @for (office of officeStore.offices(); track office.id) {
+            <option [value]="office.id" [selected]="office.id === filters().officeId">
+              {{ office.name }}
+            </option>
+          } @empty {
+            <option disabled selected>No hay sucursales disponibles</option>
+          }
+        }
+      </select>
+    </div>
+    <div class="w-full">
+      <div class="du-join w-full">
+        <button
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isTodayRange()"
+          [class.du-btn-outline]="!isTodayRange()"
+          (click)="setTodayRange()"
+          type="button"
+        >
+          Hoy
+        </button>
+        <button
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isCurrentWeekRange()"
+          [class.du-btn-outline]="!isCurrentWeekRange()"
+          (click)="setCurrentWeekRange()"
+          type="button"
+        >
+          Semana
+        </button>
+        <button
+          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+          [class.du-btn-primary]="isCurrentMonthRange()"
+          [class.du-btn-outline]="!isCurrentMonthRange()"
+          (click)="setCurrentMonthRange()"
+          type="button"
+        >
+          Mes
+        </button>
+      </div>
+    </div>
+    <fieldset class="w-full">
+      <button
+        class="du-input du-input-bordered du-input-sm flex w-full items-center justify-between gap-2 not-first:cursor-pointer"
+        popovertarget="cally-popover1"
+        id="cally1"
+        style="anchor-name: --cally1"
+        type="button"
+      >
+        {{ filters().startDate | date: 'yyyy-MM-dd' }} -
+        {{ filters().endDate | date: 'yyyy-MM-dd' }}
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path
+            fill="currentColor"
+            d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
+          />
+          <path
+            fill="currentColor"
+            d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
+          />
+        </svg>
+      </button>
+      <div
+        popover
+        id="cally-popover1"
+        class="du-dropdown bg-base-100 rounded-box shadow-lg p-4 overflow-visible w-fit"
+        style="position-anchor: --cally1"
+      >
+        <calendar-range
+          months="2"
+          [max]="todayIso"
+          [value]="rangeValue"
+          (rangestart)="changeStartDate($event)"
+          (rangeend)="changeEndDate($event)"
+        >
+          <svg
+            aria-label="Previous"
+            slot="previous"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            style="width: 16px; height: 16px"
+          >
+            <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
+          </svg>
+          <svg
+            aria-label="Next"
+            slot="next"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+            style="width: 16px; height: 16px"
+          >
+            <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
+          </svg>
+          <div style="display: flex; gap: 1rem">
+            <calendar-month></calendar-month>
+            <calendar-month offset="1"></calendar-month>
+          </div>
+        </calendar-range>
+      </div>
+    </fieldset>
+    <div class="w-full">
+      <select
+        class="du-select du-select-bordered du-select-sm w-full"
+        (change)="changeEmployee($event)"
+        [value]="filters().employeeId ?? ''"
+      >
+        @if (employeeStore.loading()) {
+          <option disabled selected>Cargando empleados...</option>
+        } @else {
+          <option value="" [selected]="filters().employeeId === undefined">
+            Todos los empleados
+          </option>
+          @for (employee of employeeStore.employees(); track employee.id) {
+            <option [value]="employee.id" [selected]="employee.id === filters().employeeId">
+              {{ employee.name }}
+            </option>
+          } @empty {
+            <option disabled selected>No hay empleados disponibles</option>
+          }
+        }
+      </select>
+    </div>
+    <div class="w-full">
+      <select
+        class="du-select du-select-bordered du-select-sm w-full"
+        (change)="changePaymentMethod($event)"
+        [value]="filters().paymentMethodId ?? ''"
+      >
+        @if (paymentMethodStore.loading()) {
+          <option disabled selected>Cargando métodos de pago...</option>
+        } @else {
+          <option value="" [selected]="filters().paymentMethodId === undefined">
+            Todos los metodos
+          </option>
+          @for (method of paymentMethodStore.paymentMethods(); track method.id) {
+            <option [value]="method.id" [selected]="method.id === filters().paymentMethodId">
+              {{ method.name }}
+            </option>
+          } @empty {
+            <option disabled selected>No hay metodos disponibles</option>
+          }
+        }
+      </select>
+    </div>
+  </div>
+  <div class="w-auto self-end md:ml-1">
+    <button
+      type="button"
+      class="du-btn du-btn-sm du-btn-outline du-btn-secondary px-4"
+      (click)="clearFilters()"
+    >
+      Limpiar filtros
+    </button>
+  </div>
+</div>

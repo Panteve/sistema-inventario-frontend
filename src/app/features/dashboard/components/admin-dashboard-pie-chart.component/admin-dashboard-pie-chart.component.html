@@ -1,0 +1,24 @@
+@if (hasData()) {
+  <apx-chart
+    [series]="chartOptions.series!"
+    [theme]="chartOptions.theme!"
+    [chart]="chartOptions.chart!"
+    [labels]="chartOptions.labels!"
+    [colors]="chartOptions.colors!"
+    [stroke]="chartOptions.stroke!"
+    [plotOptions]="chartOptions.plotOptions!"
+    [dataLabels]="chartOptions.dataLabels!"
+    [legend]="chartOptions.legend!"
+    [states]="chartOptions.states!"
+    [fill]="chartOptions.fill!"
+    [tooltip]="chartOptions.tooltip!"
+    [responsive]="chartOptions.responsive!"
+  ></apx-chart>
+} @else {
+  <div
+    class="flex min-h-[300px] items-center justify-center rounded-2xl border border-dashed border-base-300 bg-base-200/40 px-4 py-8 text-center text-sm opacity-60"
+    role="status"
+  >
+    No hay datos para mostrar.
+  </div>
+}

@@ -95,3 +95,89 @@
 .drawer-scrollbar::-webkit-scrollbar-track {
   background-color: var(--color-base-content);
 }
+
+/* ApexCharts toolbar — override default white frosted panel (apexcharts.css) */
+.apexcharts-toolbar,
+.apexcharts-theme-light .apexcharts-toolbar,
+.apexcharts-theme-dark .apexcharts-toolbar {
+  background: color-mix(in oklab, var(--color-base-200) 92%, transparent) !important;
+  border: 1px solid var(--color-base-300);
+  box-shadow: none;
+}
+
+.apexcharts-theme-light .apexcharts-menu-icon,
+.apexcharts-theme-light .apexcharts-zoom-icon,
+.apexcharts-theme-light .apexcharts-zoomin-icon,
+.apexcharts-theme-light .apexcharts-zoomout-icon,
+.apexcharts-theme-light .apexcharts-reset-icon,
+.apexcharts-theme-light .apexcharts-pan-icon,
+.apexcharts-theme-light .apexcharts-selection-icon,
+.apexcharts-theme-dark .apexcharts-menu-icon,
+.apexcharts-theme-dark .apexcharts-zoom-icon,
+.apexcharts-theme-dark .apexcharts-zoomin-icon,
+.apexcharts-theme-dark .apexcharts-zoomout-icon,
+.apexcharts-theme-dark .apexcharts-reset-icon,
+.apexcharts-theme-dark .apexcharts-pan-icon,
+.apexcharts-theme-dark .apexcharts-selection-icon,
+.apexcharts-menu-icon,
+.apexcharts-zoom-icon,
+.apexcharts-zoomin-icon,
+.apexcharts-zoomout-icon,
+.apexcharts-reset-icon,
+.apexcharts-pan-icon,
+.apexcharts-selection-icon {
+  color: var(--color-base-content) !important;
+  background: transparent !important;
+  border: 0 !important;
+}
+
+.apexcharts-theme-light .apexcharts-menu-icon:hover,
+.apexcharts-theme-light .apexcharts-zoom-icon:not(.apexcharts-selected):hover,
+.apexcharts-theme-light .apexcharts-zoomin-icon:hover,
+.apexcharts-theme-light .apexcharts-zoomout-icon:hover,
+.apexcharts-theme-light .apexcharts-reset-icon:hover,
+.apexcharts-theme-dark .apexcharts-menu-icon:hover,
+.apexcharts-theme-dark .apexcharts-zoom-icon:not(.apexcharts-selected):hover,
+.apexcharts-theme-dark .apexcharts-zoomin-icon:hover,
+.apexcharts-theme-dark .apexcharts-zoomout-icon:hover,
+.apexcharts-theme-dark .apexcharts-reset-icon:hover,
+.apexcharts-menu-icon:hover,
+.apexcharts-zoom-icon:hover,
+.apexcharts-zoomin-icon:hover,
+.apexcharts-zoomout-icon:hover,
+.apexcharts-reset-icon:hover {
+  background: color-mix(in oklab, var(--color-primary) 16%, transparent) !important;
+  color: var(--color-primary) !important;
+}
+
+.apexcharts-menu-icon svg,
+.apexcharts-zoom-icon svg,
+.apexcharts-zoomin-icon svg,
+.apexcharts-zoomout-icon svg,
+.apexcharts-reset-icon svg,
+.apexcharts-pan-icon svg,
+.apexcharts-selection-icon svg {
+  fill: none !important;
+  stroke: currentColor !important;
+}
+
+.apexcharts-menu,
+.apexcharts-theme-light .apexcharts-menu,
+.apexcharts-theme-dark .apexcharts-menu {
+  background: var(--color-base-100) !important;
+  border: 1px solid var(--color-base-300) !important;
+  color: var(--color-base-content);
+}
+
+.apexcharts-menu-item,
+.apexcharts-theme-light .apexcharts-menu-item,
+.apexcharts-theme-dark .apexcharts-menu-item {
+  color: var(--color-base-content) !important;
+}
+
+.apexcharts-menu-item:hover,
+.apexcharts-theme-light .apexcharts-menu-item:hover,
+.apexcharts-theme-dark .apexcharts-menu-item:hover {
+  background: var(--color-base-200) !important;
+  color: var(--color-base-content) !important;
+}

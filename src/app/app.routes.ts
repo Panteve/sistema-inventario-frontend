@@ -15,7 +15,7 @@ import { MovementListComponent } from './features/inventory/pages/movement-list/
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
 import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
-import { adminChildGuard } from './core/guards/admin-guard';
+import { adminChildGuard } from './core/guards/admin-child-guard';
 import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
 import { ProductsComponent } from './features/admin/pages/products/products.component';
 import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
@@ -23,7 +23,8 @@ import { ExpenseListComponent } from './features/expense/pages/expense-list/expe
 import { CashRegisterListComponent } from './features/cash-register/pages/cash-register-list/cash-register-list.component';
 import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register/view-cash-register.component';
 import { OfficeComponent } from './features/admin/pages/offices/office.component';
-
+import { dashboardRedirectGuard } from './core/guards/dashboard-redirect-guard-guard';
+import { adminGuard } from './core/guards/admin-guard';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
@@ -31,7 +32,23 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     title: 'Panel de control',
-    canActivate: [authGuard],
+    canActivate: [authGuard, dashboardRedirectGuard],
+  },
+  {
+    path: 'dashboard/admin',
+    providers: [EmployeeStore],
+    loadComponent: () =>
+      import('./features/dashboard/pages/admin-dashboard/admin-dashboard.component').then(
+        (c) => c.AdminDashboardComponent,
+      ),
+    canActivate: [adminGuard],
+  },
+  {
+    path: 'dashboard/cashier',
+    loadComponent: () =>
+      import('./features/dashboard/pages/cashier-dashboard/cashier-dashboard.component').then(
+        (c) => c.CashierDashboardComponent,
+      ),
   },
   {
     path: 'create-bill',
@@ -99,7 +116,7 @@ export const routes: Routes = [
         path: 'cash-register/:cashRegisterId',
         title: 'Informacion de la factura',
         canActivate: [authGuard],
-        component: ViewCashRegisterComponent
+        component: ViewCashRegisterComponent,
       },
       {
         path: 'list',

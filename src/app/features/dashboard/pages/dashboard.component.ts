@@ -1,20 +1,8 @@
-import { Component, inject } from '@angular/core';
-import { OfficeStore } from '../../../shared/store/office-store';
-import { InventoryStore } from '../../../shared/store/inventory-store';
-import { Router } from '@angular/router';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-dashboard.component',
   imports: [],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css',
+  template: '',
 })
-export class DashboardComponent {
-  officeStore = inject(OfficeStore);
-  inventoryStore = inject(InventoryStore);
-  #router = inject(Router);
-
-  view() {
-    this.#router.navigate(['/view-bills/bill', 10]);
-  }
-}
+export class DashboardComponent {}

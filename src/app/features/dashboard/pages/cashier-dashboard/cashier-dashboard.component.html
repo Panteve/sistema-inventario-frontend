@@ -1,0 +1,237 @@
+<div class="relative mx-auto max-w-6xl space-y-6 px-4 py-8">
+  <header class="du-card border border-base-300 bg-base-100/90 shadow-md">
+    <div class="du-card-body flex flex-wrap items-center justify-between gap-4 p-5 md:flex-nowrap">
+      <div class="flex items-center gap-4">
+        <div class="du-avatar placeholder">
+          <div class="h-12 w-12 rounded-full text-lg font-semibold">
+            <span>JR</span>
+          </div>
+        </div>
+        <div>
+          <p class="text-sm font-semibold">Juan Rodriguez</p>
+          <p class="text-xs text-slate-400">Turno desde 08:00 AM</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="du-badge du-badge-success du-badge-outline">Caja abierta</span>
+        <button class="du-btn du-btn-ghost du-btn-sm">Ver detalle</button>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex items-center justify-between">
+    <h2 class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
+      Resumen del turno
+    </h2>
+    <div class="hidden items-center gap-2 text-xs text-slate-400 md:flex">
+      <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+      <span>Actualizado hace 2 min</span>
+    </div>
+  </div>
+
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="du-card border border-base-300 bg-base-100/90">
+      <div class="du-card-body space-y-2">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ventas del turno</p>
+        <p class="text-2xl font-mono font-semibold">$842.500</p>
+        <p class="text-xs text-slate-400">12 transacciones</p>
+      </div>
+    </div>
+    <div class="du-card border border-base-300 bg-base-100/90">
+      <div class="du-card-body space-y-2">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ticket promedio</p>
+        <p class="text-2xl font-mono font-semibold">$70.208</p>
+        <p class="text-xs text-slate-400">Por venta</p>
+      </div>
+    </div>
+    <div class="du-card border border-base-300 bg-base-100/90">
+      <div class="du-card-body space-y-2">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Efectivo en caja</p>
+        <p class="text-2xl font-mono font-semibold">$512.000</p>
+        <p class="text-xs text-slate-400">+$200.000 inicial</p>
+      </div>
+    </div>
+    <div class="du-card border border-base-300 bg-base-100/90">
+      <div class="du-card-body space-y-2">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Pagos con tarjeta</p>
+        <p class="text-2xl font-mono font-semibold">$330.500</p>
+        <p class="text-xs text-slate-400">5 transacciones</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid gap-6 lg:grid-cols-12">
+    <div class="du-card border border-base-300 bg-base-100/90 lg:col-span-7">
+      <div class="du-card-body space-y-4">
+        <div class="flex items-center justify-between">
+          <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Top productos del turno</p>
+          <span class="text-xs text-slate-500">Ultima hora</span>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Coca-Cola 350ml</span>
+              <span class="text-slate-400">18u</span>
+            </div>
+            <progress
+              class="du-progress du-progress-primary h-2 w-full"
+              value="82"
+              max="100"
+            ></progress>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Agua Cristal 600ml</span>
+              <span class="text-slate-400">13u</span>
+            </div>
+            <progress
+              class="du-progress du-progress-primary h-2 w-full"
+              value="64"
+              max="100"
+            ></progress>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Papas Margarita</span>
+              <span class="text-slate-400">9u</span>
+            </div>
+            <progress
+              class="du-progress du-progress-primary h-2 w-full"
+              value="48"
+              max="100"
+            ></progress>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Milo 200ml</span>
+              <span class="text-slate-400">6u</span>
+            </div>
+            <progress
+              class="du-progress du-progress-primary h-2 w-full"
+              value="32"
+              max="100"
+            ></progress>
+          </div>
+          <div>
+            <div class="flex items-center justify-between text-sm">
+              <span>Chocolatina Jet</span>
+              <span class="text-slate-400">4u</span>
+            </div>
+            <progress
+              class="du-progress du-progress-primary h-2 w-full"
+              value="22"
+              max="100"
+            ></progress>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="du-card border border-base-300 bg-base-100/90 lg:col-span-5">
+      <div class="du-card-body space-y-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Metodos de pago</p>
+        <div class="flex flex-wrap items-center gap-6">
+          <div
+            class="flex h-28 w-28 items-center justify-center rounded-full border-2 border-dashed border-slate-700/80"
+            aria-hidden="true"
+          ></div>
+          <div class="space-y-3 text-sm">
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+              <span>Efectivo</span>
+              <span class="text-slate-400">61%</span>
+            </div>
+            <div class="flex items-center gap-3">
+              <span class="h-2 w-2 rounded-full bg-sky-400"></span>
+              <span>Tarjeta</span>
+              <span class="text-slate-400">39%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="du-card border border-base-300 bg-base-100/90 lg:col-span-7">
+      <div class="du-card-body space-y-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ultimas ventas</p>
+        <div class="divide-y divide-slate-800/80">
+          <div class="flex items-center justify-between py-3 text-sm">
+            <div>
+              <p class="font-semibold">#0042</p>
+              <p class="text-xs text-slate-400">Hace 4 min</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <p class="font-mono">$38.000</p>
+              <span class="du-badge du-badge-success du-badge-outline">Efectivo</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-3 text-sm">
+            <div>
+              <p class="font-semibold">#0041</p>
+              <p class="text-xs text-slate-400">Hace 18 min</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <p class="font-mono">$112.500</p>
+              <span class="du-badge du-badge-info du-badge-outline">Tarjeta</span>
+            </div>
+          </div>
+          <div class="flex items-center justify-between py-3 text-sm">
+            <div>
+              <p class="font-semibold">#0040</p>
+              <p class="text-xs text-slate-400">Hace 35 min</p>
+            </div>
+            <div class="flex items-center gap-3">
+              <p class="font-mono">$54.000</p>
+              <span class="du-badge du-badge-success du-badge-outline">Efectivo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="du-card border border-base-300 bg-base-100/90 lg:col-span-5">
+      <div class="du-card-body space-y-4">
+        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Desglose de caja</p>
+        <div class="space-y-3 text-sm">
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">Monto inicial</span>
+            <span class="font-mono">$200.000</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">+ Ventas efectivo</span>
+            <span class="font-mono">$512.000</span>
+          </div>
+          <div class="flex items-center justify-between">
+            <span class="text-slate-400">- Egresos</span>
+            <span class="font-mono text-rose-400">$0</span>
+          </div>
+          <div class="border-t border-slate-800/80 pt-3 text-base">
+            <div class="flex items-center justify-between">
+              <span class="font-semibold">Total esperado</span>
+              <span class="font-mono">$712.000</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="du-card border border-base-300 bg-base-100/90">
+    <div class="du-card-body space-y-4">
+      <div class="flex items-center gap-3">
+        <span class="flex h-9 w-9 items-center justify-center rounded-full">A</span>
+        <p class="text-sm font-semibold">Asistente de turno</p>
+      </div>
+      <p class="text-sm text-slate-300">
+        Llevas $842.500 en ventas, un <span>12%</span> mas que el mismo turno de la semana pasada.
+        Producto estrella: Coca-Cola 350ml con 18 unidades. Ojo: Agua Cristal 600ml solo tiene 3
+        unidades en stock.
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <button class="du-btn du-btn-outline du-btn-sm">Como voy vs la semana pasada?</button>
+        <button class="du-btn du-btn-outline du-btn-sm">Que productos tienen stock bajo?</button>
+        <button class="du-btn du-btn-outline du-btn-sm">Cual es mi producto mas vendido?</button>
+      </div>
+    </div>
+  </div>
+</div>
