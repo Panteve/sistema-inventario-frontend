@@ -26,7 +26,10 @@ export class AdminDashboardFiltersComponent implements OnInit {
   readonly todayIso = this.#toIsoDate(this.#today);
 
   filters = signal<ParamsGetDashboard>(this.#buildDefaultParams());
-  filtersChange = output<ParamsGetDashboard>();
+  filtersChange = output<{
+    filters: ParamsGetDashboard;
+    changeJustPaymentMethod: boolean;
+  }>();
 
   get rangeValue(): string {
     return `${this.filters().startDate}/${this.filters().endDate}`;
@@ -75,7 +78,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
         startDate,
       }),
     );
-    this.#emitFilters();
   }
 
   changeEndDate(event: Event) {
@@ -117,7 +119,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
       ...filters,
       paymentMethodId: paymentMethodId || undefined,
     }));
-    this.#emitFilters();
+    this.#emitFilters(true);
   }
 
   setTodayRange() {
@@ -177,9 +179,14 @@ export class AdminDashboardFiltersComponent implements OnInit {
     this.#emitFilters();
   }
 
-  #emitFilters() {
+  #emitFilters(changeMethod: boolean = false) {
     this.#saveFilters();
-    this.filtersChange.emit(this.filters());
+    if (changeMethod) {
+      this.filtersChange.emit({ filters: this.filters(), changeJustPaymentMethod: changeMethod });
+      return;
+    }
+
+    this.filtersChange.emit({ filters: this.filters(), changeJustPaymentMethod: changeMethod });
   }
 
   #buildDefaultParams(): ParamsGetDashboard {
