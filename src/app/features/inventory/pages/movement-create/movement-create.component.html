@@ -3,7 +3,13 @@
     <!-- Header -->
     <div class="flex items-center gap-3 mb-5">
       <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" class="text-primary">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          class="text-primary"
+        >
           <g
             fill="none"
             stroke="currentColor"
@@ -19,7 +25,6 @@
             <path d="m9 15l3 3l-3 3" />
           </g>
         </svg>
-
       </div>
       <div>
         <h1 class="text-xl md:text-2xl font-bold tracking-tight">Movimiento de inventario</h1>
@@ -73,39 +78,18 @@
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'De' : 'Oficina afectada' }}
+              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'De' : 'Sucursal afectada' }}
             </p>
 
             @if (!authStore.isAdmin()) {
               <p class="text-sm font-semibold leading-tight text-center">
-                {{ authStore.employee()?.officeName || 'Sin oficina' }}
+                {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
               </p>
             } @else {
-              <select
-                class="du-select w-full"
-                (change)="changeFromOffice($event)"
+              <app-office-select
                 [value]="this.movementData().fromOfficeId"
-              >
-                <option
-                  value="0"
-                  disabled
-                  selected
-                  [selected]="this.movementData().fromOfficeId === 0"
-                >
-                  Seleccionar oficina
-                </option>
-                @if (officeStore.loading()) {
-                  <option disabled>Cargando oficinas...</option>
-                } @else {
-                  @for (office of officeStore.offices(); track office.id) {
-                    <option [value]="office.id">
-                      {{ office.name }}
-                    </option>
-                  } @empty {
-                    <option disabled selected>No hay oficinas disponibles</option>
-                  }
-                }
-              </select>
+                (idOffice)="changeFromOffice($event)"
+              ></app-office-select>
             }
           </div>
 
@@ -114,38 +98,17 @@
             class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
           >
             <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'Hacia' : 'Oficina afectada' }}
+              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'Hacia' : 'Sucursal afectada' }}
             </p>
             @if (!authStore.isAdmin()) {
               <p class="text-sm font-semibold leading-tight text-center">
-                {{ authStore.employee()?.officeName || 'Sin oficina' }}
+                {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
               </p>
             } @else {
-              <select
-                class="du-select w-full"
-                (change)="changeToOffice($event)"
+              <app-office-select
                 [value]="this.movementData().toOfficeId"
-              >
-                <option
-                  value="0"
-                  disabled
-                  selected
-                  [selected]="this.movementData().toOfficeId === 0"
-                >
-                  Seleccionar oficina
-                </option>
-                @if (officeStore.loading()) {
-                  <option disabled>Cargando oficinas...</option>
-                } @else {
-                  @for (office of officeStore.offices(); track office.id) {
-                    <option [value]="office.id">
-                      {{ office.name }}
-                    </option>
-                  } @empty {
-                    <option disabled selected>No hay oficinas disponibles</option>
-                  }
-                }
-              </select>
+                (idOffice)="changeToOffice($event)"
+              ></app-office-select>
             }
           </div>
         </div>

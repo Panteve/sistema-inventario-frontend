@@ -13,10 +13,11 @@ import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ViewMovementComponent } from '../../layouts/view-movement/view-movement.component';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 @Component({
   selector: 'app-movement-list.component',
-  imports: [DatePipe, ViewMovementComponent],
+  imports: [DatePipe, ViewMovementComponent, OfficeSelectComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './movement-list.component.html',
@@ -234,9 +235,8 @@ export class MovementListComponent implements OnInit {
       }),
     );
   }
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
+  changeOffice(value: number) {
+    const officeId = value || undefined;
     this.queryParams.update((params) => ({
       ...params,
       fromOfficeId: officeId,

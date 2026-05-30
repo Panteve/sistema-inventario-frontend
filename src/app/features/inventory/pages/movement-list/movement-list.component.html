@@ -297,31 +297,13 @@
                   class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
                 >
                   <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                    Oficina
+                    Sucursal
                   </legend>
-                  <select
-                    class="du-select du-select-sm w-full"
-                    (change)="changeOffice($event)"
-                    [value]="queryParams().fromOfficeId ?? ''"
-                  >
-                    @if (officeStore.loading()) {
-                      <option selected disabled>Cargando oficinas...</option>
-                    } @else {
-                      <option value="" [selected]="queryParams().fromOfficeId === undefined">
-                        Todas
-                      </option>
-                      @for (office of officeStore.offices(); track office.id) {
-                        <option
-                          [value]="office.id"
-                          [selected]="office.id === queryParams().fromOfficeId"
-                        >
-                          {{ office.name }}
-                        </option>
-                      } @empty {
-                        <option disabled selected>No hay oficinas disponibles</option>
-                      }
-                    }
-                  </select>
+                  <app-office-select
+                    [value]="queryParams().fromOfficeId"
+                    (idOffice)="changeOffice($event)"
+                    size="sm"
+                  ></app-office-select>
                 </fieldset>
               }
               <fieldset

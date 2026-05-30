@@ -1,10 +1,11 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { Router } from '@angular/router';
+import { Router, ɵEmptyOutletComponent } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -12,7 +13,7 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableProducts],
+  imports: [TableProducts, OfficeSelectComponent, ɵEmptyOutletComponent],
   providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })

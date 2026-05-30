@@ -20,24 +20,15 @@
     </p>
   </div>
   <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-    <p class="text-xs uppercase tracking-[0.16em] opacity-60">Officina</p>
+    <p class="text-xs uppercase tracking-[0.16em] opacity-60">Sucursal</p>
     <p class="mt-0.5 truncate text-base font-semibold leading-tight"></p>
     <p class="mt-0.5 truncate text-base font-semibold leading-tight">
       @if (employee()?.role === 'ADMIN') {
-        <select class="du-select w-full" (change)="changeOffice($event)">
-          @if (officesList() === null) {
-            <option disabled selected>Cargando oficinas...</option>
-          } @else {
-            <option value="0" disabled selected>Seleccionar oficina</option>
-            @for (office of officesList(); track office.id) {
-              <option [value]="office.id">
-                {{ office.name }}
-              </option>
-            } @empty {
-              <option disabled selected>No hay oficinas disponibles</option>
-            }
-          }
-        </select>
+        <app-office-select
+          [value]="officeId()"
+          (idOffice)="changeOffice($event)"
+          (nameOffice)="setSelectedOffice($event)"
+        ></app-office-select>
       } @else {
         {{ employee()?.officeName }}
       }

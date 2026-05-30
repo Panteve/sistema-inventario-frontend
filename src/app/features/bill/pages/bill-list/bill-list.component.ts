@@ -5,7 +5,6 @@ import { finalize } from 'rxjs';
 import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
-import { OfficeStore } from '../../../../shared/store/office-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import {
   BillsHistoryPagination,
@@ -14,10 +13,11 @@ import {
 } from '../../../../shared/interfaces/bill.interface';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { BillService } from '../../services/bill.service';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 @Component({
   selector: 'app-bill-list.component',
-  imports: [DatePipe, CopPipe],
+  imports: [DatePipe, CopPipe, OfficeSelectComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './bill-list.component.html',
@@ -28,7 +28,6 @@ export class BillListComponent implements OnInit {
   readonly #filtersStorageKey = 'billFilters';
 
   authStore = inject(AuthStore);
-  officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
   billService = inject(BillService);
   toastService = inject(ToastService);
@@ -188,9 +187,8 @@ export class BillListComponent implements OnInit {
     );
   }
 
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
+  changeOffice(value: number) {
+    const officeId = value || undefined;
     this.queryParams.update((params) => ({
       ...params,
       officeId,

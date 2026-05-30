@@ -2,14 +2,15 @@ import { DatePipe } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import 'cally';
-import { OfficeStore } from '../../../../shared/store/office-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.interfacce';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+
 
 @Component({
   selector: 'app-admin-dashboard-filters',
-  imports: [DatePipe],
+  imports: [DatePipe, OfficeSelectComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-dashboard-filters.component.html',
 })
@@ -17,7 +18,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly #filtersStorageKey = 'adminDashboardFilters';
 
-  officeStore = inject(OfficeStore);
   employeeStore = inject(EmployeeStore);
   paymentMethodStore = inject(PaymentMethodStore);
   #route = inject(ActivatedRoute);
@@ -92,9 +92,8 @@ export class AdminDashboardFiltersComponent implements OnInit {
     this.#emitFilters();
   }
 
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
+  changeOffice(value: number) {
+    const officeId = value || undefined;
     this.filters.update((filters) => ({
       ...filters,
       officeId,

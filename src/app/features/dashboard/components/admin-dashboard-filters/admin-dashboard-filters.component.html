@@ -1,26 +1,11 @@
 <div class="flex flex-col gap-3 md:flex-row md:items-stretch">
   <div class="grid flex-1 items-stretch gap-3 lg:grid-cols-5">
     <div class="w-full">
-      <select
-        class="du-select du-select-bordered du-select-sm w-full"
-        (change)="changeOffice($event)"
-        [value]="filters().officeId ?? ''"
-      >
-        @if (officeStore.loading()) {
-          <option disabled selected>Cargando sucursales...</option>
-        } @else {
-          <option value="" [selected]="filters().officeId === undefined">
-            Todas las sucursales
-          </option>
-          @for (office of officeStore.offices(); track office.id) {
-            <option [value]="office.id" [selected]="office.id === filters().officeId">
-              {{ office.name }}
-            </option>
-          } @empty {
-            <option disabled selected>No hay sucursales disponibles</option>
-          }
-        }
-      </select>
+      <app-office-select
+        [value]="filters().officeId ?? 0"
+        (idOffice)="changeOffice($event)"
+        [size]="'sm'"
+      ></app-office-select>
     </div>
     <div class="w-full">
       <div class="du-join w-full">

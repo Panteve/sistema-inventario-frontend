@@ -14,11 +14,12 @@ import {
 } from '../../../../shared/interfaces/cash-register-interface';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CashRegisterService } from '../../services/cash-register.service';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 @Component({
   selector: 'app-cash-register-list',
   standalone: true,
-  imports: [DatePipe, CopPipe],
+  imports: [DatePipe, CopPipe, OfficeSelectComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './cash-register-list.component.html',
@@ -196,9 +197,8 @@ export class CashRegisterListComponent implements OnInit {
     );
   }
 
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
+  changeOffice(value: number | undefined) {
+    const officeId = value || undefined;
     this.queryParams.update((params) => ({
       ...params,
       officeId,

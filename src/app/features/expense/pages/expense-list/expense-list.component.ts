@@ -17,10 +17,11 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { ExpenseService } from '../../service/expense.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ViewExpenseComponent } from '../../layouts/view-expense/view-expense.component';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 @Component({
   selector: 'app-expense-list.component',
-  imports: [DatePipe, CopPipe, SlicePipe, CopMoneyInputDirective, ViewExpenseComponent],
+  imports: [DatePipe, CopPipe, SlicePipe, CopMoneyInputDirective, ViewExpenseComponent, OfficeSelectComponent],
   providers: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './expense-list.component.html',
@@ -213,9 +214,8 @@ export class ExpenseListComponent implements OnInit {
     );
   }
 
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
+  changeOffice(value: number) {
+    const officeId = value || undefined;
     this.queryParams.update((params) => ({
       ...params,
       officeId,

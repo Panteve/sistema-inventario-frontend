@@ -280,37 +280,18 @@
 
                   <fieldset class="du-fieldset">
                     <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Oficina
+                      Sucursal
                     </legend>
                     @if (authStore.isAdmin()) {
-                      <select
-                        class="du-select du-select-sm w-full"
-                        (change)="changeOffice($event)"
-                        [value]="queryParams().officeId ?? ''"
-                      >
-                        @if (officeStore.loading()) {
-                          <option selected disabled>Cargando oficinas...</option>
-                        } @else {
-                          <option value="" [selected]="queryParams().officeId === undefined">
-                            Todas
-                          </option>
-                          @for (office of officeStore.offices(); track office.id) {
-                            <option
-                              [value]="office.id"
-                              [selected]="office.id === queryParams().officeId"
-                            >
-                              {{ office.name }}
-                            </option>
-                          } @empty {
-                            <option disabled selected>No hay oficinas disponibles</option>
-                          }
-                        }
-                      </select>
+                      <app-office-select
+                      [value]="queryParams().officeId"
+                      (idOffice)="changeOffice($event)"
+                    ></app-office-select>
                     } @else {
                       <input
                         type="text"
                         class="du-input du-input-sm du-input-bordered w-full"
-                        [value]="authStore.employee()?.officeName || 'Sin oficina'"
+                        [value]="authStore.employee()?.officeName || 'Sin sucursal'"
                         disabled
                       />
                     }
