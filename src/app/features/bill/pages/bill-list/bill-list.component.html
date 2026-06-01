@@ -267,7 +267,7 @@
                     </legend>
                     @if (authStore.isAdmin()) {
                       <app-office-select
-                        [value]="queryParams().officeId ?? ''"
+                        [value]="queryParams().officeId"
                         (idOffice)="changeOffice($event)"
                       ></app-office-select>
                     } @else {

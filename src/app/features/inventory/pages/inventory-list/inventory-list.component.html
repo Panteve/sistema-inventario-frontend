@@ -62,9 +62,7 @@
           <div class="rounded-xl bg-base-200/60 border border-base-content/10 px-3 py-2">
             <p class="text-[11px] uppercase tracking-wide opacity-60">Sede</p>
             @if (authStore.isAdmin()) {
-              <-- Agregarle la opcion de customizacion para no mostrar el valor de todas las
-              sucursales -->
-              <select class="du-select du-select-sm w-full" (change)="changeOffice($event)">
+              <select class="du-select du-select-sm w-full">
                 @if (officeStore.loading()) {
                   @if (authStore.cashRegisterIsOpen()) {
                     <option selected>{{ authStore.employee()?.officeName }}</option>

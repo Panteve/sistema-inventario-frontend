@@ -7,7 +7,9 @@
   @if (officeStore.loading()) {
     <option selected disabled>Cargando sucursales...</option>
   } @else {
-    <option value="" [selected]="value() === undefined">Todas las sucursales</option>
+    @if (showAllOption()) {
+      <option value="" [selected]="value() === undefined">Todas las sucursales</option>
+    }
     @for (office of officeStore.offices(); track office.id) {
       <option [value]="office.id" [selected]="office.id === value()">
         {{ office.name }}

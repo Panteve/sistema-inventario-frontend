@@ -1,11 +1,10 @@
 import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { Router, ɵEmptyOutletComponent } from '@angular/router';
+import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
-import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -13,7 +12,7 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableProducts, OfficeSelectComponent, ɵEmptyOutletComponent],
+  imports: [TableProducts],
   providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })
@@ -213,7 +212,7 @@ export class InventoryListComponent implements OnDestroy {
     this.minPriceFilter.set(null);
     this.maxPriceFilter.set(null);
   }
-  changeOffice(event: Event) {
-    this.authStore.setOfficeId(Number((event.target as HTMLSelectElement).value));
+  changeOffice(value: number) {
+    this.authStore.setOfficeId(value);
   }
 }
