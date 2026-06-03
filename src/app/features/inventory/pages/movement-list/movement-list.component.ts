@@ -1,4 +1,4 @@
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
@@ -6,7 +6,6 @@ import {
 } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
-import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
@@ -14,12 +13,19 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { map } from 'rxjs';
 import { ViewMovementComponent } from '../../layouts/view-movement/view-movement.component';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
+import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 
 @Component({
   selector: 'app-movement-list.component',
-  imports: [DatePipe, ViewMovementComponent, OfficeSelectComponent],
+  imports: [
+    DatePipe,
+    ViewMovementComponent,
+    OfficeSelectComponent,
+    EmployeeSelectComponent,
+    DateRangePopoverComponent,
+  ],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './movement-list.component.html',
 })
 export class MovementListComponent implements OnInit {
@@ -37,13 +43,6 @@ export class MovementListComponent implements OnInit {
   readonly todayIso = this.#toIsoDate(this.#today);
   queryParams = signal<ParamsGetInventoryMovements>(this.#buildDefaultParams());
   movementSelected = signal<InventoryMovement | null>(null);
-  readonly endDateMax = computed(() => {
-    if (this.authStore.isAdmin()) {
-      return this.todayIso;
-    }
-    const maxAllowed = this.#addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
-    return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
-  });
 
   filterPanelSticky = signal(false);
   viewModalOpen = toSignal(
@@ -136,29 +135,29 @@ export class MovementListComponent implements OnInit {
     };
   }
 
-   #loadEmployeesForOffice(): void {
+  #loadEmployeesForOffice(): void {
     const officeId = this.queryParams().fromOfficeId ?? 0;
     this.employeeStore.loadEmployees(officeId);
   }
 
-   #isIsoDate(value: string | null): value is string {
+  #isIsoDate(value: string | null): value is string {
     return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
   }
 
-   #parseNumber(value: string | null): number | undefined {
+  #parseNumber(value: string | null): number | undefined {
     if (value === null || value.trim() === '') return undefined;
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : undefined;
   }
 
-   #parseMovementType(value: string | null): 'IN' | 'OUT' | 'TRANSFER' | undefined {
+  #parseMovementType(value: string | null): 'IN' | 'OUT' | 'TRANSFER' | undefined {
     if (value === 'IN' || value === 'OUT' || value === 'TRANSFER') {
       return value;
     }
     return undefined;
   }
 
-   #normalizeDateRange(params: ParamsGetInventoryMovements): ParamsGetInventoryMovements {
+  #normalizeDateRange(params: ParamsGetInventoryMovements): ParamsGetInventoryMovements {
     let { startDate, endDate } = params;
 
     if (startDate > this.todayIso) {
@@ -215,8 +214,9 @@ export class MovementListComponent implements OnInit {
       page: 1,
     }));
   }
-  changeStartDate(date: Event) {
-    const startDate = (date.target as HTMLInputElement).value;
+  changeStartDate(event: Event) {
+    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!startDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -225,8 +225,10 @@ export class MovementListComponent implements OnInit {
       }),
     );
   }
-  changeEndDate(date: Event) {
-    const endDate = (date.target as HTMLInputElement).value;
+
+  changeEndDate(event: Event) {
+    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!endDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -234,6 +236,23 @@ export class MovementListComponent implements OnInit {
         page: 1,
       }),
     );
+  }
+
+  #coerceIsoDate(value: unknown): string | null {
+    if (value instanceof Date) {
+      return this.#toIsoDateUtc(value);
+    }
+    if (typeof value === 'string' && this.#isIsoDate(value)) {
+      return value;
+    }
+    return null;
+  }
+
+  #toIsoDateUtc(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
   changeOffice(value: number) {
     const officeId = value || undefined;
@@ -246,8 +265,7 @@ export class MovementListComponent implements OnInit {
     }));
     this.#loadEmployeesForOffice();
   }
-  changeEmployee(event: Event) {
-    const employeeId = Number((event.target as HTMLSelectElement).value);
+  changeEmployee(employeeId: number) {
     this.queryParams.update((params) => ({
       ...params,
       employeeId: employeeId || undefined,

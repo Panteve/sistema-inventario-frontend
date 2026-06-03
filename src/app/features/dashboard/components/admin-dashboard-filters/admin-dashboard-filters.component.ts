@@ -1,16 +1,15 @@
-import { DatePipe } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import 'cally';
-import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.interfacce';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
-
+import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
+import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 
 @Component({
   selector: 'app-admin-dashboard-filters',
-  imports: [DatePipe, OfficeSelectComponent],
+  imports: [OfficeSelectComponent, EmployeeSelectComponent, DateRangePopoverComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './admin-dashboard-filters.component.html',
 })
@@ -18,7 +17,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly #filtersStorageKey = 'adminDashboardFilters';
 
-  employeeStore = inject(EmployeeStore);
+
   paymentMethodStore = inject(PaymentMethodStore);
   #route = inject(ActivatedRoute);
 
@@ -65,7 +64,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
         paymentMethodId,
       }),
     );
-    this.#loadEmployeesForOffice();
     this.#emitFilters();
   }
 
@@ -99,15 +97,13 @@ export class AdminDashboardFiltersComponent implements OnInit {
       officeId,
       employeeId: undefined,
     }));
-    this.employeeStore.loadEmployees(officeId ?? 0);
     this.#emitFilters();
   }
 
-  changeEmployee(event: Event) {
-    const employeeId = Number((event.target as HTMLSelectElement).value);
+  changeEmployee(id: number) {
     this.filters.update((filters) => ({
       ...filters,
-      employeeId: employeeId || undefined,
+      employeeId: id || undefined,
     }));
     this.#emitFilters();
   }
@@ -173,7 +169,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
 
   clearFilters() {
     this.filters.set(this.#buildDefaultParams());
-    this.#loadEmployeesForOffice();
     this.#clearSavedFilters();
     this.#emitFilters();
   }
@@ -201,10 +196,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     };
   }
 
-  #loadEmployeesForOffice(): void {
-    const officeId = this.filters().officeId ?? 0;
-    this.employeeStore.loadEmployees(officeId);
-  }
 
   #normalizeDateRange(filters: ParamsGetDashboard): ParamsGetDashboard {
     let { startDate, endDate } = filters;
@@ -245,7 +236,9 @@ export class AdminDashboardFiltersComponent implements OnInit {
   }
 
   #parseNumber(value: string | null | undefined): number | undefined {
-    if (value === null || value === undefined || value.trim() === '') return undefined;
+    if (value === null || value === undefined || value.trim() === '') {
+      return undefined;
+    }
     const parsed = Number(value);
     return Number.isFinite(parsed) ? parsed : undefined;
   }
@@ -274,6 +267,13 @@ export class AdminDashboardFiltersComponent implements OnInit {
 
       if (!startDate || !endDate) {
         return null;
+      }
+      if (typeof parsed.employeeId === 'string') {
+        console.log(
+          'Employee ID in saved filters is a string, expected number. Attempting to parse.',
+        );
+      } else {
+        console.log(parsed.employeeId);
       }
 
       const officeId =

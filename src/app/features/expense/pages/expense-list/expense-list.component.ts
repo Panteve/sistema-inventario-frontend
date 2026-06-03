@@ -1,10 +1,8 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, map } from 'rxjs';
-import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
-import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
@@ -18,12 +16,22 @@ import { ExpenseService } from '../../service/expense.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ViewExpenseComponent } from '../../layouts/view-expense/view-expense.component';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
+import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 
 @Component({
   selector: 'app-expense-list.component',
-  imports: [DatePipe, CopPipe, SlicePipe, CopMoneyInputDirective, ViewExpenseComponent, OfficeSelectComponent],
+  imports: [
+    DatePipe,
+    CopPipe,
+    SlicePipe,
+    CopMoneyInputDirective,
+    ViewExpenseComponent,
+    OfficeSelectComponent,
+    EmployeeSelectComponent,
+    DateRangePopoverComponent,
+],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './expense-list.component.html',
   styleUrl: './expense-list.component.css',
 })
@@ -33,7 +41,6 @@ export class ExpenseListComponent implements OnInit {
 
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
-  employeeStore = inject(EmployeeStore);
   expenseService = inject(ExpenseService);
   toastService = inject(ToastService);
   #route = inject(ActivatedRoute);
@@ -49,13 +56,6 @@ export class ExpenseListComponent implements OnInit {
 
   queryParams = signal<ParamsGetExpenses>(this.#buildDefaultParams());
 
-  readonly endDateMax = computed(() => {
-    if (this.authStore.isAdmin()) {
-      return this.todayIso;
-    }
-    const maxAllowed = this.#addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
-    return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
-  });
   viewModalOpen = toSignal(
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
     { initialValue: false },
@@ -100,7 +100,6 @@ export class ExpenseListComponent implements OnInit {
     };
 
     this.queryParams.set(this.#normalizeDateRange(nextParams));
-    this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 
@@ -122,11 +121,6 @@ export class ExpenseListComponent implements OnInit {
       limit: this.defaultItemsPerPage,
       page: 1,
     };
-  }
-
-  #loadEmployeesForOffice(): void {
-    const officeId = this.queryParams().officeId ?? 0;
-    this.employeeStore.loadEmployees(officeId);
   }
 
   #isIsoDate(value: string | null): value is string {
@@ -193,7 +187,8 @@ export class ExpenseListComponent implements OnInit {
   }
 
   changeStartDate(event: Event) {
-    const startDate = (event.target as HTMLInputElement).value;
+    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!startDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -204,7 +199,8 @@ export class ExpenseListComponent implements OnInit {
   }
 
   changeEndDate(event: Event) {
-    const endDate = (event.target as HTMLInputElement).value;
+    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!endDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -212,6 +208,23 @@ export class ExpenseListComponent implements OnInit {
         page: 1,
       }),
     );
+  }
+
+  #coerceIsoDate(value: unknown): string | null {
+    if (value instanceof Date) {
+      return this.#toIsoDateUtc(value);
+    }
+    if (typeof value === 'string' && this.#isIsoDate(value)) {
+      return value;
+    }
+    return null;
+  }
+
+  #toIsoDateUtc(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
   }
 
   changeOffice(value: number) {
@@ -222,11 +235,9 @@ export class ExpenseListComponent implements OnInit {
       employeeId: undefined,
       page: 1,
     }));
-    this.#loadEmployeesForOffice();
   }
 
-  changeEmployee(event: Event) {
-    const employeeId = Number((event.target as HTMLSelectElement).value);
+  changeEmployee(employeeId: number) {
     this.queryParams.update((params) => ({
       ...params,
       employeeId: employeeId || undefined,
@@ -308,7 +319,6 @@ export class ExpenseListComponent implements OnInit {
 
   clearFilters() {
     this.queryParams.set(this.#buildDefaultParams());
-    this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 

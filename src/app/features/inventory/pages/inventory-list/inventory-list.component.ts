@@ -212,7 +212,8 @@ export class InventoryListComponent implements OnDestroy {
     this.minPriceFilter.set(null);
     this.maxPriceFilter.set(null);
   }
-  changeOffice(value: number) {
-    this.authStore.setOfficeId(value);
+  changeOffice(value: Event) {
+    const selectElement = Number((value.target as HTMLSelectElement).value);
+    this.authStore.setOfficeId(selectElement);
   }
 }

@@ -1,8 +1,7 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
-import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -14,12 +13,13 @@ import {
 import { ToastService } from '../../../../shared/services/toast.service';
 import { BillService } from '../../services/bill.service';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
+import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 
 @Component({
   selector: 'app-bill-list.component',
-  imports: [DatePipe, CopPipe, OfficeSelectComponent],
+  imports: [DatePipe, CopPipe, OfficeSelectComponent, EmployeeSelectComponent, DateRangePopoverComponent],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './bill-list.component.html',
 })
 export class BillListComponent implements OnInit {
@@ -28,7 +28,6 @@ export class BillListComponent implements OnInit {
   readonly #filtersStorageKey = 'billFilters';
 
   authStore = inject(AuthStore);
-  employeeStore = inject(EmployeeStore);
   billService = inject(BillService);
   toastService = inject(ToastService);
   #router = inject(Router);
@@ -42,14 +41,6 @@ export class BillListComponent implements OnInit {
   loading = signal(false);
 
   queryParams = signal<ParamsGetBills>(this.#buildDefaultParams());
-
-  readonly endDateMax = computed(() => {
-    if (this.authStore.isAdmin()) {
-      return this.todayIso;
-    }
-    const maxAllowed = this.#addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
-    return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
-  });
 
   ngOnInit(): void {
     // Priority: URL filters > saved filters > defaults.
@@ -84,7 +75,6 @@ export class BillListComponent implements OnInit {
       page,
     };
     this.queryParams.set(this.#normalizeDateRange(nextParams));
-    this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 
@@ -104,10 +94,6 @@ export class BillListComponent implements OnInit {
     };
   }
 
-  #loadEmployeesForOffice(): void {
-    const officeId = this.queryParams().officeId ?? 0;
-    this.employeeStore.loadEmployees(officeId);
-  }
 
   #isIsoDate(value: string | null): value is string {
     return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
@@ -166,7 +152,8 @@ export class BillListComponent implements OnInit {
   }
 
   changeStartDate(event: Event) {
-    const startDate = (event.target as HTMLInputElement).value;
+    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!startDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -177,7 +164,8 @@ export class BillListComponent implements OnInit {
   }
 
   changeEndDate(event: Event) {
-    const endDate = (event.target as HTMLInputElement).value;
+    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
+    if (!endDate) return;
     this.queryParams.update((params) =>
       this.#normalizeDateRange({
         ...params,
@@ -187,19 +175,33 @@ export class BillListComponent implements OnInit {
     );
   }
 
-  changeOffice(value: number) {
-    const officeId = value || undefined;
+  #coerceIsoDate(value: unknown): string | null {
+    if (value instanceof Date) {
+      return this.#toIsoDateUtc(value);
+    }
+    if (typeof value === 'string' && this.#isIsoDate(value)) {
+      return value;
+    }
+    return null;
+  }
+
+  #toIsoDateUtc(date: Date): string {
+    const year = date.getUTCFullYear();
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  }
+
+  changeOffice(officeId: number) {
     this.queryParams.update((params) => ({
       ...params,
       officeId,
       employeeId: undefined,
       page: 1,
     }));
-    this.employeeStore.loadEmployees(officeId ?? 0);
   }
 
-  changeEmployee(event: Event) {
-    const employeeId = Number((event.target as HTMLSelectElement).value);
+  changeEmployee(employeeId: number) {
     this.queryParams.update((params) => ({
       ...params,
       employeeId: employeeId || undefined,
@@ -241,7 +243,6 @@ export class BillListComponent implements OnInit {
 
   clearFilters() {
     this.queryParams.set(this.#buildDefaultParams());
-    this.#loadEmployeesForOffice();
     this.#clearSavedFilters();
     this.applyFilters();
   }
