@@ -30,7 +30,7 @@ import { DateRangePopoverComponent } from '../../../../shared/components/date-ra
     OfficeSelectComponent,
     EmployeeSelectComponent,
     DateRangePopoverComponent,
-],
+  ],
   providers: [DatePipe],
   templateUrl: './expense-list.component.html',
   styleUrl: './expense-list.component.css',
@@ -101,6 +101,20 @@ export class ExpenseListComponent implements OnInit {
 
     this.queryParams.set(this.#normalizeDateRange(nextParams));
     this.applyFilters();
+  }
+
+  changeOrderDirection() {
+    if (this.queryParams().orderDirection === 'desc') {
+      this.queryParams.update((params) => ({
+        ...params,
+        orderDirection: 'asc',
+      }));
+    } else {
+      this.queryParams.update((params) => ({
+        ...params,
+        orderDirection: 'desc',
+      }));
+    }
   }
 
   #buildDefaultParams(): ParamsGetExpenses {
@@ -280,16 +294,6 @@ export class ExpenseListComponent implements OnInit {
     this.queryParams.update((params) => ({
       ...params,
       orderBy,
-      page: 1,
-    }));
-  }
-
-  changeOrderDirection(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    const orderDirection = (value as 'asc' | 'desc') ?? 'desc';
-    this.queryParams.update((params) => ({
-      ...params,
-      orderDirection,
       page: 1,
     }));
   }

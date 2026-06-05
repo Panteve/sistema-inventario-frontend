@@ -1,54 +1,28 @@
 <div class="flex flex-col gap-3 md:flex-row md:items-stretch">
-  <div class="grid flex-1 items-stretch gap-3 lg:grid-cols-5">
-    <div class="w-full">
+  <div class="grid flex-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-5">
+    <div class="w-full min-w-0">
       <app-office-select
         [value]="filters().officeId ?? 0"
         (idOffice)="changeOffice($event)"
         [size]="'sm'"
       ></app-office-select>
     </div>
-    <div class="w-full">
-      <div class="du-join w-full">
-        <button
-          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
-          [class.du-btn-primary]="isTodayRange()"
-          [class.du-btn-outline]="!isTodayRange()"
-          (click)="setTodayRange()"
-          type="button"
-        >
-          Hoy
-        </button>
-        <button
-          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
-          [class.du-btn-primary]="isCurrentWeekRange()"
-          [class.du-btn-outline]="!isCurrentWeekRange()"
-          (click)="setCurrentWeekRange()"
-          type="button"
-        >
-          Semana
-        </button>
-        <button
-          class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
-          [class.du-btn-primary]="isCurrentMonthRange()"
-          [class.du-btn-outline]="!isCurrentMonthRange()"
-          (click)="setCurrentMonthRange()"
-          type="button"
-        >
-          Mes
-        </button>
-      </div>
+    <div class="w-full min-w-0 col-span-2">
+      <app-date-range-popover
+        class="min-w-0"
+        [startDate]="filters().startDate"
+        [endDate]="filters().endDate"
+        [todayIso]="todayIso"
+        [months]="2"
+        [size]="'sm'"
+        [idsuffix]="'1'"
+        [inLine]="true"
+        (rangeStart)="changeStartDate($event)"
+        (rangeEnd)="changeEndDate($event)"
+      ></app-date-range-popover>
     </div>
-    <app-date-range-popover
-      [startDate]="filters().startDate"
-      [endDate]="filters().endDate"
-      [todayIso]="todayIso"
-      [months]="2"
-      [size]="'sm'"
-      [idsuffix]="'1'"
-      (rangeStart)="changeStartDate($event)"
-      (rangeEnd)="changeEndDate($event)"
-    ></app-date-range-popover>
-    <div class="w-full">
+
+    <div class="w-full min-w-0">
       <app-employee-select
         [value]="filters().employeeId ?? 0"
         [idOffice]="filters().officeId ?? 0"

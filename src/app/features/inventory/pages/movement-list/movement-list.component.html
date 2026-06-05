@@ -97,64 +97,25 @@
               </button>
             </div>
           </div>
-          <div class="grid grid-cols-1 gap-3">
+          <div class="grid grid-cols-1 gap-3 xl:grid-cols-3">
             <fieldset
-              class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2 sm:col-span-2"
+              class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
             >
               <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
-                Tipo de movimiento
+                Fechas
               </legend>
-              <div class="flex flex-wrap gap-2">
-                <button
-                  type="button"
-                  class="du-btn du-btn-sm du-btn-primary du-btn-soft transition-colors"
-                  (click)="changeTypeFilter(undefined)"
-                  [class.du-btn-active]="!queryParams().type"
-                >
-                  Todo
-                </button>
-                <button
-                  type="button"
-                  class="du-btn du-btn-sm du-btn-success du-btn-soft transition-colors"
-                  (click)="changeTypeFilter('IN')"
-                  [class.du-btn-active]="queryParams().type === 'IN'"
-                >
-                  Entrada
-                </button>
-                <button
-                  type="button"
-                  class="du-btn du-btn-sm du-btn-error du-btn-soft transition-colors"
-                  (click)="changeTypeFilter('OUT')"
-                  [class.du-btn-active]="queryParams().type === 'OUT'"
-                >
-                  Salida
-                </button>
-                <button
-                  type="button"
-                  class="du-btn du-btn-sm du-btn-info du-btn-soft transition-colors"
-                  (click)="changeTypeFilter('TRANSFER')"
-                  [class.du-btn-active]="queryParams().type === 'TRANSFER'"
-                >
-                  Transferencia
-                </button>
-              </div>
+              <app-date-range-popover
+                [startDate]="queryParams().startDate"
+                [endDate]="queryParams().endDate"
+                [todayIso]="todayIso"
+                [months]="2"
+                [size]="'sm'"
+                [idsuffix]="'movement'"
+                (rangeStart)="changeStartDate($event)"
+                (rangeEnd)="changeEndDate($event)"
+              ></app-date-range-popover>
             </fieldset>
-            <div class="grid grid-cols-1 gap-2 sm:grid-cols-2 xl:grid-cols-4">
-              <fieldset
-                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-              >
-                <legend class="du-fieldset-legend text-xs  opacity-60 tracking-[0.16em] uppercase">Fechas</legend>
-                <app-date-range-popover
-                  [startDate]="queryParams().startDate"
-                  [endDate]="queryParams().endDate"
-                  [todayIso]="todayIso"
-                  [months]="2"
-                  [size]="'sm'"
-                  [idsuffix]="'movement'"
-                  (rangeStart)="changeStartDate($event)"
-                  (rangeEnd)="changeEndDate($event)"
-                ></app-date-range-popover>
-              </fieldset>
+            <div>
               <fieldset
                 class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
               >
@@ -182,6 +143,8 @@
                   ></app-office-select>
                 </fieldset>
               }
+            </div>
+            <div>
               <fieldset
                 class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
               >
@@ -196,6 +159,47 @@
                   [value]="queryParams().limit"
                   (change)="changeItemsPerPage($event)"
                 />
+              </fieldset>
+              <fieldset
+                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2 sm:col-span-2"
+              >
+                <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
+                  Tipo de movimiento
+                </legend>
+                <div class="flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm du-btn-primary du-btn-soft transition-colors"
+                    (click)="changeTypeFilter(undefined)"
+                    [class.du-btn-active]="!queryParams().type"
+                  >
+                    Todo
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm du-btn-success du-btn-soft transition-colors"
+                    (click)="changeTypeFilter('IN')"
+                    [class.du-btn-active]="queryParams().type === 'IN'"
+                  >
+                    Entrada
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm du-btn-error du-btn-soft transition-colors"
+                    (click)="changeTypeFilter('OUT')"
+                    [class.du-btn-active]="queryParams().type === 'OUT'"
+                  >
+                    Salida
+                  </button>
+                  <button
+                    type="button"
+                    class="du-btn du-btn-sm du-btn-info du-btn-soft transition-colors"
+                    (click)="changeTypeFilter('TRANSFER')"
+                    [class.du-btn-active]="queryParams().type === 'TRANSFER'"
+                  >
+                    Transferencia
+                  </button>
+                </div>
               </fieldset>
             </div>
           </div>

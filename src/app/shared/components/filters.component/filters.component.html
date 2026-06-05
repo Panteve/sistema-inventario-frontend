@@ -1,0 +1,98 @@
+<div class="grid grid-cols-1 gap-3 xl:grid-cols-3">
+  <fieldset
+    class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+  >
+    <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
+      Fechas
+    </legend>
+    <app-date-range-popover
+      [startDate]="startDate()"
+      [endDate]="endDate()"
+      (rangeStart)="changeStartDate($event)"
+      (rangeEnd)="changeEndDate($event)"
+    >
+    </app-date-range-popover>
+  </fieldset>
+
+  <div>
+    <fieldset
+      class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+    >
+      <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
+        Empleado
+      </legend>
+      <select
+        class="du-select w-full"
+        [class.du-select-sm]="size() === 'sm'"
+        (change)="changeEmployee($event)"
+      >
+        @if (employeeStore.loading()) {
+          <option selected disabled>Cargando empleados...</option>
+        } @else {
+          <option [value]="0" [selected]="employeeId() === 0">Todos los empleados</option>
+
+          @for (employee of employeeStore.employees(); track employee.id) {
+            <option [value]="employee.id" [selected]="employee.id === employeeId()">
+              {{ employee.name }}
+            </option>
+          } @empty {
+            <option disabled selected>No hay empleados disponibles</option>
+          }
+        }
+      </select>
+    </fieldset>
+    <fieldset
+      class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+    >
+      <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
+        Sucursal
+      </legend>
+      @if (authStore.isAdmin()) {
+        <select
+          class="du-select w-full"
+          [class.du-select-sm]="size() === 'sm'"
+          (change)="changeOffice($event)"
+        >
+          @if (officeStore.loading()) {
+            <option selected disabled>Cargando sucursales...</option>
+          } @else {
+            <option [value]="0" [selected]="officeId() === 0">Todas las sucursales</option>
+
+            @for (office of officeStore.offices(); track office.id) {
+              <option [value]="office.id" [selected]="office.id === officeId()">
+                {{ office.name }}
+              </option>
+            } @empty {
+              <option disabled selected>No hay sucursales disponibles</option>
+            }
+          }
+        </select>
+      } @else {
+        <input
+          type="text"
+          class="du-input du-input-sm du-input-bordered w-full"
+          [value]="authStore.employee()?.officeName || 'Sin oficina'"
+          disabled
+        />
+      }
+    </fieldset>
+  </div>
+  <div>
+    <fieldset
+      class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+    >
+      <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
+        Por página
+      </legend>
+      <input
+        type="number"
+        class="du-input du-input-bordered w-full"
+        [class.du-input-sm]="size() === 'sm'"
+        min="5"
+        max="100"
+        [value]="pageSize()"
+        (change)="changeItemsPerPage($event)"
+      />
+    </fieldset>
+  </div>
+</div>

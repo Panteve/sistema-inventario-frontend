@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -16,11 +16,18 @@ import { CashRegisterService } from '../../services/cash-register.service';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
 import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
+import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
 
 @Component({
   selector: 'app-cash-register-list',
   standalone: true,
-  imports: [DatePipe, CopPipe, OfficeSelectComponent, EmployeeSelectComponent, DateRangePopoverComponent],
+  imports: [
+    DatePipe,
+    CopPipe,
+    EmployeeSelectComponent,
+    DateRangePopoverComponent,
+    FiltersComponent,
+  ],
   providers: [DatePipe],
   templateUrl: './cash-register-list.component.html',
 })
@@ -206,17 +213,6 @@ export class CashRegisterListComponent implements OnInit {
     const month = String(date.getUTCMonth() + 1).padStart(2, '0');
     const day = String(date.getUTCDate()).padStart(2, '0');
     return `${year}-${month}-${day}`;
-  }
-
-  changeOffice(value: number | undefined) {
-    const officeId = value || undefined;
-    this.queryParams.update((params) => ({
-      ...params,
-      officeId,
-      employeeId: undefined,
-      page: 1,
-    }));
-    this.#loadEmployeesForOffice();
   }
 
   changeEmployee(employeeId: number) {

@@ -153,19 +153,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     this.#emitFilters();
   }
 
-  isTodayRange(): boolean {
-    return this.filters().startDate === this.todayIso && this.filters().endDate === this.todayIso;
-  }
-
-  isCurrentWeekRange(): boolean {
-    const weekStart = this.#toIsoDate(this.#startOfWeek(this.#today));
-    return this.filters().startDate === weekStart && this.filters().endDate === this.todayIso;
-  }
-
-  isCurrentMonthRange(): boolean {
-    const monthStart = this.#toIsoDate(this.#startOfMonth(this.#today));
-    return this.filters().startDate === monthStart && this.filters().endDate === this.todayIso;
-  }
 
   clearFilters() {
     this.filters.set(this.#buildDefaultParams());
