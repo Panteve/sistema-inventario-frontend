@@ -6,6 +6,7 @@ import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.inte
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
 import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
+import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   selector: 'app-admin-dashboard-filters',
@@ -17,8 +18,8 @@ export class AdminDashboardFiltersComponent implements OnInit {
   readonly maxRangeMonths = 3;
   readonly #filtersStorageKey = 'adminDashboardFilters';
 
-
   paymentMethodStore = inject(PaymentMethodStore);
+  authStore = inject(AuthStore);
   #route = inject(ActivatedRoute);
 
   readonly #today = new Date();
@@ -67,26 +68,20 @@ export class AdminDashboardFiltersComponent implements OnInit {
     this.#emitFilters();
   }
 
-  changeStartDate(event: Event) {
-    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
+  changeStartDate(startDate: string) {
     if (!startDate) return;
-    this.filters.update((filters) =>
-      this.#normalizeDateRange({
-        ...filters,
-        startDate,
-      }),
-    );
+    this.filters.update((filters) => ({
+      ...filters,
+      startDate,
+    }));
   }
 
-  changeEndDate(event: Event) {
-    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
+  changeEndDate(endDate: string) {
     if (!endDate) return;
-    this.filters.update((filters) =>
-      this.#normalizeDateRange({
-        ...filters,
-        endDate,
-      }),
-    );
+    this.filters.update((filters) => ({
+      ...filters,
+      endDate,
+    }));
     this.#emitFilters();
   }
 
@@ -153,7 +148,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     this.#emitFilters();
   }
 
-
   clearFilters() {
     this.filters.set(this.#buildDefaultParams());
     this.#clearSavedFilters();
@@ -182,7 +176,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
       paymentMethodId: undefined,
     };
   }
-
 
   #normalizeDateRange(filters: ParamsGetDashboard): ParamsGetDashboard {
     let { startDate, endDate } = filters;

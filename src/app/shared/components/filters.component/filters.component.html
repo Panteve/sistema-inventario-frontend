@@ -8,6 +8,7 @@
     <app-date-range-popover
       [startDate]="startDate()"
       [endDate]="endDate()"
+      [isAdmin]="authStore.isAdmin()"
       (rangeStart)="changeStartDate($event)"
       (rangeEnd)="changeEndDate($event)"
     >
@@ -94,5 +95,8 @@
         (change)="changeItemsPerPage($event)"
       />
     </fieldset>
+      <ng-content />
   </div>
 </div>
+
+

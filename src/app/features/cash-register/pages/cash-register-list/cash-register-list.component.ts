@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, effect, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -13,21 +13,20 @@ import {
 } from '../../../../shared/interfaces/cash-register-interface';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CashRegisterService } from '../../services/cash-register.service';
-import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
-import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
-import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
+import {
+  isIsoDate,
+  normalizeDateRange,
+  parseNumber,
+  parseStatus,
+  subtractMonths,
+  toIsoDate,
+} from '../../../../shared/utils/filter-query.utils';
 
 @Component({
   selector: 'app-cash-register-list',
   standalone: true,
-  imports: [
-    DatePipe,
-    CopPipe,
-    EmployeeSelectComponent,
-    DateRangePopoverComponent,
-    FiltersComponent,
-  ],
+  imports: [DatePipe, CopPipe, FiltersComponent],
   providers: [DatePipe],
   templateUrl: './cash-register-list.component.html',
 })
@@ -45,7 +44,7 @@ export class CashRegisterListComponent implements OnInit {
   #router = inject(Router);
 
   readonly #today = new Date();
-  readonly todayIso = this.#toIsoDate(this.#today);
+  readonly todayIso = toIsoDate(this.#today);
 
   cashRegisters = signal<CashRegisterHistory[]>([]);
   pagination = signal<CashRegisterHistoryPagination>({ totalItems: 0, totalPages: 0 });
@@ -58,17 +57,17 @@ export class CashRegisterListComponent implements OnInit {
     const savedFilters = this.#loadSavedFilters();
     const params = this.#route.snapshot.queryParamMap;
 
-    const startDate = this.#isIsoDate(params.get('startDate'))
+    const startDate = isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
       : (savedFilters?.startDate ?? defaults.startDate);
-    const endDate = this.#isIsoDate(params.get('endDate'))
+    const endDate = isIsoDate(params.get('endDate'))
       ? params.get('endDate')!
       : (savedFilters?.endDate ?? defaults.endDate);
-    const officeIdFromQuery = this.#parseNumber(params.get('officeId'));
-    const employeeIdFromQuery = this.#parseNumber(params.get('employeeId'));
-    const statusFromQuery = this.#parseStatus(params.get('status'));
-    const limitFromQuery = this.#parseNumber(params.get('limit'));
-    const pageFromQuery = this.#parseNumber(params.get('page'));
+    const officeIdFromQuery = parseNumber(params.get('officeId'));
+    const employeeIdFromQuery = parseNumber(params.get('employeeId'));
+    const statusFromQuery = parseStatus(params.get('status'));
+    const limitFromQuery = parseNumber(params.get('limit'));
+    const pageFromQuery = parseNumber(params.get('page'));
 
     const nextParams: ParamsGetCashRegisters = {
       ...defaults,
@@ -86,14 +85,15 @@ export class CashRegisterListComponent implements OnInit {
       nextParams.officeId = defaults.officeId;
     }
 
-    this.queryParams.set(this.#normalizeDateRange(nextParams));
-    this.#loadEmployeesForOffice();
+    this.queryParams.set(
+      normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()),
+    );
     this.applyFilters();
   }
 
   #buildDefaultParams(): ParamsGetCashRegisters {
-    const startDate = this.#toIsoDate(this.#subtractMonths(this.#today, this.maxRangeMonths));
-    const endDate = this.#toIsoDate(this.#today);
+    const startDate = toIsoDate(subtractMonths(this.#today, this.maxRangeMonths));
+    const endDate = toIsoDate(this.#today);
     const officeId = this.authStore.isAdmin() ? undefined : this.authStore.employee()?.officeId;
 
     return {
@@ -107,136 +107,10 @@ export class CashRegisterListComponent implements OnInit {
     };
   }
 
-  #loadEmployeesForOffice(): void {
-    const officeId = this.queryParams().officeId ?? 0;
-    this.employeeStore.loadEmployees(officeId);
-  }
-
-  #isIsoDate(value: string | null): value is string {
-    return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
-  }
-
-  #parseNumber(value: string | null): number | undefined {
-    if (value === null || value.trim() === '') return undefined;
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
-  #parseStatus(value: string | null): boolean | undefined {
-    if (value === 'true') return true;
-    if (value === 'false') return false;
-    return undefined;
-  }
-
-  #normalizeDateRange(params: ParamsGetCashRegisters): ParamsGetCashRegisters {
-    let { startDate, endDate } = params;
-
-    if (startDate > this.todayIso) {
-      startDate = this.todayIso;
-    }
-
-    const maxEndDate = this.authStore.isAdmin()
-      ? this.todayIso
-      : this.#addMonthsIso(startDate, this.maxRangeMonths);
-    const cappedMaxEndDate = maxEndDate > this.todayIso ? this.todayIso : maxEndDate;
-
-    if (endDate < startDate) {
-      endDate = startDate;
-    }
-    if (endDate > cappedMaxEndDate) {
-      endDate = cappedMaxEndDate;
-    }
-
-    return {
-      ...params,
-      startDate,
-      endDate,
-    };
-  }
-
-  #toIsoDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  #subtractMonths(date: Date, months: number): Date {
-    const copy = new Date(date);
-    copy.setMonth(copy.getMonth() - months);
-    return copy;
-  }
-
-  #addMonthsIso(isoDate: string, months: number): string {
-    const [year, month, day] = isoDate.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    date.setMonth(date.getMonth() + months);
-    return this.#toIsoDate(date);
-  }
-
-  changeStartDate(event: Event) {
-    const startDate = this.#coerceIsoDate((event as CustomEvent).detail);
-    if (!startDate) return;
-    this.queryParams.update((params) =>
-      this.#normalizeDateRange({
-        ...params,
-        startDate,
-        page: 1,
-      }),
-    );
-  }
-
-  changeEndDate(event: Event) {
-    const endDate = this.#coerceIsoDate((event as CustomEvent).detail);
-    if (!endDate) return;
-    this.queryParams.update((params) =>
-      this.#normalizeDateRange({
-        ...params,
-        endDate,
-        page: 1,
-      }),
-    );
-  }
-
-  #coerceIsoDate(value: unknown): string | null {
-    if (value instanceof Date) {
-      return this.#toIsoDateUtc(value);
-    }
-    if (typeof value === 'string' && this.#isIsoDate(value)) {
-      return value;
-    }
-    return null;
-  }
-
-  #toIsoDateUtc(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  changeEmployee(employeeId: number) {
-    this.queryParams.update((params) => ({
-      ...params,
-      employeeId: employeeId || undefined,
-      page: 1,
-    }));
-  }
-
   setStatusFilter(status: boolean | undefined) {
     this.queryParams.update((params) => ({
       ...params,
       status,
-      page: 1,
-    }));
-  }
-
-  changeItemsPerPage(event: Event) {
-    const value = Number((event.target as HTMLInputElement).value);
-    const itemsPerPage = value > 0 ? value : this.defaultItemsPerPage;
-    this.queryParams.update((params) => ({
-      ...params,
-      limit: itemsPerPage,
       page: 1,
     }));
   }
@@ -256,7 +130,6 @@ export class CashRegisterListComponent implements OnInit {
 
   clearFilters() {
     this.queryParams.set(this.#buildDefaultParams());
-    this.#loadEmployeesForOffice();
     this.#clearSavedFilters();
     this.applyFilters();
   }
@@ -296,13 +169,11 @@ export class CashRegisterListComponent implements OnInit {
       if (!raw) return null;
       const parsed = JSON.parse(raw) as Partial<ParamsGetCashRegisters>;
       const startDate =
-        typeof parsed.startDate === 'string' && this.#isIsoDate(parsed.startDate)
+        typeof parsed.startDate === 'string' && isIsoDate(parsed.startDate)
           ? parsed.startDate
           : null;
       const endDate =
-        typeof parsed.endDate === 'string' && this.#isIsoDate(parsed.endDate)
-          ? parsed.endDate
-          : null;
+        typeof parsed.endDate === 'string' && isIsoDate(parsed.endDate) ? parsed.endDate : null;
 
       if (!startDate || !endDate) {
         return null;
@@ -310,23 +181,21 @@ export class CashRegisterListComponent implements OnInit {
 
       const officeId =
         typeof parsed.officeId === 'string'
-          ? this.#parseNumber(parsed.officeId)
+          ? parseNumber(parsed.officeId)
           : (parsed.officeId ?? undefined);
       const employeeId =
         typeof parsed.employeeId === 'string'
-          ? this.#parseNumber(parsed.employeeId)
+          ? parseNumber(parsed.employeeId)
           : (parsed.employeeId ?? undefined);
       const parsedLimit =
-        typeof parsed.limit === 'string' ? this.#parseNumber(parsed.limit) : parsed.limit;
-      const parsedPage =
-        typeof parsed.page === 'string' ? this.#parseNumber(parsed.page) : parsed.page;
+        typeof parsed.limit === 'string' ? parseNumber(parsed.limit) : parsed.limit;
+      const parsedPage = typeof parsed.page === 'string' ? parseNumber(parsed.page) : parsed.page;
       const limit =
         typeof parsedLimit === 'number' && Number.isFinite(parsedLimit)
           ? parsedLimit
           : this.defaultItemsPerPage;
       const page = typeof parsedPage === 'number' && Number.isFinite(parsedPage) ? parsedPage : 1;
-      const status =
-        typeof parsed.status === 'string' ? this.#parseStatus(parsed.status) : parsed.status;
+      const status = typeof parsed.status === 'string' ? parseStatus(parsed.status) : parsed.status;
 
       return {
         ...parsed,

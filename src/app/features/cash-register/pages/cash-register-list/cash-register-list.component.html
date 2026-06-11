@@ -59,85 +59,42 @@
             [(startDate)]="queryParams().startDate"
             [(endDate)]="queryParams().endDate"
           >
+            <fieldset
+              class="du-fieldset lg:col-span-3 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
+            >
+              <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
+                Estado
+              </legend>
+              <div class="flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  class="du-btn du-btn-sm du-btn-primary du-btn-soft"
+                  (click)="setStatusFilter(undefined)"
+                  [class.du-btn-active]="queryParams().status === undefined"
+                >
+                  Todas
+                </button>
+                <button
+                  type="button"
+                  class="du-btn du-btn-sm du-btn-success du-btn-soft"
+                  (click)="setStatusFilter(true)"
+                  [class.du-btn-active]="queryParams().status === true"
+                >
+                  Abiertas
+                </button>
+                <button
+                  type="button"
+                  class="du-btn du-btn-sm du-btn-error du-btn-soft"
+                  (click)="setStatusFilter(false)"
+                  [class.du-btn-active]="queryParams().status === false"
+                >
+                  Cerradas
+                </button>
+              </div>
+            </fieldset>
           </app-filters>
           <div class="grid grid-cols-1 gap-3 xl:grid-cols-3">
-            <fieldset
-              class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-            >
-              <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
-                Fechas
-              </legend>
-              <app-date-range-popover
-                [startDate]="queryParams().startDate"
-                [endDate]="queryParams().endDate"
-                [todayIso]="todayIso"
-                [size]="'sm'"
-                [idsuffix]="'cash-register'"
-                (rangeStart)="changeStartDate($event)"
-                (rangeEnd)="changeEndDate($event)"
-              >
-              </app-date-range-popover>
-            </fieldset>
-            <div>
-              <fieldset
-                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-              >
-                <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
-                  Empleado
-                </legend>
-
-              </fieldset>
-              <fieldset
-                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-              >
-                <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
-                  Sucursal
-                </legend>
-
-              </fieldset>
-            </div>
-            <div>
-              <fieldset
-                class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
-              >
-                <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
-                  Por página
-                </legend>
-              </fieldset>
-              <fieldset
-                class="du-fieldset lg:col-span-3 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
-              >
-                <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
-                  Estado
-                </legend>
-                <div class="flex flex-wrap gap-2">
-                  <button
-                    type="button"
-                    class="du-btn du-btn-sm du-btn-primary du-btn-soft"
-                    (click)="setStatusFilter(undefined)"
-                    [class.du-btn-active]="queryParams().status === undefined"
-                  >
-                    Todas
-                  </button>
-                  <button
-                    type="button"
-                    class="du-btn du-btn-sm du-btn-success du-btn-soft"
-                    (click)="setStatusFilter(true)"
-                    [class.du-btn-active]="queryParams().status === true"
-                  >
-                    Abiertas
-                  </button>
-                  <button
-                    type="button"
-                    class="du-btn du-btn-sm du-btn-error du-btn-soft"
-                    (click)="setStatusFilter(false)"
-                    [class.du-btn-active]="queryParams().status === false"
-                  >
-                    Cerradas
-                  </button>
-                </div>
-              </fieldset>
-            </div>
+            <div></div>
           </div>
         </div>
 

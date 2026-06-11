@@ -20,7 +20,7 @@ export class FiltersComponent {
   pageSize = model<number>(10);
 
   startDate = model<string>();
-  endDate = model<string>()
+  endDate = model<string>();
 
   authStore = inject(AuthStore);
   officeStore = inject(OfficeStore);
@@ -50,7 +50,11 @@ export class FiltersComponent {
     const itemsPerPage = value > 0 ? value : this.pageSize();
     this.pageSize.set(itemsPerPage);
   }
-  changeStartDate(date: Event) {}
+  changeStartDate(date: string) {
+    this.startDate.set(date);
+  }
 
-  changeEndDate(date: Event) {}
+  changeEndDate(date: string) {
+    this.endDate.set(date);
+  }
 }
