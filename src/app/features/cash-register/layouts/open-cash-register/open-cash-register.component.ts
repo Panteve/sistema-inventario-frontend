@@ -4,15 +4,16 @@ import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import { OfficeNameIdResponse } from '../../../../shared/interfaces/office.interface';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+
 
 @Component({
   selector: 'app-open-cash-register',
-  imports: [DatePipe, CopMoneyInputDirective, CopPipe],
+  imports: [DatePipe, CopMoneyInputDirective, CopPipe, OfficeSelectComponent],
   templateUrl: './open-cash-register.component.html',
 })
 export class OpenCashRegisterComponent {
   employee = input.required<Employee | null>();
-  officesList = input.required<OfficeNameIdResponse[]>();
   loading = input.required<boolean>();
   closeModal = output<void>();
   openCashRegister = output<{ officeId: number; initialAmount: number }>();
@@ -20,7 +21,7 @@ export class OpenCashRegisterComponent {
   openConfirmationOpen = signal<boolean>(false);
   amountReceived = signal<number>(0);
   currentDate = Date.now();
-  officeId = 0;
+  officeId = signal<number>(0);
   selectedOffice = signal<string | null>(null);
 
   validateAmount = computed(() => {
@@ -37,9 +38,11 @@ export class OpenCashRegisterComponent {
     (event.target as HTMLInputElement).select();
   }
 
-  changeOffice(event: Event) {
-    this.officeId = Number((event.target as HTMLSelectElement).value);
-    this.selectedOffice.set(this.officesList().find((o) => o.id === this.officeId)?.name ?? null);
+  changeOffice(value: number) {
+    this.officeId.set(value);
+  }
+  setSelectedOffice(name: string | null) {
+    this.selectedOffice.set(name);
   }
 
   closeCashModal() {
@@ -48,7 +51,7 @@ export class OpenCashRegisterComponent {
 
   confirmOpenCashRegister() {
     this.openCashRegister.emit({
-      officeId: this.officeId,
+      officeId: this.officeId(),
       initialAmount: this.amountReceived(),
     });
   }

@@ -1,0 +1,20 @@
+<select
+  class="du-select w-full"
+  [class.du-select-sm]="size() === 'sm'"
+  (change)="changeOffice($event)"
+>
+  @if (officeStore.loading()) {
+    <option selected disabled>Cargando sucursales...</option>
+  } @else {
+    @if (showAllOption()) {
+      <option [value]="0" [selected]="value() === 0">Todas las sucursales</option>
+    }
+    @for (office of officeStore.offices(); track office.id) {
+      <option [value]="office.id" [selected]="office.id === value()">
+        {{ office.name }}
+      </option>
+    } @empty {
+      <option disabled selected>No hay sucursales disponibles</option>
+    }
+  }
+</select>

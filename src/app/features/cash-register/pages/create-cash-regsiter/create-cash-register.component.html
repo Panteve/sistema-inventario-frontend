@@ -46,7 +46,6 @@
         } @else {
           <app-open-cash-register
             [employee]="authStore.employee()"
-            [officesList]="officeStore.offices()"
             [loading]="cashRegisterStore.loading()"
             (closeModal)="closeCashModal()"
             (openCashRegister)="openCashRegister($event)"

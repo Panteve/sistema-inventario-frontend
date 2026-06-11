@@ -24,10 +24,17 @@ import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-p
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { ProductCatalogStore } from '../../../../shared/store/product-catalog-store';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 
 @Component({
   selector: 'app-movement-create.component',
-  imports: [DatePipe, TableProducts, ReactiveFormsModule, TableCatalogProducts],
+  imports: [
+    DatePipe,
+    TableProducts,
+    ReactiveFormsModule,
+    TableCatalogProducts,
+    OfficeSelectComponent,
+  ],
   providers: [MovementInventoryStore],
   templateUrl: './movement-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -195,8 +202,8 @@ export class MovementCreateComponent implements OnInit {
       products: [],
     }));
   }
-  changeToOffice(event: Event) {
-    const selectElement = Number((event.target as HTMLSelectElement).value);
+  changeToOffice(value: number) {
+    const selectElement = value;
     this.movementData.update((data) => ({
       ...data,
       toOfficeId: selectElement,
@@ -205,8 +212,8 @@ export class MovementCreateComponent implements OnInit {
       this.authStore.setOfficeId(Number(selectElement));
     }
   }
-  changeFromOffice(event: Event) {
-    const selectElement = Number((event.target as HTMLSelectElement).value);
+  changeFromOffice(value: number) {
+    const selectElement = value;
     this.movementData.update((data) => ({
       ...data,
       fromOfficeId: selectElement,

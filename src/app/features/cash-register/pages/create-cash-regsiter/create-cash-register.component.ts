@@ -2,7 +2,6 @@ import { Component, inject } from '@angular/core';
 import { CashRegisterStore } from '../../store/cash-register-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { OfficeStore } from '../../../../shared/store/office-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CloseCashRegisterComponent } from '../../layouts/close-cash-register/close-cash-register.component';
@@ -18,7 +17,6 @@ import { OpenCashRegisterComponent } from '../../layouts/open-cash-register/open
 export class CreateCashRegisterComponent {
   #router = inject(Router);
   #route = inject(ActivatedRoute);
-  officeStore = inject(OfficeStore);
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   cashRegisterStore = inject(CashRegisterStore);

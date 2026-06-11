@@ -1,0 +1,19 @@
+<select
+  class="du-select w-full"
+  [class.du-select-sm]="size() === 'sm'"
+  (change)="changeEmployee($event)"
+>
+  @if (employeeStore.loading()) {
+    <option selected disabled>Cargando empleados...</option>
+  } @else {
+    <option [value]="0" [selected]="value() === 0">Todos los empleados</option>
+
+    @for (employee of employeeStore.employees(); track employee.id) {
+      <option [value]="employee.id" [selected]="employee.id === value()">
+        {{ employee.name }}
+      </option>
+    } @empty {
+      <option disabled selected>No hay empleados disponibles</option>
+    }
+  }
+</select>

@@ -1,10 +1,8 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { Component, computed, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, map } from 'rxjs';
-import 'cally';
 import { AuthStore } from '../../../../core/store/auth-store';
-import { EmployeeStore } from '../../../../shared/store/employee-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
@@ -17,29 +15,45 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { ExpenseService } from '../../service/expense.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ViewExpenseComponent } from '../../layouts/view-expense/view-expense.component';
+import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
+import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
+import {
+  coerceIsoDate,
+  isIsoDate,
+  maxRangeMonths,
+  normalizeDateRange,
+  parseNumber,
+  subtractMonths,
+  toIsoDate,
+} from '../../../../shared/utils/filter-query.utils';
+import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
 
 @Component({
   selector: 'app-expense-list.component',
-  imports: [DatePipe, CopPipe, SlicePipe, CopMoneyInputDirective, ViewExpenseComponent],
+  imports: [
+    DatePipe,
+    CopPipe,
+    SlicePipe,
+    CopMoneyInputDirective,
+    ViewExpenseComponent,
+    FiltersComponent,
+  ],
   providers: [DatePipe],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './expense-list.component.html',
   styleUrl: './expense-list.component.css',
 })
 export class ExpenseListComponent implements OnInit {
-  readonly maxRangeMonths = 3;
   readonly defaultItemsPerPage = 30;
 
   authStore = inject(AuthStore);
-  officeStore = inject(OfficeStore);
-  employeeStore = inject(EmployeeStore);
   expenseService = inject(ExpenseService);
   toastService = inject(ToastService);
   #route = inject(ActivatedRoute);
   #router = inject(Router);
 
   readonly #today = new Date();
-  readonly todayIso = this.#toIsoDate(this.#today);
+  readonly todayIso = toIsoDate(this.#today);
 
   expenses = signal<Expense[]>([]);
   pagination = signal<ExpensePagination>({ totalItems: 0, totalPages: 0 });
@@ -48,13 +62,6 @@ export class ExpenseListComponent implements OnInit {
 
   queryParams = signal<ParamsGetExpenses>(this.#buildDefaultParams());
 
-  readonly endDateMax = computed(() => {
-    if (this.authStore.isAdmin()) {
-      return this.todayIso;
-    }
-    const maxAllowed = this.#addMonthsIso(this.queryParams().startDate, this.maxRangeMonths);
-    return maxAllowed > this.todayIso ? this.todayIso : maxAllowed;
-  });
   viewModalOpen = toSignal(
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
     { initialValue: false },
@@ -64,23 +71,21 @@ export class ExpenseListComponent implements OnInit {
     const defaults = this.#buildDefaultParams();
     const params = this.#route.snapshot.queryParamMap;
 
-    const startDate = this.#isIsoDate(params.get('startDate'))
+    const startDate = isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
       : defaults.startDate;
-    const endDate = this.#isIsoDate(params.get('endDate'))
-      ? params.get('endDate')!
-      : defaults.endDate;
-    const officeIdFromQuery = this.#parseNumber(params.get('officeId')) ?? defaults.officeId;
-    const employeeId = this.#parseNumber(params.get('employeeId')) ?? defaults.employeeId;
-    const amountMin = this.#parseNumber(params.get('amountMin')) ?? defaults.amountMin;
-    const amountMax = this.#parseNumber(params.get('amountMax')) ?? defaults.amountMax;
+    const endDate = isIsoDate(params.get('endDate')) ? params.get('endDate')! : defaults.endDate;
+    const officeIdFromQuery = parseNumber(params.get('officeId')) ?? defaults.officeId;
+    const employeeId = parseNumber(params.get('employeeId')) ?? defaults.employeeId;
+    const amountMin = parseNumber(params.get('amountMin')) ?? defaults.amountMin;
+    const amountMax = parseNumber(params.get('amountMax')) ?? defaults.amountMax;
     const reasonKeywordRaw = params.get('reasonKeyword')?.trim();
     const reasonKeyword = reasonKeywordRaw ? reasonKeywordRaw : defaults.reasonKeyword;
     const orderBy = (params.get('orderBy')?.trim() as 'createdAt' | 'amount') ?? defaults.orderBy;
     const orderDirection =
       (params.get('orderDirection')?.trim() as 'asc' | 'desc') ?? defaults.orderDirection;
-    const limit = this.#parseNumber(params.get('limit')) ?? defaults.limit;
-    const page = this.#parseNumber(params.get('page')) ?? defaults.page;
+    const limit = parseNumber(params.get('limit')) ?? defaults.limit;
+    const page = parseNumber(params.get('page')) ?? defaults.page;
     const officeId = this.authStore.isAdmin() ? officeIdFromQuery : defaults.officeId;
 
     const nextParams: ParamsGetExpenses = {
@@ -98,14 +103,13 @@ export class ExpenseListComponent implements OnInit {
       page,
     };
 
-    this.queryParams.set(this.#normalizeDateRange(nextParams));
-    this.#loadEmployeesForOffice();
+    this.queryParams.set(normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()));
     this.applyFilters();
   }
 
   #buildDefaultParams(): ParamsGetExpenses {
-    const startDate = this.#toIsoDate(this.#subtractMonths(this.#today, this.maxRangeMonths));
-    const endDate = this.#toIsoDate(this.#today);
+    const startDate = toIsoDate(subtractMonths(this.#today, maxRangeMonths));
+    const endDate = toIsoDate(this.#today);
     const officeId = this.authStore.isAdmin() ? undefined : this.authStore.employee()?.officeId;
 
     return {
@@ -123,21 +127,6 @@ export class ExpenseListComponent implements OnInit {
     };
   }
 
-  #loadEmployeesForOffice(): void {
-    const officeId = this.queryParams().officeId ?? 0;
-    this.employeeStore.loadEmployees(officeId);
-  }
-
-  #isIsoDate(value: string | null): value is string {
-    return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
-  }
-
-  #parseNumber(value: string | null): number | undefined {
-    if (value === null || value.trim() === '') return undefined;
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
   #parseMoneyInput(value: string): number | undefined {
     const digits = value.replace(/\D/g, '');
     if (digits === '') return undefined;
@@ -145,93 +134,18 @@ export class ExpenseListComponent implements OnInit {
     return Number.isFinite(parsed) ? parsed : undefined;
   }
 
-  #normalizeDateRange(params: ParamsGetExpenses): ParamsGetExpenses {
-    let { startDate, endDate } = params;
-
-    if (startDate > this.todayIso) {
-      startDate = this.todayIso;
-    }
-
-    const maxEndDate = this.authStore.isAdmin()
-      ? this.todayIso
-      : this.#addMonthsIso(startDate, this.maxRangeMonths);
-    const cappedMaxEndDate = maxEndDate > this.todayIso ? this.todayIso : maxEndDate;
-
-    if (endDate < startDate) {
-      endDate = startDate;
-    }
-    if (endDate > cappedMaxEndDate) {
-      endDate = cappedMaxEndDate;
-    }
-
-    return {
-      ...params,
-      startDate,
-      endDate,
-    };
-  }
-
-  #toIsoDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  #subtractMonths(date: Date, months: number): Date {
-    const copy = new Date(date);
-    copy.setMonth(copy.getMonth() - months);
-    return copy;
-  }
-
-  #addMonthsIso(isoDate: string, months: number): string {
-    const [year, month, day] = isoDate.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    date.setMonth(date.getMonth() + months);
-    return this.#toIsoDate(date);
-  }
-
-  changeStartDate(event: Event) {
-    const startDate = (event.target as HTMLInputElement).value;
-    this.queryParams.update((params) =>
-      this.#normalizeDateRange({
+  changeOrderDirection() {
+    if (this.queryParams().orderDirection === 'desc') {
+      this.queryParams.update((params) => ({
         ...params,
-        startDate,
-        page: 1,
-      }),
-    );
-  }
-
-  changeEndDate(event: Event) {
-    const endDate = (event.target as HTMLInputElement).value;
-    this.queryParams.update((params) =>
-      this.#normalizeDateRange({
+        orderDirection: 'asc',
+      }));
+    } else {
+      this.queryParams.update((params) => ({
         ...params,
-        endDate,
-        page: 1,
-      }),
-    );
-  }
-
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    const officeId = officeValue || undefined;
-    this.queryParams.update((params) => ({
-      ...params,
-      officeId,
-      employeeId: undefined,
-      page: 1,
-    }));
-    this.#loadEmployeesForOffice();
-  }
-
-  changeEmployee(event: Event) {
-    const employeeId = Number((event.target as HTMLSelectElement).value);
-    this.queryParams.update((params) => ({
-      ...params,
-      employeeId: employeeId || undefined,
-      page: 1,
-    }));
+        orderDirection: 'desc',
+      }));
+    }
   }
 
   changeReasonKeyword(event: Event) {
@@ -245,6 +159,7 @@ export class ExpenseListComponent implements OnInit {
 
   changeAmountMin(event: Event) {
     const value = (event.target as HTMLInputElement).value;
+    console.log('Raw input value:', value);
     const amountMin = this.#parseMoneyInput(value);
     this.queryParams.update((params) => ({
       ...params,
@@ -269,16 +184,6 @@ export class ExpenseListComponent implements OnInit {
     this.queryParams.update((params) => ({
       ...params,
       orderBy,
-      page: 1,
-    }));
-  }
-
-  changeOrderDirection(event: Event) {
-    const value = (event.target as HTMLSelectElement).value;
-    const orderDirection = (value as 'asc' | 'desc') ?? 'desc';
-    this.queryParams.update((params) => ({
-      ...params,
-      orderDirection,
       page: 1,
     }));
   }
@@ -308,7 +213,6 @@ export class ExpenseListComponent implements OnInit {
 
   clearFilters() {
     this.queryParams.set(this.#buildDefaultParams());
-    this.#loadEmployeesForOffice();
     this.applyFilters();
   }
 

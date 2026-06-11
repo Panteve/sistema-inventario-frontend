@@ -51,257 +51,28 @@
               </button>
             </div>
           </div>
-
-          <div class="grid grid-cols-1 gap-3">
-            <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
-              <fieldset
-                class="du-fieldset lg:col-span-7 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
-              >
-                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
-                  Fecha y cliente
-                </legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <fieldset class="du-fieldset">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Desde
-                    </legend>
-                    <button
-                      popovertarget="cally-popover1"
-                      class="du-input du-input-sm du-input-bordered w-full justify-between cursor-pointer"
-                      id="cally1"
-                      style="anchor-name: --cally1"
-                    >
-                      {{ queryParams().startDate | date: 'yyyy-MM-dd' }}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
-                        />
-                      </svg>
-                    </button>
-                    <div
-                      popover
-                      id="cally-popover1"
-                      class="du-dropdown bg-base-100 rounded-box shadow-lg"
-                      style="position-anchor: --cally1"
-                    >
-                      <calendar-date
-                        [max]="todayIso"
-                        [focusedDate]="queryParams().startDate"
-                        class="du-cally"
-                        (change)="changeStartDate($event)"
-                      >
-                        <svg
-                          aria-label="Previous"
-                          class="fill-current size-4"
-                          slot="previous"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
-                        </svg>
-                        <svg
-                          aria-label="Next"
-                          class="fill-current size-4"
-                          slot="next"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
-                        </svg>
-                        <calendar-month></calendar-month>
-                      </calendar-date>
-                    </div>
-                  </fieldset>
-
-                  <fieldset class="du-fieldset">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Hasta
-                    </legend>
-                    <button
-                      popovertarget="cally-popover2"
-                      class="du-input du-input-sm du-input-bordered w-full justify-between cursor-pointer"
-                      id="cally2"
-                      style="anchor-name: --cally2"
-                    >
-                      {{ queryParams().endDate | date: 'yyyy-MM-dd' }}
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="20"
-                        height="20"
-                        viewBox="0 0 24 24"
-                      >
-                        <path
-                          fill="currentColor"
-                          d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
-                        />
-                        <path
-                          fill="currentColor"
-                          d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
-                        />
-                      </svg>
-                    </button>
-                    <div
-                      popover
-                      id="cally-popover2"
-                      class="du-dropdown bg-base-100 rounded-box shadow-lg"
-                      style="position-anchor: --cally2"
-                    >
-                      <calendar-date
-                        [min]="queryParams().startDate"
-                        [max]="endDateMax()"
-                        class="du-cally"
-                        (change)="changeEndDate($event)"
-                      >
-                        <svg
-                          aria-label="Previous"
-                          class="fill-current size-4"
-                          slot="previous"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="M15.75 19.5 8.25 12l7.5-7.5"></path>
-                        </svg>
-                        <svg
-                          aria-label="Next"
-                          class="fill-current size-4"
-                          slot="next"
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                        >
-                          <path d="m8.25 4.5 7.5 7.5-7.5 7.5"></path>
-                        </svg>
-                        <calendar-month></calendar-month>
-                      </calendar-date>
-                    </div>
-                  </fieldset>
-
-                  <fieldset class="du-fieldset sm:col-span-2">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Cliente o documento
-                    </legend>
-                    <input
-                      type="text"
-                      class="du-input du-input-sm du-input-bordered w-full"
-                      placeholder="Nombre o documento"
-                      [value]="queryParams().customerKeyword ?? ''"
-                      (input)="changeCustomerKeyword($event)"
-                    />
-                  </fieldset>
-                </div>
-              </fieldset>
-
-              <fieldset
-                class="du-fieldset lg:col-span-5 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
-              >
-                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
-                  Paginación
-                </legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <fieldset class="du-fieldset">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Por pagina
-                    </legend>
-                    <input
-                      type="number"
-                      class="du-input du-input-sm du-input-bordered w-full"
-                      min="5"
-                      max="100"
-                      [value]="queryParams().limit"
-                      (change)="changeItemsPerPage($event)"
-                    />
-                  </fieldset>
-                </div>
-              </fieldset>
-            </div>
-
-            <div class="grid grid-cols-1 gap-3 lg:grid-cols-12">
-              <fieldset
-                class="du-fieldset lg:col-span-12 rounded-xl border border-base-content/10 bg-base-100/70 p-3"
-              >
-                <legend class="du-fieldset-legend text-[11px] uppercase tracking-wide opacity-60">
-                  Contexto
-                </legend>
-                <div class="grid grid-cols-1 gap-2 sm:grid-cols-2">
-                  <fieldset class="du-fieldset">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Empleado
-                    </legend>
-                    <select
-                      class="du-select du-select-sm w-full"
-                      (change)="changeEmployee($event)"
-                      [value]="queryParams().employeeId ?? ''"
-                    >
-                      @if (employeeStore.loading()) {
-                        <option selected disabled>Cargando empleados...</option>
-                      } @else {
-                        <option value="" [selected]="queryParams().employeeId === undefined">
-                          Todos
-                        </option>
-                        @for (employee of employeeStore.employees(); track employee.id) {
-                          <option
-                            [value]="employee.id"
-                            [selected]="employee.id === queryParams().employeeId"
-                          >
-                            {{ employee.name }}
-                          </option>
-                        } @empty {
-                          <option disabled selected>No hay empleados disponibles</option>
-                        }
-                      }
-                    </select>
-                  </fieldset>
-
-                  <fieldset class="du-fieldset">
-                    <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
-                      Oficina
-                    </legend>
-                    @if (authStore.isAdmin()) {
-                      <select
-                        class="du-select du-select-sm w-full"
-                        (change)="changeOffice($event)"
-                        [value]="queryParams().officeId ?? ''"
-                      >
-                        @if (officeStore.loading()) {
-                          <option selected disabled>Cargando oficinas...</option>
-                        } @else {
-                          <option value="" [selected]="queryParams().officeId === undefined">
-                            Todas
-                          </option>
-                          @for (office of officeStore.offices(); track office.id) {
-                            <option
-                              [value]="office.id"
-                              [selected]="office.id === queryParams().officeId"
-                            >
-                              {{ office.name }}
-                            </option>
-                          } @empty {
-                            <option disabled selected>No hay oficinas disponibles</option>
-                          }
-                        }
-                      </select>
-                    } @else {
-                      <input
-                        type="text"
-                        class="du-input du-input-sm du-input-bordered w-full"
-                        [value]="authStore.employee()?.officeName || 'Sin oficina'"
-                        disabled
-                      />
-                    }
-                  </fieldset>
-                </div>
-              </fieldset>
-            </div>
-          </div>
+          <app-filters
+            [(officeId)]="queryParams().officeId"
+            [(employeeId)]="queryParams().employeeId"
+            [(pageSize)]="queryParams().limit"
+            [(startDate)]="queryParams().startDate"
+            [(endDate)]="queryParams().endDate"
+          >
+            <fieldset
+              class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
+            >
+              <legend class="du-fieldset-legend text-xs tracking-wide opacity-60">
+                Cliente o documento
+              </legend>
+              <input
+                type="text"
+                class="du-input du-input-sm du-input-bordered w-full"
+                placeholder="Nombre o documento"
+                [value]="queryParams().customerKeyword ?? ''"
+                (input)="changeCustomerKeyword($event)"
+              />
+            </fieldset>
+          </app-filters>
         </div>
 
         <div class="du-divider my-4"></div>
