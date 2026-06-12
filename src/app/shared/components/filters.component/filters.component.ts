@@ -1,12 +1,12 @@
-import { Component, effect, inject, input, model, output } from '@angular/core';
+import { Component, inject, input, model, output } from '@angular/core';
 import { DateRangePopoverComponent } from '../date-range-popover.component/date-range-popover.component';
 import { AuthStore } from '../../../core/store/auth-store';
-import { OfficeStore } from '../../store/office-store';
-import { EmployeeStore } from '../../store/employee-store';
+import { EmployeeSelectComponent } from '../employee-select.component/employee-select.component';
+import { OfficeSelectComponent } from '../office-select.component/office-select.component';
 
 @Component({
   selector: 'app-filters',
-  imports: [DateRangePopoverComponent],
+  imports: [DateRangePopoverComponent, EmployeeSelectComponent, OfficeSelectComponent],
   templateUrl: './filters.component.html',
   styleUrl: './filters.component.css',
 })
@@ -23,28 +23,22 @@ export class FiltersComponent {
   endDate = model<string>();
 
   authStore = inject(AuthStore);
-  officeStore = inject(OfficeStore);
-  employeeStore = inject(EmployeeStore);
 
-  constructor() {
-    effect(() => {
-      this.employeeStore.loadEmployees(this.officeId() ?? 0);
-    });
+  changeOfficeId(officeId: number) {
+    this.officeId.set(officeId);
+  }
+  changeOfficeName(officeName: string) {
+    this.nameOffice.emit(officeName);
   }
 
-  changeOffice(event: Event) {
-    const officeValue = Number((event.target as HTMLSelectElement).value);
-    this.officeId.set(officeValue);
-    this.nameOffice.emit(this.officeStore.offices().find((o) => o.id === officeValue)?.name ?? '');
+  changeEmployeeId(employeeId: number) {
+    this.employeeId.set(employeeId);
   }
 
-  changeEmployee(event: Event) {
-    const employeeValue = Number((event.target as HTMLSelectElement).value);
-    this.employeeId.set(employeeValue);
-    this.nameEmployee.emit(
-      this.employeeStore.employees().find((e) => e.id === employeeValue)?.name ?? '',
-    );
+  changeEmployeeName(employeeName: string) {
+    this.nameEmployee.emit(employeeName);
   }
+
   changeItemsPerPage(event: Event) {
     const value = Number((event.target as HTMLInputElement).value);
     const itemsPerPage = value > 0 ? value : this.pageSize();

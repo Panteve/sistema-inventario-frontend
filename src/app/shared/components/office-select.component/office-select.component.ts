@@ -10,7 +10,6 @@ export class OfficeSelectComponent {
   value = input<number>();
   size = input<string>();
   idOffice = output<number>();
-  showAllOption = input<boolean>(true);
   nameOffice = output<string>();
 
   officeStore = inject(OfficeStore);
