@@ -60,6 +60,7 @@ export interface BillResponse {
   id: number;
   status: boolean;
   total: number;
+  createdAt: string;
   products: {
     quantity: number;
     priceUnique: number;
@@ -67,7 +68,7 @@ export interface BillResponse {
     taxPercentage: number;
     taxAmount: number;
     id: number;
-    name: string;
+    productName: string;
   }[];
   customer: {
     id: number;

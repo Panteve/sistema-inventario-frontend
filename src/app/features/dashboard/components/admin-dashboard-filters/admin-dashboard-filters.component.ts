@@ -248,14 +248,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
       if (!startDate || !endDate) {
         return null;
       }
-      if (typeof parsed.employeeId === 'string') {
-        console.log(
-          'Employee ID in saved filters is a string, expected number. Attempting to parse.',
-        );
-      } else {
-        console.log(parsed.employeeId);
-      }
-
+      
       const officeId =
         typeof parsed.officeId === 'string'
           ? this.#parseNumber(parsed.officeId)
