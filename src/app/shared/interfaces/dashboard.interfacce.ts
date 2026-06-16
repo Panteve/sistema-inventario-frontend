@@ -83,6 +83,12 @@ export interface DashboardCharts {
   }[];
 }
 
+export interface AreaChartData {
+  hour: number;
+  total: number;
+  count: number;
+}
+
 export interface BarChartData {
   currentData: {
     id: number;

@@ -68,13 +68,17 @@ export class AdminDashboardComponent implements OnDestroy {
     };
   });
 
+  areaChartData = computed(() => {
+    return this.dashboardCharts().salesByHour;
+  });
+
   onFiltersChange(data: { filters: ParamsGetDashboard; changeJustPaymentMethod: boolean }) {
     this.applyFilters(data.filters, data.changeJustPaymentMethod);
   }
 
   applyFilters(filters: ParamsGetDashboard, changeJustPaymentMethod: boolean) {
     this.loadingSummary.set(true);
-    this.loadingProducts.set(true)
+    this.loadingProducts.set(true);
     this.loadingCharts.set(true);
     this.#dashboardService
       .getDashboardSummary(filters)
