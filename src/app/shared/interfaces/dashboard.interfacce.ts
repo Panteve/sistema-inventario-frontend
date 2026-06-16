@@ -70,10 +70,19 @@ export interface DashboardCharts {
     name: string;
     total: number;
   }[];
+  currentPaymentMethodSales: {
+    id: number;
+    name: string;
+    count: number;
+  }[];
+  previousPaymentMethodSales: {
+    id: number;
+    name: string;
+    count: number;
+  }[];
   paymentMethodDistribution: {
-    paymentMethodId: number;
-    paymentMethodName: string;
-    paymentMethodCode: string;
+    id: number;
+    name: string;
     count: number;
   }[];
   salesByHour: {
@@ -81,6 +90,12 @@ export interface DashboardCharts {
     total: number;
     count: number;
   }[];
+}
+
+export interface PieChartData {
+  id: number;
+  name: string;
+  count: number;
 }
 
 export interface AreaChartData {

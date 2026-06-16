@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
+import { DashboardCharts, PieChartData } from '../../../../shared/interfaces/dashboard.interfacce';
 import { ChartOptions } from '../../types/chart-options.type';
 import {
   DASHBOARD_CHART_COLORS,
@@ -20,7 +20,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardPieChartComponent {
-  dashboardCharts = input.required<DashboardCharts>();
+  dashboardCharts = input.required<PieChartData[]>();
 
   readonly #chartData = computed(() =>
     this.#normalizePaymentMethodDistribution(this.dashboardCharts()),
@@ -125,12 +125,12 @@ export class AdminDashboardPieChartComponent {
     };
   }
 
-  #normalizePaymentMethodDistribution(charts: DashboardCharts): {
+  #normalizePaymentMethodDistribution(charts: PieChartData[]): {
     labels: string[];
     series: number[];
   } {
-    const labels = charts.paymentMethodDistribution.map((item) => item.paymentMethodName);
-    const series = charts.paymentMethodDistribution.map((item) => item.count);
+    const labels = charts.map((item) => item.name);
+    const series = charts.map((item) => item.count);
 
     return filterNonZeroChartSlices(labels, series);
   }

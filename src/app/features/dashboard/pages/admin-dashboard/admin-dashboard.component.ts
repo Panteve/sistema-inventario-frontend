@@ -3,11 +3,13 @@ import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import {
+  AreaChartData,
   BarChartData,
   DashboardCharts,
   DashboardProduct,
   DashboardSummary,
   ParamsGetDashboard,
+  PieChartData,
 } from '../../../../shared/interfaces/dashboard.interfacce';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -54,23 +56,10 @@ export class AdminDashboardComponent implements OnDestroy {
     lowStockProducts: [],
     outOfStockProducts: [],
   });
-  dashboardCharts = signal<DashboardCharts>({
-    currentOfficeSales: [],
-    previousOfficeSales: [],
-    paymentMethodDistribution: [],
-    salesByHour: [],
-  });
 
-  barChartData = computed<BarChartData>(() => {
-    return {
-      currentData: this.dashboardCharts().currentOfficeSales,
-      previousData: this.dashboardCharts().previousOfficeSales,
-    };
-  });
-
-  areaChartData = computed(() => {
-    return this.dashboardCharts().salesByHour;
-  });
+  barChartData = signal<BarChartData>({ currentData: [], previousData: [] });
+  areaChartData = signal<AreaChartData[]>([]);
+  pieChartData = signal<PieChartData[]>([]);
 
   onFiltersChange(data: { filters: ParamsGetDashboard; changeJustPaymentMethod: boolean }) {
     this.applyFilters(data.filters, data.changeJustPaymentMethod);
@@ -105,7 +94,12 @@ export class AdminDashboardComponent implements OnDestroy {
                   )
                   .subscribe({
                     next: (charts) => {
-                      this.dashboardCharts.set(charts);
+                      this.barChartData.set({
+                        currentData: charts.currentOfficeSales,
+                        previousData: charts.previousOfficeSales,
+                      });
+                      this.areaChartData.set(charts.salesByHour);
+                      this.pieChartData.set(charts.paymentMethodDistribution);
                     },
                   });
               },
@@ -133,6 +127,7 @@ export class AdminDashboardComponent implements OnDestroy {
     this.topProductsByRevenue.set(input.checked);
     this.#animateProgressBars();
   }
+
 
   safeProgressValue(value: number): number {
     const parsed = Number(value);
