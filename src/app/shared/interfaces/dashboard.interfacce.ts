@@ -61,13 +61,13 @@ export interface DashboardProduct {
 
 export interface DashboardCharts {
   currentOfficeSales: {
-    officeId: number;
-    officeName: string;
+    id: number;
+    name: string;
     total: number;
   }[];
   previousOfficeSales: {
-    officeId: number;
-    officeName: string;
+    id: number;
+    name: string;
     total: number;
   }[];
   paymentMethodDistribution: {
@@ -80,5 +80,18 @@ export interface DashboardCharts {
     hour: number;
     total: number;
     count: number;
+  }[];
+}
+
+export interface BarChartData {
+  currentData: {
+    id: number;
+    name: string;
+    total: number;
+  }[];
+  previousData: {
+    id: number;
+    name: string;
+    total: number;
   }[];
 }

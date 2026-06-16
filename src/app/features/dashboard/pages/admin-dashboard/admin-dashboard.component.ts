@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import {
+  BarChartData,
   DashboardCharts,
   DashboardProduct,
   DashboardSummary,
@@ -60,13 +61,20 @@ export class AdminDashboardComponent implements OnDestroy {
     salesByHour: [],
   });
 
+  barChartData = computed<BarChartData>(() => {
+    return {
+      currentData: this.dashboardCharts().currentOfficeSales,
+      previousData: this.dashboardCharts().previousOfficeSales,
+    };
+  });
+
   onFiltersChange(data: { filters: ParamsGetDashboard; changeJustPaymentMethod: boolean }) {
     this.applyFilters(data.filters, data.changeJustPaymentMethod);
   }
 
   applyFilters(filters: ParamsGetDashboard, changeJustPaymentMethod: boolean) {
     this.loadingSummary.set(true);
-    this.loadingProducts.set(true);
+    this.loadingProducts.set(true)
     this.loadingCharts.set(true);
     this.#dashboardService
       .getDashboardSummary(filters)
