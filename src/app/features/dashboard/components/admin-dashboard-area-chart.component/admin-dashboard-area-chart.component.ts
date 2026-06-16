@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
+import { AreaChartData, DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { ChartOptions } from '../../types/chart-options.type';
 import {
@@ -19,7 +19,7 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardAreaChartComponent {
-  dashboardCharts = input.required<DashboardCharts>();
+  dashboardCharts = input.required<AreaChartData[]>();
 
   #copPipe = inject(CopPipe);
 
@@ -27,7 +27,7 @@ export class AdminDashboardAreaChartComponent {
     return this.#buildSalesByHourChartOptions(this.dashboardCharts());
   }
 
-  #buildSalesByHourChartOptions(charts: DashboardCharts): Partial<ChartOptions> {
+  #buildSalesByHourChartOptions(charts: AreaChartData[]): Partial<ChartOptions> {
     const { categories, totals, counts } = this.#buildSalesByHourSeries(charts);
 
     return {
@@ -168,12 +168,12 @@ export class AdminDashboardAreaChartComponent {
     };
   }
 
-  #buildSalesByHourSeries(charts: DashboardCharts): {
+  #buildSalesByHourSeries(charts: AreaChartData[]): {
     categories: string[];
     totals: number[];
     counts: number[];
   } {
-    const byHour = new Map(charts.salesByHour.map((item) => [item.hour, item]));
+    const byHour = new Map(charts.map((item) => [item.hour, item]));
     const categories: string[] = [];
     const totals: number[] = [];
     const counts: number[] = [];

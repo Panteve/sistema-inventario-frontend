@@ -4,10 +4,11 @@ import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { RouterLink } from "@angular/router";
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-view-bill.component',
-  imports: [CopPipe, RouterLink],
+  imports: [CopPipe, RouterLink, DatePipe],
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
@@ -22,6 +23,7 @@ export class ViewBillComponent implements OnInit {
     id: 0,
     status: true,
     total: 0,
+    createdAt: '',
     products: [],
     customer: null,
     cashRegister: {

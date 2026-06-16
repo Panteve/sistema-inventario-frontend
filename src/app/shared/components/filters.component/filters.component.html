@@ -22,25 +22,13 @@
       <legend class="du-fieldset-legend text-xs opacity-60 tracking-[0.16em] uppercase">
         Empleado
       </legend>
-      <select
-        class="du-select w-full"
-        [class.du-select-sm]="size() === 'sm'"
-        (change)="changeEmployee($event)"
-      >
-        @if (employeeStore.loading()) {
-          <option selected disabled>Cargando empleados...</option>
-        } @else {
-          <option [value]="0" [selected]="employeeId() === 0">Todos los empleados</option>
-
-          @for (employee of employeeStore.employees(); track employee.id) {
-            <option [value]="employee.id" [selected]="employee.id === employeeId()">
-              {{ employee.name }}
-            </option>
-          } @empty {
-            <option disabled selected>No hay empleados disponibles</option>
-          }
-        }
-      </select>
+      <app-employee-select
+        [size]="size()"
+        [value]="employeeId()"
+        [idOffice]="officeId()"
+        (idEmployee)="changeEmployeeId($event)"
+        (nameEmployee)="changeEmployeeName($event)"
+      />
     </fieldset>
     <fieldset
       class="du-fieldset rounded-xl border border-base-content/10 bg-base-100/70 px-3 pb-3 pt-2"
@@ -49,30 +37,17 @@
         Sucursal
       </legend>
       @if (authStore.isAdmin()) {
-        <select
-          class="du-select w-full"
-          [class.du-select-sm]="size() === 'sm'"
-          (change)="changeOffice($event)"
-        >
-          @if (officeStore.loading()) {
-            <option selected disabled>Cargando sucursales...</option>
-          } @else {
-            <option [value]="0" [selected]="officeId() === 0">Todas las sucursales</option>
-
-            @for (office of officeStore.offices(); track office.id) {
-              <option [value]="office.id" [selected]="office.id === officeId()">
-                {{ office.name }}
-              </option>
-            } @empty {
-              <option disabled selected>No hay sucursales disponibles</option>
-            }
-          }
-        </select>
+        <app-office-select
+          [size]="size()"
+          [value]="officeId()"
+          (idOffice)="changeOfficeId($event)"
+          (nameOffice)="changeOfficeName($event)"
+        />
       } @else {
         <input
           type="text"
           class="du-input du-input-sm du-input-bordered w-full"
-          [value]="authStore.employee()?.officeName || 'Sin oficina'"
+          [value]="authStore.employee()?.officeName"
           disabled
         />
       }
@@ -95,8 +70,6 @@
         (change)="changeItemsPerPage($event)"
       />
     </fieldset>
-      <ng-content />
+    <ng-content />
   </div>
 </div>
-
-

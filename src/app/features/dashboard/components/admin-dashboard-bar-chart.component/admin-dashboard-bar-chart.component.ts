@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
+import { BarChartData } from '../../../../shared/interfaces/dashboard.interfacce';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { ChartOptions } from '../../types/chart-options.type';
 import {
@@ -20,15 +20,15 @@ import {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AdminDashboardBarChartComponent {
-  dashboardCharts = input.required<DashboardCharts>();
+  barChartData = input.required<BarChartData>();
 
   #copPipe = inject(CopPipe);
 
   public get chartOptions(): Partial<ChartOptions> {
-    return this.#buildOfficeSalesChartOptions(this.dashboardCharts());
+    return this.#buildOfficeSalesChartOptions(this.barChartData());
   }
 
-  #buildOfficeSalesChartOptions(charts: DashboardCharts): Partial<ChartOptions> {
+  #buildOfficeSalesChartOptions(charts: BarChartData): Partial<ChartOptions> {
     const { categories, currentSeries, previousSeries } = this.#buildOfficeSalesComparison(charts);
 
     return {
@@ -155,7 +155,7 @@ export class AdminDashboardBarChartComponent {
     };
   }
 
-  #buildOfficeSalesComparison(charts: DashboardCharts): {
+  #buildOfficeSalesComparison(charts: BarChartData): {
     categories: string[];
     currentSeries: number[];
     previousSeries: number[];
@@ -171,15 +171,11 @@ export class AdminDashboardBarChartComponent {
       categories.push(officeName);
     };
 
-    charts.currentOfficeSales.forEach((item) => addOffice(item.officeId, item.officeName));
-    charts.previousOfficeSales.forEach((item) => addOffice(item.officeId, item.officeName));
+    charts.currentData.forEach((item) => addOffice(item.id, item.name));
+    charts.previousData.forEach((item) => addOffice(item.id, item.name));
 
-    const currentByOffice = new Map(
-      charts.currentOfficeSales.map((item) => [item.officeId, item.total]),
-    );
-    const previousByOffice = new Map(
-      charts.previousOfficeSales.map((item) => [item.officeId, item.total]),
-    );
+    const currentByOffice = new Map(charts.currentData.map((item) => [item.id, item.total]));
+    const previousByOffice = new Map(charts.previousData.map((item) => [item.id, item.total]));
 
     const currentSeries = officeIds.map((officeId) => currentByOffice.get(officeId) ?? 0);
     const previousSeries = officeIds.map((officeId) => previousByOffice.get(officeId) ?? 0);
