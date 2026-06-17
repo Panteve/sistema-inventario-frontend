@@ -52,7 +52,7 @@
 }
 
 <div class="relative mx-auto w-full max-w-2xl">
-  <div class="mb-2 flex items-center gap-2">
+  <header class="mb-2 flex items-center gap-2">
     <div class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -79,9 +79,9 @@
       <h1 class="text-xl font-bold tracking-tight">Registrar gasto</h1>
       <p class="text-sm opacity-50">Crea un egreso y descuentalo del cierre de caja actual.</p>
     </div>
-  </div>
+  </header>
 
-  <div class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
+  <article class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
     <div class="du-card-body p-3 md:p-4">
       <form class="space-y-2.5" [formGroup]="expenseForm" (submit)="onSubmit($event)">
         <fieldset
@@ -183,5 +183,5 @@
         </div>
       </form>
     </div>
-  </div>
+  </article>
 </div>

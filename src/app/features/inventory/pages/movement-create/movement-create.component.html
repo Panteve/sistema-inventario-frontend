@@ -1,7 +1,7 @@
 <div class="flex-1 flex justify-center px-4 py-10 md:py-14">
   <div class="w-full max-w-4xl md:max-w-5xl">
     <!-- Header -->
-    <div class="flex items-center gap-3 mb-5">
+    <header class="flex items-center gap-3 mb-5">
       <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -30,9 +30,9 @@
         <h1 class="text-xl md:text-2xl font-bold tracking-tight">Movimiento de inventario</h1>
         <p class="text-xs opacity-50">Nuevo movimiento de inventario</p>
       </div>
-    </div>
+    </header>
 
-    <div class="du-card bg-base-100 shadow-xl rounded-4xl">
+    <article class="du-card bg-base-100 shadow-xl rounded-4xl">
       <div class="du-card-body p-6 md:p-10">
         <!-- Sub-header -->
         <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
@@ -264,7 +264,7 @@
           }
         </div>
       </div>
-    </div>
+    </article>
     @if (authStore.isAuthenticated() && productsModalOpen()) {
       <dialog class="du-modal du-modal-open" (close)="closeProductsModal()">
         <div class="du-modal-box w-11/12 max-w-4xl">
