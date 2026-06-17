@@ -1,8 +1,8 @@
 <div class="relative rounded-3xl h-fit px-4 py-2 md:py-3">
   <div class="relative z-10 mx-auto w-full max-w-5xl">
-    <header class="mb-3 flex items-center gap-2">
+    <header class="mb-3 flex items-center gap-2" data-reveal="up">
       <div
-        class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20"
+        class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20 pulse-dot pulse-dot-accent"
       >
         <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20"  class="text-accent" viewBox="0 0 24 24">
           <g
@@ -32,7 +32,7 @@
       </div>
     </header>
 
-    <article class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
+    <article data-reveal="up" class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl card-hover">
       <div class="du-card-body p-2.5 md:p-3">
         @if (authStore.cashRegisterIsOpen()) {
           <app-close-cash-register

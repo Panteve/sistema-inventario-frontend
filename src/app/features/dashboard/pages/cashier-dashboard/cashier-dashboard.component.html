@@ -1,237 +1,259 @@
-<main class="relative mx-auto max-w-6xl space-y-6 px-4 py-8">
-  <header class="du-card border border-base-300 bg-base-100/90 shadow-md">
-    <div class="du-card-body flex flex-wrap items-center justify-between gap-4 p-5 md:flex-nowrap">
+<section class="min-h-screen">
+  <div class="mx-auto max-w-6xl space-y-6 px-4 py-8">
+    <header class="flex flex-wrap items-center justify-between gap-4" data-reveal="up">
       <div class="flex items-center gap-4">
         <div class="du-avatar placeholder">
-          <div class="h-12 w-12 rounded-full text-lg font-semibold">
-            <span>JR</span>
+          <div class="h-12 w-12 rounded-full bg-primary/15 text-lg font-semibold ring-1 ring-primary/25 pulse-dot">
+            <span class="text-primary">JR</span>
           </div>
         </div>
         <div>
-          <p class="text-sm font-semibold">Juan Rodriguez</p>
-          <p class="text-xs text-slate-400">Turno desde 08:00 AM</p>
+          <h1 class="text-xl font-bold tracking-tight text-base-content sm:text-2xl">
+            {{ shiftSummary().employeeName }}
+          </h1>
+          <p class="mt-0.5 flex items-center gap-2 text-xs text-base-content/60">
+            <span class="inline-block h-2 w-2 rounded-full bg-success pulse-dot"></span>
+            Turno desde las {{ shiftSummary().shiftSince }}
+          </p>
         </div>
       </div>
       <div class="flex items-center gap-3">
-        <span class="du-badge du-badge-success du-badge-outline">Caja abierta</span>
-        <button class="du-btn du-btn-ghost du-btn-sm">Ver detalle</button>
+        <span class="du-badge du-badge-success du-badge-outline gap-1.5 px-3 py-2">
+          <span class="inline-block h-1.5 w-1.5 rounded-full bg-success"></span>
+          Caja abierta
+        </span>
+        <button class="du-btn du-btn-soft du-btn-sm du-btn-primary">Ver detalle</button>
+      </div>
+    </header>
+
+    <div data-reveal="up">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs font-semibold uppercase tracking-[0.35em] text-base-content/40">
+          Resumen del turno
+        </h2>
+        <div class="hidden items-center gap-2 text-xs text-base-content/40 md:flex">
+          <span class="h-2 w-2 rounded-full bg-success pulse-dot"></span>
+          <span>Actualizado hace 2 min</span>
+        </div>
       </div>
     </div>
-  </header>
 
-  <div class="flex items-center justify-between">
-    <h2 class="text-xs font-semibold uppercase tracking-[0.35em] text-slate-400">
-      Resumen del turno
-    </h2>
-    <div class="hidden items-center gap-2 text-xs text-slate-400 md:flex">
-      <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-      <span>Actualizado hace 2 min</span>
+    <div class="reveal-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="up">
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/30 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-lg shadow-success/15">
+        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-success/60 to-success"></div>
+        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-success/20 blur-2xl"></div>
+        <div class="du-card-body gap-2 p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-success/80">Ventas del turno</p>
+          <p class="text-3xl font-bold tracking-tight text-success">
+            {{ shiftSummary().salesTotal | number }}
+          </p>
+          <p class="flex items-center gap-1 text-xs text-base-content/60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/>
+            </svg>
+            {{ shiftSummary().transactions }} transacciones
+          </p>
+        </div>
+      </article>
+
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/30 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-lg shadow-info/15">
+        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-info/60 to-info"></div>
+        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-info/20 blur-2xl"></div>
+        <div class="du-card-body gap-2 p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-info/80">Ticket promedio</p>
+          <p class="text-3xl font-bold tracking-tight text-info">
+            {{ shiftSummary().averageTicket | number }}
+          </p>
+          <p class="flex items-center gap-1 text-xs text-base-content/60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/>
+            </svg>
+            Por venta
+          </p>
+        </div>
+      </article>
+
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/30 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-lg shadow-secondary/15">
+        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-secondary/60 to-secondary"></div>
+        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-secondary/20 blur-2xl"></div>
+        <div class="du-card-body gap-2 p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary/80">Efectivo en caja</p>
+          <p class="text-3xl font-bold tracking-tight text-secondary">
+            {{ shiftSummary().cashInDrawer | number }}
+          </p>
+          <p class="flex items-center gap-1 text-xs text-base-content/60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+            </svg>
+            +${{ shiftSummary().initialCash | number }} inicial
+          </p>
+        </div>
+      </article>
+
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-primary/30 bg-linear-to-br from-primary/20 via-base-100 to-base-200 shadow-lg shadow-primary/15">
+        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-primary/60 to-primary"></div>
+        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-primary/20 blur-2xl"></div>
+        <div class="du-card-body gap-2 p-5">
+          <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Pagos con tarjeta</p>
+          <p class="text-3xl font-bold tracking-tight text-primary">
+            {{ shiftSummary().cardTotal | number }}
+          </p>
+          <p class="flex items-center gap-1 text-xs text-base-content/60">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/>
+            </svg>
+            {{ shiftSummary().cardTransactions }} transacciones
+          </p>
+        </div>
+      </article>
     </div>
-  </div>
 
-  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-    <article class="du-card border border-base-300 bg-base-100/90">
-      <div class="du-card-body space-y-2">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ventas del turno</p>
-        <p class="text-2xl font-mono font-semibold">$842.500</p>
-        <p class="text-xs text-slate-400">12 transacciones</p>
-      </div>
-    </article>
-    <article class="du-card border border-base-300 bg-base-100/90">
-      <div class="du-card-body space-y-2">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ticket promedio</p>
-        <p class="text-2xl font-mono font-semibold">$70.208</p>
-        <p class="text-xs text-slate-400">Por venta</p>
-      </div>
-    </article>
-    <article class="du-card border border-base-300 bg-base-100/90">
-      <div class="du-card-body space-y-2">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Efectivo en caja</p>
-        <p class="text-2xl font-mono font-semibold">$512.000</p>
-        <p class="text-xs text-slate-400">+$200.000 inicial</p>
-      </div>
-    </article>
-    <article class="du-card border border-base-300 bg-base-100/90">
-      <div class="du-card-body space-y-2">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Pagos con tarjeta</p>
-        <p class="text-2xl font-mono font-semibold">$330.500</p>
-        <p class="text-xs text-slate-400">5 transacciones</p>
-      </div>
-    </article>
-  </div>
-
-  <div class="grid gap-6 lg:grid-cols-12">
-    <article class="du-card border border-base-300 bg-base-100/90 lg:col-span-7">
-      <div class="du-card-body space-y-4">
-        <div class="flex items-center justify-between">
-          <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Top productos del turno</p>
-          <span class="text-xs text-slate-500">Ultima hora</span>
-        </div>
-        <div class="space-y-3">
-          <div>
-            <div class="flex items-center justify-between text-sm">
-              <span>Coca-Cola 350ml</span>
-              <span class="text-slate-400">18u</span>
-            </div>
-            <progress
-              class="du-progress du-progress-primary h-2 w-full"
-              value="82"
-              max="100"
-            ></progress>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm">
-              <span>Agua Cristal 600ml</span>
-              <span class="text-slate-400">13u</span>
-            </div>
-            <progress
-              class="du-progress du-progress-primary h-2 w-full"
-              value="64"
-              max="100"
-            ></progress>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm">
-              <span>Papas Margarita</span>
-              <span class="text-slate-400">9u</span>
-            </div>
-            <progress
-              class="du-progress du-progress-primary h-2 w-full"
-              value="48"
-              max="100"
-            ></progress>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm">
-              <span>Milo 200ml</span>
-              <span class="text-slate-400">6u</span>
-            </div>
-            <progress
-              class="du-progress du-progress-primary h-2 w-full"
-              value="32"
-              max="100"
-            ></progress>
-          </div>
-          <div>
-            <div class="flex items-center justify-between text-sm">
-              <span>Chocolatina Jet</span>
-              <span class="text-slate-400">4u</span>
-            </div>
-            <progress
-              class="du-progress du-progress-primary h-2 w-full"
-              value="22"
-              max="100"
-            ></progress>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="du-card border border-base-300 bg-base-100/90 lg:col-span-5">
-      <div class="du-card-body space-y-4">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Metodos de pago</p>
-        <div class="flex flex-wrap items-center gap-6">
-          <div
-            class="flex h-28 w-28 items-center justify-center rounded-full border-2 border-dashed border-slate-700/80"
-            aria-hidden="true"
-          ></div>
-          <div class="space-y-3 text-sm">
-            <div class="flex items-center gap-3">
-              <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
-              <span>Efectivo</span>
-              <span class="text-slate-400">61%</span>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="h-2 w-2 rounded-full bg-sky-400"></span>
-              <span>Tarjeta</span>
-              <span class="text-slate-400">39%</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="du-card border border-base-300 bg-base-100/90 lg:col-span-7">
-      <div class="du-card-body space-y-4">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Ultimas ventas</p>
-        <div class="divide-y divide-slate-800/80">
-          <div class="flex items-center justify-between py-3 text-sm">
-            <div>
-              <p class="font-semibold">#0042</p>
-              <p class="text-xs text-slate-400">Hace 4 min</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <p class="font-mono">$38.000</p>
-              <span class="du-badge du-badge-success du-badge-outline">Efectivo</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between py-3 text-sm">
-            <div>
-              <p class="font-semibold">#0041</p>
-              <p class="text-xs text-slate-400">Hace 18 min</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <p class="font-mono">$112.500</p>
-              <span class="du-badge du-badge-info du-badge-outline">Tarjeta</span>
-            </div>
-          </div>
-          <div class="flex items-center justify-between py-3 text-sm">
-            <div>
-              <p class="font-semibold">#0040</p>
-              <p class="text-xs text-slate-400">Hace 35 min</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <p class="font-mono">$54.000</p>
-              <span class="du-badge du-badge-success du-badge-outline">Efectivo</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </article>
-
-    <article class="du-card border border-base-300 bg-base-100/90 lg:col-span-5">
-      <div class="du-card-body space-y-4">
-        <p class="text-xs uppercase tracking-[0.2em] text-slate-400">Desglose de caja</p>
-        <div class="space-y-3 text-sm">
-          <div class="flex items-center justify-between">
-            <span class="text-slate-400">Monto inicial</span>
-            <span class="font-mono">$200.000</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-slate-400">+ Ventas efectivo</span>
-            <span class="font-mono">$512.000</span>
-          </div>
-          <div class="flex items-center justify-between">
-            <span class="text-slate-400">- Egresos</span>
-            <span class="font-mono text-rose-400">$0</span>
-          </div>
-          <div class="border-t border-slate-800/80 pt-3 text-base">
+    <div data-reveal="up">
+      <div class="grid gap-6 lg:grid-cols-12">
+        <article class="du-card card-hover rounded-2xl border border-primary/20 bg-base-100 shadow-lg shadow-primary/10 lg:col-span-7">
+          <div class="du-card-body space-y-4">
             <div class="flex items-center justify-between">
-              <span class="font-semibold">Total esperado</span>
-              <span class="font-mono">$712.000</span>
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-primary pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Top productos del turno</p>
+              </div>
+              <span class="text-xs text-base-content/40">Última hora</span>
+            </div>
+            <div class="space-y-3">
+              @for (product of topProducts(); track product.name) {
+                <div>
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="font-medium">{{ product.name }}</span>
+                    <span class="text-base-content/50 font-mono text-xs">{{ product.quantity }}u</span>
+                  </div>
+                  <progress
+                    class="du-progress du-progress-primary h-2 w-full transition-all duration-500"
+                    [value]="product.percent"
+                    max="100"
+                  ></progress>
+                </div>
+              }
             </div>
           </div>
+        </article>
+
+        <article class="du-card card-hover rounded-2xl border border-secondary/20 bg-base-100 shadow-lg shadow-secondary/10 lg:col-span-5">
+          <div class="du-card-body space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="size-2 rounded-full bg-secondary pulse-dot"></span>
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-secondary">Métodos de pago</p>
+            </div>
+            <div class="flex flex-wrap items-center gap-6">
+              <div class="relative flex size-28 items-center justify-center">
+                <svg class="size-28 -rotate-90" viewBox="0 0 36 36">
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="color-mix(in oklab, var(--color-base-content) 8%, transparent)" stroke-width="3"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-success)" stroke-width="3" [attr.stroke-dasharray]="shiftSummary().cashPercentage + ' 100'" stroke-linecap="round" class="transition-all duration-700"></circle>
+                  <circle cx="18" cy="18" r="15.5" fill="none" stroke="var(--color-primary)" stroke-width="3" stroke-dasharray="0 0" stroke-dashoffset="0" stroke-linecap="round" class="opacity-0"></circle>
+                </svg>
+                <span class="absolute text-lg font-bold tabular-nums">{{ shiftSummary().cashPercentage }}%</span>
+              </div>
+              <div class="space-y-3 text-sm">
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-full bg-success pulse-dot"></span>
+                  <span class="text-base-content/80">Efectivo</span>
+                  <span class="font-mono text-xs text-base-content/50">{{ shiftSummary().cashPercentage }}%</span>
+                </div>
+                <div class="flex items-center gap-3">
+                  <span class="h-2.5 w-2.5 rounded-full bg-primary"></span>
+                  <span class="text-base-content/80">Tarjeta</span>
+                  <span class="font-mono text-xs text-base-content/50">{{ shiftSummary().cardPercentage }}%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+
+        <article class="du-card card-hover rounded-2xl border border-success/20 bg-base-100 shadow-lg shadow-success/10 lg:col-span-7">
+          <div class="du-card-body space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="size-2 rounded-full bg-success pulse-dot"></span>
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-success">Últimas ventas</p>
+            </div>
+            <div class="divide-y divide-base-content/10">
+              @for (sale of lastSales(); track sale.id) {
+                <div class="flex items-center justify-between py-3 text-sm transition-colors hover:bg-base-content/2 -mx-2 px-2 rounded-lg">
+                  <div>
+                    <p class="font-semibold">{{ sale.id }}</p>
+                    <p class="text-xs text-base-content/40">Hace {{ sale.time }}</p>
+                  </div>
+                  <div class="flex items-center gap-3">
+                    <p class="font-mono font-semibold">{{ sale.amount | number }}</p>
+                    <span class="du-badge du-badge-outline gap-1 text-[10px] uppercase tracking-wider"
+                      [class.du-badge-success]="sale.methodType === 'success'"
+                      [class.du-badge-info]="sale.methodType === 'info'"
+                    >
+                      <span class="inline-block h-1.5 w-1.5 rounded-full"
+                        [class.bg-success]="sale.methodType === 'success'"
+                        [class.bg-info]="sale.methodType === 'info'"
+                      ></span>
+                      {{ sale.method }}
+                    </span>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        </article>
+
+        <article class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-5">
+          <div class="du-card-body space-y-4">
+            <div class="flex items-center gap-2">
+              <span class="size-2 rounded-full bg-accent pulse-dot"></span>
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">Desglose de caja</p>
+            </div>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
+                <span class="text-base-content/60">Monto inicial</span>
+                <span class="font-mono font-medium">{{ shiftSummary().initialCash | number }}</span>
+              </div>
+              <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
+                <span class="text-base-content/60">+ Ventas efectivo</span>
+                <span class="font-mono font-medium text-success">{{ shiftSummary().cashInDrawer | number }}</span>
+              </div>
+              <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
+                <span class="text-base-content/60">- Egresos</span>
+                <span class="font-mono font-medium text-error">$0</span>
+              </div>
+              <div class="border-t border-base-content/10 pt-3">
+                <div class="flex items-center justify-between rounded-xl bg-primary/5 px-3 py-3">
+                  <span class="font-semibold text-base-content">Total esperado</span>
+                  <span class="font-mono text-lg font-bold text-primary">{{ shiftSummary().cashInDrawer + shiftSummary().initialCash | number }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+
+    <article data-reveal="up" class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10">
+      <div class="du-card-body space-y-4">
+        <div class="flex items-center gap-3">
+          <span class="flex h-9 w-9 items-center justify-center rounded-full bg-accent/15 text-accent">
+            <svg xmlns="http://www.w3.org/2000/svg" class="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2a2 2 0 0 1 2 2c0 .74-.4 1.39-1 1.73V7h1a7 7 0 0 1 7 7h1a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1h-1.27A7.03 7.03 0 0 1 17 22h-4a1 1 0 0 1-1-1v-3a1 1 0 0 1 1-1h1a5 5 0 0 0-5-5H5l-.81-.81A3.5 3.5 0 0 1 7.5 6.5h2.72c.24-.17.52-.32.78-.44V3.73c-.6-.34-1-.99-1-1.73a2 2 0 0 1 2-2z"/>
+            </svg>
+          </span>
+          <p class="text-sm font-semibold">Asistente de turno</p>
+        </div>
+        <p class="text-sm text-base-content/70 leading-relaxed">
+          Llevas <span class="font-semibold text-base-content">{{ shiftSummary().salesTotal | number }}</span> en ventas, un <span class="font-semibold text-success">12%</span> más que el mismo turno de la semana pasada.
+          Producto estrella: <span class="font-semibold text-base-content">{{ topProducts()[0].name }}</span> con {{ topProducts()[0].quantity }} unidades.
+          Ojo: <span class="font-semibold text-warning">{{ topProducts()[1].name }}</span> solo tiene 3 unidades en stock.
+        </p>
+        <div class="flex flex-wrap gap-2">
+          @for (msg of assistantMessages(); track msg.text) {
+            <button class="du-btn du-btn-soft du-btn-sm du-btn-accent rounded-full transition-all hover:scale-105">
+              {{ msg.text }}
+            </button>
+          }
         </div>
       </div>
     </article>
   </div>
-
-  <article class="du-card border border-base-300 bg-base-100/90">
-    <div class="du-card-body space-y-4">
-      <div class="flex items-center gap-3">
-        <span class="flex h-9 w-9 items-center justify-center rounded-full">A</span>
-        <p class="text-sm font-semibold">Asistente de turno</p>
-      </div>
-      <p class="text-sm text-slate-300">
-        Llevas $842.500 en ventas, un <span>12%</span> mas que el mismo turno de la semana pasada.
-        Producto estrella: Coca-Cola 350ml con 18 unidades. Ojo: Agua Cristal 600ml solo tiene 3
-        unidades en stock.
-      </p>
-      <div class="flex flex-wrap gap-2">
-        <button class="du-btn du-btn-outline du-btn-sm">Como voy vs la semana pasada?</button>
-        <button class="du-btn du-btn-outline du-btn-sm">Que productos tienen stock bajo?</button>
-        <button class="du-btn du-btn-outline du-btn-sm">Cual es mi producto mas vendido?</button>
-      </div>
-    </div>
-  </article>
-</main>
+</section>

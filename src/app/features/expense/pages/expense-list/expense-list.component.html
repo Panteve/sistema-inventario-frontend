@@ -1,8 +1,8 @@
 <section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
   <div class="w-full max-w-5xl md:max-w-7xl">
-    <div class="flex items-center gap-3 mb-5">
+    <div class="flex items-center gap-3 mb-5" data-reveal="up">
       <header
-        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20 pulse-dot"
       >
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -33,7 +33,7 @@
       </div>
     </div>
 
-    <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
       <div class="du-card-body p-4 md:p-6 lg:p-8">
         <div
           class="z-10 rounded-2xl border border-base-content/10 bg-base-200/50 backdrop-blur-xs p-3 md:p-4"
@@ -171,8 +171,16 @@
         <div class="du-divider my-4"></div>
 
         @if (loading()) {
-          <div class="flex items-center justify-center py-14">
-            <span class="du-loading du-loading-spinner du-loading-lg"></span>
+          <div class="space-y-2">
+            @for (_ of [1,2,3,4,5]; track _) {
+              <div class="flex items-center gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-4">
+                <div class="du-skeleton h-5 w-12 rounded"></div>
+                <div class="du-skeleton h-5 w-24 rounded"></div>
+                <div class="du-skeleton h-5 w-36 rounded"></div>
+                <div class="du-skeleton h-5 w-20 rounded"></div>
+                <div class="du-skeleton ml-auto h-5 w-16 rounded"></div>
+              </div>
+            }
           </div>
         } @else {
           <div

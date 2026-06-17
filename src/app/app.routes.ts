@@ -14,13 +14,8 @@ import { MovementInventoryStore } from './features/inventory/store/movement-inve
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
 import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
-import { PaymentMethodComponent } from './features/admin/pages/payment-method/payment-method.component';
 import { adminChildGuard } from './core/guards/admin-child-guard';
-import { EmployeesComponent } from './features/admin/pages/employees/employees.component';
-import { ProductsComponent } from './features/admin/pages/products/products.component';
-import { BillListComponent } from './features/bill/pages/bill-list/bill-list.component';
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
-import { CashRegisterListComponent } from './features/cash-register/pages/cash-register-list/cash-register-list.component';
 import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register/view-cash-register.component';
 import { OfficeComponent } from './features/admin/pages/offices/office.component';
 import { dashboardRedirectGuard } from './core/guards/dashboard-redirect-guard-guard';
@@ -104,7 +99,10 @@ export const routes: Routes = [
         title: 'Historial de facturas',
         canActivate: [authGuard],
         providers: [EmployeeStore],
-        component: BillListComponent,
+        loadComponent: () =>
+          import('./features/bill/pages/bill-list/bill-list.component').then(
+            (c) => c.BillListComponent,
+          ),
       },
     ],
   },
@@ -123,7 +121,10 @@ export const routes: Routes = [
         title: 'Historial de registros de caja',
         canActivate: [authGuard],
         providers: [EmployeeStore],
-        component: CashRegisterListComponent,
+        loadComponent: () =>
+          import('./features/cash-register/pages/cash-register-list/cash-register-list.component').then(
+            (c) => c.CashRegisterListComponent,
+          ),
       },
     ],
   },
@@ -135,22 +136,34 @@ export const routes: Routes = [
       {
         path: 'payment-methods',
         title: 'Administración de métodos de pago',
-        component: PaymentMethodComponent,
+        loadComponent: () =>
+          import('./features/admin/pages/payment-method/payment-method.component').then(
+            (c) => c.PaymentMethodComponent,
+          ),
       },
       {
         path: 'employee-management',
         title: 'Administración de empleados',
-        component: EmployeesComponent,
+        loadComponent: () =>
+          import('./features/admin/pages/employees/employees.component').then(
+            (c) => c.EmployeesComponent,
+          ),
       },
       {
         path: 'products',
         title: 'Administración de productos',
-        component: ProductsComponent,
+        loadComponent: () =>
+          import('./features/admin/pages/products/products.component').then(
+            (c) => c.ProductsComponent,
+          ),
       },
       {
         path: 'offices',
         title: 'Administración de sucursales',
-        component: OfficeComponent,
+        loadComponent: () =>
+          import('./features/admin/pages/offices/office.component').then(
+            (c) => c.OfficeComponent,
+          )
       },
     ],
   },

@@ -51,9 +51,9 @@
           </li>
         </ul>
       </div>
-      <header class="flex items-center gap-3 mb-5">
+      <header class="flex items-center gap-3 mb-5" data-reveal="up">
         <div
-          class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20"
+          class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 ring-1 ring-primary/20 pulse-dot"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
             <path
@@ -72,7 +72,7 @@
       </header>
     }
 
-    <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
       <div class="du-card-body p-4 md:p-6">
         @if (!loading()) {
           <div class="mb-6 flex flex-wrap items-center justify-between gap-3">
@@ -142,7 +142,7 @@
 
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-6">
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -156,7 +156,7 @@
             </div>
           </article>
 
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -172,7 +172,7 @@
             </div>
           </article>
 
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -187,7 +187,7 @@
               }
             </div>
           </article>
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -206,7 +206,7 @@
             </div>
           </article>
 
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -222,7 +222,7 @@
             </div>
           </article>
 
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -239,7 +239,7 @@
           </article>
 
           <!-- Expenses -->
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -254,7 +254,7 @@
           </article>
 
           <!-- Total Sales -->
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-5">
               @if (loading()) {
                 <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
@@ -274,7 +274,7 @@
         <!-- Two Columns Section -->
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
           <!-- Top Products -->
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-6">
               <h3 class="text-lg font-bold tracking-tight mb-4">Top productos</h3>
               @if (loading()) {
@@ -327,7 +327,7 @@
           </article>
 
           <!-- Expenses -->
-          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
             <div class="du-card-body p-4 md:p-6">
               <h3 class="text-lg font-bold tracking-tight mb-4">Gastos</h3>
               @if (loading()) {
@@ -375,7 +375,7 @@
         </div>
 
         <!-- Sales Table -->
-        <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+        <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
           <div class="du-card-body p-4 md:p-6">
             <div class="mb-4">
               <h3 class="text-lg font-bold tracking-tight">Ventas</h3>
