@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { BarChartData } from '../../../../shared/interfaces/dashboard.interfacce';
+import { BarChartData } from '../../../../shared/interfaces/dashboard.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { ChartOptions } from '../../types/chart-options.type';
 import {

@@ -34,7 +34,7 @@ export interface DashboardSummary {
   }[];
 }
 
-export interface DashboardProduct {
+export interface DashboardTables {
   topSellingProductsByQuantity: {
     productId: number;
     name: string;
@@ -51,11 +51,17 @@ export interface DashboardProduct {
     officeName: string;
     quantity: number;
   }[];
-
   outOfStockProducts: {
     name: string;
     officeName: string;
     quantity: number;
+  }[];
+  lastExpenses: {
+    id: number;
+    reason: string;
+    amount: number;
+    employeeName: string;
+    createdAt: string;
   }[];
 }
 

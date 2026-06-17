@@ -1,7 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
-import { DashboardCharts, DashboardProduct, DashboardSummary, ParamsGetDashboard } from '../../../shared/interfaces/dashboard.interfacce';
+import {
+  DashboardCharts,
+  DashboardTables,
+  DashboardSummary,
+  ParamsGetDashboard,
+} from '../../../shared/interfaces/dashboard.interface';
 
 @Injectable({
   providedIn: 'root',
@@ -33,9 +38,9 @@ export class DashboardService {
     });
   }
 
-  getDashboardProducts(params: ParamsGetDashboard) {
+  getDashboardTables(params: ParamsGetDashboard) {
     const queryParams = this.#setQueryParams(params);
-    return this.#http.get<DashboardProduct>(`${environment.apiUrl}/dashboard/products`, {
+    return this.#http.get<DashboardTables>(`${environment.apiUrl}/dashboard/tables`, {
       params: queryParams,
     });
   }
@@ -47,6 +52,3 @@ export class DashboardService {
     });
   }
 }
-
-
-
