@@ -6,25 +6,18 @@ export interface ParamsGetDashboard {
   paymentMethodId?: number;
 }
 
+interface DashboardSummaryItem {
+  current: number;
+  previous: number;
+  diff: number;
+  diffPercentage?: number;
+}
+
 export interface DashboardSummary {
-  totalSales: {
-    current: number;
-    previous: number;
-    diff: number;
-    diffPercentage?: number;
-  };
-  totalBills: {
-    current: number;
-    previous: number;
-    diff: number;
-    diffPercentage?: number;
-  };
-  averageBill: {
-    current: number;
-    previous: number;
-    diff: number;
-    diffPercentage?: number;
-  };
+  totalSales: DashboardSummaryItem;
+  totalBills: DashboardSummaryItem;
+  averageBill: DashboardSummaryItem;
+  totalExpenses: DashboardSummaryItem;
   activeOffices: number;
   activeCashRegisters: {
     id: number;

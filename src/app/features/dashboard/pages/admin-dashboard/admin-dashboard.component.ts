@@ -50,6 +50,7 @@ export class AdminDashboardComponent implements OnDestroy {
     totalSales: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     totalBills: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     averageBill: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
+    totalExpenses: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     activeOffices: 0,
     activeCashRegisters: [],
   });
