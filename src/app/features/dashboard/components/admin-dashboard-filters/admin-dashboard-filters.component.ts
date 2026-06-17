@@ -2,7 +2,7 @@ import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } fro
 import { ActivatedRoute } from '@angular/router';
 import 'cally';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
-import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.interfacce';
+import { ParamsGetDashboard } from '../../../../shared/interfaces/dashboard.interface';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
 import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
@@ -248,7 +248,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
       if (!startDate || !endDate) {
         return null;
       }
-      
+
       const officeId =
         typeof parsed.officeId === 'string'
           ? this.#parseNumber(parsed.officeId)

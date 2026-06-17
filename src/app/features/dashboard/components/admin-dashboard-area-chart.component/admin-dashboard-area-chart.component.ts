@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { AreaChartData, DashboardCharts } from '../../../../shared/interfaces/dashboard.interfacce';
+import { AreaChartData, DashboardCharts } from '../../../../shared/interfaces/dashboard.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { ChartOptions } from '../../types/chart-options.type';
 import {

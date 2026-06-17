@@ -53,7 +53,7 @@
       </div>
     </div>
 
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
       <div
         class="du-card relative overflow-hidden rounded-2xl border border-success/30 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-lg shadow-success/10"
       >
@@ -319,6 +319,77 @@
           </div>
         </div>
       </div>
+
+      <div
+        class="du-card relative overflow-hidden rounded-2xl border border-error/30 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-lg shadow-error/10"
+      >
+        <div class="absolute inset-x-0 top-0 h-1.5 bg-error"></div>
+        <div
+          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-error/20 blur-2xl"
+        ></div>
+        <div class="du-card-body gap-3 p-5">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-error/80">
+              Gastos totales
+            </p>
+
+            <span
+              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+              [class.bg-success]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
+              [class.text-success-content]="
+                (dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0
+              "
+              [class.bg-error]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
+              [class.text-error-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
+            >
+              {{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : ''
+              }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%
+            </span>
+          </div>
+          <div class="flex min-w-0 items-center gap-3">
+            <span
+              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-error/20 text-error"
+              aria-hidden="true"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0" />
+                <path d="M12 17v-7.5" />
+                <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" />
+              </svg>
+            </span>
+            <p class="min-w-0 truncate text-3xl font-bold tracking-tight text-error">
+              {{ dashboardSummary().totalExpenses.current | cop }}
+            </p>
+          </div>
+          <div
+            class="grid grid-cols-2 gap-3 rounded-2xl border border-error/25 bg-error/12 p-3.5 text-sm"
+          >
+            <div>
+              <p class="font-medium text-base-content/80">Periodo anterior</p>
+              <p class="mt-1 font-mono text-sm font-bold text-base-content">
+                {{ dashboardSummary().totalExpenses.previous | cop }}
+              </p>
+            </div>
+            <div class="text-right">
+              <p class="font-medium text-base-content/80">Variación</p>
+              <p
+                class="mt-1 font-mono text-sm font-bold"
+                [class.text-success]="dashboardSummary().totalExpenses.diff < 0"
+                [class.text-error]="dashboardSummary().totalExpenses.diff >= 0"
+              >
+                {{ dashboardSummary().totalExpenses.diff | cop }}
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
     <div class="grid gap-6 lg:grid-cols-12">
@@ -457,11 +528,28 @@
           <div class="flex items-center gap-2">
             <span class="size-2 rounded-full bg-info"></span>
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-info">
-              Ventas por sucursal
+              {{
+                barChartMode() === 'office' ? 'Ventas por sucursal' : 'Ventas por método de pago'
+              }}
             </p>
           </div>
+          <label
+            class="flex items-center justify-center gap-2 rounded-full border border-info/25 bg-info/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
+          >
+            <input
+              type="checkbox"
+              [checked]="barChartMode() === 'payment'"
+              (change)="changeBarChartMode($event)"
+              class="du-toggle du-toggle-info du-toggle-sm peer order-2"
+            />
+            <span class="order-3 text-base-content/50 peer-checked:text-info"
+              >Por método de pago</span
+            >
+            <span class="order-1 text-info peer-checked:text-base-content/50">Por sucursal</span>
+          </label>
           <app-admin-dashboard-bar-chart
             [barChartData]="barChartData()"
+            [mode]="barChartMode()"
           ></app-admin-dashboard-bar-chart>
         </div>
       </div>
@@ -568,6 +656,52 @@
               }
             </tbody>
           </table>
+        </div>
+      </div>
+
+      <div
+        class="du-card rounded-2xl border border-error/20 bg-base-100 shadow-lg shadow-error/5 lg:col-span-2"
+      >
+        <div class="du-card-body space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="size-2 rounded-full bg-error"></span>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-error">Últimos gastos</p>
+          </div>
+          <div class="max-h-64 overflow-x-auto overflow-y-auto pr-1">
+            <table class="du-table w-full">
+              <thead>
+                <tr class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error">
+                  <th>Motivo</th>
+                  <th>Monto</th>
+                  <th>Registrado por</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                @for (item of dashboardProducts().lastExpenses; track item.id) {
+                  <tr class="hover:bg-error/5">
+                    <td class="font-medium">{{ item.reason }}</td>
+                    <td class="font-mono font-semibold text-error">{{ item.amount | cop }}</td>
+                    <td class="text-base-content/70">{{ item.employeeName }}</td>
+                    <td class="whitespace-nowrap font-mono text-xs text-base-content/60">
+                      {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="4">
+                      <div
+                        class="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center text-sm text-base-content/60"
+                        role="status"
+                      >
+                        No hay datos para mostrar.
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
