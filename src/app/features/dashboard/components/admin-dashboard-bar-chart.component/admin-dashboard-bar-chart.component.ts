@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
 import { BarChartData } from '../../../../shared/interfaces/dashboard.interfacce';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -21,25 +21,60 @@ import {
 })
 export class AdminDashboardBarChartComponent {
   barChartData = input.required<BarChartData>();
+  mode = input<'office' | 'payment'>('office');
 
   #copPipe = inject(CopPipe);
 
-  public get chartOptions(): Partial<ChartOptions> {
-    return this.#buildOfficeSalesChartOptions(this.barChartData());
+  categories: string[] = [];
+  currentSeries: number[] = [];
+  previousSeries: number[] = [];
+
+  constructor() {
+    effect(() => {
+      const ids: number[] = [];
+      const categories: string[] = [];
+      const seen = new Set<number>();
+
+      const addEntity = (id: number, name: string) => {
+        if (seen.has(id)) return;
+        seen.add(id);
+        ids.push(id);
+        categories.push(name);
+      };
+
+      this.barChartData().currentData.forEach((item) => addEntity(item.id, item.name));
+      this.barChartData().previousData.forEach((item) => addEntity(item.id, item.name));
+
+      const currentByOffice = new Map(
+        this.barChartData().currentData.map((item) => [item.id, item.total]),
+      );
+      const previousByOffice = new Map(
+        this.barChartData().previousData.map((item) => [item.id, item.total]),
+      );
+
+      const currentSeries = ids.map((id) => currentByOffice.get(id) ?? 0);
+      const previousSeries = ids.map((id) => previousByOffice.get(id) ?? 0);
+
+      this.currentSeries = currentSeries;
+      this.previousSeries = previousSeries;
+      this.categories = categories;
+    });
   }
 
-  #buildOfficeSalesChartOptions(charts: BarChartData): Partial<ChartOptions> {
-    const { categories, currentSeries, previousSeries } = this.#buildOfficeSalesComparison(charts);
+  public get chartOptions(): Partial<ChartOptions> {
+    const isOffice = this.mode() === 'office';
+    const filename = isOffice ? 'ventas-por-sucursal' : 'ventas-por-metodo-de-pago';
+    const categoryLabel = isOffice ? 'Sucursal' : 'Método de pago';
 
     return {
       series: [
         {
           name: 'Periodo actual',
-          data: currentSeries,
+          data: this.currentSeries,
         },
         {
           name: 'Periodo anterior',
-          data: previousSeries,
+          data: this.previousSeries,
         },
       ],
       theme: dashboardChartApexTheme(),
@@ -49,16 +84,16 @@ export class AdminDashboardBarChartComponent {
         width: '100%',
         ...dashboardChartAppearance(),
         toolbar: {
-          ...dashboardChartToolbar('ventas-por-sucursal'),
+          ...dashboardChartToolbar(filename),
           export: {
             csv: {
-              filename: 'ventas-por-sucursal',
+              filename,
               columnDelimiter: ',',
-              headerCategory: 'Sucursal',
+              headerCategory: categoryLabel,
               headerValue: 'Ventas',
             },
-            png: { filename: 'ventas-por-sucursal' },
-            svg: { filename: 'ventas-por-sucursal' },
+            png: { filename },
+            svg: { filename },
           },
         },
         selection: {
@@ -83,7 +118,7 @@ export class AdminDashboardBarChartComponent {
         colors: ['var(--color-base-100)'],
       },
       xaxis: {
-        categories,
+        categories: this.categories,
         axisBorder: {
           show: false,
         },
@@ -153,33 +188,5 @@ export class AdminDashboardBarChartComponent {
         },
       },
     };
-  }
-
-  #buildOfficeSalesComparison(charts: BarChartData): {
-    categories: string[];
-    currentSeries: number[];
-    previousSeries: number[];
-  } {
-    const officeIds: number[] = [];
-    const categories: string[] = [];
-    const seen = new Set<number>();
-
-    const addOffice = (officeId: number, officeName: string) => {
-      if (seen.has(officeId)) return;
-      seen.add(officeId);
-      officeIds.push(officeId);
-      categories.push(officeName);
-    };
-
-    charts.currentData.forEach((item) => addOffice(item.id, item.name));
-    charts.previousData.forEach((item) => addOffice(item.id, item.name));
-
-    const currentByOffice = new Map(charts.currentData.map((item) => [item.id, item.total]));
-    const previousByOffice = new Map(charts.previousData.map((item) => [item.id, item.total]));
-
-    const currentSeries = officeIds.map((officeId) => currentByOffice.get(officeId) ?? 0);
-    const previousSeries = officeIds.map((officeId) => previousByOffice.get(officeId) ?? 0);
-
-    return { categories, currentSeries, previousSeries };
   }
 }

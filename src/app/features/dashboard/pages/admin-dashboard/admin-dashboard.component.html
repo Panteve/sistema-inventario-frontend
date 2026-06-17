@@ -457,11 +457,28 @@
           <div class="flex items-center gap-2">
             <span class="size-2 rounded-full bg-info"></span>
             <p class="text-xs font-bold uppercase tracking-[0.2em] text-info">
-              Ventas por sucursal
+              {{
+                barChartMode() === 'office' ? 'Ventas por sucursal' : 'Ventas por método de pago'
+              }}
             </p>
           </div>
+          <label
+            class="flex items-center justify-center gap-2 rounded-full border border-info/25 bg-info/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
+          >
+            <input
+              type="checkbox"
+              [checked]="barChartMode() === 'payment'"
+              (change)="changeBarChartMode($event)"
+              class="du-toggle du-toggle-info du-toggle-sm peer order-2"
+            />
+            <span class="order-3 text-base-content/50 peer-checked:text-info"
+              >Por método de pago</span
+            >
+            <span class="order-1 text-info peer-checked:text-base-content/50">Por sucursal</span>
+          </label>
           <app-admin-dashboard-bar-chart
             [barChartData]="barChartData()"
+            [mode]="barChartMode()"
           ></app-admin-dashboard-bar-chart>
         </div>
       </div>

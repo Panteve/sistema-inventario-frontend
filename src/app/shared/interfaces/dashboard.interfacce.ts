@@ -60,36 +60,12 @@ export interface DashboardProduct {
 }
 
 export interface DashboardCharts {
-  currentOfficeSales: {
-    id: number;
-    name: string;
-    total: number;
-  }[];
-  previousOfficeSales: {
-    id: number;
-    name: string;
-    total: number;
-  }[];
-  currentPaymentMethodSales: {
-    id: number;
-    name: string;
-    count: number;
-  }[];
-  previousPaymentMethodSales: {
-    id: number;
-    name: string;
-    count: number;
-  }[];
-  paymentMethodDistribution: {
-    id: number;
-    name: string;
-    count: number;
-  }[];
-  salesByHour: {
-    hour: number;
-    total: number;
-    count: number;
-  }[];
+  currentOfficeSales: BarChartDataItem[];
+  previousOfficeSales: BarChartDataItem[];
+  currentPaymentMethodSales: BarChartDataItem[];
+  previousPaymentMethodSales: BarChartDataItem[];
+  paymentMethodDistribution: PieChartData[];
+  salesByHour: AreaChartData[];
 }
 
 export interface PieChartData {
@@ -103,16 +79,13 @@ export interface AreaChartData {
   total: number;
   count: number;
 }
+interface BarChartDataItem {
+  id: number;
+  name: string;
+  total: number;
+}
 
 export interface BarChartData {
-  currentData: {
-    id: number;
-    name: string;
-    total: number;
-  }[];
-  previousData: {
-    id: number;
-    name: string;
-    total: number;
-  }[];
+  currentData: BarChartDataItem[];
+  previousData: BarChartDataItem[];
 }

@@ -38,11 +38,15 @@ export class AdminDashboardComponent implements OnDestroy {
   #progressAnimationTimeout?: ReturnType<typeof setTimeout>;
 
   topProductsByRevenue = signal<boolean>(true);
+  barChartMode = signal<'office' | 'payment'>('office');
+  #dashboardChartsData = signal<DashboardCharts | null>(null);
   progressBarsReady = signal<boolean>(false);
 
   loadingSummary = signal<boolean>(false);
   loadingProducts = signal<boolean>(false);
   loadingCharts = signal<boolean>(false);
+
+  
   dashboardSummary = signal<DashboardSummary>({
     totalSales: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     totalBills: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
@@ -94,10 +98,8 @@ export class AdminDashboardComponent implements OnDestroy {
                   )
                   .subscribe({
                     next: (charts) => {
-                      this.barChartData.set({
-                        currentData: charts.currentOfficeSales,
-                        previousData: charts.previousOfficeSales,
-                      });
+                      this.#dashboardChartsData.set(charts);
+                      this.#updateBarChartData();
                       this.areaChartData.set(charts.salesByHour);
                       this.pieChartData.set(charts.paymentMethodDistribution);
                     },
@@ -128,6 +130,28 @@ export class AdminDashboardComponent implements OnDestroy {
     this.#animateProgressBars();
   }
 
+  changeBarChartMode(event: Event) {
+    const input = event.target as HTMLInputElement;
+    this.barChartMode.set(input.checked ? 'payment' : 'office');
+    this.#updateBarChartData();
+  }
+
+  #updateBarChartData() {
+    const charts = this.#dashboardChartsData();
+    if (!charts) return;
+
+    this.barChartData.set(
+      this.barChartMode() === 'office'
+        ? {
+            currentData: charts.currentOfficeSales,
+            previousData: charts.previousOfficeSales,
+          }
+        : {
+            currentData: charts.currentPaymentMethodSales,
+            previousData: charts.previousPaymentMethodSales,
+          },
+    );
+  }
 
   safeProgressValue(value: number): number {
     const parsed = Number(value);
