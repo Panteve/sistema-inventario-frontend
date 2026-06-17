@@ -56,6 +56,15 @@ export interface DashboardTables {
     employeeName: string;
     createdAt: string;
   }[];
+  lastInventoryMovements: {
+    id: number;
+    employeeName: string;
+    fromOfficeName?: string;
+    toOfficeName?: string;
+    productsAffectedCount: number;
+    type: 'IN' | 'OUT' | 'TRANSFER';
+    createdAt: string;
+  }[];
 }
 
 export interface DashboardCharts {
