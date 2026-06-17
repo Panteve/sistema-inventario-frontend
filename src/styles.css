@@ -280,6 +280,106 @@
   100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-clr) 0%, transparent); }
 }
 
+/* ── AURORA DRIFT BACKGROUND ── */
+.aurora {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.aurora-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.12;
+  will-change: transform;
+}
+
+.aurora-orb-1 {
+  width: 70vw;
+  height: 60vh;
+  top: -20vh;
+  left: -15vw;
+  background: oklch(62% 0.25 264);
+  animation: auroraA 18s ease-in-out infinite;
+}
+
+.aurora-orb-2 {
+  width: 55vw;
+  height: 50vh;
+  bottom: -15vh;
+  right: -10vw;
+  background: oklch(58% 0.22 304);
+  animation: auroraB 22s ease-in-out infinite;
+}
+
+.aurora-orb-3 {
+  width: 40vw;
+  height: 45vh;
+  top: 40%;
+  left: 35%;
+  background: oklch(56% 0.20 224);
+  animation: auroraC 26s ease-in-out infinite;
+}
+
+@keyframes auroraA {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33%      { transform: translate(6vw, -4vh) scale(1.08); }
+  66%      { transform: translate(-3vw, 6vh) scale(0.95); }
+}
+
+@keyframes auroraB {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  40%      { transform: translate(-8vw, 3vh) scale(1.06); }
+  70%      { transform: translate(4vw, -5vh) scale(0.97); }
+}
+
+@keyframes auroraC {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50%      { transform: translate(-5vw, -4vh) scale(1.1); }
+}
+
+/* ── CURSOR GLOW SPOTLIGHT ── */
+.cursor-glow {
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  width: 600px;
+  height: 600px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    oklch(62% 0.22 264 / 0.06) 0%,
+    transparent 70%
+  );
+  transform: translate(-300px, -300px);
+  transition: transform 0.15s ease-out;
+  will-change: transform;
+}
+
+/* ── RESPONSIVE DRAWER TOGGLE (✓) ── */
+/* DaisyUI's drawer-open hides the checkbox with display:none so it can't be toggled.
+   We override to keep it interactive while preserving the sticky sidebar layout. */
+@media (width >= 1024px) {
+  .lg\:du-drawer-open > .du-drawer-toggle {
+    display: inline-block;
+  }
+}
+
+/* Sidebar inner width driven by checkbox :checked state (not by drawer-open class) */
+.du-drawer-toggle:checked ~ .du-drawer-side .sidebar-inner {
+  width: 16rem;
+}
+.du-drawer-toggle:not(:checked) ~ .du-drawer-side .sidebar-inner {
+  width: 4.5rem;
+}
+
+.sidebar-inner {
+  transition: width 0.3s ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],
   [data-reveal].is-visible,
@@ -291,5 +391,18 @@
     animation: none !important;
     opacity: 1;
     transform: none;
+  }
+
+  .aurora-orb {
+    animation: none !important;
+    opacity: 0.06;
+  }
+
+  .sidebar-inner {
+    transition: none;
+  }
+
+  .cursor-glow {
+    display: none;
   }
 }

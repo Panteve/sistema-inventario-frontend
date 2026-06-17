@@ -1,6 +1,7 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
+import { Sidebar } from './core/components/sidebar/sidebar';
 import { AuthStore } from './core/store/auth-store';
 
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -12,7 +13,7 @@ import { ToastComponent } from './shared/layouts/toast/toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CreateCashRegisterComponent, ExpenseComponent, ToastComponent],
+  imports: [RouterOutlet, Navbar, Sidebar, CreateCashRegisterComponent, ExpenseComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -63,9 +64,18 @@ export class App {
       queryParamsHandling: 'merge',
     });
   }
+
   logout() {
     this.authStore.logout();
   }
 
   protected readonly title = signal('Sistema POS');
+
+  @HostListener('document:mousemove', ['$event'])
+  onMouseMove(event: MouseEvent) {
+    const glow = document.getElementById('cursorGlow');
+    if (glow) {
+      glow.style.transform = `translate(${event.clientX - 300}px, ${event.clientY - 300}px)`;
+    }
+  }
 }
