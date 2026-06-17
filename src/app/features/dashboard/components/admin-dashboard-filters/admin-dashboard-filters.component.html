@@ -1,4 +1,4 @@
-<div class="flex flex-col gap-3 md:flex-row md:items-stretch">
+<div class="flex flex-col gap-3 sm:flex-row sm:items-stretch">
   <div class="grid flex-1 items-stretch gap-3 sm:grid-cols-2 lg:grid-cols-5">
     <div class="w-full min-w-0">
       <app-office-select
@@ -7,7 +7,7 @@
         [size]="'sm'"
       ></app-office-select>
     </div>
-    <div class="w-full min-w-0 col-span-2">
+    <div class="w-full min-w-0 sm:col-span-2 md:col-span-2 lg:col-span-2">
       <app-date-range-popover
         class="min-w-0"
         [startDate]="filters().startDate"
@@ -31,7 +31,7 @@
         [size]="'sm'"
       ></app-employee-select>
     </div>
-    <div class="w-full">
+    <div class="w-full min-w-0">
       <select
         class="du-select du-select-bordered du-select-sm w-full"
         (change)="changePaymentMethod($event)"
@@ -54,10 +54,10 @@
       </select>
     </div>
   </div>
-  <div class="w-auto self-end md:ml-1">
+  <div class="w-full sm:w-auto self-end sm:ml-1">
     <button
       type="button"
-      class="du-btn du-btn-sm du-btn-outline du-btn-secondary px-4"
+      class="du-btn du-btn-sm du-btn-outline du-btn-secondary w-full sm:w-auto px-4"
       (click)="clearFilters()"
     >
       Limpiar filtros
