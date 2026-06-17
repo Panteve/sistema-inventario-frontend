@@ -754,5 +754,96 @@
         </div>
       </article>
     </div>
+
+    <div class="grid gap-6 lg:grid-cols-2">
+      <article
+        class="du-card rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/5 lg:col-span-2"
+      >
+        <div class="du-card-body space-y-4">
+          <div class="flex items-center gap-2">
+            <span class="size-2 rounded-full bg-accent"></span>
+            <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+              Últimos movimientos de inventario
+            </p>
+          </div>
+          <div class="max-h-80 overflow-x-auto overflow-y-auto pr-1">
+            <table class="du-table w-full">
+              <thead>
+                <tr class="bg-accent/10 text-xs font-bold uppercase tracking-[0.12em] text-accent">
+                  <th>Tipo</th>
+                  <th>Empleado</th>
+                  <th>Origen / Destino</th>
+                  <th class="text-right">Productos</th>
+                  <th>Fecha</th>
+                </tr>
+              </thead>
+              <tbody class="text-sm">
+                @for (item of dashboardProducts().lastInventoryMovements; track item.id) {
+                  <tr class="hover:bg-accent/5">
+                    <td>
+                      <span
+                        class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
+                        [class.border-emerald-300]="item.type === 'IN'"
+                        [class.bg-emerald-100]="item.type === 'IN'"
+                        [class.text-emerald-800]="item.type === 'IN'"
+                        [class.border-rose-300]="item.type === 'OUT'"
+                        [class.bg-rose-100]="item.type === 'OUT'"
+                        [class.text-rose-800]="item.type === 'OUT'"
+                        [class.border-sky-300]="item.type === 'TRANSFER'"
+                        [class.bg-sky-100]="item.type === 'TRANSFER'"
+                        [class.text-sky-800]="item.type === 'TRANSFER'"
+                      >
+                        <span
+                          class="inline-block h-1.5 w-1.5 rounded-full"
+                          [class.bg-emerald-600]="item.type === 'IN'"
+                          [class.bg-rose-600]="item.type === 'OUT'"
+                          [class.bg-sky-600]="item.type === 'TRANSFER'"
+                        ></span>
+                        @if (item.type === 'IN') {
+                          Entrada
+                        } @else if (item.type === 'OUT') {
+                          Salida
+                        } @else {
+                          Transferencia
+                        }
+                      </span>
+                    </td>
+                    <td class="font-medium">{{ item.employeeName }}</td>
+                    <td class="text-base-content/70">
+                      @if (item.type === 'TRANSFER') {
+                        {{ item.fromOfficeName || 'Sin origen' }}
+                        <span class="opacity-60">→</span>
+                        {{ item.toOfficeName || 'Sin destino' }}
+                      } @else if (item.type === 'IN') {
+                        {{ item.toOfficeName || 'Sin oficina' }}
+                      } @else {
+                        {{ item.fromOfficeName || 'Sin oficina' }}
+                      }
+                    </td>
+                    <td class="text-right">
+                      <span class="font-mono text-xs font-semibold">{{ item.productsAffectedCount }} uds.</span>
+                    </td>
+                    <td class="whitespace-nowrap font-mono text-xs text-base-content/60">
+                      {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5">
+                      <div
+                        class="flex min-h-40 items-center justify-center rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center text-sm text-base-content/60"
+                        role="status"
+                      >
+                        No hay datos para mostrar.
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </article>
+    </div>
   </div>
 </section>

@@ -60,6 +60,7 @@ export class AdminDashboardComponent implements OnDestroy {
     lowStockProducts: [],
     outOfStockProducts: [],
     lastExpenses: [],
+    lastInventoryMovements: [],
   });
 
   barChartData = signal<BarChartData>({ currentData: [], previousData: [] });
