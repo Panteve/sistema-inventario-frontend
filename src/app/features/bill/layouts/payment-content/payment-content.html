@@ -1,11 +1,27 @@
-<h3 class="text-xl font-bold mb-4">Confirmar pago</h3>
-<div class="flex flex-col gap-5">
+<div class="flex flex-col gap-6">
+  <!-- Header -->
+  <div class="flex items-center gap-3">
+    <div class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="1" y="4" width="22" height="16" rx="2" ry="2" />
+        <line x1="1" y1="10" x2="23" y2="10" />
+      </svg>
+    </div>
+    <div>
+      <h3 class="text-lg font-bold tracking-tight">Confirmar pago</h3>
+      <p class="text-xs opacity-50">Revisa los detalles antes de finalizar</p>
+    </div>
+  </div>
+
   <!-- Método de pago -->
   <div class="w-full">
-    <label class="du-label">
-      <span class="du-label-text font-semibold">Método de pago</span>
+    <label class="mb-2 block text-xs font-semibold uppercase tracking-wider opacity-60">
+      Método de pago
     </label>
-    <select class="du-select du-select-bordered w-full" (change)="onPaymentMethodChange($event)">
+    <select
+      class="du-select du-select-bordered w-full transition-all focus:du-select-primary"
+      (change)="onPaymentMethodChange($event)"
+    >
       @if(paymentMethodStore.loading()) {
         <option value="0" disabled selected>Cargando métodos...</option>
       } @else {
@@ -18,59 +34,87 @@
   </div>
 
   <!-- Resumen de totales -->
-  <div class="rounded-xl bg-base-200 p-4 flex flex-col gap-2 font-mono">
-    <div class="flex justify-between text-sm opacity-70">
-      <span class="tracking-[0.16em]">Subtotal</span>
-      <span class="font-mono">{{ billStore.subtotal() | cop }}</span>
+  <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
+    <div class="flex items-center justify-between text-sm">
+      <span class="opacity-60">Subtotal</span>
+      <span class="font-medium tabular-nums">{{ billStore.subtotal() | cop }}</span>
     </div>
-    <div class="flex justify-between text-sm opacity-70">
-      <span class="tracking-[0.16em]">IVA (19%)</span>
-      <span class="font-mono">{{ billStore.iva() | cop }}</span>
+    <div class="mt-3 flex items-center justify-between text-sm">
+      <span class="opacity-60">IVA (19%)</span>
+      <span class="font-medium tabular-nums">{{ billStore.iva() | cop }}</span>
     </div>
-    <div class="du-divider my-0"></div>
-    <div class="flex justify-between text-xl font-bold">
-      <span class="tracking-[0.16em]">Total</span>
-      <span class="font-mono">{{ billStore.total() | cop }}</span>
+    <div class="du-divider my-3"></div>
+    <div class="flex items-center justify-between">
+      <span class="text-base font-bold">Total a pagar</span>
+      <span class="text-xl font-bold tabular-nums text-primary">{{ billStore.total() | cop }}</span>
     </div>
   </div>
 
   <!-- Sección de vueltas (solo efectivo) -->
   @if (affectsCash()) {
-    <div class="w-full">
-      <label class="du-label">
-        <span class="du-label-text font-semibold">Monto recibido</span>
-      </label>
-      <label class="du-input du-input-bordered w-full text-lg no-spinner font-mono">
-        <input
-        type="text"
-        
-        placeholder="0"
-        inputmode="numeric"
-        [value]="displayAmount()"
-        (input)="onAmountReceivedChange($event)"
-        (click)="onAmountReceivedClick($event)"
-      />
-      </label>
-      
-    </div>
+    <div class="space-y-4">
+      <div class="w-full">
+        <label class="mb-2 block text-xs font-semibold uppercase tracking-wider opacity-60">
+          Monto recibido
+        </label>
+        <label class="du-input du-input-bordered flex items-center gap-2 text-lg no-spinner font-mono transition-all focus-within:border-primary">
+          <span class="text-xs opacity-40">$</span>
+          <input
+            type="text"
+            placeholder="0"
+            inputmode="numeric"
+            class="grow"
+            [value]="displayAmount()"
+            (input)="onAmountReceivedChange($event)"
+            (click)="onAmountReceivedClick($event)"
+          />
+        </label>
+      </div>
 
-    <div
-      class="flex justify-between items-center rounded-xl px-4 py-3 transition-colors font-mono"
-      [class]="change() >= 0 ? 'bg-success/10' : 'bg-error/10'"
-    >
-      <span class="font-semibold">Vueltas</span>
-      <span
-        class="text-xl font-bold tabular-nums font-mono"
-        [class]="change() >= 0 ? 'text-success' : 'text-error'"
+      <div
+        class="flex items-center justify-between rounded-2xl border px-5 py-4 transition-all"
+        [class]="change() >= 0 ? 'border-success/20 bg-success/5' : 'border-error/20 bg-error/5'"
       >
-        {{ change() | cop }}
-      </span>
+        <div class="flex items-center gap-3">
+          <div
+            class="inline-flex h-9 w-9 items-center justify-center rounded-xl"
+            [class]="change() >= 0 ? 'bg-success/15 text-success' : 'bg-error/15 text-error'"
+          >
+            @if (change() >= 0) {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+            } @else {
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            }
+          </div>
+          <div>
+            <p class="text-sm font-semibold">Vueltas</p>
+            <p class="text-xs opacity-50">
+              @if (change() >= 0) {
+                Cambio para el cliente
+              } @else {
+                Faltante por cubrir
+              }
+            </p>
+          </div>
+        </div>
+        <span
+          class="text-xl font-bold tabular-nums"
+          [class]="change() >= 0 ? 'text-success' : 'text-error'"
+        >
+          {{ change() | cop }}
+        </span>
+      </div>
     </div>
   }
 
   <!-- Botón confirmar -->
   <button
-    class="du-btn du-btn-primary w-full du-btn-md"
+    class="du-btn du-btn-primary w-full du-btn-md transition-all active:scale-[0.98]"
     [disabled]="!canConfirm() || billStore.loading()"
     (click)="confirm()"
   >
@@ -78,6 +122,9 @@
       <span class="du-loading du-loading-spinner"></span>
       Procesando...
     } @else {
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
       Confirmar pago
     }
   </button>

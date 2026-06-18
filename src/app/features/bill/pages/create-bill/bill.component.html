@@ -49,306 +49,249 @@
         </div>
       </div>
     }
-    <div class="flex justify-center px-4 py-10 md:py-14">
-      <div class="w-full max-w-4xl md:max-w-5xl">
-        <header class="flex items-center gap-3" data-reveal="up">
-          <div
-            class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 ring-1 ring-primary/20 pulse-dot"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              class="text-primary"
-              viewBox="0 0 24 24"
-            >
-              <path
-                fill="none"
-                stroke="currentColor"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="1.5"
-                d="M5 3h14v18l-1.032-.884a2 2 0 0 0-2.603 0L14.333 21l-1.031-.884a2 2 0 0 0-2.604 0L9.667 21l-1.032-.884a2 2 0 0 0-2.603 0L5 21zm10 4H9m6 4H9m6 4h-4"
-              />
-            </svg>
-          </div>
-          <div>
-            <h1 class="text-xl font-bold tracking-tight md:text-2xl">Factura</h1>
-            <p class="text-xs opacity-50 md:text-sm">Nueva factura de venta</p>
-          </div>
-        </header>
-        <div class="du-divider m-0 mb-2"></div>
-        <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl card-hover">
-          <div class="du-card-body p-5 md:p-8 lg:p-10">
-            <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-              <div>
-                <h2 class="text-lg font-bold tracking-tight md:text-xl">Detalle</h2>
-                <p class="mt-0.5 text-xs opacity-50 md:text-sm">Información de la factura</p>
-              </div>
-              <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-                <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md font-mono"
-                  >#00123</span
-                >
-                <p
-                  class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80 md:text-base"
-                >
-                  {{ this.currentDate | date: 'dd/MM/yyyy' }}
-                </p>
-              </div>
-            </div>
-            @if (authStore.isAdmin()) {
-              <details
-                class="du-collapse du-collapse-arrow mt-2 rounded-xl border border-warning/35 bg-warning/10 px-0 py-0"
-                name="my-accordion-det-1"
-                close
-              >
-                <summary class="du-collapse-title text-sm font-semibold md:text-base flex gap-1">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    class="h-6 w-6 shrink-0 stroke-current"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
-                      stroke-width="2"
-                      d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
-                    />
-                  </svg>
-                  Esta factura se registrara en la sucursal
-                  <p class="font-bold">{{ authStore.employee()?.officeName || 'Cargando...' }}.</p>
-                </summary>
-                <div class="du-collapse-content text-xs font-medium opacity-85 md:text-sm">
-                  Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la caja
-                  abierta del usuario.
+    <div class="px-4 py-10 md:py-14">
+      <div class="mx-auto max-w-7xl">
+        <div class="lg:grid lg:grid-cols-[1fr_400px] lg:gap-6">
+          <!-- Left: main content -->
+          <div class="min-w-0">
+            <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl card-hover">
+              <div class="du-card-body p-5 md:p-8 lg:p-10">
+                <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div>
+                    <h2 class="text-lg font-bold tracking-tight md:text-xl">Detalle</h2>
+                    <p class="mt-0.5 text-xs opacity-50 md:text-sm">Información de la factura</p>
+                  </div>
+                  <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+                    <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md font-mono"
+                      >#00123</span
+                    >
+                    <p
+                      class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80 md:text-base"
+                    >
+                      {{ this.currentDate | date: 'dd/MM/yyyy' }}
+                    </p>
+                  </div>
                 </div>
-              </details>
-            }
-
-            <div class="du-divider my-2"></div>
-
-            <div
-              class="mb-4 flex flex-col gap-3 rounded-2xl border border-base-content/10 bg-base-200/30 p-4 md:flex-row md:items-center md:justify-between"
-            >
-              <div>
-                <p class="mb-1 text-xs uppercase tracking-wider opacity-50">Facturar a</p>
-                @if (this.customerStore.customer(); as customer) {
-                  <p class="text-lg font-semibold">{{ customer?.name }}</p>
-                  <p class="text-sm opacity-50">{{ customer?.document }}</p>
-                } @else {
-                  <p class="text-lg font-semibold opacity-60">Consumidor final</p>
-                }
-              </div>
-              <label
-                for="my-drawer-1"
-                class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
-                (click)="panelOpen.set(true)"
-                [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
-              >
-                @if (this.customerStore.customer()) {
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                @if (authStore.isAdmin()) {
+                  <details
+                    class="du-collapse du-collapse-arrow mt-2 rounded-xl border border-warning/35 bg-warning/10 px-0 py-0"
+                    name="my-accordion-det-1"
+                    close
                   >
-                    <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
-                    <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
-                  </svg>
-                  Editar cliente
-                } @else {
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="18"
-                    height="18"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  Agregar cliente
-                }
-              </label>
-            </div>
-            <div class="mb-3 flex items-center justify-between gap-2">
-              <h3 class="text-sm md:text-base font-semibold">Productos</h3>
-              <p class="text-xs opacity-60">
-                {{ billStore.bill().products.length }} productos seleccionados
-              </p>
-            </div>
-
-            <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100">
-              <table class="du-table w-full table-auto md:table-fixed">
-                <thead>
-                  <tr class="bg-base-300/50 text-sm md:text-base">
-                    <th class="text-center font-semibold">Nombre</th>
-                    <th class="text-center font-semibold">Cantidad</th>
-                    <th class="text-center font-semibold">Precio</th>
-                    <th class="text-center font-semibold">Total</th>
-                    <th class="w-12"></th>
-                  </tr>
-                </thead>
-                <tbody class="text-sm md:text-base text-center">
-                  @for (product of billStore.bill().products; track product.productId) {
-                    <tr class="hover:bg-base-200 transition-colors">
-                      <td>{{ product.name }}</td>
-                      <td>
-                        <input
-                          type="number"
-                          min="1"
-                          class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-lg"
-                          [value]="product.quantity"
-                          (focus)="selectAll($event)"
-                          (input)="modifyingQuantity($event, product.productId)"
-                          (keydown.enter)="modifyingQuantity($event, product.productId)"
+                    <summary class="du-collapse-title text-sm font-semibold md:text-base flex gap-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 shrink-0 stroke-current"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
                         />
-                      </td>
-                      @if (this.modifiyingPrice() && productInputId() === product.productId) {
-                        <td>
-                          <input
-                            type="text"
-                            min="1"
-                            class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
-                            (focus)="selectAll($event)"
-                            (input)="onModifyPriceChange($event, product.productId)"
-                            (focusout)="finishModifyPrice()"
-                            (keydown.enter)="finishModifyPrice()"
-                            [value]="displayPrice()"
-                          />
-                        </td>
-                      } @else {
-                        <td
-                          class="text-center hover:text-primary cursor-pointer transition-colors"
-                          (click)="this.startModifyPrice(product.productId, product.priceUnique)"
-                        >
-                          {{ product.priceUnique | cop }}
-                        </td>
-                      }
-                      <td class="text-center font-semibold">
-                        {{ product.priceUnique * product.quantity | cop }}
-                      </td>
-                      <td class="text-center">
-                        <button
-                          class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
-                          (click)="quitProduct(product.productId)"
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="14"
-                            height="14"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2.5"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                          >
-                            <line x1="18" y1="6" x2="6" y2="18" />
-                            <line x1="6" y1="6" x2="18" y2="18" />
-                          </svg>
-                        </button>
-                      </td>
-                    </tr>
-                  } @empty {
-                    <tr>
-                      <td colspan="5" class="py-10 text-center opacity-40">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          class="mx-auto mb-2 h-10 w-10 opacity-30"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="1.5"
-                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                          />
-                        </svg>
-                        <p>Agrega productos a la factura</p>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            </div>
+                      </svg>
+                      Esta factura se registrara en la sucursal
+                      <p class="font-bold">{{ authStore.employee()?.officeName || 'Cargando...' }}.</p>
+                    </summary>
+                    <div class="du-collapse-content text-xs font-medium opacity-85 md:text-sm">
+                      Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la caja
+                      abierta del usuario.
+                    </div>
+                  </details>
+                }
 
-            <div class="mt-5 flex justify-end">
-              <div
-                class="w-full rounded-2xl border border-base-content/10 bg-base-200/40 p-5 md:w-2/5"
-              >
-                <div class="flex justify-between text-base">
-                  <span class="opacity-60">Subtotal</span>
-                  <span class="font-medium">{{ billStore.subtotal() | cop }}</span>
+                <div class="du-divider my-2"></div>
+
+                <div
+                  class="mb-4 flex flex-col gap-3 rounded-2xl border border-base-content/10 bg-base-200/30 p-4 md:flex-row md:items-center md:justify-between"
+                >
+                  <div>
+                    <p class="mb-1 text-xs uppercase tracking-wider opacity-50">Facturar a</p>
+                    @if (this.customerStore.customer(); as customer) {
+                      <p class="text-lg font-semibold">{{ customer?.name }}</p>
+                      <p class="text-sm opacity-50">{{ customer?.document }}</p>
+                    } @else {
+                      <p class="text-lg font-semibold opacity-60">Consumidor final</p>
+                    }
+                  </div>
+                  <label
+                    for="my-drawer-1"
+                    class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
+                    (click)="panelOpen.set(true)"
+                    [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
+                  >
+                    @if (this.customerStore.customer()) {
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+                        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+                      </svg>
+                      Editar cliente
+                    } @else {
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="18"
+                        height="18"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      >
+                        <line x1="12" y1="5" x2="12" y2="19" />
+                        <line x1="5" y1="12" x2="19" y2="12" />
+                      </svg>
+                      Agregar cliente
+                    }
+                  </label>
                 </div>
-                <div class="mt-2 flex justify-between text-base">
-                  <span class="opacity-60">IVA (19%)</span>
-                  <span class="font-medium">{{ billStore.iva() | cop }}</span>
+                <div class="mb-3 flex items-center justify-between gap-2">
+                  <h3 class="text-sm md:text-base font-semibold">Productos</h3>
+                  <p class="text-xs opacity-60">
+                    {{ billStore.bill().products.length }} productos seleccionados
+                  </p>
                 </div>
-                <div class="du-divider my-1"></div>
-                <div class="flex justify-between text-xl font-semibold">
-                  <span>Total</span>
-                  <span>{{ billStore.total() | cop }}</span>
+
+                <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100">
+                  <table class="du-table w-full table-auto md:table-fixed">
+                    <thead>
+                      <tr class="bg-base-300/50 text-sm md:text-base">
+                        <th class="text-center font-semibold">Nombre</th>
+                        <th class="text-center font-semibold">Cantidad</th>
+                        <th class="text-center font-semibold">Precio</th>
+                        <th class="text-center font-semibold">Total</th>
+                        <th class="w-12"></th>
+                      </tr>
+                    </thead>
+                    <tbody class="text-sm md:text-base text-center">
+                      @for (product of billStore.bill().products; track product.productId) {
+                        <tr class="hover:bg-base-200 transition-colors">
+                          <td>{{ product.name }}</td>
+                          <td>
+                            <input
+                              type="number"
+                              min="1"
+                              class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-lg"
+                              [value]="product.quantity"
+                              (focus)="selectAll($event)"
+                              (input)="modifyingQuantity($event, product.productId)"
+                              (keydown.enter)="modifyingQuantity($event, product.productId)"
+                            />
+                          </td>
+                          @if (this.modifiyingPrice() && productInputId() === product.productId) {
+                            <td>
+                              <input
+                                type="text"
+                                min="1"
+                                class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
+                                (focus)="selectAll($event)"
+                                (input)="onModifyPriceChange($event, product.productId)"
+                                (focusout)="finishModifyPrice()"
+                                (keydown.enter)="finishModifyPrice()"
+                                [value]="displayPrice()"
+                              />
+                            </td>
+                          } @else {
+                            <td
+                              class="text-center hover:text-primary cursor-pointer transition-colors"
+                              (click)="this.startModifyPrice(product.productId, product.priceUnique)"
+                            >
+                              {{ product.priceUnique | cop }}
+                            </td>
+                          }
+                          <td class="text-center font-semibold">
+                            {{ product.priceUnique * product.quantity | cop }}
+                          </td>
+                          <td class="text-center">
+                            <button
+                              class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
+                              (click)="quitProduct(product.productId)"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="14"
+                                height="14"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="2.5"
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                              >
+                                <line x1="18" y1="6" x2="6" y2="18" />
+                                <line x1="6" y1="6" x2="18" y2="18" />
+                              </svg>
+                            </button>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="5" class="py-10 text-center opacity-40">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="mx-auto mb-2 h-10 w-10 opacity-30"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                              />
+                            </svg>
+                            <p>Agrega productos a la factura</p>
+                          </td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
                 </div>
               </div>
-            </div>
+            </article>
+          </div>
 
-            <div
-              class="mt-5 flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:items-center sm:justify-between"
-            >
-              <button
-                class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
-                (click)="cancelBill()"
-                [disabled]="billStore.loading()"
-              >
-                Cancelar
-              </button>
+          <!-- Right: totals sidebar -->
+          <div class="lg:sticky lg:top-24 self-start">
+            <article class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl">
+              <div class="du-card-body p-5 md:p-8">
+                <h3 class="text-lg font-bold tracking-tight">Resumen</h3>
 
-              <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-                <button
-                  class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
-                  onclick="viewProducts.showModal()"
-                  [disabled]="billStore.loading()"
-                  [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <line x1="12" y1="5" x2="12" y2="19" />
-                    <line x1="5" y1="12" x2="19" y2="12" />
-                  </svg>
-                  Agregar producto
-                </button>
+                <div class="mt-4 space-y-3">
+                  <div class="flex justify-between text-base">
+                    <span class="opacity-60">Subtotal</span>
+                    <span class="font-medium tabular-nums">{{ billStore.subtotal() | cop }}</span>
+                  </div>
+                  <div class="flex justify-between text-base">
+                    <span class="opacity-60">IVA (19%)</span>
+                    <span class="font-medium tabular-nums">{{ billStore.iva() | cop }}</span>
+                  </div>
+                  <div class="du-divider my-1"></div>
+                  <div class="flex justify-between text-xl font-bold">
+                    <span>Total</span>
+                    <span class="tabular-nums">{{ billStore.total() | cop }}</span>
+                  </div>
+                </div>
 
-                @if (billStore.loading()) {
-                  <button class="du-btn du-btn-sm du-btn-disabled w-full sm:w-auto">
-                    <span class="du-loading du-loading-spinner du-loading-sm"></span>
-                    Procesando
-                  </button>
-                } @else {
+                <div class="du-divider my-4"></div>
+
+                <div class="flex flex-col gap-3">
                   <button
-                    class="du-btn du-btn-primary du-btn-sm md:du-btn-md w-full sm:w-auto"
-                    [disabled]="billStore.length() === 0"
+                    class="du-btn du-btn-primary du-btn-md w-full"
+                    [disabled]="billStore.length() === 0 || billStore.loading()"
                     (click)="panelOpen.set(true)"
                     onclick="payment.showModal()"
                     [routerLink]="[{ outlets: { payment: ['payment'] } }]"
@@ -369,11 +312,49 @@
                     </svg>
                     Pagar
                   </button>
+
+                  <button
+                    class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
+                    onclick="viewProducts.showModal()"
+                    [disabled]="billStore.loading()"
+                    [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="16"
+                      height="16"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <line x1="12" y1="5" x2="12" y2="19" />
+                      <line x1="5" y1="12" x2="19" y2="12" />
+                    </svg>
+                    Agregar producto
+                  </button>
+
+                  <button
+                    class="du-btn du-btn-ghost du-btn-error du-btn-md w-full"
+                    (click)="cancelBill()"
+                    [disabled]="billStore.loading()"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+
+                @if (billStore.loading()) {
+                  <div class="mt-4 flex items-center justify-center gap-2 rounded-xl bg-base-200/50 py-3 text-sm">
+                    <span class="du-loading du-loading-spinner du-loading-sm"></span>
+                    Procesando factura...
+                  </div>
                 }
               </div>
-            </div>
+            </article>
           </div>
-        </article>
+        </div>
       </div>
     </div>
   </div>
