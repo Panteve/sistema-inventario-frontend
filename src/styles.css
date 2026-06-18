@@ -380,10 +380,15 @@
 
 /* Sidebar inner width driven by checkbox :checked state (not by drawer-open class) */
 .du-drawer-toggle:checked ~ .du-drawer-side .sidebar-inner {
-  width: 16rem;
+  width: 17rem;
 }
 .du-drawer-toggle:not(:checked) ~ .du-drawer-side .sidebar-inner {
   width: 4.5rem;
+}
+/* Ocultar tooltip cuando el drawer está abierto (labels visibles) */
+.du-drawer-toggle:checked ~ .du-drawer-side .sidebar-inner .du-tooltip::before,
+.du-drawer-toggle:checked ~ .du-drawer-side .sidebar-inner .du-tooltip::after {
+  display: none;
 }
 
 .sidebar-inner {

@@ -1,6 +1,6 @@
 @if (this.authStore.isAuthenticated()) {
     <div
-      class="sidebar-inner flex min-h-full flex-col items-start border-r border-base-content/10 bg-base-100/95 backdrop-blur-sm w-72 shadow-lg"
+      class="sidebar-inner flex min-h-full flex-col items-start border-r border-base-content/10 bg-base-100/95 backdrop-blur-sm w-64 shadow-lg"
     >
       <!-- Logo -->
       <div class="flex w-full items-center gap-2 px-3 py-3">
@@ -26,7 +26,7 @@
           @for (item of getItemsBySection(section); track item.key) {
             <li>
               <button
-                class="nav-item du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start group"
+                class="nav-item du-tooltip du-tooltip-right du-btn du-btn-ghost justify-start group"
                 [class.active]="isActive(item)"
                 [class.du-btn-warning]="item.key === 'cash-register' && !authStore.cashRegisterIsOpen()"
                 [class.du-btn-primary]="item.key === 'cash-register' && authStore.cashRegisterIsOpen()"
