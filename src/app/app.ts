@@ -1,7 +1,6 @@
 import { Component, HostListener, inject, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
-import { Sidebar } from './core/components/sidebar/sidebar';
 import { AuthStore } from './core/store/auth-store';
 
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -13,7 +12,7 @@ import { ToastComponent } from './shared/layouts/toast/toast.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, Sidebar, CreateCashRegisterComponent, ExpenseComponent, ToastComponent],
+  imports: [RouterOutlet, Navbar, CreateCashRegisterComponent, ExpenseComponent, ToastComponent],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -63,6 +62,32 @@ export class App {
       queryParams: { expenseModal: null },
       queryParamsHandling: 'merge',
     });
+  }
+
+  handleAction(route?: string, action?: 'cashModal' | 'expenseModal') {
+    if (route) {
+      this.router.navigate([route]);
+    } else if (action === 'cashModal') {
+      this.router.navigate([], {
+        relativeTo: this.#route.root,
+        queryParams: { cashModal: 'open' },
+        queryParamsHandling: 'merge',
+      });
+    } else if (action === 'expenseModal') {
+      this.router.navigate([], {
+        relativeTo: this.#route.root,
+        queryParams: { expenseModal: 'open' },
+        queryParamsHandling: 'merge',
+      });
+    }
+  }
+
+  isActive(route: string): boolean {
+    return this.router.url.startsWith(route);
+  }
+
+  getCashRegisterLabel(): string {
+    return this.authStore.cashRegisterIsOpen() ? 'Cierre de caja' : 'Apertura de caja';
   }
 
   logout() {

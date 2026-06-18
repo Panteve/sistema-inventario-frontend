@@ -90,16 +90,16 @@
             <div class="rounded-2xl border border-primary/15 bg-primary/5 p-3">
               <div class="flex items-center justify-between text-sm md:text-base">
                 <span class="opacity-65">Subtotal</span>
-                <strong class="font-mono">{{ subtotal() | cop }}</strong>
+                <strong class="">{{ subtotal() | cop }}</strong>
               </div>
               <div class="mt-1 flex items-center justify-between text-sm md:text-base">
                 <span class="opacity-65">IVA</span>
-                <strong class="font-mono">{{ taxTotal() | cop }}</strong>
+                <strong class="">{{ taxTotal() | cop }}</strong>
               </div>
               <div class="du-divider my-1"></div>
               <div class="flex items-center justify-between text-lg font-bold md:text-xl">
                 <span>Total</span>
-                <strong class="font-mono">{{ bill().total | cop }}</strong>
+                <strong class="">{{ bill().total | cop }}</strong>
               </div>
             </div>
           </div>
@@ -198,8 +198,8 @@
                       <p class="text-xs opacity-60">ID: {{ product.id }}</p>
                     </td>
                     <td class="text-center">{{ product.quantity }}</td>
-                    <td class="text-right font-mono">{{ product.priceUnique | cop }}</td>
-                    <td class="text-right font-mono font-semibold">
+                    <td class="text-right ">{{ product.priceUnique | cop }}</td>
+                    <td class="text-right  font-semibold">
                       {{ product.priceTotal | cop }}
                     </td>
                   </tr>
