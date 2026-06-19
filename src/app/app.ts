@@ -1,4 +1,4 @@
-import { Component, HostListener, inject, signal } from '@angular/core';
+import { Component, HostListener, inject, signal, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
@@ -9,6 +9,7 @@ import { CreateCashRegisterComponent } from './features/cash-register/pages/crea
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense-create/expense.component';
 import { ToastComponent } from './shared/layouts/toast/toast.component';
+import { ScrollRevealService } from './shared/services/scroll-reveal.service';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +17,11 @@ import { ToastComponent } from './shared/layouts/toast/toast.component';
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
-export class App {
+export class App implements OnInit {
   authStore = inject(AuthStore);
   router = inject(Router);
   #route = inject(ActivatedRoute);
+  #scrollReveal = inject(ScrollRevealService);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
 
   cashModalOpen = toSignal(
@@ -95,6 +97,10 @@ export class App {
   }
 
   protected readonly title = signal('Sistema POS');
+
+  ngOnInit() {
+    this.#scrollReveal.init();
+  }
 
   @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent) {

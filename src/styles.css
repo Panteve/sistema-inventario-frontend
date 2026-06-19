@@ -48,38 +48,6 @@
   --noise: 0;
 }
 
-.enter-animation-izquierdaDerecha {
-  animation: slide-fade-izquierdaDerecha 2s;
-}
-.leaving-izquierdaDerecha {
-  opacity: 0;
-  transform: translateX(20px);
-  transition:
-    opacity 500ms ease-out,
-    transform 500ms ease-out;
-}
-@keyframes slide-fade-izquierdaDerecha {
-  from {
-    opacity: 0;
-    transform: translateX(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes slide-fade-abajoArriba {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 /* Drawer scrollbar */
 .drawer-scrollbar {
   color: var(--color-base-content);
@@ -378,6 +346,13 @@
   }
 }
 
+
+/* Deshabilitar scroll-reveal dentro de modales */
+.du-modal [data-reveal] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal],

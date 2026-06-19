@@ -32,7 +32,7 @@ function createWindow() {
   win.on("closed", () => {
     mainWindow = null;
   });
-  win.loadURL('http://localhost:4200');
+  win.loadURL('http://localhost:8080');
 }
 
 ipcMain.handle('auth:saveToken', async (_event, token) => {
