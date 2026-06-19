@@ -22,7 +22,7 @@ export class ViewCashRegisterComponent implements OnInit {
     openedAt: '',
     initialAmount: 0,
     finalAmount: 0,
-    amountRecived: 0,
+    amountReceived: 0,
     difference: 0,
     status: false,
     office: {

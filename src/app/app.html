@@ -57,7 +57,7 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
     @if (authStore.isAuthenticated()) {
       <div
-        class="flex min-h-full max-h-dvh flex-col items-start border-r border-base-content/10 bg-base-100/95 backdrop-blur-sm du-is-drawer-close:w-18 du-is-drawer-open:w-64 du-is-drawer-open:overflow-y-auto shadow-lg"
+        class="flex min-h-full max-h-dvh flex-col items-start bg-base-100/95 du-is-drawer-close:w-18 du-is-drawer-open:w-68 du-is-drawer-open:overflow-y-auto shadow-lg"
       >
         <ul
           class="du-menu du-menu-lg du-is-drawer-close:content-center w-full grow gap-1.5 p-2 font-semibold drawer-scrollbar scrollbar-thumb-black"
@@ -124,7 +124,7 @@
           </p>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
               [class.du-btn-warning]="!authStore.cashRegisterIsOpen()"
               [attr.data-tip]="authStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'"
               (click)="openCashModal()"
@@ -157,7 +157,7 @@
 
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
               [class.du-btn-active]="isActive('/create-bill')"
               [class.opacity-50]="!authStore.cashRegisterIsOpen()"
               [class.du-btn-primary]="authStore.cashRegisterIsOpen()"
@@ -258,7 +258,7 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de ventas</span
+                >Ventas</span
               >
             </button>
           </li>
@@ -287,7 +287,7 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de gastos</span
+                >Gastos</span
               >
             </button>
           </li>
@@ -312,7 +312,7 @@
               </svg>
 
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de cajas</span
+                >Cajas</span
               >
             </button>
           </li>
@@ -360,7 +360,7 @@
                 />
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de movimientos</span
+                >Movimientos</span
               >
             </button>
           </li>

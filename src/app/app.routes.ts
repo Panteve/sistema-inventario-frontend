@@ -17,7 +17,6 @@ import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.com
 import { adminChildGuard } from './core/guards/admin-child-guard';
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
 import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register/view-cash-register.component';
-import { OfficeComponent } from './features/admin/pages/offices/office.component';
 import { dashboardRedirectGuard } from './core/guards/dashboard-redirect-guard-guard';
 import { adminGuard } from './core/guards/admin-guard';
 

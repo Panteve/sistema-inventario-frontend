@@ -19,7 +19,6 @@ import { OfficeSelectComponent } from '../../../../shared/components/office-sele
 import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
 import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 import {
-  coerceIsoDate,
   isIsoDate,
   maxRangeMonths,
   normalizeDateRange,
@@ -159,7 +158,6 @@ export class ExpenseListComponent implements OnInit {
 
   changeAmountMin(event: Event) {
     const value = (event.target as HTMLInputElement).value;
-    console.log('Raw input value:', value);
     const amountMin = this.#parseMoneyInput(value);
     this.queryParams.update((params) => ({
       ...params,

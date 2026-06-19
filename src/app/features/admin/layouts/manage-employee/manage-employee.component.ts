@@ -5,7 +5,7 @@ import {
   UpdateEmployeeRequest,
 } from '../../../../shared/interfaces/employee.interface';
 
-import { finalize } from 'rxjs/operators';
+import { finalize } from 'rxjs';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';

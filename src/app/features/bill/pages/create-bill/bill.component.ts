@@ -3,7 +3,6 @@ import { Router, RouterOutlet, RouterLinkWithHref } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
-import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { CustomerStore } from '../../store/customer-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -11,7 +10,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 @Component({
   selector: 'app-bill.component',
   imports: [RouterOutlet, CopPipe, DatePipe, RouterLinkWithHref],
-  providers: [BillStore, PaymentMethodStore, CustomerStore, CopPipe],
+  providers: [BillStore, CustomerStore, CopPipe],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
 })
@@ -25,11 +24,8 @@ export class BillComponent {
   authStore = inject(AuthStore);
   billStore = inject(BillStore);
   inventoryStore = inject(InventoryStore);
-  #paymentMethodStore = inject(PaymentMethodStore);
   router = inject(Router);
   cop = inject(CopPipe);
-
-  paymentMethods = this.#paymentMethodStore.paymentMethods();
 
   // Signals for UI state
   productInputId = signal<number>(0);

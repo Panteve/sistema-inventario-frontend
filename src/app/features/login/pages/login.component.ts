@@ -22,8 +22,6 @@ export class LoginComponent {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    this.loginModel().document.trim();
-    this.loginModel().password.trim();
     this.authStore.login(this.loginModel());
   }
 }

@@ -89,15 +89,6 @@ export const AuthStore = signalStore(
     async getToken() {
       return await window.electronAPI.getToken();
     },
-    //DEPURACION SOLO PARA PROBAR FUNCIONALIDAD DE ADMINISTRADOR
-    changeAdminStatus() {
-      patchState(store, (state) => ({
-        employee:
-          state.employee?.role === 'ADMIN'
-            ? { ...state.employee, role: 'USER' }
-            : ({ ...state.employee, role: 'ADMIN' } as Employee),
-      }));
-    },
     resetOfficeIdFromCashRegister() {
       const officeIdFromCashRegister = store.officeIdFromCashRegister() ?? undefined;
       patchState(store, (state) => ({

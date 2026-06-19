@@ -1,11 +1,11 @@
-import { Component, HostListener, inject, signal, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
 
 import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs/operators';
-import { CreateCashRegisterComponent } from './features/cash-register/pages/create-cash-regsiter/create-cash-register.component';
+import { map } from 'rxjs';
+import { CreateCashRegisterComponent } from './features/cash-register/pages/create-cash-register/create-cash-register.component';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense-create/expense.component';
 import { ToastComponent } from './shared/layouts/toast/toast.component';
@@ -95,8 +95,6 @@ export class App implements OnInit {
   logout() {
     this.authStore.logout();
   }
-
-  protected readonly title = signal('Sistema POS');
 
   ngOnInit() {
     this.#scrollReveal.init();
