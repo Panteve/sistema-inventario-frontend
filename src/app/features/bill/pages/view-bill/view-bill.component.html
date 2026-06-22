@@ -1,5 +1,5 @@
 <section class="relative flex justify-center px-2 py-4 md:px-4 md:py-8">
-  <div class="w-full max-w-5xl">
+  <div class="w-full max-w-7xl">
     <nav class="mb-1 flex items-center gap-1.5 px-1 text-sm" aria-label="Breadcrumb">
       <a [routerLink]="from()" class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-base-content/50 transition-colors hover:bg-base-200/70 hover:text-base-content/80">
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="h-4 w-4 stroke-current">
@@ -64,171 +64,139 @@
         </article>
       </div>
     } @else {
-      <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
-        <article data-reveal="up" class="du-card rounded-4xl bg-base-100 shadow-xl card-hover">
-          <div class="du-card-body p-4 md:p-5">
-            <div class="mb-2 flex items-center gap-2">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">
-                Cliente y totales
-              </p>
-            </div>
+      <div class="lg:grid lg:grid-cols-[1fr_380px] lg:gap-6">
+        <!-- LEFT COLUMN: Products table -->
+        <div class="min-w-0">
+          <article
+            data-reveal="up"
+            class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl card-hover"
+          >
+            <div class="du-card-body p-4 md:p-6">
+              <div class="mb-3 flex items-center justify-between gap-2">
+                <h2 class="text-lg font-bold tracking-tight md:text-xl">Productos facturados</h2>
+                <span class="du-badge du-badge-outline du-badge-sm md:du-badge-md">
+                  {{ bill().products.length }} items
+                </span>
+              </div>
 
-            <div class="rounded-2xl bg-base-100/70 p-3">
-              @if (bill().customer) {
-                <div class="space-y-1 text-sm md:text-base">
-                  <p class="font-semibold">{{ bill().customer?.name }}</p>
-                  <p class="opacity-75">ID: {{ bill().customer?.id }}</p>
-                  <p class="opacity-75">Documento: {{ bill().customer?.document }}</p>
-                  <p class="opacity-75">Teléfono: {{ bill().customer?.phone }}</p>
-                </div>
-              } @else {
-                <p class="font-semibold text-2xl">Consumidor final</p>
-              }
+              <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
+                <table class="du-table w-full table-auto md:table-fixed">
+                  <thead>
+                    <tr class="bg-base-300/50 text-xs uppercase tracking-wider md:text-sm">
+                      <th class="font-semibold">Producto</th>
+                      <th class="text-center font-semibold">Cantidad</th>
+                      <th class="text-right font-semibold">Precio unitario</th>
+                      <th class="text-right font-semibold">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (product of bill().products; track product.id) {
+                      <tr class="border-b border-base-content/5 hover:bg-base-200/60 transition-colors">
+                        <td>
+                          <p class="font-semibold">
+                            {{ product.productName || 'Producto sin nombre' }}
+                          </p>
+                          <p class="text-xs opacity-60">ID: {{ product.id }}</p>
+                        </td>
+                        <td class="text-center">{{ product.quantity }}</td>
+                        <td class="text-right ">{{ product.priceUnique | cop }}</td>
+                        <td class="text-right  font-semibold">
+                          {{ product.priceTotal | cop }}
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="5" class="py-10 text-center opacity-40">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="mx-auto mb-2 h-10 w-10 opacity-30"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="1.5"
+                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                            />
+                          </svg>
+                          <p class="font-medium">Esta factura no tiene productos registrados.</p>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div class="du-divider my-0"></div>
-
-            <div class="rounded-2xl border border-primary/15 bg-primary/5 p-3">
-              <div class="flex items-center justify-between text-sm md:text-base">
-                <span class="opacity-65">Subtotal</span>
-                <strong class="">{{ subtotal() | cop }}</strong>
-              </div>
-              <div class="mt-1 flex items-center justify-between text-sm md:text-base">
-                <span class="opacity-65">IVA</span>
-                <strong class="">{{ taxTotal() | cop }}</strong>
-              </div>
-              <div class="du-divider my-1"></div>
-              <div class="flex items-center justify-between text-lg font-bold md:text-xl">
-                <span>Total</span>
-                <strong class="">{{ bill().total | cop }}</strong>
-              </div>
-            </div>
-          </div>
-        </article>
-
-        <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl card-hover">
-          <div class="du-card-body p-4 md:p-5">
-            <div class="mb-2 flex items-center gap-2">
-              <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">
-                Caja y empleado
-              </p>
-            </div>
-            <div class="mt-2 grid grid-cols-1 gap-2 text-sm md:text-base">
-              <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
-                <p class="font-semibold">Caja #{{ bill().cashRegister.id }}</p>
-                <p class="opacity-75">Sucursal {{ bill().cashRegister.officeId }}</p>
-              </div>
-              <div class="du-divider my-0"></div>
-              <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
-                <p class="font-semibold">{{ bill().employee.name }}</p>
-                <p class="opacity-75">Documento: {{ bill().employee.document }}</p>
-                <p class="opacity-75">Teléfono: {{ bill().employee.phone }}</p>
-              </div>
-            </div>
-          </div>
-        </article>
-      </div>
-    }
-
-    <article
-      data-reveal="up"
-      class="du-card mt-5 rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl card-hover"
-    >
-      <div class="du-card-body p-4 md:p-6 lg:p-7">
-        <div class="mb-3 flex items-center justify-between gap-2">
-          <h2 class="text-lg font-bold tracking-tight md:text-xl">Productos facturados</h2>
-          @if (loading()) {
-            <span class="du-skeleton h-5 w-20 rounded-full"></span>
-          } @else {
-            <span class="du-badge du-badge-outline du-badge-sm md:du-badge-md">
-              {{ bill().products.length }} items
-            </span>
-          }
+          </article>
         </div>
 
-        @if (loading()) {
-          <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
-            <table class="du-table w-full table-auto md:table-fixed">
-              <thead>
-                <tr class="bg-base-300/50 text-xs uppercase tracking-wider md:text-sm">
-                  <th class="font-semibold">Producto</th>
-                  <th class="text-center font-semibold">Cantidad</th>
-                  <th class="text-right font-semibold">Precio unitario</th>
-                  <th class="text-right font-semibold">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (item of [1, 2, 3, 4]; track $index) {
-                  <tr>
-                    <td>
-                      <div class="du-skeleton h-4 w-32 rounded-full"></div>
-                      <div class="du-skeleton mt-2 h-3 w-20 rounded-full"></div>
-                    </td>
-                    <td class="text-center">
-                      <div class="du-skeleton mx-auto h-4 w-8 rounded-full"></div>
-                    </td>
-                    <td class="text-right">
-                      <div class="du-skeleton ml-auto h-4 w-20 rounded-full"></div>
-                    </td>
-                    <td class="text-right">
-                      <div class="du-skeleton ml-auto h-4 w-24 rounded-full"></div>
-                    </td>
-                  </tr>
+        <!-- RIGHT COLUMN: Details -->
+        <div class="flex flex-col gap-4">
+          <article data-reveal="up" class="du-card rounded-4xl bg-base-100 shadow-xl card-hover">
+            <div class="du-card-body p-4 md:p-5">
+              <div class="mb-2 flex items-center gap-2">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">
+                  Cliente y totales
+                </p>
+              </div>
+
+              <div class="rounded-2xl bg-base-100/70 p-3">
+                @if (bill().customer) {
+                  <div class="space-y-1 text-sm md:text-base">
+                    <p class="font-semibold">{{ bill().customer?.name }}</p>
+                    <p class="opacity-75">ID: {{ bill().customer?.id }}</p>
+                    <p class="opacity-75">Documento: {{ bill().customer?.document }}</p>
+                    <p class="opacity-75">Teléfono: {{ bill().customer?.phone }}</p>
+                  </div>
+                } @else {
+                  <p class="font-semibold text-2xl">Consumidor final</p>
                 }
-              </tbody>
-            </table>
-          </div>
-        } @else {
-          <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
-            <table class="du-table w-full table-auto md:table-fixed">
-              <thead>
-                <tr class="bg-base-300/50 text-xs uppercase tracking-wider md:text-sm">
-                  <th class="font-semibold">Producto</th>
-                  <th class="text-center font-semibold">Cantidad</th>
-                  <th class="text-right font-semibold">Precio unitario</th>
-                  <th class="text-right font-semibold">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (product of bill().products; track product.id) {
-                  <tr class="border-b border-base-content/5 hover:bg-base-200/60 transition-colors">
-                    <td>
-                      <p class="font-semibold">
-                        {{ product.productName || 'Producto sin nombre' }}
-                      </p>
-                      <p class="text-xs opacity-60">ID: {{ product.id }}</p>
-                    </td>
-                    <td class="text-center">{{ product.quantity }}</td>
-                    <td class="text-right ">{{ product.priceUnique | cop }}</td>
-                    <td class="text-right  font-semibold">
-                      {{ product.priceTotal | cop }}
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="5" class="py-10 text-center opacity-40">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="mx-auto mb-2 h-10 w-10 opacity-30"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="1.5"
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                        />
-                      </svg>
-                      <p class="font-medium">Esta factura no tiene productos registrados.</p>
-                    </td>
-                  </tr>
-                }
-              </tbody>
-            </table>
-          </div>
-        }
+              </div>
+              <div class="du-divider my-0"></div>
+
+              <div class="rounded-2xl border border-primary/15 bg-primary/5 p-3">
+                <div class="flex items-center justify-between text-sm md:text-base">
+                  <span class="opacity-65">Subtotal</span>
+                  <strong class="">{{ subtotal() | cop }}</strong>
+                </div>
+                <div class="mt-1 flex items-center justify-between text-sm md:text-base">
+                  <span class="opacity-65">IVA</span>
+                  <strong class="">{{ taxTotal() | cop }}</strong>
+                </div>
+                <div class="du-divider my-1"></div>
+                <div class="flex items-center justify-between text-lg font-bold md:text-xl">
+                  <span>Total</span>
+                  <strong class="">{{ bill().total | cop }}</strong>
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl card-hover">
+            <div class="du-card-body p-4 md:p-5">
+              <div class="mb-2 flex items-center gap-2">
+                <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">
+                  Caja y empleado
+                </p>
+              </div>
+              <div class="mt-2 grid grid-cols-1 gap-2 text-sm md:text-base">
+                <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
+                  <p class="font-semibold">Caja #{{ bill().cashRegister.id }}</p>
+                  <p class="opacity-75">Sucursal {{ bill().cashRegister.officeId }}</p>
+                </div>
+                <div class="du-divider my-0"></div>
+                <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
+                  <p class="font-semibold">{{ bill().employee.name }}</p>
+                  <p class="opacity-75">Documento: {{ bill().employee.document }}</p>
+                  <p class="opacity-75">Teléfono: {{ bill().employee.phone }}</p>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>
       </div>
-    </article>
+    }
   </div>
 </section>
