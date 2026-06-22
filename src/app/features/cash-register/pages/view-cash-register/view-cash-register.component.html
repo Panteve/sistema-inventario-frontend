@@ -19,58 +19,63 @@
     </nav>
 
     @if (!loading()) {
-      <div class="flex flex-wrap items-center justify-between gap-3 mb-4 px-1">
-        <div class="flex flex-wrap gap-2">
-          <div class="rounded-full bg-base-200/70 px-4 py-2 text-sm font-semibold opacity-80">
-            {{ cashRegisterHistory().office.name }}
-          </div>
-          <div class="rounded-full bg-base-200/70 px-4 py-2 text-sm font-semibold opacity-80">
-            {{ cashRegisterHistory().operateBy.name }}
-          </div>
-        </div>
-        <div class="flex flex-wrap items-center gap-3">
-          @if (cashRegisterHistory().status) {
-            <span class="du-badge du-badge-success du-badge-lg">Abierta</span>
-          } @else {
-            <span class="du-badge du-badge-error du-badge-lg">Cerrada</span>
-          }
-        </div>
-      </div>
-    }
-
-    <!-- Time Section -->
-    @if (!loading()) {
       <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover mb-4">
-        <div class="du-card-body p-4 md:p-6">
-          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div class="flex flex-col items-center justify-center md:border-r md:border-base-content/10">
-              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Apertura</p>
-              <p class=" text-sm md:text-base font-semibold">
-                {{ cashRegisterHistory().openedAt | date: 'HH:mm' }}
-              </p>
-              <p class="text-xs opacity-60 mt-1">
-                {{ cashRegisterHistory().openedAt | date: 'dd/MM/yyyy' }}
-              </p>
+        <div class="du-card-body p-4 md:p-5">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+            <div class="flex flex-wrap items-center gap-2">
+              <div class="inline-flex items-center gap-1.5 rounded-full bg-base-200/70 px-3 py-1.5 text-xs font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="2" ry="2"/><path d="M22 6l-10 7L2 6"/></svg>
+                {{ cashRegisterHistory().office.name }}
+              </div>
+              <div class="inline-flex items-center gap-1.5 rounded-full bg-base-200/70 px-3 py-1.5 text-xs font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                {{ cashRegisterHistory().operateBy.name }}
+              </div>
             </div>
-            <div class="flex flex-col items-center justify-center md:border-r md:border-base-content/10">
-              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Cierre</p>
-              @if (cashRegisterHistory().closedAt) {
-                <p class=" text-sm md:text-base font-semibold">
-                  {{ cashRegisterHistory().closedAt | date: 'HH:mm' }}
-                </p>
-                <p class="text-xs opacity-60 mt-1">
-                  {{ cashRegisterHistory().closedAt | date: 'dd/MM/yyyy' }}
-                </p>
-              } @else {
-                <p class=" text-sm md:text-base font-semibold opacity-40">—</p>
-                <p class="text-xs opacity-40 mt-1">Abierta</p>
-              }
+            @if (cashRegisterHistory().status) {
+              <span class="du-badge du-badge-success du-badge-sm gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-current animate-pulse"></span>
+                Abierta
+              </span>
+            } @else {
+              <span class="du-badge du-badge-error du-badge-sm gap-1">
+                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                Cerrada
+              </span>
+            }
+          </div>
+          <div class="du-divider my-0"></div>
+          <div class="mt-3 grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div class="flex items-center gap-3 rounded-xl bg-base-200/30 p-3">
+              <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.12em] opacity-60">Apertura</p>
+                <p class="text-sm font-semibold">{{ cashRegisterHistory().openedAt | date: 'HH:mm' }} <span class="text-xs opacity-60 font-normal">· {{ cashRegisterHistory().openedAt | date: 'dd/MM/yyyy' }}</span></p>
+              </div>
             </div>
-            <div class="flex flex-col items-center justify-center">
-              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-2">Duración</p>
-              <p class=" text-sm md:text-base font-semibold">
-                {{ duration() }}
-              </p>
+            <div class="flex items-center gap-3 rounded-xl bg-base-200/30 p-3">
+              <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-base-content/10 text-base-content">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.12em] opacity-60">Cierre</p>
+                @if (cashRegisterHistory().closedAt) {
+                  <p class="text-sm font-semibold">{{ cashRegisterHistory().closedAt | date: 'HH:mm' }} <span class="text-xs opacity-60 font-normal">· {{ cashRegisterHistory().closedAt | date: 'dd/MM/yyyy' }}</span></p>
+                } @else {
+                  <p class="text-sm font-semibold opacity-40">—</p>
+                }
+              </div>
+            </div>
+            <div class="flex items-center gap-3 rounded-xl bg-base-200/30 p-3">
+              <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-secondary/10 text-secondary">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              </div>
+              <div>
+                <p class="text-[10px] uppercase tracking-[0.12em] opacity-60">Duración</p>
+                <p class="text-sm font-semibold">{{ duration() }}</p>
+              </div>
             </div>
           </div>
         </div>
@@ -78,163 +83,159 @@
     }
 
     <!-- Summary Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-4">
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Total Ventas</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().totalSales | cop }}
-            </p>
-          }
+    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover mb-4">
+      <div class="du-card-body p-4 md:p-6">
+        <div class="mb-4 flex items-center gap-2">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">Resumen de ventas</p>
         </div>
-      </article>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-6 w-28 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Total Ventas</p>
+              <p class="text-xl md:text-2xl font-bold tracking-tight">{{ cashRegisterHistory().totalSales | cop }}</p>
+            }
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-6 w-28 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Efectivo</p>
+              <p class="text-xl md:text-2xl font-bold tracking-tight">{{ cashRegisterHistory().totalCashSales | cop }}</p>
+            }
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-6 w-28 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Transferencia</p>
+              <p class="text-xl md:text-2xl font-bold tracking-tight">{{ cashRegisterHistory().totalTransferSales | cop }}</p>
+            }
+          </div>
+        </div>
 
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto recibido</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().amountReceived | cop }}
-            </p>
-          }
-        </div>
-      </article>
+        <div class="du-divider my-4"></div>
 
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto esperado</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().finalAmount | cop }}
-            </p>
-          }
+        <div class="mb-4 flex items-center gap-2">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">Cuadre de caja</p>
         </div>
-      </article>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-5 w-24 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto inicial</p>
+              <p class="text-base md:text-lg font-bold">{{ cashRegisterHistory().initialAmount | cop }}</p>
+            }
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-5 w-24 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto esperado</p>
+              <p class="text-base md:text-lg font-bold">{{ cashRegisterHistory().finalAmount | cop }}</p>
+            }
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-5 w-24 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto recibido</p>
+              <p class="text-base md:text-lg font-bold">{{ cashRegisterHistory().amountReceived | cop }}</p>
+            }
+          </div>
+          <div class="rounded-2xl border border-base-content/10 bg-base-200/30 p-4">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-5 w-24 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Diferencia</p>
+              <p class="text-base md:text-lg font-bold"
+                [class.text-warning]="cashRegisterHistory().difference > 0"
+                [class.text-error]="cashRegisterHistory().difference < 0"
+                [class.opacity-70]="cashRegisterHistory().difference === 0"
+              >
+                {{ cashRegisterHistory().difference | cop }}
+              </p>
+            }
+          </div>
+        </div>
 
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Diferencia</p>
-            <p class="text-lg md:text-xl font-bold "
-              [class.text-warning]="cashRegisterHistory().difference > 0"
-              [class.text-error]="cashRegisterHistory().difference < 0"
-              [class.opacity-70]="cashRegisterHistory().difference === 0"
-            >
-              {{ cashRegisterHistory().difference | cop }}
-            </p>
-          }
-        </div>
-      </article>
+        <div class="du-divider my-4"></div>
 
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Ventas en transferencia</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().totalTransferSales | cop }}
-            </p>
-          }
+        <div class="mb-4 flex items-center gap-2">
+          <p class="text-[11px] font-semibold uppercase tracking-[0.12em] opacity-55">Gastos</p>
         </div>
-      </article>
-
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Ventas en efectivo</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().totalCashSales | cop }}
-            </p>
-          }
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="rounded-2xl border border-error/15 bg-error/5 p-4 sm:col-span-2 lg:col-span-1">
+            @if (loading()) {
+              <div class="du-skeleton h-3 w-20 rounded-full mb-2"></div>
+              <div class="du-skeleton h-6 w-28 rounded-full"></div>
+            } @else {
+              <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Total Gastos</p>
+              <p class="text-xl md:text-2xl font-bold tracking-tight">{{ cashRegisterHistory().totalExpenses | cop }}</p>
+            }
+          </div>
         </div>
-      </article>
-
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Gastos</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().totalExpenses | cop }}
-            </p>
-          }
-        </div>
-      </article>
-
-      <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
-        <div class="du-card-body p-4 md:p-5">
-          @if (loading()) {
-            <div class="du-skeleton h-3 w-24 rounded-full mb-2"></div>
-            <div class="du-skeleton h-6 w-32 rounded-full"></div>
-          } @else {
-            <p class="text-[11px] uppercase tracking-[0.14em] opacity-60 mb-1">Monto inicial</p>
-            <p class="text-lg md:text-xl font-bold ">
-              {{ cashRegisterHistory().initialAmount | cop }}
-            </p>
-          }
-        </div>
-      </article>
-    </div>
+      </div>
+    </article>
 
     <!-- Two Columns Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
+    <div class="grid grid-cols-1 lg:grid-cols-[1fr_380px] gap-4 mb-4">
       <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
         <div class="du-card-body p-4 md:p-6">
-          <h3 class="text-lg font-bold tracking-tight mb-4">Top productos</h3>
+          <div class="mb-4 flex items-center justify-between gap-2">
+            <h3 class="text-lg font-bold tracking-tight">Top productos</h3>
+            @if (!loading()) {
+              <span class="du-badge du-badge-outline du-badge-sm">{{ cashRegisterHistory().topProducts.length }} productos</span>
+            }
+          </div>
           @if (loading()) {
             <div class="space-y-3">
               @for (i of [1, 2, 3, 4]; track i) {
-                <div class="flex items-center justify-between p-2 border border-base-content/5 rounded-lg">
+                <div class="flex items-center justify-between p-3 border border-base-content/5 rounded-xl">
                   <div class="flex-1">
-                    <div class="du-skeleton h-3 w-32 rounded-full mb-1"></div>
-                    <div class="du-skeleton h-3 w-20 rounded-full"></div>
+                    <div class="du-skeleton h-3 w-36 rounded-full mb-2"></div>
+                    <div class="du-skeleton h-3 w-16 rounded-full"></div>
                   </div>
                   <div class="du-skeleton h-4 w-24 rounded-full"></div>
                 </div>
               }
             </div>
           } @else {
-            <div class="overflow-x-auto">
-              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+            <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
+              <table class="du-table w-full table-auto">
                 <thead>
-                  <tr>
-                    <th class="text-[11px] uppercase tracking-[0.12em]">Producto</th>
-                    <th class="text-[11px] uppercase tracking-[0.12em] text-right">Cantidad</th>
-                    <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                  <tr class="bg-base-300/50 text-xs uppercase tracking-wider">
+                    <th class="font-semibold">Producto</th>
+                    <th class="text-center font-semibold">Cantidad</th>
+                    <th class="text-right font-semibold">Total</th>
                   </tr>
                 </thead>
                 <tbody>
                   @if (cashRegisterHistory().topProducts.length > 0) {
                     @for (product of cashRegisterHistory().topProducts; track product.name) {
-                      <tr>
-                        <td class="text-sm">{{ product.name }}</td>
-                        <td class="text-sm text-right ">{{ product.totalQuantity }}</td>
-                        <td class="text-sm text-right ">{{ product.totalAmount | cop }}</td>
+                      <tr class="border-b border-base-content/5 hover:bg-base-200/60 transition-colors">
+                        <td class="text-sm font-medium">{{ product.name }}</td>
+                        <td class="text-sm text-center">{{ product.totalQuantity }}</td>
+                        <td class="text-sm text-right font-semibold">{{ product.totalAmount | cop }}</td>
                       </tr>
                     }
                   } @else {
                     <tr>
-                      <td colspan="3" class="text-center py-4 opacity-60">Sin productos</td>
+                      <td colspan="3" class="text-center py-10 opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-8 w-8 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        <p class="font-medium">Sin productos</p>
+                      </td>
                     </tr>
                   }
                 </tbody>
@@ -246,39 +247,48 @@
 
       <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
         <div class="du-card-body p-4 md:p-6">
-          <h3 class="text-lg font-bold tracking-tight mb-4">Gastos</h3>
+          <div class="mb-4 flex items-center justify-between gap-2">
+            <h3 class="text-lg font-bold tracking-tight">Gastos</h3>
+            @if (!loading()) {
+              <span class="du-badge du-badge-outline du-badge-sm">{{ cashRegisterHistory().expenses.length }} gastos</span>
+            }
+          </div>
           @if (loading()) {
             <div class="space-y-3">
               @for (i of [1, 2, 3, 4]; track i) {
-                <div class="flex items-center justify-between p-2 border border-base-content/5 rounded-lg">
+                <div class="flex items-center justify-between p-3 border border-base-content/5 rounded-xl">
                   <div class="flex-1">
-                    <div class="du-skeleton h-3 w-32 rounded-full mb-1"></div>
-                    <div class="du-skeleton h-3 w-20 rounded-full"></div>
+                    <div class="du-skeleton h-3 w-32 rounded-full mb-2"></div>
                   </div>
-                  <div class="du-skeleton h-4 w-24 rounded-full"></div>
+                  <div class="du-skeleton h-4 w-20 rounded-full"></div>
                 </div>
               }
             </div>
           } @else {
-            <div class="overflow-x-auto">
-              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+            <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
+              <table class="du-table w-full table-auto">
                 <thead>
-                  <tr>
-                    <th class="text-[11px] uppercase tracking-[0.12em]">Razón</th>
-                    <th class="text-[11px] uppercase tracking-[0.12em] text-right">Monto</th>
+                  <tr class="bg-base-300/50 text-xs uppercase tracking-wider">
+                    <th class="font-semibold">Razón</th>
+                    <th class="text-right font-semibold">Monto</th>
                   </tr>
                 </thead>
                 <tbody>
                   @if (cashRegisterHistory().expenses.length > 0) {
                     @for (expense of cashRegisterHistory().expenses; track expense.id) {
-                      <tr>
+                      <tr class="border-b border-base-content/5 hover:bg-base-200/60 transition-colors">
                         <td class="text-sm">{{ expense.reason }}</td>
-                        <td class="text-sm text-right ">{{ expense.amount | cop }}</td>
+                        <td class="text-sm text-right font-semibold text-error">{{ expense.amount | cop }}</td>
                       </tr>
                     }
                   } @else {
                     <tr>
-                      <td colspan="2" class="text-center py-4 opacity-60">Sin gastos</td>
+                      <td colspan="2" class="text-center py-10 opacity-40">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-8 w-8 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                          <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        <p class="font-medium">Sin gastos</p>
+                      </td>
                     </tr>
                   }
                 </tbody>
@@ -292,69 +302,81 @@
     <!-- Sales Table -->
     <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10 card-hover">
       <div class="du-card-body p-4 md:p-6">
-        <div class="mb-4">
-          <h3 class="text-lg font-bold tracking-tight">Ventas</h3>
-          @if (!loading()) {
-            <p class="text-xs opacity-60 mt-1">{{ cashRegisterHistory().bills.length }} facturas</p>
+        <div class="mb-4 flex items-center justify-between gap-2">
+          <div>
+            <h3 class="text-lg font-bold tracking-tight">Ventas</h3>
+            @if (!loading()) {
+              <p class="text-xs opacity-60 mt-0.5">{{ cashRegisterHistory().bills.length }} facturas registradas</p>
+            }
+          </div>
+          @if (!loading() && cashRegisterHistory().bills.length > 0) {
+            <span class="du-badge du-badge-outline du-badge-sm">{{ cashRegisterHistory().totalSales | cop }} total</span>
           }
         </div>
 
         @if (loading()) {
-          <div class="overflow-x-auto">
-            <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+          <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
+            <table class="du-table w-full table-auto">
               <thead>
-                <tr>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">#</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">Cliente</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">Método de pago</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                <tr class="bg-base-300/50 text-xs uppercase tracking-wider">
+                  <th class="font-semibold">#</th>
+                  <th class="font-semibold">Cliente</th>
+                  <th class="font-semibold">Método de pago</th>
+                  <th class="text-right font-semibold">Total</th>
                 </tr>
               </thead>
               <tbody>
                 @for (i of [1, 2, 3, 4, 5]; track i) {
                   <tr>
-                    <td><div class="du-skeleton h-3 w-8 rounded-full"></div></td>
-                    <td><div class="du-skeleton h-3 w-24 rounded-full"></div></td>
-                    <td><div class="du-skeleton h-3 w-20 rounded-full"></div></td>
-                    <td class="text-right"><div class="du-skeleton h-3 w-20 rounded-full"></div></td>
+                    <td><div class="du-skeleton h-4 w-8 rounded-full"></div></td>
+                    <td><div class="du-skeleton h-4 w-28 rounded-full"></div></td>
+                    <td><div class="du-skeleton h-4 w-24 rounded-full"></div></td>
+                    <td class="text-right"><div class="du-skeleton ml-auto h-4 w-20 rounded-full"></div></td>
                   </tr>
                 }
               </tbody>
             </table>
           </div>
         } @else {
-          <div class="overflow-x-auto">
-            <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+          <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100/90">
+            <table class="du-table w-full table-auto">
               <thead>
-                <tr>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">#</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">Cliente</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em]">Método de pago</th>
-                  <th class="text-[11px] uppercase tracking-[0.12em] text-right">Total</th>
+                <tr class="bg-base-300/50 text-xs uppercase tracking-wider">
+                  <th class="font-semibold">#</th>
+                  <th class="font-semibold">Cliente</th>
+                  <th class="font-semibold">Método de pago</th>
+                  <th class="text-right font-semibold">Total</th>
                 </tr>
               </thead>
               <tbody>
                 @if (cashRegisterHistory().bills.length > 0) {
                   @for (bill of cashRegisterHistory().bills; track bill.id) {
-                    <tr (click)="openBillDetail(bill.id)" class="hover:bg-base-300/80 hover:cursor-pointer transition-colors duration-200">
-                      <td class="text-sm ">{{ bill.id }}</td>
+                    <tr (click)="openBillDetail(bill.id)" class="border-b border-base-content/5 hover:bg-base-200/60 hover:cursor-pointer transition-colors">
+                      <td class="text-sm font-semibold opacity-70">{{ bill.id }}</td>
                       <td class="text-sm">{{ bill.customer?.name ?? '—' }}</td>
                       <td class="text-sm">
                         @if (bill.payments.length > 0) {
-                          {{ bill.payments[0].paymentMethod.name }}
-                          @if (bill.payments.length > 1) {
-                            <span class="text-xs opacity-60">+{{ bill.payments.length - 1 }}</span>
-                          }
+                          <span class="inline-flex items-center gap-1 rounded-full bg-base-200/70 px-2 py-0.5 text-xs font-medium">
+                            {{ bill.payments[0].paymentMethod.name }}
+                            @if (bill.payments.length > 1) {
+                              <span class="ml-0.5 opacity-60">+{{ bill.payments.length - 1 }}</span>
+                            }
+                          </span>
                         } @else {
                           <span class="opacity-60">—</span>
                         }
                       </td>
-                      <td class="text-sm text-right ">{{ bill.total | cop }}</td>
+                      <td class="text-sm text-right font-semibold">{{ bill.total | cop }}</td>
                     </tr>
                   }
                 } @else {
                   <tr>
-                    <td colspan="4" class="text-center py-4 opacity-60">Sin ventas registradas</td>
+                    <td colspan="4" class="py-10 text-center opacity-40">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="mx-auto mb-2 h-10 w-10 opacity-30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                      </svg>
+                      <p class="font-medium">Sin ventas registradas</p>
+                    </td>
                   </tr>
                 }
               </tbody>
