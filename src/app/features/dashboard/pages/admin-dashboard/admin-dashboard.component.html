@@ -1,5 +1,5 @@
 <section class="min-h-screen">
-  <div class="mx-auto space-y-6 px-4 py-6 lg:px-8">
+  <div class="mx-auto space-y-4 px-4 py-4 lg:px-8">
     <article
       class="du-card rounded-2xl border border-primary/15 bg-base-100/95 shadow-lg shadow-primary/5 backdrop-blur-sm"
     >
@@ -10,387 +10,156 @@
       </div>
     </article>
 
-    <div class="reveal-stagger grid gap-3 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/20 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-lg shadow-success/10"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-success/60 to-success"></div>
-        <div class="du-card-body gap-2 p-4">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-success/80">
-              Ventas totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+        <div class="reveal-stagger grid gap-2 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/20 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-sm shadow-success/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-success/60 to-success"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-success/80">Ventas totales</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-success/20 text-success"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/20 text-success" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-8 w-36"></div>
-            } @else {
-              <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-success">
-                {{ dashboardSummary().totalSales.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-success">{{ dashboardSummary().totalSales.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalSales.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalSales.diff >= 0" [class.text-error]="dashboardSummary().totalSales.diff < 0">{{ dashboardSummary().totalSales.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-success/25 bg-success/12 p-2.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalSales.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1  text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalSales.diff >= 0"
-                  [class.text-error]="dashboardSummary().totalSales.diff < 0"
-                >
-                  {{ dashboardSummary().totalSales.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-warning/20 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-lg shadow-warning/10"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-warning/60 to-warning"></div>
-        <div class="du-card-body gap-2 p-4">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-warning/80">
-              Transacciones
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-warning/20 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-sm shadow-warning/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-warning/60 to-warning"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-warning/80">Transacciones</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-warning/20 text-warning"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warning/20 text-warning" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-8 w-20"></div>
-            } @else {
-              <p class="text-2xl font-bold tracking-tight text-warning">
-                {{ dashboardSummary().totalBills.current }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-20"></div> }
+            @else { <p class="text-xl font-bold tracking-tight text-warning">{{ dashboardSummary().totalBills.current }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-warning/20 bg-warning/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalBills.previous }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-12"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalBills.diff >= 0" [class.text-error]="dashboardSummary().totalBills.diff < 0">{{ dashboardSummary().totalBills.diff >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diff }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-warning/25 bg-warning/12 p-2.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-20"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalBills.previous }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-16"></div>
-              } @else {
-                <p
-                  class="mt-1  text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalBills.diff >= 0"
-                  [class.text-error]="dashboardSummary().totalBills.diff < 0"
-                >
-                  {{ dashboardSummary().totalBills.diff >= 0 ? '+' : ''
-                  }}{{ dashboardSummary().totalBills.diff }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/20 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-lg shadow-info/10"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-info/60 to-info"></div>
-        <div class="du-card-body gap-2 p-4">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-info/80">
-              Ticket promedio
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/20 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-sm shadow-info/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-info/60 to-info"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-info/80">Ticket promedio</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-info/20 text-info"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M3 3v18h18" />
-                <path d="m19 9-5 5-4-4-3 3" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/20 text-info" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-8 w-36"></div>
-            } @else {
-              <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-info">
-                {{ dashboardSummary().averageBill.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-info">{{ dashboardSummary().averageBill.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-info/20 bg-info/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().averageBill.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().averageBill.diff >= 0" [class.text-error]="dashboardSummary().averageBill.diff < 0">{{ dashboardSummary().averageBill.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-info/25 bg-info/12 p-2.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().averageBill.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1  text-sm font-bold"
-                  [class.text-success]="dashboardSummary().averageBill.diff >= 0"
-                  [class.text-error]="dashboardSummary().averageBill.diff < 0"
-                >
-                  {{ dashboardSummary().averageBill.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/20 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-lg shadow-secondary/10"
-      >
-        <div
-          class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-secondary/60 to-secondary"
-        ></div>
-        <div class="du-card-body gap-2 p-4">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary/80">
-              Cajas activas
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap text-secondary-content"
-            >
-              {{ dashboardSummary().activeOffices }} sucursales
-            </span>
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/20 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-sm shadow-secondary/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-secondary/60 to-secondary"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-secondary/80">Cajas activas</p>
+            <span class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap text-secondary-content">{{ dashboardSummary().activeOffices }} suc.</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary/20 text-secondary"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="2" y="7" width="20" height="14" rx="2" />
-                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary/20 text-secondary" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-8 w-12"></div>
-            } @else {
-              <p class="text-2xl font-bold tracking-tight text-secondary">
-                {{ dashboardSummary().activeCashRegisters.length }}
-              </p>
-            }
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-12"></div> }
+            @else { <p class="text-xl font-bold tracking-tight text-secondary">{{ dashboardSummary().activeCashRegisters.length }}</p> }
           </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-secondary/25 bg-secondary/12 p-2.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Sucursales activas</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-16"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().activeOffices }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Registros abiertos</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-12"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().activeCashRegisters.length }}
-                </p>
-              }
-            </div>
+          <div class="flex items-center justify-between rounded-xl border border-secondary/20 bg-secondary/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Sucursales</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-12"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().activeOffices }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-10"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().activeCashRegisters.length }} abiertas</span> }
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-error/20 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-lg shadow-error/10"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-error/60 to-error"></div>
-        <div class="du-card-body gap-2 p-4">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-error/80">
-              Gastos totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-error/20 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-sm shadow-error/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-error/60 to-error"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-error/80">Gastos totales</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
               [class.bg-error]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
-              [class.text-error-content]="
-                (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0
-              "
-            >
-              {{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%
-            </span>
+              [class.text-error-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
+            >{{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-error/20 text-error"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0" />
-                <path d="M12 17v-7.5" />
-                <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-error/20 text-error" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0"/><path d="M12 17v-7.5"/><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-8 w-36"></div>
-            } @else {
-              <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-error">
-                {{ dashboardSummary().totalExpenses.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-error">{{ dashboardSummary().totalExpenses.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-error/20 bg-error/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalExpenses.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalExpenses.diff < 0" [class.text-error]="dashboardSummary().totalExpenses.diff >= 0">{{ dashboardSummary().totalExpenses.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-error/25 bg-error/12 p-2.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1  text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalExpenses.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1  text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalExpenses.diff < 0"
-                  [class.text-error]="dashboardSummary().totalExpenses.diff >= 0"
-                >
-                  {{ dashboardSummary().totalExpenses.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
@@ -404,7 +173,7 @@
       <span class="h-px flex-1 bg-linear-to-r from-base-content/10 to-base-content/5"></span>
     </div>
     <div data-reveal="up">
-      <div class="grid gap-6 lg:grid-cols-12">
+      <div class="grid gap-4 lg:grid-cols-12">
         <article
           class="du-card card-hover overflow-visible rounded-2xl border border-info/20 bg-base-100 shadow-lg shadow-info/10 lg:col-span-7"
         >
@@ -432,7 +201,7 @@
               <span class="order-1 text-info peer-checked:text-base-content/50">Por sucursal</span>
             </label>
             @if (loadingCharts()) {
-              <div class="du-skeleton h-80 w-full"></div>
+              <div class="du-skeleton h-64 w-full"></div>
             } @else {
               <app-admin-dashboard-bar-chart
                 [barChartData]="barChartData()"
@@ -453,8 +222,8 @@
               </p>
             </div>
             @if (loadingCharts()) {
-              <div class="flex items-center justify-center h-75">
-                <div class="du-skeleton size-48 rounded-full"></div>
+              <div class="flex items-center justify-center h-60">
+                <div class="du-skeleton size-40 rounded-full"></div>
               </div>
             } @else {
               <app-admin-dashboard-pie-chart
@@ -467,7 +236,7 @@
     </div>
     @defer {
       <div data-reveal="up">
-        <div class="grid gap-6 lg:grid-cols-12">
+        <div class="grid gap-4 lg:grid-cols-12">
           <article
             class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-5"
           >
@@ -612,9 +381,7 @@
                 </p>
               </div>
               @if (loadingCharts()) {
-                <div class="space-y-3">
-                  <div class="du-skeleton h-70 w-full"></div>
-                </div>
+                <div class="du-skeleton h-60 w-full"></div>
               } @else {
                 <app-admin-dashboard-area-chart
                   [dashboardCharts]="areaChartData()"
@@ -634,11 +401,11 @@
         <span class="h-px flex-1 bg-linear-to-r from-base-content/10 to-base-content/5"></span>
       </div>
       <div data-reveal="up">
-        <div class="grid gap-6 lg:grid-cols-2">
+        <div class="grid gap-4 lg:grid-cols-2">
           <article
             class="du-card card-hover rounded-2xl border border-success/20 bg-base-100 shadow-lg shadow-success/10"
           >
-            <div class="du-card-body gap-4">
+            <div class="du-card-body gap-3">
               <div class="flex items-center justify-between gap-4">
                 <div class="flex items-center gap-2">
                   <span class="size-2 rounded-full bg-success pulse-dot"></span>
@@ -934,11 +701,11 @@
       </div>
 
       <div data-reveal="up">
-        <div class="grid gap-6 lg:grid-cols-2">
+        <div class="grid gap-4 lg:grid-cols-2">
           <article
             class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-2"
           >
-            <div class="du-card-body space-y-3">
+            <div class="du-card-body space-y-2">
               <div class="flex items-center gap-2">
                 <span class="size-2 rounded-full bg-accent pulse-dot"></span>
                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">
@@ -1056,7 +823,7 @@
         </div>
       </div>
     } @placeholder {
-      <span class="du-skeleton h-80 w-full"></span>
+      <span class="du-skeleton h-60 w-full"></span>
     }
   </div>
 </section>
