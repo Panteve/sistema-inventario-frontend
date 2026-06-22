@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { form, FormField, required } from '@angular/forms/signals';
 import { LoginData } from '../../../shared/interfaces/Auth.interface';
 import { AuthStore } from '../../../core/store/auth-store';
@@ -22,8 +22,6 @@ export class LoginComponent {
 
   onSubmit(event: Event) {
     event.preventDefault();
-    this.loginModel().document.trim();
-    this.loginModel().password.trim();
     this.authStore.login(this.loginModel());
   }
 }

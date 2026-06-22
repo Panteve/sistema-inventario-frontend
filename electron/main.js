@@ -10,16 +10,29 @@ const ACCOUNT = 'auth-token';
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 1000,
-    height: 700,
+    width: 1440,
+    height: 900,
+    minWidth: 1080,
+    minHeight: 680,
+    show: false,
+    title: "Electro POS",
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       nodeIntegration: false,
       contextIsolation: true,
     },
   });
-
-  win.loadURL('http://localhost:4200');
+  win.once("ready-to-show", () => {
+    win.show();
+  });
+  win.webContents.setWindowOpenHandler(({ url }) => {
+    if (url.startsWith("http")) shell.openExternal(url);
+    return { action: "deny" };
+  });
+  win.on("closed", () => {
+    mainWindow = null;
+  });
+  win.loadURL('http://localhost:8080');
 }
 
 ipcMain.handle('auth:saveToken', async (_event, token) => {
@@ -39,8 +52,7 @@ ipcMain.handle('settings:saveTheme', async (_, theme) => {
 });
 
 ipcMain.handle('settings:getTheme', async () => {
-  return store.get('theme' , 'light');
+  return store.get('theme', 'light');
 });
 
 app.whenReady().then(createWindow);
-

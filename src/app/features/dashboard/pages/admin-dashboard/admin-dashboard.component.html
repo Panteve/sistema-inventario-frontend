@@ -1,619 +1,183 @@
 <section class="min-h-screen">
-  <div class="mx-auto max-w-6xl space-y-6 px-4 py-8">
-    <header class="flex flex-wrap items-center gap-4 mb-0" data-reveal="up">
-      <div
-        class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary/15 ring-1 ring-primary/25 pulse-dot"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          class="text-primary"
-          viewBox="0 0 512 512"
-        >
-          <path
-            fill="currentColor"
-            d="m326.1 231.9-47.5 75.5a31 31 0 0 1-7 7 30.11 30.11 0 0 1-35-49l75.5-47.5a10.23 10.23 0 0 1 11.7 0 10.06 10.06 0 0 1 2.3 14"
-          />
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="32"
-            d="M256 64C132.3 64 32 164.2 32 287.9a223.18 223.18 0 0 0 56.3 148.5c1.1 1.2 2.1 2.4 3.2 3.5a25.19 25.19 0 0 0 37.1-.1 173.13 173.13 0 0 1 254.8 0 25.19 25.19 0 0 0 37.1.1l3.2-3.5A223.18 223.18 0 0 0 480 287.9C480 164.2 379.7 64 256 64"
-          />
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-miterlimit="10"
-            stroke-width="32"
-            d="M256 128v32m160 128h-32m-256 0H96m69.49-90.51-22.63-22.63m203.65 22.63 22.63-22.63"
-          />
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-xl font-bold tracking-tight text-base-content sm:text-3xl">
-          Dashboard administrativo
-        </h1>
-        <p class="mt-1 text-xs text-base-content/60">
-          Resumen de ventas, inventario y cajas en tiempo real
-        </p>
-      </div>
-    </header>
-    <div class="du-divider m-0 my-2" data-reveal="up"></div>
-
+  <div class="mx-auto space-y-4 px-4 py-4 lg:px-8">
     <article
-      data-reveal="up"
-      class="du-card rounded-2xl border border-primary/20 bg-base-100/90 shadow-lg shadow-primary/8 backdrop-blur-sm card-hover"
+      class="du-card rounded-2xl border border-primary/15 bg-base-100/95 shadow-lg shadow-primary/5 backdrop-blur-sm"
     >
-      <div class="du-card-body p-4">
+      <div class="du-card-body p-3.5">
         <app-admin-dashboard-filters
           (filtersChange)="onFiltersChange($event)"
         ></app-admin-dashboard-filters>
       </div>
     </article>
 
-    @defer (on immediate) {
-    <div class="reveal-stagger grid gap-4 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/30 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-lg shadow-success/15"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-success/60 to-success"></div>
-        <div
-          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-success/20 blur-2xl"
-        ></div>
-        <div class="du-card-body gap-3 p-5">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-success/80">
-              Ventas totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+        <div class="reveal-stagger grid gap-2 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/20 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-sm shadow-success/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-success/60 to-success"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-success/80">Ventas totales</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-success/20 text-success"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/20 text-success" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-9 w-40"></div>
-            } @else {
-              <p class="min-w-0 truncate text-3xl font-bold tracking-tight text-success">
-                {{ dashboardSummary().totalSales.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-success">{{ dashboardSummary().totalSales.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalSales.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalSales.diff >= 0" [class.text-error]="dashboardSummary().totalSales.diff < 0">{{ dashboardSummary().totalSales.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-success/25 bg-success/12 p-3.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalSales.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1 font-mono text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalSales.diff >= 0"
-                  [class.text-error]="dashboardSummary().totalSales.diff < 0"
-                >
-                  {{ dashboardSummary().totalSales.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-warning/30 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-lg shadow-warning/15"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-warning/60 to-warning"></div>
-        <div
-          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-warning/20 blur-2xl"
-        ></div>
-        <div class="du-card-body gap-3 p-5">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-warning/80">
-              Transacciones
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-warning/20 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-sm shadow-warning/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-warning/60 to-warning"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-warning/80">Transacciones</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-warning/20 text-warning"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warning/20 text-warning" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-9 w-20"></div>
-            } @else {
-              <p class="text-3xl font-bold tracking-tight text-warning">
-                {{ dashboardSummary().totalBills.current }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-20"></div> }
+            @else { <p class="text-xl font-bold tracking-tight text-warning">{{ dashboardSummary().totalBills.current }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-warning/20 bg-warning/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalBills.previous }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-12"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalBills.diff >= 0" [class.text-error]="dashboardSummary().totalBills.diff < 0">{{ dashboardSummary().totalBills.diff >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diff }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-warning/25 bg-warning/12 p-3.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-20"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalBills.previous }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-16"></div>
-              } @else {
-                <p
-                  class="mt-1 font-mono text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalBills.diff >= 0"
-                  [class.text-error]="dashboardSummary().totalBills.diff < 0"
-                >
-                  {{ dashboardSummary().totalBills.diff >= 0 ? '+' : ''
-                  }}{{ dashboardSummary().totalBills.diff }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/30 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-lg shadow-info/15"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-info/60 to-info"></div>
-        <div
-          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-info/20 blur-2xl"
-        ></div>
-        <div class="du-card-body gap-3 p-5">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-info/80">
-              Ticket promedio
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/20 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-sm shadow-info/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-info/60 to-info"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-info/80">Ticket promedio</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0
-              "
+              [class.text-success-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
               [class.bg-error]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
               [class.text-error-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
-            >
-              {{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-info/20 text-info"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M3 3v18h18" />
-                <path d="m19 9-5 5-4-4-3 3" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/20 text-info" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-9 w-36"></div>
-            } @else {
-              <p class="min-w-0 truncate text-3xl font-bold tracking-tight text-info">
-                {{ dashboardSummary().averageBill.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-info">{{ dashboardSummary().averageBill.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-info/20 bg-info/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().averageBill.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().averageBill.diff >= 0" [class.text-error]="dashboardSummary().averageBill.diff < 0">{{ dashboardSummary().averageBill.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-info/25 bg-info/12 p-3.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().averageBill.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1 font-mono text-sm font-bold"
-                  [class.text-success]="dashboardSummary().averageBill.diff >= 0"
-                  [class.text-error]="dashboardSummary().averageBill.diff < 0"
-                >
-                  {{ dashboardSummary().averageBill.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/30 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-lg shadow-secondary/15"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-secondary/60 to-secondary"></div>
-        <div
-          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-secondary/20 blur-2xl"
-        ></div>
-        <div class="du-card-body gap-3 p-5">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary/80">
-              Cajas activas
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap text-secondary-content"
-            >
-              {{ dashboardSummary().activeOffices }} sucursales
-            </span>
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/20 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-sm shadow-secondary/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-secondary/60 to-secondary"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-secondary/80">Cajas activas</p>
+            <span class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap text-secondary-content">{{ dashboardSummary().activeOffices }} suc.</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-secondary/20 text-secondary"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="2" y="7" width="20" height="14" rx="2" />
-                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary/20 text-secondary" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-9 w-12"></div>
-            } @else {
-              <p class="text-3xl font-bold tracking-tight text-secondary">
-                {{ dashboardSummary().activeCashRegisters.length }}
-              </p>
-            }
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-12"></div> }
+            @else { <p class="text-xl font-bold tracking-tight text-secondary">{{ dashboardSummary().activeCashRegisters.length }}</p> }
           </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-secondary/25 bg-secondary/12 p-3.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Sucursales activas</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-16"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().activeOffices }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Registros abiertos</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-12"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().activeCashRegisters.length }}
-                </p>
-              }
-            </div>
+          <div class="flex items-center justify-between rounded-xl border border-secondary/20 bg-secondary/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Sucursales</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-12"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().activeOffices }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-10"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().activeCashRegisters.length }} abiertas</span> }
           </div>
         </div>
       </article>
 
-      <article
-        class="du-card card-hover relative overflow-hidden rounded-2xl border border-error/30 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-lg shadow-error/15"
-      >
-        <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-error/60 to-error"></div>
-        <div
-          class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-error/20 blur-2xl"
-        ></div>
-        <div class="du-card-body gap-3 p-5">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-xs font-semibold uppercase tracking-[0.2em] text-error/80">
-              Gastos totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2.5 py-1 text-sm font-bold leading-none whitespace-nowrap tabular-nums"
+      <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-error/20 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-sm shadow-error/10">
+        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-error/60 to-error"></div>
+        <div class="du-card-body gap-2 p-3.5">
+          <div class="flex items-center justify-between gap-1">
+            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-error/80">Gastos totales</p>
+            <span class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
               [class.bg-success]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0
-              "
+              [class.text-success-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
               [class.bg-error]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
               [class.text-error-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
-            >
-              {{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%
-            </span>
+            >{{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%</span>
           </div>
-          <div class="flex min-w-0 items-center gap-3">
-            <span
-              class="flex size-11 shrink-0 items-center justify-center rounded-xl bg-error/20 text-error"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0" />
-                <path d="M12 17v-7.5" />
-                <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" />
-              </svg>
+          <div class="flex min-w-0 items-center gap-2.5">
+            <span class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-error/20 text-error" aria-hidden="true">
+              <svg xmlns="http://www.w3.org/2000/svg" class="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0"/><path d="M12 17v-7.5"/><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/></svg>
             </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-9 w-36"></div>
-            } @else {
-              <p class="min-w-0 truncate text-3xl font-bold tracking-tight text-error">
-                {{ dashboardSummary().totalExpenses.current | cop }}
-              </p>
+            @if (loadingSummary()) { <div class="du-skeleton h-7 w-32"></div> }
+            @else { <p class="min-w-0 truncate text-xl font-bold tracking-tight text-error">{{ dashboardSummary().totalExpenses.current | cop }}</p> }
+          </div>
+          <div class="flex items-center justify-between rounded-xl border border-error/20 bg-error/10 px-2.5 py-1.5 text-xs">
+            <span class="opacity-70">Antes</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-20"></div> }
+            @else { <span class="font-semibold">{{ dashboardSummary().totalExpenses.previous | cop }}</span> }
+            <span class="opacity-40">|</span>
+            @if (loadingSummary()) { <div class="du-skeleton h-4 w-16"></div> }
+            @else {
+              <span class="font-semibold" [class.text-success]="dashboardSummary().totalExpenses.diff < 0" [class.text-error]="dashboardSummary().totalExpenses.diff >= 0">{{ dashboardSummary().totalExpenses.diff | cop }}</span>
             }
-          </div>
-          <div
-            class="grid grid-cols-2 gap-3 rounded-2xl border border-error/25 bg-error/12 p-3.5 text-sm"
-          >
-            <div>
-              <p class="font-medium text-base-content/80">Periodo anterior</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 h-5 w-24"></div>
-              } @else {
-                <p class="mt-1 font-mono text-sm font-bold text-base-content">
-                  {{ dashboardSummary().totalExpenses.previous | cop }}
-                </p>
-              }
-            </div>
-            <div class="text-right">
-              <p class="font-medium text-base-content/80">Variación</p>
-              @if (loadingSummary()) {
-                <div class="du-skeleton mt-1 ml-auto h-5 w-20"></div>
-              } @else {
-                <p
-                  class="mt-1 font-mono text-sm font-bold"
-                  [class.text-success]="dashboardSummary().totalExpenses.diff < 0"
-                  [class.text-error]="dashboardSummary().totalExpenses.diff >= 0"
-                >
-                  {{ dashboardSummary().totalExpenses.diff | cop }}
-                </p>
-              }
-            </div>
           </div>
         </div>
       </article>
     </div>
-    }
 
-    <div data-reveal="up">
-      <div class="grid gap-6 lg:grid-cols-12">
-        <article
-          class="du-card card-hover overflow-visible rounded-2xl border border-primary/20 bg-base-100 shadow-lg shadow-primary/10 lg:col-span-7"
-        >
-          <div class="du-card-body space-y-4 overflow-visible">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-primary pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">Ventas por hora</p>
-            </div>
-            @if (loadingCharts()) {
-              <div class="space-y-3">
-                <div class="du-skeleton h-70 w-full"></div>
-              </div>
-            } @else {
-              <app-admin-dashboard-area-chart
-                [dashboardCharts]="areaChartData()"
-              ></app-admin-dashboard-area-chart>
-            }
-          </div>
-        </article>
-
-        <article
-          class="du-card card-hover overflow-visible rounded-2xl border border-secondary/20 bg-base-100 shadow-lg shadow-secondary/10 lg:col-span-5"
-        >
-          <div class="du-card-body space-y-4 overflow-visible">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-secondary pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-secondary">
-                Metodos de pago
-              </p>
-            </div>
-            @if (loadingCharts()) {
-              <div class="flex items-center justify-center h-75">
-                <div class="du-skeleton size-48 rounded-full"></div>
-              </div>
-            } @else {
-              <app-admin-dashboard-pie-chart
-                [dashboardCharts]="pieChartData()"
-              ></app-admin-dashboard-pie-chart>
-            }
-          </div>
-        </article>
-      </div>
+    <div class="flex items-center gap-3 px-1" data-reveal="up">
+      <span class="h-px flex-1 bg-linear-to-r from-base-content/5 to-base-content/10"></span>
+      <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-base-content/30"
+        >Gráficos</span
+      >
+      <span class="h-px flex-1 bg-linear-to-r from-base-content/10 to-base-content/5"></span>
     </div>
-
     <div data-reveal="up">
-      <div class="grid gap-6 lg:grid-cols-12">
-        <article
-          class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-5"
-        >
-          <div class="du-card-body gap-4">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-accent pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">Top productos</p>
-            </div>
-            <div class="space-y-3">
-              <label
-                class="flex items-center justify-center gap-2 rounded-full border border-accent/25 bg-accent/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
-              >
-                <input
-                  type="checkbox"
-                  [checked]="topProductsByRevenue()"
-                  (change)="changeTopProducts($event)"
-                  class="du-toggle du-toggle-accent du-toggle-sm peer order-2"
-                />
-                <span class="order-3 text-base-content/50 peer-checked:text-accent">Por revenue</span>
-                <span class="order-1 text-accent peer-checked:text-base-content/50"
-                  >Por cantidad</span
-                >
-              </label>
-              @if (loadingProducts()) {
-                @for (_ of [1,2,3,4,5]; track _) {
-                  <div class="space-y-2">
-                    <div class="flex justify-between">
-                      <div class="du-skeleton h-4 w-32"></div>
-                      <div class="du-skeleton h-4 w-16"></div>
-                    </div>
-                    <div class="du-skeleton h-2.5 w-full"></div>
-                  </div>
-                }
-              } @else {
-                @if (topProductsByRevenue()) {
-                  @for (
-                    item of dashboardProducts().topSellingProductsByRevenue;
-                    track item.productId;
-                    let i = $index
-                  ) {
-                    <div class="flex items-center justify-between text-sm">
-                      <span class="font-medium truncate">{{ item.name }}</span>
-                      <span class="font-mono text-xs font-semibold text-accent shrink-0 ml-2">{{
-                        item.quantity | cop
-                      }}</span>
-                    </div>
-                    <div
-                      class="h-2.5 w-full overflow-hidden rounded-full bg-base-content/10"
-                      role="progressbar"
-                      aria-label="Revenue del producto"
-                      aria-valuemin="0"
-                      [attr.aria-valuemax]="topRevenueMax()"
-                      [attr.aria-valuenow]="safeProgressValue(item.quantity)"
-                    >
-                      <span
-                        class="block h-full rounded-full shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
-                        [class]="progressBarClass(i)"
-                        [style.width.%]="animatedProgressPercent(item.quantity, topRevenueMax())"
-                      ></span>
-                    </div>
-                  } @empty {
-                    <div class="flex flex-col items-center justify-center gap-3 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-accent/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
-                      </svg>
-                      <p class="text-sm text-base-content/60">No hay productos para mostrar</p>
-                    </div>
-                  }
-                } @else {
-                  @for (
-                    item of dashboardProducts().topSellingProductsByQuantity;
-                    track item.productId;
-                    let i = $index
-                  ) {
-                    <div class="flex items-center justify-between text-sm">
-                      <span class="font-medium truncate">{{ item.name }}</span>
-                      <span class="font-mono text-xs font-semibold text-accent shrink-0 ml-2"
-                        >{{ item.quantity }}u</span
-                      >
-                    </div>
-                    <div
-                      class="h-2.5 w-full overflow-hidden rounded-full bg-base-content/10"
-                      role="progressbar"
-                      aria-label="Cantidad vendida del producto"
-                      aria-valuemin="0"
-                      [attr.aria-valuemax]="topQuantityMax()"
-                      [attr.aria-valuenow]="safeProgressValue(item.quantity)"
-                    >
-                      <span
-                        class="block h-full rounded-full shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
-                        [class]="progressBarClass(i)"
-                        [style.width.%]="animatedProgressPercent(item.quantity, topQuantityMax())"
-                      ></span>
-                    </div>
-                  } @empty {
-                    <div class="flex flex-col items-center justify-center gap-3 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center">
-                      <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-accent/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                        <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>
-                      </svg>
-                      <p class="text-sm text-base-content/60">No hay productos para mostrar</p>
-                    </div>
-                  }
-                }
-              }
-            </div>
-          </div>
-        </article>
-
+      <div class="grid gap-4 lg:grid-cols-12">
         <article
           class="du-card card-hover overflow-visible rounded-2xl border border-info/20 bg-base-100 shadow-lg shadow-info/10 lg:col-span-7"
         >
-          <div class="du-card-body space-y-4 overflow-visible">
+          <div class="du-card-body space-y-3 overflow-visible">
             <div class="flex items-center gap-2">
               <span class="size-2 rounded-full bg-info pulse-dot"></span>
               <p class="text-xs font-bold uppercase tracking-[0.2em] text-info">
@@ -637,7 +201,7 @@
               <span class="order-1 text-info peer-checked:text-base-content/50">Por sucursal</span>
             </label>
             @if (loadingCharts()) {
-              <div class="du-skeleton h-80 w-full"></div>
+              <div class="du-skeleton h-64 w-full"></div>
             } @else {
               <app-admin-dashboard-bar-chart
                 [barChartData]="barChartData()"
@@ -646,71 +210,340 @@
             }
           </div>
         </article>
+
+        <article
+          class="du-card card-hover overflow-visible rounded-2xl border border-secondary/20 bg-base-100 shadow-lg shadow-secondary/10 lg:col-span-5"
+        >
+          <div class="du-card-body space-y-3 overflow-visible">
+            <div class="flex items-center gap-2">
+              <span class="size-2 rounded-full bg-secondary pulse-dot"></span>
+              <p class="text-xs font-bold uppercase tracking-[0.2em] text-secondary">
+                Metodos de pago
+              </p>
+            </div>
+            @if (loadingCharts()) {
+              <div class="flex items-center justify-center h-60">
+                <div class="du-skeleton size-40 rounded-full"></div>
+              </div>
+            } @else {
+              <app-admin-dashboard-pie-chart
+                [dashboardCharts]="pieChartData()"
+              ></app-admin-dashboard-pie-chart>
+            }
+          </div>
+        </article>
       </div>
     </div>
-
-    <div data-reveal="up">
-      <div class="grid gap-6 lg:grid-cols-2">
-        <article
-          class="du-card card-hover rounded-2xl border border-success/20 bg-base-100 shadow-lg shadow-success/10"
-        >
-          <div class="du-card-body gap-4">
-            <div class="flex items-center justify-between gap-4">
+    @defer {
+      <div data-reveal="up">
+        <div class="grid gap-4 lg:grid-cols-12">
+          <article
+            class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-5"
+          >
+            <div class="du-card-body gap-4">
               <div class="flex items-center gap-2">
-                <span class="size-2 rounded-full bg-success pulse-dot"></span>
-                <p class="text-xs font-bold uppercase tracking-[0.2em] text-success">Cajas activas</p>
+                <span class="size-2 rounded-full bg-accent pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                  Top productos
+                </p>
               </div>
-              @if (loadingSummary()) {
-                <div class="du-skeleton h-6 w-24 rounded-full"></div>
-              } @else {
-                <span
-                  class="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-bold text-success"
+              <div class="space-y-3">
+                <label
+                  class="flex items-center justify-center gap-2 rounded-full border border-accent/25 bg-accent/5 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em]"
                 >
-                  {{ dashboardSummary().activeCashRegisters.length }} abiertas
-                </span>
+                  <input
+                    type="checkbox"
+                    [checked]="topProductsByRevenue()"
+                    (change)="changeTopProducts($event)"
+                    class="du-toggle du-toggle-accent du-toggle-sm peer order-2"
+                  />
+                  <span class="order-3 text-base-content/50 peer-checked:text-accent"
+                    >Por revenue</span
+                  >
+                  <span class="order-1 text-accent peer-checked:text-base-content/50"
+                    >Por cantidad</span
+                  >
+                </label>
+                @if (loadingProducts()) {
+                  @for (_ of [1, 2, 3, 4, 5]; track _) {
+                    <div class="space-y-2">
+                      <div class="flex justify-between">
+                        <div class="du-skeleton h-4 w-32"></div>
+                        <div class="du-skeleton h-4 w-16"></div>
+                      </div>
+                      <div class="du-skeleton h-2.5 w-full"></div>
+                    </div>
+                  }
+                } @else {
+                  @if (topProductsByRevenue()) {
+                    @for (
+                      item of dashboardProducts().topSellingProductsByRevenue;
+                      track item.productId;
+                      let i = $index
+                    ) {
+                      <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium truncate">{{ item.name }}</span>
+                        <span class=" text-xs font-semibold text-accent shrink-0 ml-2">{{
+                          item.quantity | cop
+                        }}</span>
+                      </div>
+                      <div
+                        class="h-2.5 w-full overflow-hidden rounded-full bg-base-content/10"
+                        role="progressbar"
+                        aria-label="Revenue del producto"
+                        aria-valuemin="0"
+                        [attr.aria-valuemax]="topRevenueMax()"
+                        [attr.aria-valuenow]="safeProgressValue(item.quantity)"
+                      >
+                        <span
+                          class="block h-full rounded-full shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
+                          [class]="progressBarClass(i)"
+                          [style.width.%]="animatedProgressPercent(item.quantity, topRevenueMax())"
+                        ></span>
+                      </div>
+                    } @empty {
+                      <div
+                        class="flex flex-col items-center justify-center gap-3 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="size-10 text-accent/40"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                          />
+                        </svg>
+                        <p class="text-sm text-base-content/60">No hay productos para mostrar</p>
+                      </div>
+                    }
+                  } @else {
+                    @for (
+                      item of dashboardProducts().topSellingProductsByQuantity;
+                      track item.productId;
+                      let i = $index
+                    ) {
+                      <div class="flex items-center justify-between text-sm">
+                        <span class="font-medium truncate">{{ item.name }}</span>
+                        <span class=" text-xs font-semibold text-accent shrink-0 ml-2"
+                          >{{ item.quantity }}u</span
+                        >
+                      </div>
+                      <div
+                        class="h-2.5 w-full overflow-hidden rounded-full bg-base-content/10"
+                        role="progressbar"
+                        aria-label="Cantidad vendida del producto"
+                        aria-valuemin="0"
+                        [attr.aria-valuemax]="topQuantityMax()"
+                        [attr.aria-valuenow]="safeProgressValue(item.quantity)"
+                      >
+                        <span
+                          class="block h-full rounded-full shadow-sm transition-[width] duration-700 ease-out motion-reduce:duration-[1ms]"
+                          [class]="progressBarClass(i)"
+                          [style.width.%]="animatedProgressPercent(item.quantity, topQuantityMax())"
+                        ></span>
+                      </div>
+                    } @empty {
+                      <div
+                        class="flex flex-col items-center justify-center gap-3 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center"
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          class="size-10 text-accent/40"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.5"
+                        >
+                          <path
+                            d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                          />
+                        </svg>
+                        <p class="text-sm text-base-content/60">No hay productos para mostrar</p>
+                      </div>
+                    }
+                  }
+                }
+              </div>
+            </div>
+          </article>
+          <article
+            class="du-card card-hover overflow-visible rounded-2xl border border-primary/20 bg-base-100 shadow-lg shadow-primary/10 lg:col-span-7"
+          >
+            <div class="du-card-body space-y-3 overflow-visible">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-primary pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-primary">
+                  Ventas por hora
+                </p>
+              </div>
+              @if (loadingCharts()) {
+                <div class="du-skeleton h-60 w-full"></div>
+              } @else {
+                <app-admin-dashboard-area-chart
+                  [dashboardCharts]="areaChartData()"
+                ></app-admin-dashboard-area-chart>
               }
             </div>
-            <div class="overflow-x-auto overflow-y-auto pr-1">
-              <table class="du-table w-full">
+          </article>
+        </div>
+      </div>
+    }
+    @defer (on viewport; prefetch on idle) {
+      <div class="flex items-center gap-3 px-1" data-reveal="up">
+        <span class="h-px flex-1 bg-linear-to-r from-base-content/5 to-base-content/10"></span>
+        <span class="text-[10px] font-bold uppercase tracking-[0.2em] text-base-content/30"
+          >Datos</span
+        >
+        <span class="h-px flex-1 bg-linear-to-r from-base-content/10 to-base-content/5"></span>
+      </div>
+      <div data-reveal="up">
+        <div class="grid gap-4 lg:grid-cols-2">
+          <article
+            class="du-card card-hover rounded-2xl border border-success/20 bg-base-100 shadow-lg shadow-success/10"
+          >
+            <div class="du-card-body gap-3">
+              <div class="flex items-center justify-between gap-4">
+                <div class="flex items-center gap-2">
+                  <span class="size-2 rounded-full bg-success pulse-dot"></span>
+                  <p class="text-xs font-bold uppercase tracking-[0.2em] text-success">
+                    Cajas activas
+                  </p>
+                </div>
+                @if (loadingSummary()) {
+                  <div class="du-skeleton h-6 w-24 rounded-full"></div>
+                } @else {
+                  <span
+                    class="rounded-full border border-success/30 bg-success/10 px-3 py-1 text-xs font-bold text-success"
+                  >
+                    {{ dashboardSummary().activeCashRegisters.length }} abiertas
+                  </span>
+                }
+              </div>
+              <div class="overflow-x-auto overflow-y-auto pr-1">
+                <table class="du-table du-table-zebra w-full">
+                  <thead>
+                    <tr
+                      class="bg-success/10 text-xs font-bold uppercase tracking-[0.12em] text-success"
+                    >
+                      <th>Cajero</th>
+                      <th>Sucursal</th>
+                      <th>Desde</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    @if (loadingSummary()) {
+                      @for (_ of [1, 2, 3]; track _) {
+                        <tr>
+                          <td><div class="du-skeleton h-5 w-28"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                          <td><div class="du-skeleton h-5 w-20"></div></td>
+                        </tr>
+                      }
+                    } @else {
+                      @for (register of dashboardSummary().activeCashRegisters; track register.id) {
+                        <tr
+                          class="cursor-pointer transition-colors hover:bg-success/10"
+                          (click)="navigateToCashRegister(register.id)"
+                        >
+                          <td class="font-medium">{{ register.operateByName }}</td>
+                          <td class="text-base-content/70">{{ register.officeName }}</td>
+                          <td class="whitespace-nowrap  text-xs text-base-content/60">
+                            {{ register.openedAt | date: 'dd/MM/yyyy HH:mm' }}
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="3">
+                            <div
+                              class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-success/30 bg-success/5 px-4 py-8 text-center"
+                              role="status"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-10 text-success/40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              >
+                                <rect x="2" y="7" width="20" height="14" rx="2" />
+                                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                              </svg>
+                              <p class="text-sm text-base-content/60">No hay cajas activas</p>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="du-card card-hover rounded-2xl border border-warning/20 bg-base-100 shadow-lg shadow-warning/10"
+          >
+            <div class="du-card-body space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-warning pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-warning">Stock bajo</p>
+              </div>
+              <table class="du-table du-table-zebra w-full">
                 <thead>
                   <tr
-                    class="bg-success/10 text-xs font-bold uppercase tracking-[0.12em] text-success"
+                    class="bg-warning/10 text-xs font-bold uppercase tracking-[0.12em] text-warning"
                   >
-                    <th>Cajero</th>
+                    <th>Producto</th>
                     <th>Sucursal</th>
-                    <th>Desde</th>
+                    <th class="text-right">Unidades</th>
                   </tr>
                 </thead>
                 <tbody class="text-sm">
-                  @if (loadingSummary()) {
-                    @for (_ of [1,2,3]; track _) {
+                  @if (loadingProducts()) {
+                    @for (_ of [1, 2, 3]; track _) {
                       <tr>
-                        <td><div class="du-skeleton h-5 w-28"></div></td>
+                        <td><div class="du-skeleton h-5 w-32"></div></td>
                         <td><div class="du-skeleton h-5 w-24"></div></td>
-                        <td><div class="du-skeleton h-5 w-20"></div></td>
+                        <td class="text-right"><div class="du-skeleton h-5 w-10 ml-auto"></div></td>
                       </tr>
                     }
                   } @else {
-                    @for (register of dashboardSummary().activeCashRegisters; track register.id) {
-                      <tr
-                        class="cursor-pointer transition-colors hover:bg-success/10"
-                        (click)="navigateToCashRegister(register.id)"
-                      >
-                        <td class="font-medium">{{ register.operateByName }}</td>
-                        <td class="text-base-content/70">{{ register.officeName }}</td>
-                        <td class="whitespace-nowrap font-mono text-xs text-base-content/60">
-                          {{ register.openedAt | date: 'dd/MM/yyyy HH:mm' }}
+                    @for (
+                      item of dashboardProducts().lowStockProducts;
+                      track item.name + '-' + item.officeName
+                    ) {
+                      <tr class="transition-colors hover:bg-warning/5">
+                        <td>{{ item.name }}</td>
+                        <td class="text-base-content/70">{{ item.officeName }}</td>
+                        <td class="text-right">
+                          <span class="du-badge du-badge-warning du-badge-sm border-0">{{
+                            item.quantity
+                          }}</span>
                         </td>
                       </tr>
                     } @empty {
                       <tr>
                         <td colspan="3">
-                          <div class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-success/30 bg-success/5 px-4 py-8 text-center" role="status">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-success/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                              <rect x="2" y="7" width="20" height="14" rx="2" />
-                              <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
+                          <div
+                            class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-warning/30 bg-warning/5 px-4 py-8 text-center"
+                            role="status"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="size-10 text-warning/40"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                            >
+                              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
-                            <p class="text-sm text-base-content/60">No hay cajas activas</p>
+                            <p class="text-sm text-base-content/60">Todo en stock suficiente</p>
                           </div>
                         </td>
                       </tr>
@@ -719,76 +552,19 @@
                 </tbody>
               </table>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article
-          class="du-card card-hover rounded-2xl border border-warning/20 bg-base-100 shadow-lg shadow-warning/10"
-        >
-          <div class="du-card-body space-y-4">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-warning pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-warning">Stock bajo</p>
-            </div>
-            <table class="du-table w-full">
-              <thead>
-                <tr class="bg-warning/10 text-xs font-bold uppercase tracking-[0.12em] text-warning">
-                  <th>Producto</th>
-                  <th>Sucursal</th>
-                  <th class="text-right">Unidades</th>
-                </tr>
-              </thead>
-              <tbody class="text-sm">
-                @if (loadingProducts()) {
-                  @for (_ of [1,2,3]; track _) {
-                    <tr>
-                      <td><div class="du-skeleton h-5 w-32"></div></td>
-                      <td><div class="du-skeleton h-5 w-24"></div></td>
-                      <td class="text-right"><div class="du-skeleton h-5 w-10 ml-auto"></div></td>
-                    </tr>
-                  }
-                } @else {
-                  @for (
-                    item of dashboardProducts().lowStockProducts;
-                    track item.name + '-' + item.officeName
-                  ) {
-                    <tr class="transition-colors hover:bg-warning/5">
-                      <td>{{ item.name }}</td>
-                      <td class="text-base-content/70">{{ item.officeName }}</td>
-                      <td class="text-right">
-                        <span class="du-badge du-badge-warning du-badge-sm border-0">{{
-                          item.quantity
-                        }}</span>
-                      </td>
-                    </tr>
-                  } @empty {
-                    <tr>
-                      <td colspan="3">
-                        <div class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-warning/30 bg-warning/5 px-4 py-8 text-center" role="status">
-                          <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-warning/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                          </svg>
-                          <p class="text-sm text-base-content/60">Todo en stock suficiente</p>
-                        </div>
-                      </td>
-                    </tr>
-                  }
-                }
-              </tbody>
-            </table>
-          </div>
-        </article>
-
-        <article
-          class="du-card card-hover rounded-2xl border border-error/20 bg-base-100 shadow-lg shadow-error/10 lg:col-span-2"
-        >
-          <div class="du-card-body space-y-4">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-error pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-error">Últimos gastos</p>
-            </div>
-            <div class="max-h-64 overflow-x-auto overflow-y-auto pr-1">
-              <table class="du-table w-full">
+          <article
+            class="du-card card-hover rounded-2xl border border-error/20 bg-base-100 shadow-lg shadow-error/10"
+          >
+            <div class="du-card-body space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-error pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-error">
+                  Últimos gastos
+                </p>
+              </div>
+              <table class="du-table du-table-zebra w-full">
                 <thead>
                   <tr class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error">
                     <th>Motivo</th>
@@ -799,7 +575,7 @@
                 </thead>
                 <tbody class="text-sm">
                   @if (loadingProducts()) {
-                    @for (_ of [1,2,3]; track _) {
+                    @for (_ of [1, 2, 3]; track _) {
                       <tr>
                         <td><div class="du-skeleton h-5 w-28"></div></td>
                         <td><div class="du-skeleton h-5 w-16"></div></td>
@@ -811,18 +587,30 @@
                     @for (item of dashboardProducts().lastExpenses; track item.id) {
                       <tr class="transition-colors hover:bg-error/5">
                         <td class="font-medium">{{ item.reason }}</td>
-                        <td class="font-mono font-semibold text-error">{{ item.amount | cop }}</td>
+                        <td class=" font-semibold text-error">
+                          {{ item.amount | cop }}
+                        </td>
                         <td class="text-base-content/70">{{ item.employeeName }}</td>
-                        <td class="whitespace-nowrap font-mono text-xs text-base-content/60">
+                        <td class="whitespace-nowrap  text-xs text-base-content/60">
                           {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                         </td>
                       </tr>
                     } @empty {
                       <tr>
                         <td colspan="4">
-                          <div class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center" role="status">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-error/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                              <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                          <div
+                            class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center"
+                            role="status"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              class="size-10 text-error/40"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="1.5"
+                            >
+                              <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                             <p class="text-sm text-base-content/60">No hay gastos registrados</p>
                           </div>
@@ -833,173 +621,209 @@
                 </tbody>
               </table>
             </div>
-          </div>
-        </article>
+          </article>
 
-        <article
-          class="du-card card-hover rounded-2xl border border-error/20 bg-base-100 shadow-lg shadow-error/10 lg:col-span-2"
-        >
-          <div class="du-card-body space-y-4">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-error pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-error">Fuera de stock</p>
-            </div>
-            <div class="max-h-64 overflow-x-auto overflow-y-auto pr-1">
-              <table class="du-table w-full">
-                <thead>
-                  <tr class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error">
-                    <th>Producto</th>
-                    <th>Sucursal</th>
-                    <th class="text-right">Unidades</th>
-                  </tr>
-                </thead>
-                <tbody class="text-sm">
-                  @if (loadingProducts()) {
-                    @for (_ of [1,2,3]; track _) {
-                      <tr>
-                        <td><div class="du-skeleton h-5 w-32"></div></td>
-                        <td><div class="du-skeleton h-5 w-24"></div></td>
-                        <td class="text-right"><div class="du-skeleton h-5 w-10 ml-auto"></div></td>
-                      </tr>
+          <article
+            class="du-card card-hover rounded-2xl border border-error/20 bg-base-100 shadow-lg shadow-error/10"
+          >
+            <div class="du-card-body space-y-3">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-error pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-error">
+                  Fuera de stock
+                </p>
+              </div>
+              <div class="max-h-64 overflow-x-auto overflow-y-auto pr-1">
+                <table class="du-table du-table-zebra w-full">
+                  <thead>
+                    <tr
+                      class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error"
+                    >
+                      <th>Producto</th>
+                      <th>Sucursal</th>
+                      <th class="text-right">Unidades</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    @if (loadingProducts()) {
+                      @for (_ of [1, 2, 3]; track _) {
+                        <tr>
+                          <td><div class="du-skeleton h-5 w-32"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                          <td class="text-right">
+                            <div class="du-skeleton h-5 w-10 ml-auto"></div>
+                          </td>
+                        </tr>
+                      }
+                    } @else {
+                      @for (
+                        item of dashboardProducts().outOfStockProducts;
+                        track item.name + '-' + item.officeName
+                      ) {
+                        <tr class="transition-colors hover:bg-error/5">
+                          <td>{{ item.name }}</td>
+                          <td class="text-base-content/70">{{ item.officeName }}</td>
+                          <td class="text-right">
+                            <span class="du-badge du-badge-error du-badge-sm border-0">{{
+                              item.quantity
+                            }}</span>
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="3">
+                            <div
+                              class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center"
+                              role="status"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-10 text-error/40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              >
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <p class="text-sm text-base-content/60">Sin productos agotados</p>
+                            </div>
+                          </td>
+                        </tr>
+                      }
                     }
-                  } @else {
-                    @for (
-                      item of dashboardProducts().outOfStockProducts;
-                      track item.name + '-' + item.officeName
-                    ) {
-                      <tr class="transition-colors hover:bg-error/5">
-                        <td>{{ item.name }}</td>
-                        <td class="text-base-content/70">{{ item.officeName }}</td>
-                        <td class="text-right">
-                          <span class="du-badge du-badge-error du-badge-sm border-0">{{
-                            item.quantity
-                          }}</span>
-                        </td>
-                      </tr>
-                    } @empty {
-                      <tr>
-                        <td colspan="3">
-                          <div class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center" role="status">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-error/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
-                            </svg>
-                            <p class="text-sm text-base-content/60">Sin productos agotados</p>
-                          </div>
-                        </td>
-                      </tr>
-                    }
-                  }
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
-    </div>
 
-    <div data-reveal="up">
-      <div class="grid gap-6 lg:grid-cols-2">
-        <article
-          class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-2"
-        >
-          <div class="du-card-body space-y-4">
-            <div class="flex items-center gap-2">
-              <span class="size-2 rounded-full bg-accent pulse-dot"></span>
-              <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                Últimos movimientos de inventario
-              </p>
-            </div>
-            <div class="max-h-80 overflow-x-auto overflow-y-auto pr-1">
-              <table class="du-table w-full">
-                <thead>
-                  <tr class="bg-accent/10 text-xs font-bold uppercase tracking-[0.12em] text-accent">
-                    <th>Tipo</th>
-                    <th>Empleado</th>
-                    <th>Origen / Destino</th>
-                    <th class="text-right">Productos</th>
-                    <th>Fecha</th>
-                  </tr>
-                </thead>
-                <tbody class="text-sm">
-                  @if (loadingProducts()) {
-                    @for (_ of [1,2,3]; track _) {
-                      <tr>
-                        <td><div class="du-skeleton h-6 w-20 rounded-full"></div></td>
-                        <td><div class="du-skeleton h-5 w-24"></div></td>
-                        <td><div class="du-skeleton h-5 w-28"></div></td>
-                        <td class="text-right"><div class="du-skeleton h-5 w-12 ml-auto"></div></td>
-                        <td><div class="du-skeleton h-5 w-24"></div></td>
-                      </tr>
-                    }
-                  } @else {
-                    @for (item of dashboardProducts().lastInventoryMovements; track item.id) {
-                      <tr class="transition-colors hover:bg-accent/5">
-                        <td>
-                          <span
-                            class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
-                            [class.border-emerald-300]="item.type === 'IN'"
-                            [class.bg-emerald-100]="item.type === 'IN'"
-                            [class.text-emerald-800]="item.type === 'IN'"
-                            [class.border-rose-300]="item.type === 'OUT'"
-                            [class.bg-rose-100]="item.type === 'OUT'"
-                            [class.text-rose-800]="item.type === 'OUT'"
-                            [class.border-sky-300]="item.type === 'TRANSFER'"
-                            [class.bg-sky-100]="item.type === 'TRANSFER'"
-                            [class.text-sky-800]="item.type === 'TRANSFER'"
-                          >
+      <div data-reveal="up">
+        <div class="grid gap-4 lg:grid-cols-2">
+          <article
+            class="du-card card-hover rounded-2xl border border-accent/20 bg-base-100 shadow-lg shadow-accent/10 lg:col-span-2"
+          >
+            <div class="du-card-body space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-accent pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                  Últimos movimientos de inventario
+                </p>
+              </div>
+              <div class="max-h-80 overflow-x-auto overflow-y-auto pr-1">
+                <table class="du-table du-table-zebra w-full">
+                  <thead>
+                    <tr
+                      class="bg-accent/10 text-xs font-bold uppercase tracking-[0.12em] text-accent"
+                    >
+                      <th>Tipo</th>
+                      <th>Empleado</th>
+                      <th>Origen / Destino</th>
+                      <th class="text-right">Productos</th>
+                      <th>Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    @if (loadingProducts()) {
+                      @for (_ of [1, 2, 3]; track _) {
+                        <tr>
+                          <td><div class="du-skeleton h-6 w-20 rounded-full"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                          <td><div class="du-skeleton h-5 w-28"></div></td>
+                          <td class="text-right">
+                            <div class="du-skeleton h-5 w-12 ml-auto"></div>
+                          </td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                        </tr>
+                      }
+                    } @else {
+                      @for (item of dashboardProducts().lastInventoryMovements; track item.id) {
+                        <tr class="transition-colors hover:bg-accent/5">
+                          <td>
                             <span
-                              class="inline-block h-1.5 w-1.5 rounded-full"
-                              [class.bg-emerald-600]="item.type === 'IN'"
-                              [class.bg-rose-600]="item.type === 'OUT'"
-                              [class.bg-sky-600]="item.type === 'TRANSFER'"
-                            ></span>
-                            @if (item.type === 'IN') {
-                              Entrada
-                            } @else if (item.type === 'OUT') {
-                              Salida
+                              class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
+                              [class.border-emerald-300]="item.type === 'IN'"
+                              [class.bg-emerald-100]="item.type === 'IN'"
+                              [class.text-emerald-800]="item.type === 'IN'"
+                              [class.border-rose-300]="item.type === 'OUT'"
+                              [class.bg-rose-100]="item.type === 'OUT'"
+                              [class.text-rose-800]="item.type === 'OUT'"
+                              [class.border-sky-300]="item.type === 'TRANSFER'"
+                              [class.bg-sky-100]="item.type === 'TRANSFER'"
+                              [class.text-sky-800]="item.type === 'TRANSFER'"
+                            >
+                              <span
+                                class="inline-block h-1.5 w-1.5 rounded-full"
+                                [class.bg-emerald-600]="item.type === 'IN'"
+                                [class.bg-rose-600]="item.type === 'OUT'"
+                                [class.bg-sky-600]="item.type === 'TRANSFER'"
+                              ></span>
+                              @if (item.type === 'IN') {
+                                Entrada
+                              } @else if (item.type === 'OUT') {
+                                Salida
+                              } @else {
+                                Transferencia
+                              }
+                            </span>
+                          </td>
+                          <td class="font-medium">{{ item.employeeName }}</td>
+                          <td class="text-base-content/70">
+                            @if (item.type === 'TRANSFER') {
+                              {{ item.fromOfficeName || 'Sin origen' }}
+                              <span class="opacity-60">→</span>
+                              {{ item.toOfficeName || 'Sin destino' }}
+                            } @else if (item.type === 'IN') {
+                              {{ item.toOfficeName || 'Sin oficina' }}
                             } @else {
-                              Transferencia
+                              {{ item.fromOfficeName || 'Sin oficina' }}
                             }
-                          </span>
-                        </td>
-                        <td class="font-medium">{{ item.employeeName }}</td>
-                        <td class="text-base-content/70">
-                          @if (item.type === 'TRANSFER') {
-                            {{ item.fromOfficeName || 'Sin origen' }}
-                            <span class="opacity-60">→</span>
-                            {{ item.toOfficeName || 'Sin destino' }}
-                          } @else if (item.type === 'IN') {
-                            {{ item.toOfficeName || 'Sin oficina' }}
-                          } @else {
-                            {{ item.fromOfficeName || 'Sin oficina' }}
-                          }
-                        </td>
-                        <td class="text-right">
-                          <span class="font-mono text-xs font-semibold">{{ item.productsAffectedCount }} uds.</span>
-                        </td>
-                        <td class="whitespace-nowrap font-mono text-xs text-base-content/60">
-                          {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                        </td>
-                      </tr>
-                    } @empty {
-                      <tr>
-                        <td colspan="5">
-                          <div class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center" role="status">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="size-10 text-accent/40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                              <path d="M4 6h16M4 12h16M4 18h16"/>
-                            </svg>
-                            <p class="text-sm text-base-content/60">No hay movimientos recientes</p>
-                          </div>
-                        </td>
-                      </tr>
+                          </td>
+                          <td class="text-right">
+                            <span class=" text-xs font-semibold"
+                              >{{ item.productsAffectedCount }} uds.</span
+                            >
+                          </td>
+                          <td class="whitespace-nowrap  text-xs text-base-content/60">
+                            {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="5">
+                            <div
+                              class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-accent/30 bg-accent/5 px-4 py-8 text-center"
+                              role="status"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-10 text-accent/40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              >
+                                <path d="M4 6h16M4 12h16M4 18h16" />
+                              </svg>
+                              <p class="text-sm text-base-content/60">
+                                No hay movimientos recientes
+                              </p>
+                            </div>
+                          </td>
+                        </tr>
+                      }
                     }
-                  }
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
-          </div>
-        </article>
+          </article>
+        </div>
       </div>
-    </div>
+    } @placeholder {
+      <span class="du-skeleton h-60 w-full"></span>
+    }
   </div>
 </section>

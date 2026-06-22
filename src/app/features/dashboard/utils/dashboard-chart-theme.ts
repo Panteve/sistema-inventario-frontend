@@ -40,13 +40,11 @@ export const dashboardChartLegend = (
   },
 });
 
-export const dashboardChartApexTheme = (): ApexTheme => ({
-  mode: dashboardChartApexThemeMode(),
-});
-
-export function dashboardChartApexThemeMode(): 'light' | 'dark' {
+export const dashboardChartApexTheme = (): ApexTheme => {
   const theme = document.documentElement.getAttribute('data-theme');
-  return theme === THEMES.LIGHT ? 'light' : 'dark';
+  return {
+    mode: theme === THEMES.LIGHT ? 'light' : 'dark',
+  };
 }
 
 export const dashboardChartTooltip = (): ApexTooltip => ({

@@ -1,7 +1,7 @@
 import { inject } from '@angular/core';
 import { HttpHandlerFn, HttpRequest } from '@angular/common/http';
 import { from } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { switchMap } from 'rxjs';
 import { AuthStore } from '../store/auth-store';
 
 export function authInterceptor(req: HttpRequest<unknown>, next: HttpHandlerFn) {

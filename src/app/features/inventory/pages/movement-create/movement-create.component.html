@@ -1,215 +1,199 @@
-<div class="flex-1 flex justify-center px-4 py-10 md:py-14">
-  <div class="w-full max-w-4xl md:max-w-5xl">
-    <!-- Header -->
-    <header class="flex items-center gap-3 mb-5" data-reveal="up">
-      <div class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-primary/10 pulse-dot">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-          class="text-primary"
-        >
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          >
-            <circle cx="5" cy="6" r="3" />
-            <path d="M12 6h5a2 2 0 0 1 2 2v7" />
-            <path d="m15 9l-3-3l3-3" />
-            <circle cx="19" cy="18" r="3" />
-            <path d="M12 18H7a2 2 0 0 1-2-2V9" />
-            <path d="m9 15l3 3l-3 3" />
-          </g>
-        </svg>
-      </div>
-      <div>
-        <h1 class="text-xl md:text-2xl font-bold tracking-tight">Movimiento de inventario</h1>
-        <p class="text-xs opacity-50">Nuevo movimiento de inventario</p>
-      </div>
-    </header>
+<div class="flex-1 px-4 py-10 md:py-14">
+  <div class="mx-auto max-w-7xl">
 
-    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl card-hover">
-      <div class="du-card-body p-6 md:p-10">
-        <!-- Sub-header -->
-        <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <h2 class="text-lg md:text-xl font-bold tracking-tight">Detalle</h2>
-            <p class="text-xs opacity-50 mt-0.5">Información del movimiento</p>
-          </div>
-          <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-            <p
-              class="text-sm md:text-base font-semibold opacity-80 rounded-full bg-base-200/70 px-3 py-1"
+    <div class="lg:grid lg:grid-cols-[1fr_380px] lg:gap-6">
+      <!-- Left: main form -->
+      <div class="min-w-0">
+        <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl card-hover">
+          <div class="du-card-body p-6 md:p-10">
+            <!-- Sub-header -->
+            <div class="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
+              <div>
+                <h2 class="text-lg md:text-xl font-bold tracking-tight">Detalle</h2>
+                <p class="text-xs opacity-50 mt-0.5">Información del movimiento</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+                <p
+                  class="text-sm md:text-base font-semibold opacity-80 rounded-full bg-base-200/70 px-3 py-1"
+                >
+                  {{ this.currentDate | date: 'dd/MM/yyyy' }}
+                </p>
+                <p
+                  class="text-xs md:text-sm rounded-full border border-base-content/10 bg-base-100 px-3 py-1"
+                >
+                  {{ this.movementData().products.length }} productos
+                </p>
+              </div>
+            </div>
+
+            <div class="du-divider mt-0 mb-2"></div>
+
+            <div
+              [class.sm:grid-cols-3]="this.movementData().type === MOVEMENTYPE.TRANSFER"
+              class="grid grid-cols-1 sm:grid-cols-2 gap-2"
             >
-              {{ this.currentDate | date: 'dd/MM/yyyy' }}
-            </p>
-            <p
-              class="text-xs md:text-sm rounded-full border border-base-content/10 bg-base-100 px-3 py-1"
-            >
-              {{ this.movementData().products.length }} productos
-            </p>
-          </div>
-        </div>
+              <div class="rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3">
+                <p class="text-[11px] uppercase tracking-wide opacity-60">Tipo de movimiento</p>
+                <p class="text-lg font-semibold leading-tight">
+                  <select class="du-select w-full" (change)="changeMovementType($event)">
+                    <option [value]="MOVEMENTYPE.IN" selected>Entrada</option>
+                    <option [value]="MOVEMENTYPE.OUT">Salida</option>
+                    <option [disabled]="!authStore.isAdmin()" [value]="MOVEMENTYPE.TRANSFER">
+                      Transferencia
+                    </option>
+                  </select>
+                </p>
+              </div>
 
-        <div class="du-divider mt-0 mb-2"></div>
+              <div
+                [class.hidden]="this.movementData().type === MOVEMENTYPE.IN"
+                class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
+              >
+                <p class="text-[11px] uppercase tracking-wide opacity-60">
+                  {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'De' : 'Sucursal afectada' }}
+                </p>
 
-        <div
-          [class.sm:grid-cols-3]="this.movementData().type === MOVEMENTYPE.TRANSFER"
-          class="grid grid-cols-1 sm:grid-cols-2 gap-2"
-        >
-          <div class="rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3">
-            <p class="text-[11px] uppercase tracking-wide opacity-60">Tipo de movimiento</p>
-            <p class="text-lg font-semibold leading-tight">
-              <select class="du-select w-full" (change)="changeMovementType($event)">
-                <option [value]="MOVEMENTYPE.IN" selected>Entrada</option>
-                <option [value]="MOVEMENTYPE.OUT">Salida</option>
-                <option [disabled]="!authStore.isAdmin()" [value]="MOVEMENTYPE.TRANSFER">
-                  Transferencia
-                </option>
-              </select>
-            </p>
-          </div>
-
-          <div
-            [class.hidden]="this.movementData().type === MOVEMENTYPE.IN"
-            class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
-          >
-            <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'De' : 'Sucursal afectada' }}
-            </p>
-
-            @if (!authStore.isAdmin()) {
-              <p class="text-sm font-semibold leading-tight text-center">
-                {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
-              </p>
-            } @else {
-              <app-office-select
-                [value]="this.movementData().fromOfficeId"
-                (idOffice)="changeFromOffice($event)"
-              ></app-office-select>
-            }
-          </div>
-
-          <div
-            [class.hidden]="this.movementData().type === MOVEMENTYPE.OUT"
-            class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
-          >
-            <p class="text-[11px] uppercase tracking-wide opacity-60">
-              {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'Hacia' : 'Sucursal afectada' }}
-            </p>
-            @if (!authStore.isAdmin()) {
-              <p class="text-sm font-semibold leading-tight text-center">
-                {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
-              </p>
-            } @else {
-              <app-office-select
-                [value]="this.movementData().toOfficeId"
-                (idOffice)="changeToOffice($event)"
-              ></app-office-select>
-            }
-          </div>
-        </div>
-        <div class="du-divider mt-0 mb-0"></div>
-        <fieldset
-          class="du-fieldset flex flex-col w-full rounded-2xl border border-base-content/10 bg-base-200/20 p-3 md:p-4"
-        >
-          <legend
-            class="du-fieldset-legend text-xs uppercase tracking-wider opacity-50 font-semibold"
-          >
-            Motivo del movimiento
-          </legend>
-          <textarea
-            class="du-textarea du-textarea-bordered h-24 w-full resize-none"
-            (blur)="setReason($event)"
-            placeholder="Ejemplo: Entrada por error de salida ..."
-            [formControl]="reason"
-            required
-          ></textarea>
-        </fieldset>
-
-        <div class="mt-4 rounded-2xl border border-base-content/10 bg-base-100 p-3 md:p-4">
-          <div class="mb-3 flex items-center justify-between gap-2">
-            <h3 class="text-sm md:text-base font-semibold">Productos seleccionados</h3>
-            <p class="text-xs opacity-60">Edita cantidades o elimina productos</p>
-          </div>
-
-          <div class="overflow-x-auto mb-6 rounded-2xl border border-base-content/10 bg-base-100">
-            <table class="du-table w-full table-auto md:table-fixed">
-              <thead>
-                <tr class="bg-base-300/50 md:text-base text-sm">
-                  <th class="text-center font-semibold">Nombre</th>
-                  <th class="text-center font-semibold">Cantidad</th>
-                  <th class="w-12"></th>
-                </tr>
-              </thead>
-              <tbody class="text-sm md:text-base text-center">
-                @for (product of this.movementData().products; track product.productId) {
-                  <tr class="hover:bg-base-200 transition-colors">
-                    <td>{{ product.name }}</td>
-                    <td>
-                      <input
-                        type="number"
-                        min="1"
-                        class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
-                        [value]="product.quantity"
-                        (focus)="selectAll($event)"
-                        (input)="modifyingQuantity($event, product.productId)"
-                        (keydown.enter)="modifyingQuantity($event, product.productId)"
-                      />
-                    </td>
-                    <td class="text-center">
-                      <button
-                        class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
-                        aria-label="Quitar producto"
-                        (click)="quitProduct(product.productId)"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="14"
-                          height="14"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          stroke-width="2.5"
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                        >
-                          <line x1="18" y1="6" x2="6" y2="18" />
-                          <line x1="6" y1="6" x2="18" y2="18" />
-                        </svg>
-                      </button>
-                    </td>
-                  </tr>
-                } @empty {
-                  <tr>
-                    <td colspan="3" class="text-center py-10 opacity-40">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        class="h-10 w-10 mx-auto mb-2 opacity-30"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="1.5"
-                          d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                        />
-                      </svg>
-                      <p>Agrega productos al movimiento</p>
-                    </td>
-                  </tr>
+                @if (!authStore.isAdmin()) {
+                  <p class="text-sm font-semibold leading-tight text-center">
+                    {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
+                  </p>
+                } @else {
+                  <app-office-select
+                    [value]="this.movementData().fromOfficeId"
+                    (idOffice)="changeFromOffice($event)"
+                  ></app-office-select>
                 }
-              </tbody>
-            </table>
+              </div>
+
+              <div
+                [class.hidden]="this.movementData().type === MOVEMENTYPE.OUT"
+                class="flex flex-col justify-center rounded-xl bg-base-200/50 border border-base-content/10 px-3 py-3"
+              >
+                <p class="text-[11px] uppercase tracking-wide opacity-60">
+                  {{ this.movementData().type === MOVEMENTYPE.TRANSFER ? 'Hacia' : 'Sucursal afectada' }}
+                </p>
+                @if (!authStore.isAdmin()) {
+                  <p class="text-sm font-semibold leading-tight text-center">
+                    {{ authStore.employee()?.officeName || 'Sin Sucursal' }}
+                  </p>
+                } @else {
+                  <app-office-select
+                    [value]="this.movementData().toOfficeId"
+                    (idOffice)="changeToOffice($event)"
+                  ></app-office-select>
+                }
+              </div>
+            </div>
+            <div class="du-divider mt-0 mb-0"></div>
+            <fieldset
+              class="du-fieldset flex flex-col w-full rounded-2xl border border-base-content/10 bg-base-200/20 p-3 md:p-4"
+            >
+              <legend
+                class="du-fieldset-legend text-xs uppercase tracking-wider opacity-50 font-semibold"
+              >
+                Motivo del movimiento
+              </legend>
+              <textarea
+                class="du-textarea du-textarea-bordered h-24 w-full resize-none"
+                (blur)="setReason($event)"
+                placeholder="Ejemplo: Entrada por error de salida ..."
+                [formControl]="reason"
+                required
+              ></textarea>
+            </fieldset>
+
+            <div class="mt-4 rounded-2xl border border-base-content/10 bg-base-100 p-3 md:p-4">
+              <div class="mb-3 flex items-center justify-between gap-2">
+                <h3 class="text-sm md:text-base font-semibold">Productos seleccionados</h3>
+                <p class="text-xs opacity-60">Edita cantidades o elimina productos</p>
+              </div>
+
+              <div class="overflow-x-auto rounded-2xl border border-base-content/10 bg-base-100">
+                <table class="du-table w-full table-auto md:table-fixed">
+                  <thead>
+                    <tr class="bg-base-300/50 md:text-base text-sm">
+                      <th class="text-center font-semibold">Nombre</th>
+                      <th class="text-center font-semibold">Cantidad</th>
+                      <th class="w-12"></th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm md:text-base text-center">
+                    @for (product of this.movementData().products; track product.productId) {
+                      <tr class="hover:bg-base-200 transition-colors">
+                        <td>{{ product.name }}</td>
+                        <td>
+                          <input
+                            type="number"
+                            min="1"
+                            class="du-input du-input-sm w-20 text-center du-input-ghost text-sm md:text-xl"
+                            [value]="product.quantity"
+                            (focus)="selectAll($event)"
+                            (input)="modifyingQuantity($event, product.productId)"
+                            (keydown.enter)="modifyingQuantity($event, product.productId)"
+                          />
+                        </td>
+                        <td class="text-center">
+                          <button
+                            class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
+                            aria-label="Quitar producto"
+                            (click)="quitProduct(product.productId)"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="14"
+                              height="14"
+                              viewBox="0 0 24 24"
+                              fill="none"
+                              stroke="currentColor"
+                              stroke-width="2.5"
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                            >
+                              <line x1="18" y1="6" x2="6" y2="18" />
+                              <line x1="6" y1="6" x2="18" y2="18" />
+                            </svg>
+                          </button>
+                        </td>
+                      </tr>
+                    } @empty {
+                      <tr>
+                        <td colspan="3" class="text-center py-10 opacity-40">
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-10 w-10 mx-auto mb-2 opacity-30"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                            <path
+                              stroke-linecap="round"
+                              stroke-linejoin="round"
+                              stroke-width="1.5"
+                              d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                            />
+                          </svg>
+                          <p>Agrega productos al movimiento</p>
+                        </td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
-          <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+        </article>
+      </div>
+
+      <!-- Right: actions sidebar -->
+      <div class="lg:sticky lg:top-24 self-start">
+        <article class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+          <div class="du-card-body p-5 md:p-8">
+            <h3 class="text-lg font-bold tracking-tight">Acciones</h3>
+
+            <div class="du-divider my-3"></div>
+
             <button
-              class="du-btn du-btn-secondary du-btn-soft du-btn-sm md:du-btn-md w-full sm:w-auto"
+              class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
               [disabled]="movementStore.loading() || officeStore.loading() || notSelectedOffice()"
               (click)="openProductsModal()"
             >
@@ -230,41 +214,46 @@
               Agregar producto
             </button>
 
-            <div class="flex w-full flex-col gap-2 sm:w-auto sm:flex-row">
-              <button
-                class="du-btn du-btn-ghost du-btn-error du-btn-sm md:du-btn-md w-full sm:w-auto"
-                [disabled]="officeStore.loading()"
-                (click)="this.resetMovementData()"
-              >
-                Cancelar
+            @if (movementStore.loading()) {
+              <button class="du-btn du-btn-disabled du-btn-md w-full mt-3">
+                <span class="du-loading du-loading-spinner du-loading-sm"></span>
+                Procesando
               </button>
+            } @else {
+              <button
+                class="du-btn du-btn-primary du-btn-md w-full mt-3"
+                [disabled]="!canConfirm() || officeStore.loading() || notSelectedOffice()"
+                (click)="submitMovement()"
+              >
+                Crear movimiento
+              </button>
+            }
 
-              @if (movementStore.loading()) {
-                <button class="du-btn du-btn-disabled w-full sm:w-auto">
-                  <span class="du-loading du-loading-spinner du-loading-sm"></span>
-                  Procesando
-                </button>
-              } @else {
-                <button
-                  class="du-btn du-btn-primary du-btn-sm md:du-btn-md w-full sm:w-auto"
-                  [disabled]="!canConfirm() || officeStore.loading() || notSelectedOffice()"
-                  (click)="submitMovement()"
-                >
-                  Crear
-                </button>
-              }
-            </div>
+            <button
+              class="du-btn du-btn-ghost du-btn-error du-btn-md w-full mt-2"
+              [disabled]="officeStore.loading()"
+              (click)="this.resetMovementData()"
+            >
+              Cancelar
+            </button>
+
+            @if (!canConfirm() || notSelectedOffice()) {
+              <div class="mt-4 rounded-xl bg-warning/10 border border-warning/20 p-3">
+                <p class="text-xs text-warning flex items-center gap-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="shrink-0">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                    <line x1="12" y1="9" x2="12" y2="13" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  Selecciona una oficina y agrega al menos un producto para habilitar la creación del movimiento.
+                </p>
+              </div>
+            }
           </div>
-
-          @if (!canConfirm() || notSelectedOffice()) {
-            <p class="mt-2 text-xs opacity-60">
-              Selecciona una oficina y agrega al menos un producto para habilitar la creación del
-              movimiento.
-            </p>
-          }
-        </div>
+        </article>
       </div>
-    </article>
+    </div>
+
     @if (authStore.isAuthenticated() && productsModalOpen()) {
       <dialog class="du-modal du-modal-open" (close)="closeProductsModal()">
         <div class="du-modal-box w-11/12 max-w-4xl">

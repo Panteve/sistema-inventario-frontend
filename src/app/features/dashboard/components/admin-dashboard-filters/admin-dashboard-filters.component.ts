@@ -7,6 +7,11 @@ import { OfficeSelectComponent } from '../../../../shared/components/office-sele
 import { EmployeeSelectComponent } from '../../../../shared/components/employee-select.component/employee-select.component';
 import { DateRangePopoverComponent } from '../../../../shared/components/date-range-popover.component/date-range-popover.component';
 import { AuthStore } from '../../../../core/store/auth-store';
+import {
+  isIsoDate,
+  parseNumber,
+  toIsoDate,
+} from '../../../../shared/utils/filter-query.utils';
 
 @Component({
   selector: 'app-admin-dashboard-filters',
@@ -23,7 +28,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
   #route = inject(ActivatedRoute);
 
   readonly #today = new Date();
-  readonly todayIso = this.#toIsoDate(this.#today);
+  readonly todayIso = toIsoDate(this.#today);
 
   filters = signal<ParamsGetDashboard>(this.#buildDefaultParams());
   filtersChange = output<{
@@ -44,16 +49,16 @@ export class AdminDashboardFiltersComponent implements OnInit {
     const savedFilters = hasNonDateParams ? null : this.#loadSavedFilters();
     const sourceParams = savedFilters ?? defaults;
 
-    const startDate = this.#isIsoDate(params.get('startDate'))
+    const startDate = isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
       : sourceParams.startDate;
-    const endDate = this.#isIsoDate(params.get('endDate'))
+    const endDate = isIsoDate(params.get('endDate'))
       ? params.get('endDate')!
       : sourceParams.endDate;
-    const officeId = this.#parseNumber(params.get('officeId')) ?? sourceParams.officeId;
-    const employeeId = this.#parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
+    const officeId = parseNumber(params.get('officeId')) ?? sourceParams.officeId;
+    const employeeId = parseNumber(params.get('employeeId')) ?? sourceParams.employeeId;
     const paymentMethodId =
-      this.#parseNumber(params.get('paymentMethodId')) ?? sourceParams.paymentMethodId;
+      parseNumber(params.get('paymentMethodId')) ?? sourceParams.paymentMethodId;
 
     this.filters.set(
       this.#normalizeDateRange({
@@ -125,7 +130,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
   }
 
   setCurrentWeekRange() {
-    const startDate = this.#toIsoDate(this.#startOfWeek(this.#today));
+    const startDate = toIsoDate(this.#startOfWeek(this.#today));
     this.filters.update((filters) =>
       this.#normalizeDateRange({
         ...filters,
@@ -137,7 +142,7 @@ export class AdminDashboardFiltersComponent implements OnInit {
   }
 
   setCurrentMonthRange() {
-    const startDate = this.#toIsoDate(this.#startOfMonth(this.#today));
+    const startDate = toIsoDate(this.#startOfMonth(this.#today));
     this.filters.update((filters) =>
       this.#normalizeDateRange({
         ...filters,
@@ -201,28 +206,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     };
   }
 
-  #coerceIsoDate(value: unknown): string | null {
-    if (value instanceof Date) {
-      return this.#toIsoDateUtc(value);
-    }
-    if (typeof value === 'string' && this.#isIsoDate(value)) {
-      return value;
-    }
-    return null;
-  }
-
-  #isIsoDate(value: string | null | undefined): value is string {
-    return !!value && /^\d{4}-\d{2}-\d{2}$/.test(value);
-  }
-
-  #parseNumber(value: string | null | undefined): number | undefined {
-    if (value === null || value === undefined || value.trim() === '') {
-      return undefined;
-    }
-    const parsed = Number(value);
-    return Number.isFinite(parsed) ? parsed : undefined;
-  }
-
   #saveFilters(): void {
     try {
       localStorage.setItem(this.#filtersStorageKey, JSON.stringify(this.filters()));
@@ -237,11 +220,11 @@ export class AdminDashboardFiltersComponent implements OnInit {
       if (!raw) return null;
       const parsed = JSON.parse(raw) as Partial<ParamsGetDashboard>;
       const startDate =
-        typeof parsed.startDate === 'string' && this.#isIsoDate(parsed.startDate)
+        typeof parsed.startDate === 'string' && isIsoDate(parsed.startDate)
           ? parsed.startDate
           : null;
       const endDate =
-        typeof parsed.endDate === 'string' && this.#isIsoDate(parsed.endDate)
+        typeof parsed.endDate === 'string' && isIsoDate(parsed.endDate)
           ? parsed.endDate
           : null;
 
@@ -251,15 +234,15 @@ export class AdminDashboardFiltersComponent implements OnInit {
 
       const officeId =
         typeof parsed.officeId === 'string'
-          ? this.#parseNumber(parsed.officeId)
+          ? parseNumber(parsed.officeId)
           : (parsed.officeId ?? undefined);
       const employeeId =
         typeof parsed.employeeId === 'string'
-          ? this.#parseNumber(parsed.employeeId)
+          ? parseNumber(parsed.employeeId)
           : (parsed.employeeId ?? undefined);
       const paymentMethodId =
         typeof parsed.paymentMethodId === 'string'
-          ? this.#parseNumber(parsed.paymentMethodId)
+          ? parseNumber(parsed.paymentMethodId)
           : (parsed.paymentMethodId ?? undefined);
 
       return {
@@ -284,20 +267,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     }
   }
 
-  #toIsoDate(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
-  #toIsoDateUtc(date: Date): string {
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, '0');
-    const day = String(date.getUTCDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  }
-
   #startOfWeek(date: Date): Date {
     const copy = new Date(date);
     const day = copy.getDay();
@@ -315,6 +284,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
     const [year, month, day] = isoDate.split('-').map(Number);
     const date = new Date(year, month - 1, day);
     date.setMonth(date.getMonth() + months);
-    return this.#toIsoDate(date);
+    return toIsoDate(date);
   }
 }

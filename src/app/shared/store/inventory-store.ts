@@ -7,7 +7,6 @@ import {
   withState,
 } from '@ngrx/signals';
 import {
-  ProductCatalogResponse,
   ProductOnInventoryResponse,
 } from '../interfaces/product.interface';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';

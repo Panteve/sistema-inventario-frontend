@@ -1,28 +1,11 @@
 <div class="flex justify-center px-4 py-10 md:py-14">
   <div class="w-full max-w-7xl mx-auto" (click)="clearProductSelected($event)">
-    <header class="flex items-center gap-3 mb-1 px-1" data-reveal="up">
-      <div class="bg-primary/10 rounded-full p-2.5 pulse-dot">
-        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 2048 2048" class="text-primary">
-          <path
-            fill="currentColor"
-            d="m960 120l832 416v1040l-832 415l-832-415V536zm625 456L960 264L719 384l621 314zM960 888l238-118l-622-314l-241 120zM256 680v816l640 320v-816zm768 1136l640-320V680l-640 320z"
-          />
-        </svg>
-      </div>
-      <div>
-        <h2 class="text-xl font-bold tracking-tight">Productos</h2>
-        <p class="text-xs text-base-content/50">Administra el catálogo de productos del sistema</p>
-      </div>
-    </header>
 
-    <div class="du-divider m-0 mb-2"></div>
 
-    <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
-      <div class="du-card-body p-4 md:p-6">
-        <div
-          class="grid grid-cols-1 lg:grid-cols-[340px_auto_1fr] gap-4 lg:gap-6 items-start lg:items-center"
-        >
-          <div data-exception class="rounded-xl border border-base-content/10 bg-base-100 p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 lg:gap-6 items-start">
+      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
+        <div class="du-card-body p-4 md:p-6">
+          <div data-exception class="p-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
               Producto
             </h3>
@@ -110,11 +93,11 @@
               </div>
             </form>
           </div>
+        </div>
+      </article>
 
-          <div class="hidden lg:flex h-full items-center justify-center">
-            <div class="du-divider du-divider-horizontal my-0"></div>
-          </div>
-
+      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
+        <div class="du-card-body p-4 md:p-6">
           @if (productCatalogStore.loading()) {
             <div class="text-center py-10 opacity-50">
               <span class="du-loading du-loading-dots du-loading-xl"></span>
@@ -130,7 +113,7 @@
             </div>
           }
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
   </div>
 </div>

@@ -4,3 +4,19 @@
 .scrollbar-none::-webkit-scrollbar {
   display: none;
 }
+
+:host {
+  display: contents;
+}
+
+.du-drawer {
+  position: relative;
+  z-index: 1;
+}
+
+.du-drawer-toggle:checked ~ .du-drawer-side {
+  overflow: hidden;
+}
+
+/* Ocultar tooltip cuando el drawer está abierto (labels visibles) */
+

@@ -1,36 +1,11 @@
 <div class="flex justify-center px-4 py-10 md:py-14" (click)="clearOfficeSelected($event)">
   <div class="w-full max-w-7xl mx-auto">
-    <header class="flex items-center gap-3 mb-1 px-1" data-reveal="up">
-      <div class="bg-primary/10 rounded-full p-2.5 pulse-dot">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="25"
-          height="25"
-          viewBox="0 0 24 24"
-          class="text-primary"
-        >
-          <path
-            fill="currentColor"
-            d="M4 6V4h16v2zm0 14v-6H3v-2l1-5h16l1 5v2h-1v6h-2v-6h-4v6zm2-2h6v-4H6zm-.95-6h13.9zm0 0h13.9l-.6-3H5.65z"
-          />
-        </svg>
-      </div>
-      <div>
-        <h2 class="text-xl font-bold tracking-tight">Oficinas</h2>
-        <p class="text-xs text-base-content/50">
-          Configura las oficinas disponibles para el sistema
-        </p>
-      </div>
-    </header>
 
-    <div class="du-divider m-0 mb-2"></div>
 
-    <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
-      <div class="du-card-body p-4 md:p-6">
-        <div
-          class="grid grid-cols-1 lg:grid-cols-[340px_auto_1fr] gap-4 lg:gap-6 items-start lg:items-center"
-        >
-          <div data-exception class="rounded-xl border border-base-content/10 bg-base-100 p-4">
+    <div class="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 lg:gap-6 items-start">
+      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
+        <div class="du-card-body p-4 md:p-6">
+          <div data-exception class="p-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
               Oficina
             </h3>
@@ -106,11 +81,11 @@
               </div>
             </form>
           </div>
+        </div>
+      </article>
 
-          <div class="hidden lg:flex h-full items-center justify-center">
-            <div class="du-divider du-divider-horizontal my-0"></div>
-          </div>
-
+      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm card-hover">
+        <div class="du-card-body p-4 md:p-6">
           @if (this.loading()) {
             <div class="text-center py-10 opacity-50">
               <span class="du-loading du-loading-dots du-loading-xl"></span>
@@ -272,7 +247,7 @@
             </div>
           }
         </div>
-      </div>
-    </article>
+      </article>
+    </div>
   </div>
 </div>

@@ -1,93 +1,113 @@
-<div class="mb-1.5 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between" data-reveal="up">
-  <div>
-    <h2 class="text-lg font-bold tracking-tight">Detalle</h2>
-    <p class="text-sm opacity-50">Información de la caja y de la sesión.</p>
-  </div>
-  <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-    <span class="du-badge du-badge-warning du-badge-sm md:du-badge-md">Caja cerrada</span>
+@if (loading()) {
+  <div class="relative z-10 mx-auto w-full max-w-5xl space-y-2">
+    <div class="flex items-start justify-between">
+      <div class="space-y-1.5">
+        <div class="du-skeleton h-5 w-2/5 rounded-md"></div>
+        <div class="du-skeleton h-4 w-1/3 rounded-md"></div>
+      </div>
+      <div class="flex gap-2">
+        <div class="du-skeleton h-6 w-20 rounded-full"></div>
+        <div class="du-skeleton h-6 w-24 rounded-full"></div>
+      </div>
+    </div>
 
-    <p class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80">
-      {{ currentDate | date: 'dd/MM/yyyy' }}
-    </p>
-  </div>
-</div>
+    <div class="grid grid-cols-1 gap-1 md:grid-cols-3">
+      <div class="du-skeleton h-14 rounded-2xl"></div>
+      <div class="du-skeleton h-14 rounded-2xl"></div>
+      <div class="du-skeleton h-14 rounded-2xl"></div>
+    </div>
 
-<div class="grid grid-cols-1 gap-1 md:grid-cols-3">
-  <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-    <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
-    <p class="mt-0.5 truncate text-base font-semibold leading-tight">
-      {{ employee()?.name ?? 'Sin nombre' }}
-    </p>
+    <div class="grid grid-cols-1 gap-1 md:grid-cols-2">
+      <div class="du-skeleton h-24 rounded-2xl border border-base-content/10"></div>
+      <div class="du-skeleton h-24 rounded-2xl border border-base-content/10"></div>
+    </div>
+
+    <div class="flex flex-col-reverse gap-1 sm:flex-row sm:justify-between">
+      <div class="du-skeleton h-10 w-full rounded-xl sm:w-28"></div>
+      <div class="du-skeleton h-10 w-full rounded-xl sm:w-32"></div>
+    </div>
   </div>
-  <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-    <p class="text-xs uppercase tracking-[0.16em] opacity-60">Sucursal</p>
-    <p class="mt-0.5 truncate text-base font-semibold leading-tight"></p>
-    <p class="mt-0.5 truncate text-base font-semibold leading-tight">
-      @if (employee()?.role === 'ADMIN') {
-        <app-office-select
-          [value]="officeId()"
-          (idOffice)="changeOffice($event)"
-          (nameOffice)="setSelectedOffice($event)"
-        ></app-office-select>
-      } @else {
-        {{ employee()?.officeName }}
+} @else {
+  <div class="mb-1.5 flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between" data-reveal="up">
+    <div>
+      <h2 class="text-lg font-bold tracking-tight">Detalle</h2>
+      <p class="text-sm opacity-50">Información de la caja y de la sesión.</p>
+    </div>
+    <div class="flex flex-wrap items-center gap-2 sm:justify-end">
+      <span class="du-badge du-badge-warning du-badge-sm md:du-badge-md">Caja cerrada</span>
+
+      <p class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80">
+        {{ currentDate | date: 'dd/MM/yyyy' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-1 md:grid-cols-3">
+    <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+      <p class="text-xs uppercase tracking-[0.16em] opacity-60">Empleado</p>
+      <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+        {{ employee()?.name ?? 'Sin nombre' }}
+      </p>
+    </div>
+    <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+      <p class="text-xs uppercase tracking-[0.16em] opacity-60">Sucursal</p>
+      <p class="mt-0.5 truncate text-base font-semibold leading-tight"></p>
+      <p class="mt-0.5 truncate text-base font-semibold leading-tight">
+        @if (employee()?.role === 'ADMIN') {
+          <app-office-select
+            [value]="officeId()"
+            (idOffice)="changeOffice($event)"
+            (nameOffice)="setSelectedOffice($event)"
+          ></app-office-select>
+        } @else {
+          {{ employee()?.officeName }}
+        }
+      </p>
+    </div>
+    <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
+      <p class="text-xs uppercase tracking-[0.16em] opacity-60">fecha apertura</p>
+      <p class="mt-0.5  text-base font-semibold leading-tight">
+        {{ currentDate | date: 'dd/MM/yyyy HH:mm' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
+    <fieldset class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5">
+      <legend class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50">
+        Monto inicial en caja
+      </legend>
+      <label
+        class="du-input du-input-accent flex min-h-10 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3  text-base shadow-sm"
+      >
+        <input
+          type="text"
+          class="grow bg-transparent outline-none no-spinner"
+          copMoneyInput
+          (input)="onAmountReceivedChange($event)"
+          (click)="onAmountClick($event)"
+        />
+      </label>
+      @if (!validateAmount()) {
+        <p class="mt-1 text-sm text-error">El monto debe ser mayor a cero</p>
       }
-    </p>
+    </fieldset>
+
+    <fieldset class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5">
+      <legend class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50">
+        Observaciones
+      </legend>
+      <textarea
+        class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
+        placeholder="Notas adicionales sobre la apertura..."
+      ></textarea>
+    </fieldset>
   </div>
-  <div class="rounded-2xl border border-base-content/10 bg-base-200/50 px-3 py-2">
-    <p class="text-xs uppercase tracking-[0.16em] opacity-60">fecha apertura</p>
-    <p class="mt-0.5 font-mono text-base font-semibold leading-tight">
-      {{ currentDate | date: 'dd/MM/yyyy HH:mm' }}
-    </p>
-  </div>
-</div>
 
-<div class="mt-2 grid grid-cols-1 gap-1 md:grid-cols-2">
-  <fieldset class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5">
-    <legend class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50">
-      Monto inicial en caja
-    </legend>
-    <label
-      class="du-input du-input-accent flex min-h-10 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 font-mono text-base shadow-sm"
-    >
-      <input
-        type="text"
-        class="grow bg-transparent outline-none no-spinner"
-        copMoneyInput
-        (input)="onAmountReceivedChange($event)"
-        (click)="onAmountClick($event)"
-      />
-    </label>
-    @if (!validateAmount()) {
-      <p class="mt-1 text-sm text-error">El monto debe ser mayor a cero</p>
-    }
-  </fieldset>
-
-  <fieldset class="du-fieldset rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5">
-    <legend class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50">
-      Observaciones
-    </legend>
-    <textarea
-      class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
-      placeholder="Notas adicionales sobre la apertura..."
-    ></textarea>
-  </fieldset>
-</div>
-
-<div class="mt-2 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between">
-  <button
-    class="du-btn du-btn-soft w-full sm:w-auto"
-    [disabled]="loading()"
-    (click)="closeCashModal()"
-  >
-    Cancelar
-  </button>
-  @if (loading()) {
-    <button class="du-btn du-btn-accent w-full gap-2 sm:w-auto du-btn-disabled">
-      <span class="du-loading du-loading-spinner du-loading-sm"></span>
-      Procesando
+  <div class="mt-2 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between">
+    <button class="du-btn du-btn-soft w-full sm:w-auto" (click)="closeCashModal()">
+      Cancelar
     </button>
-  } @else {
     <button class="du-btn du-btn-accent w-full gap-2 sm:w-auto" (click)="requestOpenCashRegister()">
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -105,8 +125,8 @@
       </svg>
       Abrir caja
     </button>
-  }
-</div>
+  </div>
+}
 @if (openConfirmationOpen()) {
   <div
     class="fixed inset-0 z-40 flex items-center justify-center bg-base-100/65 px-4 backdrop-blur-[2px]"

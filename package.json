@@ -9,7 +9,7 @@
     "watch": "ng build --watch --configuration development",
     "test": "ng test",
     "electron": "electron .",
-    "dev": "concurrently -k \"npm run start\" \"wait-on http://localhost:4200 && npm run electron\"",
+    "dev": "concurrently -k \"npm run start\" \"wait-on http://localhost:8080 && npm run electron\"",
     "prod": "ng build --configuration production && electron ."
   },
   "prettier": {

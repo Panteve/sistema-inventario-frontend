@@ -1,6 +1,13 @@
+<div class="aurora" aria-hidden="true">
+  <div class="aurora-orb aurora-orb-1"></div>
+  <div class="aurora-orb aurora-orb-2"></div>
+  <div class="aurora-orb aurora-orb-3"></div>
+</div>
+<div class="cursor-glow" id="cursorGlow" aria-hidden="true"></div>
+
 <div class="du-drawer min-h-screen lg:du-drawer-open">
   <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
-  <div class="du-drawer-content min-h-screen bg-base-content/5">
+  <div class="du-drawer-content min-h-screen overflow-x-clip bg-base-content/5">
     <app-navbar />
     <main class="flex-1 px-2 py-2 md:px-3 md:py-3 bg-linear-to-br from-primary/8 via-base-200 to-secondary/10">
       <div class="fixed z-9999">
@@ -50,7 +57,7 @@
     <label for="my-drawer-4" aria-label="close sidebar" class="du-drawer-overlay"></label>
     @if (authStore.isAuthenticated()) {
       <div
-        class="flex min-h-full flex-col items-start border-r border-base-content/10 bg-base-100/95 backdrop-blur-sm du-is-drawer-close:w-18 du-is-drawer-open:w-64 shadow-lg"
+        class="flex min-h-full max-h-dvh flex-col items-start bg-base-100/95 du-is-drawer-close:w-18 du-is-drawer-open:w-68 du-is-drawer-open:overflow-y-auto shadow-lg"
       >
         <ul
           class="du-menu du-menu-lg du-is-drawer-close:content-center w-full grow gap-1.5 p-2 font-semibold drawer-scrollbar scrollbar-thumb-black"
@@ -79,6 +86,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/dashboard')"
               data-tip="Dashboard"
               (click)="router.navigate(['/dashboard'])"
             >
@@ -116,7 +124,7 @@
           </p>
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
               [class.du-btn-warning]="!authStore.cashRegisterIsOpen()"
               [attr.data-tip]="authStore.cashRegisterIsOpen() ? 'Cerrar caja' : 'Abrir caja'"
               (click)="openCashModal()"
@@ -149,7 +157,8 @@
 
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-soft justify-start"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/create-bill')"
               [class.opacity-50]="!authStore.cashRegisterIsOpen()"
               [class.du-btn-primary]="authStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
@@ -197,6 +206,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/inventory/new-movement')"
               data-tip="Nuevo movimiento"
               (click)="router.navigate(['/inventory/new-movement'])"
             >
@@ -228,6 +238,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/view-bills/list')"
               data-tip="Historial de ventas"
               (click)="router.navigate(['/view-bills/list'])"
             >
@@ -247,7 +258,7 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de ventas</span
+                >Ventas</span
               >
             </button>
           </li>
@@ -255,6 +266,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/expense-list')"
               data-tip="Historial de gastos"
               (click)="router.navigate(['/expense-list'])"
             >
@@ -275,13 +287,14 @@
                 </g>
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de gastos</span
+                >Gastos</span
               >
             </button>
           </li>
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/view-cash-registers/list')"
               data-tip="Historial de cajas"
               (click)="router.navigate(['/view-cash-registers/list'])"
             >
@@ -299,7 +312,7 @@
               </svg>
 
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de cajas</span
+                >Cajas</span
               >
             </button>
           </li>
@@ -307,6 +320,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/inventory/inventory-office')"
               data-tip="Inventario"
               (click)="router.navigate(['/inventory/inventory-office'])"
             >
@@ -331,6 +345,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/inventory/history-movement')"
               data-tip="Movimientos de inventario"
               (click)="router.navigate(['/inventory/history-movement'])"
             >
@@ -345,7 +360,7 @@
                 />
               </svg>
               <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Historial de movimientos</span
+                >Movimientos</span
               >
             </button>
           </li>
@@ -359,6 +374,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/admin/payment-methods')"
               data-tip="Metodos de pago"
               (click)="router.navigate(['admin/payment-methods'])"
             >
@@ -374,6 +390,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/admin/offices')"
               data-tip="Sucursales"
               (click)="router.navigate(['admin/offices'])"
             >
@@ -389,6 +406,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/admin/employee-management')"
               data-tip="Empleados"
               (click)="router.navigate(['admin/employee-management'])"
             >
@@ -416,6 +434,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              [class.du-btn-active]="isActive('/admin/products')"
               data-tip="Productos"
               (click)="router.navigate(['admin/products'])"
             >

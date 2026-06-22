@@ -41,7 +41,7 @@
     <div class="reveal-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-reveal="up">
       <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-success/30 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-lg shadow-success/15">
         <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-success/60 to-success"></div>
-        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-success/20 blur-2xl"></div>
+
         <div class="du-card-body gap-2 p-5">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-success/80">Ventas del turno</p>
           <p class="text-3xl font-bold tracking-tight text-success">
@@ -58,7 +58,7 @@
 
       <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-info/30 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-lg shadow-info/15">
         <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-info/60 to-info"></div>
-        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-info/20 blur-2xl"></div>
+
         <div class="du-card-body gap-2 p-5">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-info/80">Ticket promedio</p>
           <p class="text-3xl font-bold tracking-tight text-info">
@@ -75,7 +75,7 @@
 
       <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-secondary/30 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-lg shadow-secondary/15">
         <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-secondary/60 to-secondary"></div>
-        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-secondary/20 blur-2xl"></div>
+
         <div class="du-card-body gap-2 p-5">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-secondary/80">Efectivo en caja</p>
           <p class="text-3xl font-bold tracking-tight text-secondary">
@@ -92,7 +92,7 @@
 
       <article class="du-card card-hover relative overflow-hidden rounded-2xl border border-primary/30 bg-linear-to-br from-primary/20 via-base-100 to-base-200 shadow-lg shadow-primary/15">
         <div class="absolute inset-x-0 top-0 h-1.5 bg-linear-to-r from-primary/60 to-primary"></div>
-        <div class="pointer-events-none absolute -right-6 -top-6 size-24 rounded-full bg-primary/20 blur-2xl"></div>
+
         <div class="du-card-body gap-2 p-5">
           <p class="text-xs font-semibold uppercase tracking-[0.2em] text-primary/80">Pagos con tarjeta</p>
           <p class="text-3xl font-bold tracking-tight text-primary">
@@ -124,7 +124,7 @@
                 <div>
                   <div class="flex items-center justify-between text-sm">
                     <span class="font-medium">{{ product.name }}</span>
-                    <span class="text-base-content/50 font-mono text-xs">{{ product.quantity }}u</span>
+                    <span class="text-base-content/50  text-xs">{{ product.quantity }}u</span>
                   </div>
                   <progress
                     class="du-progress du-progress-primary h-2 w-full transition-all duration-500"
@@ -156,12 +156,12 @@
                 <div class="flex items-center gap-3">
                   <span class="h-2.5 w-2.5 rounded-full bg-success pulse-dot"></span>
                   <span class="text-base-content/80">Efectivo</span>
-                  <span class="font-mono text-xs text-base-content/50">{{ shiftSummary().cashPercentage }}%</span>
+                  <span class=" text-xs text-base-content/50">{{ shiftSummary().cashPercentage }}%</span>
                 </div>
                 <div class="flex items-center gap-3">
                   <span class="h-2.5 w-2.5 rounded-full bg-primary"></span>
                   <span class="text-base-content/80">Tarjeta</span>
-                  <span class="font-mono text-xs text-base-content/50">{{ shiftSummary().cardPercentage }}%</span>
+                  <span class=" text-xs text-base-content/50">{{ shiftSummary().cardPercentage }}%</span>
                 </div>
               </div>
             </div>
@@ -182,7 +182,7 @@
                     <p class="text-xs text-base-content/40">Hace {{ sale.time }}</p>
                   </div>
                   <div class="flex items-center gap-3">
-                    <p class="font-mono font-semibold">{{ sale.amount | number }}</p>
+                    <p class=" font-semibold">{{ sale.amount | number }}</p>
                     <span class="du-badge du-badge-outline gap-1 text-[10px] uppercase tracking-wider"
                       [class.du-badge-success]="sale.methodType === 'success'"
                       [class.du-badge-info]="sale.methodType === 'info'"
@@ -209,20 +209,20 @@
             <div class="space-y-3 text-sm">
               <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
                 <span class="text-base-content/60">Monto inicial</span>
-                <span class="font-mono font-medium">{{ shiftSummary().initialCash | number }}</span>
+                <span class=" font-medium">{{ shiftSummary().initialCash | number }}</span>
               </div>
               <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
                 <span class="text-base-content/60">+ Ventas efectivo</span>
-                <span class="font-mono font-medium text-success">{{ shiftSummary().cashInDrawer | number }}</span>
+                <span class=" font-medium text-success">{{ shiftSummary().cashInDrawer | number }}</span>
               </div>
               <div class="flex items-center justify-between rounded-xl bg-base-content/3 px-3 py-2.5">
                 <span class="text-base-content/60">- Egresos</span>
-                <span class="font-mono font-medium text-error">$0</span>
+                <span class=" font-medium text-error">$0</span>
               </div>
               <div class="border-t border-base-content/10 pt-3">
                 <div class="flex items-center justify-between rounded-xl bg-primary/5 px-3 py-3">
                   <span class="font-semibold text-base-content">Total esperado</span>
-                  <span class="font-mono text-lg font-bold text-primary">{{ shiftSummary().cashInDrawer + shiftSummary().initialCash | number }}</span>
+                  <span class=" text-lg font-bold text-primary">{{ shiftSummary().cashInDrawer + shiftSummary().initialCash | number }}</span>
                 </div>
               </div>
             </div>
