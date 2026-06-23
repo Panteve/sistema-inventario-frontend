@@ -3,7 +3,7 @@ import { BillService } from '../../services/bill.service';
 import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
-import { RouterLink } from "@angular/router";
+import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 @Component({
@@ -15,9 +15,15 @@ export class ViewBillComponent implements OnInit {
   billIdParams = input.required<string>({ alias: 'billId' });
   readonly from = input<string>();
 
-  readonly breadcrumb = computed(() =>
-    this.from() === '/view-bills/list' ? 'Historial de ventas' : 'Punto de venta',
-  );
+  readonly breadcrumb = computed(() => {
+    if (this.from() === '/view-bills/list') {
+      return 'Historial de ventas';
+    } else if (this.from()?.startsWith('/cash-register')) {
+      return 'Historial de caja';
+    } else {
+      return 'Historial de ventas';
+    }
+  });
   loading = signal<boolean>(true);
   bill = signal<BillResponse>({
     id: 0,

@@ -4,7 +4,6 @@ import { DashboardComponent } from './features/dashboard/pages/dashboard.compone
 import { BillComponent } from './features/bill/pages/create-bill/bill.component';
 import { authGuard } from './core/guards/auth-guard';
 import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
-import { ProductPricesPanel } from './features/bill/layouts/product-prices-panel/product-prices-panel';
 import { BillStore } from './features/bill/store/bill-store';
 import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
 import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
@@ -57,15 +56,6 @@ export const routes: Routes = [
         canActivate: [authGuard],
         component: ProductPanel,
         outlet: 'view-products-table',
-        children: [
-          {
-            path: 'product-prices',
-            title: 'Detalle del producto',
-            outlet: 'select-product-price',
-            canActivate: [authGuard],
-            component: ProductPricesPanel,
-          },
-        ],
       },
       {
         path: 'payment',

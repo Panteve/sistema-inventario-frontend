@@ -19,22 +19,23 @@
     ></app-table-products>
   }
 
-  <!-- Modal precios -->
-  <dialog id="my_modal_2" #my_modal_2 class="du-modal">
-    <div class="du-modal-box">
-      <form method="dialog">
-        <button
-          #btnCerrar
-          class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
-        >
-          ✕
-        </button>
-      </form>
-      <router-outlet name="select-product-price" />
-    </div>
-    <form method="dialog" class="du-modal-backdrop">
-      <button>close</button>
-    </form>
-  </dialog>
-  
+  @if (this.boolean()) {
+    <!-- Modal precios -->
+    <dialog id="my_modal_2" #my_modal_2 class="du-modal">
+      <div class="du-modal-box">
+        <form method="dialog">
+          <button
+            #btnCerrar
+            class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
+          >
+            ✕
+          </button>
+        </form>
+        <app-product-prices-panel
+          [product]="this.productSelected()"
+          (priceSelected)="onPriceSelected($event)"
+        ></app-product-prices-panel>
+      </div>
+    </dialog>
+  }
 </div>

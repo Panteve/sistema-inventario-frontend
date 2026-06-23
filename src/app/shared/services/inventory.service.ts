@@ -10,7 +10,6 @@ import { environment } from '../../../environments/environment';
 export class InventoryService {
   #http = inject(HttpClient);
   #authStore = inject(AuthStore);
-  modalClose = signal<boolean>(false);
 
   loadInventory() {
     const officeId = this.#authStore.employee()?.officeId;

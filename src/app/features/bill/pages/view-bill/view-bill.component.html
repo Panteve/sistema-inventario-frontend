@@ -94,9 +94,8 @@
                       <tr class="border-b border-base-content/5 hover:bg-base-200/60 transition-colors">
                         <td>
                           <p class="font-semibold">
-                            {{ product.productName || 'Producto sin nombre' }}
+                            {{ product.productName }}
                           </p>
-                          <p class="text-xs opacity-60">ID: {{ product.id }}</p>
                         </td>
                         <td class="text-center">{{ product.quantity }}</td>
                         <td class="text-right ">{{ product.priceUnique | cop }}</td>

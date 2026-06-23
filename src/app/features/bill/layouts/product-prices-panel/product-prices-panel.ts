@@ -1,8 +1,6 @@
-import { Component, inject } from '@angular/core';
-import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { BillStore } from '../../store/bill-store';
+import { Component, input, output } from '@angular/core';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
-import { InventoryService } from '../../../../shared/services/inventory.service';
+import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 
 @Component({
   selector: 'app-product-prices-panel',
@@ -10,13 +8,10 @@ import { InventoryService } from '../../../../shared/services/inventory.service'
   templateUrl: './product-prices-panel.html',
 })
 export class ProductPricesPanel {
-  #inventoryService = inject(InventoryService);
-  inventoryStore = inject(InventoryStore);
-  billStore = inject(BillStore);
+  product = input.required<ProductSelected>();
+  priceSelected = output<number>();
 
-  addProductToBill(price: string) {
-    this.billStore.setPriceSelected(price);
-    this.billStore.addProduct();
-    this.#inventoryService.modalClose.set(true);
+  addProductToBill(price: number) {
+    this.priceSelected.emit(price);
   }
 }

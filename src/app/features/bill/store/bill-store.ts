@@ -21,17 +21,11 @@ import { CustomerStore } from './customer-store';
 import { ToastService } from '../../../shared/services/toast.service';
 
 type BillState = {
-  productSelected: ProductSelected;
   bill: CreateBillRequest;
   loading: boolean;
 };
 
 const initialState: BillState = {
-  productSelected: {
-    product: { id: 0, unitPrice: 0, wholesalePrice: 0, name: '' },
-    priceSelected: 0,
-    quantity: 0,
-  },
   bill: {
     customerId: 0,
     paymentMethodId: 0,
@@ -123,25 +117,11 @@ export const BillStore = signalStore(
       customerStore.clearCustomer();
       patchState(store, { bill: initialState.bill, loading: false });
     },
-    setSelectedProduct(product: ProductSelected) {
-      patchState(store, { productSelected: product });
-    },
-    setPriceSelected(priceType: string) {
-      patchState(store, (state) => ({
-        productSelected: {
-          ...state.productSelected,
-          priceSelected:
-            priceType === 'unitPrice'
-              ? state.productSelected.product.unitPrice
-              : state.productSelected.product.wholesalePrice || 0,
-        },
-      }));
-    },
-    addProduct() {
+    addProduct(product: ProductSelected) {
       const productTo: ProductOnBill = {
-        productId: store.productSelected().product.id,
-        name: store.productSelected().product.name,
-        priceUnique: store.productSelected().priceSelected,
+        productId: product.id,
+        name: product.name,
+        priceUnique: product.priceSelected,
         quantity: 1,
         taxPercentage: 0.1,
       };
@@ -165,6 +145,11 @@ export const BillStore = signalStore(
           },
         }));
       }
+      toastService.show({
+        title: 'Producto agregado',
+        content: `Se agregó ${productTo.name} a la factura.`,
+        type: 'success',
+      });
     },
     quitProduct(productId: number) {
       patchState(store, (state) => ({

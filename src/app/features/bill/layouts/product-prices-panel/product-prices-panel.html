@@ -1,6 +1,8 @@
+@let unitPrice = product().unitPrice;
+@let wholesalePrice = product().wholesalePrice;
 <div class="flex flex-col gap-4 py-2">
   <div class="text-center">
-    <h3 class="text-xl font-bold">{{ billStore.productSelected().product.name }}</h3>
+    <h3 class="text-xl font-bold">{{ product().name }}</h3>
     <p class="text-sm opacity-50">Selecciona el tipo de precio</p>
   </div>
 
@@ -8,13 +10,11 @@
     <!-- Precio Unitario -->
     <button
       class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
-      (click)="addProductToBill('unitPrice')"
+      (click)="addProductToBill(unitPrice)"
     >
       <div class="flex flex-col items-start">
         <span class="text-sm opacity-50 font-normal">Precio unitario</span>
-        <span class="text-lg font-semibold">{{
-          billStore.productSelected().product.unitPrice | cop
-        }}</span>
+        <span class="text-lg font-semibold">{{ unitPrice | cop }}</span>
       </div>
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -34,13 +34,12 @@
     <!-- Precio Mayorista -->
     <button
       class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
-      (click)="addProductToBill('wholesalePrice')"
-      [disabled]="!billStore.productSelected().product.wholesalePrice"
+      (click)="addProductToBill(wholesalePrice)"
     >
       <div class="flex flex-col items-start">
         <span class="text-sm opacity-50 font-normal">Precio mayorista</span>
         <span class="text-lg font-semibold">{{
-          billStore.productSelected().product.wholesalePrice | cop
+          wholesalePrice | cop
         }}</span>
       </div>
       <svg

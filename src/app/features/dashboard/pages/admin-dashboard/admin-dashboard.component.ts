@@ -1,4 +1,4 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, SlicePipe } from '@angular/common';
 import { Component, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
@@ -24,6 +24,7 @@ import { AdminDashboardPieChartComponent } from '../../components/admin-dashboar
   imports: [
     AdminDashboardFiltersComponent,
     DatePipe,
+    SlicePipe,
     CopPipe,
     AdminDashboardAreaChartComponent,
     AdminDashboardBarChartComponent,

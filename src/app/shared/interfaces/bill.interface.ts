@@ -13,12 +13,10 @@ export interface CreateBillRequest {
 }
 
 export interface ProductSelected {
-  product: {
-    name: string;
-    id: number;
-    unitPrice: number;
-    wholesalePrice: number;
-  };
+  name: string;
+  id: number;
+  unitPrice: number;
+  wholesalePrice: number;
   priceSelected: number;
   quantity: number;
 }

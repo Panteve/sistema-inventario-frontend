@@ -84,6 +84,5 @@ export class BillComponent {
 
   cancelBill() {
     this.billStore.cancelBill();
-    this.router.navigate(['/bill']);
   }
 }

@@ -9,9 +9,9 @@ import { OfficeStore } from '../../store/office-store';
 export class OfficeSelectComponent {
   value = input<number>();
   size = input<string>();
+  allOffices = input<boolean>(true);
   idOffice = output<number>();
   nameOffice = output<string>();
-
   officeStore = inject(OfficeStore);
 
   changeOffice(event: Event) {
