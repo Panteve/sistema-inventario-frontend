@@ -85,6 +85,11 @@ export class DateRangePopoverComponent {
     return this.startDate() === monthStart && this.endDate() === this.todayIso();
   }
 
+  isCurrentYearRange(): boolean {
+    const yearStart = toIsoDate(this.#startOfYear(this.#today));
+    return this.startDate() === yearStart && this.endDate() === this.todayIso();
+  }
+
   setTodayRange() {
     const today = this.todayIso();
 
@@ -103,7 +108,6 @@ export class DateRangePopoverComponent {
       this.isAdmin(),
     );
 
-
     this.rangeStart.emit(normalized.startDate);
     this.rangeEnd.emit(normalized.endDate);
   }
@@ -119,11 +123,24 @@ export class DateRangePopoverComponent {
       this.isAdmin(),
     );
 
-
     this.rangeStart.emit(normalized.startDate);
     this.rangeEnd.emit(normalized.endDate);
   }
 
+  setCurrentYearRange() {
+    const startDate = toIsoDate(this.#startOfYear(this.#today));
+    const normalized = normalizeDateRange(
+      {
+        startDate,
+        endDate: this.todayIso(),
+      },
+      this.todayIso(),
+      this.isAdmin(),
+    );
+
+    this.rangeStart.emit(normalized.startDate);
+    this.rangeEnd.emit(normalized.endDate);
+  }
 
   #startOfWeek(date: Date): Date {
     const copy = new Date(date);
@@ -138,5 +155,9 @@ export class DateRangePopoverComponent {
 
   #startOfMonth(date: Date): Date {
     return new Date(date.getFullYear(), date.getMonth(), 1);
+  }
+
+  #startOfYear(date: Date): Date {
+    return new Date(date.getFullYear(), 0, 1);
   }
 }
