@@ -1,6 +1,6 @@
-<section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
+<section class="flex-1 flex justify-center px-2 py-4 md:px-4 md:py-8 min-h-screen">
   <div class="w-full max-w-5xl md:max-w-7xl">
-    <nav class="mb-4 flex items-center gap-1.5 px-1 text-sm" aria-label="Breadcrumb">
+    <nav class="mb-3 flex items-center gap-1.5 px-1 text-sm" aria-label="Breadcrumb">
       @for (item of breadcrumbs(); track $index; let last = $last) {
         @if (!last) {
           <a [routerLink]="item.path" class="flex items-center gap-1.5 rounded-lg px-2 py-1 text-base-content/50 transition-colors hover:bg-base-200/70 hover:text-base-content/80">

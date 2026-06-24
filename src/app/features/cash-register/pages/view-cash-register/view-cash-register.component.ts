@@ -29,11 +29,10 @@ export class ViewCashRegisterComponent implements OnInit {
         break;
       }
       case '/view-bills/bill': {
+        items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
         const billId = this.fromId();
         if (billId) {
           items.push({ label: `Factura #${billId}`, path: `/view-bills/bill/${billId}` });
-        } else {
-          items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
         }
         break;
       }
@@ -111,7 +110,8 @@ export class ViewCashRegisterComponent implements OnInit {
   }
 
   openBillDetail(billId: number) {
-    this.#router.navigate(['/view-bills/bill', billId]);
+    this.#router.navigate(['/view-bills/bill', billId], {
+      queryParams: { from: '/view-cash-registers/list', fromId: this.cashRegisterIdParams() },
+    });
   }
-
 }

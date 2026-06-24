@@ -187,7 +187,9 @@
               </div>
               <div class="mt-2 grid grid-cols-1 gap-2 text-sm md:text-base">
                 <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
-                  <p class="font-semibold">Caja #{{ bill().cashRegister.id }}</p>
+                  <p class="font-semibold hover:underline hover:cursor-pointer" (click)="viewCashRegister(bill().cashRegister.id)">
+                    Caja #{{ bill().cashRegister.id }}
+                  </p>
                   <p class="opacity-75">Sucursal {{ bill().cashRegister.officeId }}</p>
                 </div>
                 <div class="du-divider my-0"></div>

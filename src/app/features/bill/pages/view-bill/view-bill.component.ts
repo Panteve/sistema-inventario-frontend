@@ -3,7 +3,7 @@ import { BillService } from '../../services/bill.service';
 import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
 type BreadcrumbItem = { label: string; path: string | null };
@@ -14,6 +14,8 @@ type BreadcrumbItem = { label: string; path: string | null };
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
+  #router = inject(Router);
+
   billIdParams = input.required<string>({ alias: 'billId' });
   readonly from = input<string>();
   readonly fromId = input<string>();
@@ -27,16 +29,15 @@ export class ViewBillComponent implements OnInit {
         items.push({ label: 'Historial de cajas', path: '/view-cash-registers/list' });
         const crId = this.fromId();
         if (crId) {
-          items.push({ label: `Caja #${crId}`, path: `/view-cash-registers/cash-register/${crId}` });
+          items.push({
+            label: `Caja #${crId}`,
+            path: `/view-cash-registers/cash-register/${crId}`,
+          });
         }
         break;
       }
       case '/view-bills/list': {
         items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
-        break;
-      }
-      case '/create-bill': {
-        items.push({ label: 'Crear factura', path: '/create-bill' });
         break;
       }
       case '/dashboard': {
@@ -95,5 +96,10 @@ export class ViewBillComponent implements OnInit {
           this.loading.set(false);
         },
       });
+  }
+  viewCashRegister(cashRegisterId: number) {
+    this.#router.navigate(['/view-cash-registers/cash-register', cashRegisterId], {
+      queryParams: { from: '/view-bills/bill', fromId: this.billIdParams() },
+    });
   }
 }

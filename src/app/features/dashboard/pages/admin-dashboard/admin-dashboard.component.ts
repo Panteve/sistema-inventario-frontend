@@ -205,7 +205,9 @@ export class AdminDashboardComponent implements OnDestroy {
   }
 
   navigateToCashRegister(registerId: number) {
-    this.#router.navigate(['view-cash-registers/cash-register', registerId]);
+    this.#router.navigate(['view-cash-registers/cash-register', registerId], {
+      queryParams: { from: '/dashboard' },
+    });
   }
 
   #maxOrDefault(values: number[]): number {
