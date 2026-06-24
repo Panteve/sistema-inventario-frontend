@@ -5,6 +5,8 @@ import { CashRegisterFullHistoryResponse } from '../../../../shared/interfaces/c
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { Router, RouterLink } from '@angular/router';
 
+type BreadcrumbItem = { label: string; path: string | null };
+
 @Component({
   selector: 'app-view-cash-register.component',
   imports: [DatePipe, CopPipe, RouterLink],
@@ -12,8 +14,42 @@ import { Router, RouterLink } from '@angular/router';
 })
 export class ViewCashRegisterComponent implements OnInit {
   cashRegisterIdParams = input.required<string>({ alias: 'cashRegisterId' });
+  readonly from = input<string>();
+  readonly fromId = input<string>();
   #cashRegisterService = inject(CashRegisterService);
   #router = inject(Router);
+
+  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const items: BreadcrumbItem[] = [];
+    const fromRoute = this.from();
+
+    switch (fromRoute) {
+      case '/view-cash-registers/list': {
+        items.push({ label: 'Historial de cajas', path: '/view-cash-registers/list' });
+        break;
+      }
+      case '/view-bills/bill': {
+        const billId = this.fromId();
+        if (billId) {
+          items.push({ label: `Factura #${billId}`, path: `/view-bills/bill/${billId}` });
+        } else {
+          items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
+        }
+        break;
+      }
+      case '/dashboard': {
+        items.push({ label: 'Dashboard', path: '/dashboard' });
+        break;
+      }
+      default: {
+        items.push({ label: 'Historial de cajas', path: '/view-cash-registers/list' });
+        break;
+      }
+    }
+
+    items.push({ label: `Caja #${this.cashRegisterIdParams()}`, path: null });
+    return items;
+  });
 
   loading = signal(true);
 

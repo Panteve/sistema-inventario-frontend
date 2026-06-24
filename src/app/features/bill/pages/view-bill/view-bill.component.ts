@@ -6,6 +6,8 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 
+type BreadcrumbItem = { label: string; path: string | null };
+
 @Component({
   selector: 'app-view-bill.component',
   imports: [CopPipe, RouterLink, DatePipe],
@@ -14,15 +16,41 @@ import { DatePipe } from '@angular/common';
 export class ViewBillComponent implements OnInit {
   billIdParams = input.required<string>({ alias: 'billId' });
   readonly from = input<string>();
+  readonly fromId = input<string>();
 
-  readonly breadcrumb = computed(() => {
-    if (this.from() === '/view-bills/list') {
-      return 'Historial de ventas';
-    } else if (this.from()?.startsWith('/cash-register')) {
-      return 'Historial de caja';
-    } else {
-      return 'Historial de ventas';
+  readonly breadcrumbs = computed<BreadcrumbItem[]>(() => {
+    const items: BreadcrumbItem[] = [];
+    const fromRoute = this.from();
+
+    switch (fromRoute) {
+      case '/view-cash-registers/list': {
+        items.push({ label: 'Historial de cajas', path: '/view-cash-registers/list' });
+        const crId = this.fromId();
+        if (crId) {
+          items.push({ label: `Caja #${crId}`, path: `/view-cash-registers/cash-register/${crId}` });
+        }
+        break;
+      }
+      case '/view-bills/list': {
+        items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
+        break;
+      }
+      case '/create-bill': {
+        items.push({ label: 'Crear factura', path: '/create-bill' });
+        break;
+      }
+      case '/dashboard': {
+        items.push({ label: 'Dashboard', path: '/dashboard' });
+        break;
+      }
+      default: {
+        items.push({ label: 'Historial de ventas', path: '/view-bills/list' });
+        break;
+      }
     }
+
+    items.push({ label: `Factura #${this.bill().id || this.billIdParams()}`, path: null });
+    return items;
   });
   loading = signal<boolean>(true);
   bill = signal<BillResponse>({
