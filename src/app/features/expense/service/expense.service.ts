@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import {
   CreateExpenseRequest,
+  Expense,
   ExpenseResponse,
   ParamsGetExpenses,
 } from '../../../shared/interfaces/expense.interface';
@@ -15,6 +16,10 @@ export class ExpenseService {
 
   createExpense(expense: CreateExpenseRequest) {
     return this.#http.post(`${environment.apiUrl}/expenses`, expense);
+  }
+
+  getExpenseById(expenseId: number) {
+    return this.#http.get<Expense>(`${environment.apiUrl}/expenses/${expenseId}`);
   }
 
   getExpenses(params: ParamsGetExpenses) {

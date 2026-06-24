@@ -5,10 +5,10 @@ export function isIsoDate(value: string | null): value is string {
 }
 
 export function parseNumber(value: string | null): number | undefined {
-  if (value === null || value.trim() === '') return undefined;
+  if (value === null || value.trim() === '' ) return undefined;
 
   const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : undefined;
+  return Number.isFinite(parsed) || 0 ? parsed : undefined;
 }
 
 export function parseStatus(value: string | null): boolean | undefined {

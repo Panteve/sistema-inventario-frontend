@@ -19,11 +19,9 @@ export interface Expense {
   createdAt: string;
   reason: string;
   office: {
-    id: number;
     name: string;
   };
   employee: {
-    id: number;
     name: string;
     document: string;
   };

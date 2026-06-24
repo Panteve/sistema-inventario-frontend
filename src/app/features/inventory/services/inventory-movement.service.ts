@@ -5,6 +5,7 @@ import {
   CreateInventoryMovementRequest,
   InventoryMovementResponse,
   ParamsGetInventoryMovements,
+  InventoryMovement,
 } from '../../../shared/interfaces/inventoryMovement.interface';
 
 @Injectable({
@@ -45,5 +46,9 @@ export class MovementInventoryService {
     return this.http.get<InventoryMovementResponse>(`${environment.apiUrl}/inventory-movement`, {
       params: queryParams,
     });
+  }
+
+  getInventoryMovementById(id: string) {
+    return this.http.get<InventoryMovement>(`${environment.apiUrl}/inventory-movement/${id}`);
   }
 }

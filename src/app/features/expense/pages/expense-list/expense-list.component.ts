@@ -65,7 +65,6 @@ export class ExpenseListComponent implements OnInit {
   ngOnInit(): void {
     const defaults = this.#buildDefaultParams();
     const params = this.#route.snapshot.queryParamMap;
-
     const startDate = isIsoDate(params.get('startDate'))
       ? params.get('startDate')!
       : defaults.startDate;
@@ -209,7 +208,6 @@ export class ExpenseListComponent implements OnInit {
     this.queryParams.set(this.#buildDefaultParams());
     this.applyFilters();
   }
-
   applyFilters() {
     this.loading.set(true);
     this.expenseService
@@ -219,6 +217,14 @@ export class ExpenseListComponent implements OnInit {
         next: (response) => {
           this.expenses.set(response.data);
           this.pagination.set(response.pagination);
+          if (this.#route.snapshot.queryParamMap.get('fromDashboard')) {
+            this.expenseSelected.set(
+              response.data.find(
+                (e) => e.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')),
+              )!,
+            );
+            this.openViewModal();
+          }
         },
         error: () => {
           this.toastService.show({
@@ -233,7 +239,7 @@ export class ExpenseListComponent implements OnInit {
   openViewModal() {
     this.#router.navigate([], {
       relativeTo: this.#route,
-      queryParams: { viewModal: 'open' },
+      queryParams: { viewModal: 'open', fromDashboard: null },
       queryParamsHandling: 'merge',
     });
   }

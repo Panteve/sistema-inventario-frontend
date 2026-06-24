@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
@@ -37,8 +37,8 @@ export class MovementListComponent implements OnInit {
   readonly #today = new Date();
   readonly todayIso = toIsoDate(this.#today);
   queryParams = signal<ParamsGetInventoryMovements>(this.#buildDefaultParams());
-  movementSelected = signal<InventoryMovement | null>(null);
 
+  movementSelected = signal<InventoryMovement | null>(null);
   filterPanelSticky = signal(false);
   viewModalOpen = toSignal(
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
@@ -62,6 +62,22 @@ export class MovementListComponent implements OnInit {
       hasAnyMovements: todayMovements.length + olderMovements.length > 0,
     };
   });
+
+  constructor() {
+    effect(() => {
+      if (
+        !this.movementInventoryStore.loading() &&
+        this.#route.snapshot.queryParamMap.get('fromDashboard')
+      ) {
+        this.movementSelected.set(
+          this.movementInventoryStore
+            .movementList()
+            .find((m) => m.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')))!,
+        );
+        this.openViewModal();
+      }
+    });
+  }
 
   ngOnInit(): void {
     // Priority: URL (deep links) > defaults.
@@ -178,7 +194,7 @@ export class MovementListComponent implements OnInit {
   openViewModal() {
     this.#router.navigate([], {
       relativeTo: this.#route,
-      queryParams: { viewModal: 'open' },
+      queryParams: { viewModal: 'open', fromDashboard: null },
       queryParamsHandling: 'merge',
     });
   }

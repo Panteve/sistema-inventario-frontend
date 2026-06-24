@@ -19,6 +19,7 @@ export interface InventoryMovement {
   employeeId: number;
   type: 'IN' | 'OUT' | 'TRANSFER';
   createdAt: string;
+  reason: string;
   fromOffice: {
     id: number;
     name: string;

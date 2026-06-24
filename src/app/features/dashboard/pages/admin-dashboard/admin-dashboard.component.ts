@@ -210,6 +210,18 @@ export class AdminDashboardComponent implements OnDestroy {
     });
   }
 
+  navigateToExpense(expenseId: number) {
+    this.#router.navigate(['expense-list'], {
+      queryParams: { fromDashboard: `${expenseId}` },
+    });
+  }
+
+  navigateToInventoryMovement(movementId: number) {
+    this.#router.navigate(['inventory/history-movement'], {
+      queryParams: { fromDashboard: `${movementId}` },
+    });
+  }
+
   #maxOrDefault(values: number[]): number {
     const max = values.reduce((acc, value) => (value > acc ? value : acc), 0);
     return max > 0 ? max : 1;

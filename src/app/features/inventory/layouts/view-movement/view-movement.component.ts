@@ -6,9 +6,8 @@ import { InventoryMovement } from '../../../../shared/interfaces/inventoryMoveme
   selector: 'app-view-movement',
   imports: [DatePipe],
   templateUrl: './view-movement.component.html',
-
 })
-export class ViewMovementComponent {
+export class ViewMovementComponent{
   movementSelected = input<InventoryMovement | null>(null);
 
   readonly typeLabel = computed(() => {

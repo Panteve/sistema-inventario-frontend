@@ -779,7 +779,7 @@
                     }
                   } @else {
                     @for (item of dashboardProducts().lastExpenses; track item.id) {
-                      <tr class="transition-colors hover:bg-error/5">
+                      <tr class="transition-colors hover:bg-error/5 hover:cursor-pointer" (click)="navigateToExpense(item.id)">
                         <td class="font-medium">{{
                             item.reason.length > 20
                               ? (item.reason | slice: 0 : 20) + '...'
@@ -939,7 +939,7 @@
                       }
                     } @else {
                       @for (item of dashboardProducts().lastInventoryMovements; track item.id) {
-                        <tr class="transition-colors hover:bg-accent/5">
+                        <tr class="transition-colors hover:bg-accent/5 hover:cursor-pointer" (click)="navigateToInventoryMovement(item.id)">
                           <td>
                             <span
                               class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"
