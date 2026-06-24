@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @plugin "daisyui" {
-  themes: dark, dracula, light;
   prefix: 'du-';
 }
 
@@ -11,6 +10,41 @@
 
 @theme {
   --font-sans: 'Rubik', sans-serif;
+}
+
+@plugin "daisyui/theme" {
+  name: 'business';
+  default: false;
+  prefersdark: false;
+  color-scheme: 'dark';
+  --color-base-100: oklch(24.353% 0 0);
+  --color-base-200: oklch(22.648% 0 0);
+  --color-base-300: oklch(20.944% 0 0);
+  --color-base-content: oklch(84.87% 0 0);
+  --color-primary: oklch(41.703% 0.099 251.473);
+  --color-primary-content: oklch(88.34% 0.019 251.473);
+  --color-secondary: oklch(64.092% 0.027 229.389);
+  --color-secondary-content: oklch(12.818% 0.005 229.389);
+  --color-accent: oklch(67.271% 0.167 35.791);
+  --color-accent-content: oklch(13.454% 0.033 35.791);
+  --color-neutral: oklch(27.441% 0.013 253.041);
+  --color-neutral-content: oklch(85.488% 0.002 253.041);
+  --color-info: oklch(62.616% 0.143 240.033);
+  --color-info-content: oklch(12.523% 0.028 240.033);
+  --color-success: oklch(70.226% 0.094 156.596);
+  --color-success-content: oklch(14.045% 0.018 156.596);
+  --color-warning: oklch(77.482% 0.115 81.519);
+  --color-warning-content: oklch(15.496% 0.023 81.519);
+  --color-error: oklch(51.61% 0.146 29.674);
+  --color-error-content: oklch(90.322% 0.029 29.674);
+  --radius-selector: 0rem;
+  --radius-field: 0.25rem;
+  --radius-box: 0.25rem;
+  --size-selector: 0.25rem;
+  --size-field: 0.25rem;
+  --border: 1px;
+  --depth: 0;
+  --noise: 0;
 }
 
 @plugin "daisyui/theme" {
@@ -163,18 +197,31 @@
   opacity: 0;
   will-change: transform, opacity;
 }
-[data-reveal="up"] { transform: translateY(36px); }
-[data-reveal="down"] { transform: translateY(-24px); }
-[data-reveal="left"] { transform: translateX(-40px); }
-[data-reveal="right"] { transform: translateX(40px); }
-[data-reveal="scale"] { transform: scale(0.88); }
-[data-reveal="fade"] { transform: none; }
+[data-reveal='up'] {
+  transform: translateY(36px);
+}
+[data-reveal='down'] {
+  transform: translateY(-24px);
+}
+[data-reveal='left'] {
+  transform: translateX(-40px);
+}
+[data-reveal='right'] {
+  transform: translateX(40px);
+}
+[data-reveal='scale'] {
+  transform: scale(0.88);
+}
+[data-reveal='fade'] {
+  transform: none;
+}
 
 [data-reveal].is-visible {
   opacity: 1;
   transform: none;
-  transition: opacity 0.6s cubic-bezier(0, 0, 0.2, 1),
-              transform 0.6s cubic-bezier(0, 0, 0.2, 1);
+  transition:
+    opacity 0.6s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0, 0, 0.2, 1);
 }
 
 .reveal-stagger > * {
@@ -184,17 +231,34 @@
 .reveal-stagger.is-visible > * {
   opacity: 1;
   transform: none;
-  transition: opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
-              transform 0.5s cubic-bezier(0, 0, 0.2, 1);
+  transition:
+    opacity 0.5s cubic-bezier(0, 0, 0.2, 1),
+    transform 0.5s cubic-bezier(0, 0, 0.2, 1);
 }
-.reveal-stagger.is-visible > *:nth-child(1) { transition-delay: 0.05s; }
-.reveal-stagger.is-visible > *:nth-child(2) { transition-delay: 0.12s; }
-.reveal-stagger.is-visible > *:nth-child(3) { transition-delay: 0.19s; }
-.reveal-stagger.is-visible > *:nth-child(4) { transition-delay: 0.26s; }
-.reveal-stagger.is-visible > *:nth-child(5) { transition-delay: 0.33s; }
-.reveal-stagger.is-visible > *:nth-child(6) { transition-delay: 0.40s; }
-.reveal-stagger.is-visible > *:nth-child(7) { transition-delay: 0.47s; }
-.reveal-stagger.is-visible > *:nth-child(8) { transition-delay: 0.54s; }
+.reveal-stagger.is-visible > *:nth-child(1) {
+  transition-delay: 0.05s;
+}
+.reveal-stagger.is-visible > *:nth-child(2) {
+  transition-delay: 0.12s;
+}
+.reveal-stagger.is-visible > *:nth-child(3) {
+  transition-delay: 0.19s;
+}
+.reveal-stagger.is-visible > *:nth-child(4) {
+  transition-delay: 0.26s;
+}
+.reveal-stagger.is-visible > *:nth-child(5) {
+  transition-delay: 0.33s;
+}
+.reveal-stagger.is-visible > *:nth-child(6) {
+  transition-delay: 0.4s;
+}
+.reveal-stagger.is-visible > *:nth-child(7) {
+  transition-delay: 0.47s;
+}
+.reveal-stagger.is-visible > *:nth-child(8) {
+  transition-delay: 0.54s;
+}
 
 /* Counter elements */
 [data-count] {
@@ -237,16 +301,34 @@
   border-radius: 50%;
   animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
-.pulse-dot-accent { --pulse-clr: var(--color-accent); }
-.pulse-dot-error { --pulse-clr: var(--color-error); }
-.pulse-dot-success { --pulse-clr: var(--color-success); }
-.pulse-dot-info { --pulse-clr: var(--color-info); }
-.pulse-dot-warning { --pulse-clr: var(--color-warning); }
-.pulse-dot-secondary { --pulse-clr: var(--color-secondary); }
+.pulse-dot-accent {
+  --pulse-clr: var(--color-accent);
+}
+.pulse-dot-error {
+  --pulse-clr: var(--color-error);
+}
+.pulse-dot-success {
+  --pulse-clr: var(--color-success);
+}
+.pulse-dot-info {
+  --pulse-clr: var(--color-info);
+}
+.pulse-dot-warning {
+  --pulse-clr: var(--color-warning);
+}
+.pulse-dot-secondary {
+  --pulse-clr: var(--color-secondary);
+}
 @keyframes pulse-ring {
-  0% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-clr) 40%, transparent); }
-  70% { box-shadow: 0 0 0 8px color-mix(in oklab, var(--pulse-clr) 0%, transparent); }
-  100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-clr) 0%, transparent); }
+  0% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-clr) 40%, transparent);
+  }
+  70% {
+    box-shadow: 0 0 0 8px color-mix(in oklab, var(--pulse-clr) 0%, transparent);
+  }
+  100% {
+    box-shadow: 0 0 0 0 color-mix(in oklab, var(--pulse-clr) 0%, transparent);
+  }
 }
 
 /* ── AURORA DRIFT BACKGROUND ── */
@@ -260,9 +342,9 @@
 
 .aurora-orb {
   position: absolute;
-  border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.12;
+  border-radius: 65%;
+  filter: blur(85px);
+  opacity: 0.25;
   will-change: transform;
 }
 
@@ -271,43 +353,62 @@
   height: 60vh;
   top: -20vh;
   left: -15vw;
-  background: oklch(62% 0.25 264);
-  animation: auroraA 18s ease-in-out infinite;
+  background: var(--color-primary);
+  animation: auroraA 15s ease-in-out infinite;
 }
 
 .aurora-orb-2 {
   width: 55vw;
   height: 50vh;
-  bottom: -15vh;
+  bottom: -3vh;
   right: -10vw;
-  background: oklch(58% 0.22 304);
-  animation: auroraB 22s ease-in-out infinite;
+  background: var(--color-secondary);
+  animation: auroraB 18s ease-in-out infinite;
 }
 
 .aurora-orb-3 {
   width: 40vw;
   height: 45vh;
-  top: 40%;
+  top: 30%;
   left: 35%;
-  background: oklch(56% 0.20 224);
-  animation: auroraC 26s ease-in-out infinite;
+  background: var(--color-accent);
+  animation: auroraC 32s ease-in-out infinite;
 }
 
 @keyframes auroraA {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33%      { transform: translate(6vw, -4vh) scale(1.08); }
-  66%      { transform: translate(-3vw, 6vh) scale(0.95); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(6vw, -4vh) scale(1.08);
+  }
+  66% {
+    transform: translate(-3vw, 6vh) scale(0.95);
+  }
 }
 
 @keyframes auroraB {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  40%      { transform: translate(-8vw, 3vh) scale(1.06); }
-  70%      { transform: translate(4vw, -5vh) scale(0.97); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  40% {
+    transform: translate(-8vw, 3vh) scale(1.06);
+  }
+  70% {
+    transform: translate(4vw, -5vh) scale(0.97);
+  }
 }
 
 @keyframes auroraC {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  50%      { transform: translate(-5vw, -4vh) scale(1.1); }
+  0%,
+  100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-20vw, 4vh) scale(1.1);
+  }
 }
 
 /* ── CURSOR GLOW SPOTLIGHT ── */
@@ -318,11 +419,7 @@
   width: 600px;
   height: 600px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle,
-    oklch(62% 0.22 264 / 0.06) 0%,
-    transparent 70%
-  );
+  background: radial-gradient(circle, oklch(62% 0.22 264 / 0.06) 0%, transparent 70%);
   transform: translate(-300px, -300px);
   transition: transform 0.15s ease-out;
   will-change: transform;
@@ -336,7 +433,6 @@
     display: inline-block;
   }
 }
-
 
 /* Deshabilitar scroll-reveal dentro de modales */
 .du-modal [data-reveal] {
