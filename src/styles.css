@@ -201,15 +201,6 @@
   font-variant-numeric: tabular-nums;
 }
 
-/* ── CARD HOVER LIFT ── */
-.card-hover {
-  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
-}
-.card-hover:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 20px 25px -5px oklch(0 0 0 / 0.08), 0 8px 10px -6px oklch(0 0 0 / 0.08);
-}
-
 /* ── TILT CARD GLOW ── */
 .tilt-card {
   transform-style: preserve-3d;
@@ -358,7 +349,6 @@
   [data-reveal],
   [data-reveal].is-visible,
   .reveal-stagger > *,
-  .card-hover,
   .ambient-glow,
   .pulse-dot::after {
     transition: none !important;
