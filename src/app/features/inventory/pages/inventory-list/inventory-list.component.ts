@@ -235,9 +235,12 @@ export class InventoryListComponent implements OnDestroy {
     }
   }
 
+  showDisableModal = signal(false);
+
   disableProduct() {
     const product = this.productSelected();
     if (!product) return;
     this.productSelected.set(null);
+    this.showDisableModal.set(false);
   }
 }

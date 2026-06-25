@@ -346,31 +346,11 @@
                 <button
                   type="button"
                   class="du-btn du-btn-error du-btn-sm"
-                  onclick="disable_modal.showModal()"
+                  (click)="showDisableModal.set(true)"
                 >
                   Deshabilitar
                 </button>
               </div>
-              <dialog id="disable_modal" class="du-modal">
-                <div class="du-modal-box">
-                  <h3 class="font-bold text-lg">¿Deshabilitar producto?</h3>
-                  <p class="py-4 text-sm">
-                    Estás a punto de deshabilitar <strong>{{ p.product.name }}</strong> con
-                    {{ p.quantity }} uds. en stock.
-                  </p>
-                  <div class="du-modal-action">
-                    <form method="dialog">
-                      <button class="du-btn du-btn-ghost">Cancelar</button>
-                    </form>
-                    <button class="du-btn du-btn-error" (click)="disableProduct()">
-                      Sí, deshabilitar
-                    </button>
-                  </div>
-                </div>
-                <form method="dialog" class="du-modal-backdrop">
-                  <button>close</button>
-                </form>
-              </dialog>
             } @else {
               <span class="text-sm opacity-50">Ningún producto seleccionado</span>
             }
@@ -426,3 +406,37 @@
     </div>
   </div>
 </section>
+
+@if (showDisableModal()) {
+  <div
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+    (click)="showDisableModal.set(false)"
+  >
+    <div
+      class="w-full max-w-md rounded-2xl border border-base-content/10 bg-base-100 p-6 shadow-2xl mx-4"
+      (click)="$event.stopPropagation()"
+    >
+      <h3 class="text-lg font-bold">¿Deshabilitar producto?</h3>
+      <p class="py-4 text-sm leading-relaxed">
+        Estás a punto de deshabilitar <strong>{{ productSelected()?.product?.name }}</strong> con
+        {{ productSelected()?.quantity }} uds. en stock.
+      </p>
+      <div class="flex justify-end gap-2">
+        <button
+          type="button"
+          class="du-btn du-btn-ghost du-btn-sm"
+          (click)="showDisableModal.set(false)"
+        >
+          Cancelar
+        </button>
+        <button
+          type="button"
+          class="du-btn du-btn-error du-btn-sm"
+          (click)="disableProduct()"
+        >
+          Sí, deshabilitar
+        </button>
+      </div>
+    </div>
+  </div>
+}
