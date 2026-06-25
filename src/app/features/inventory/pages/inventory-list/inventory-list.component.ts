@@ -6,6 +6,7 @@ import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
+import { InventoryService } from '../../../../shared/services/inventory.service';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -24,6 +25,7 @@ export class InventoryListComponent implements OnDestroy {
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   officeStore = inject(OfficeStore);
+  inventoryService = inject(InventoryService);
   router = inject(Router);
   #currencyPipe = inject(CurrencyPipe);
 
@@ -41,6 +43,7 @@ export class InventoryListComponent implements OnDestroy {
   maxPriceFilter = signal<number | null>(null);
   selectedStockStatuses = signal<StockStatusFilter[]>([]);
   isActiveProducts = signal<boolean>(true);
+  showDisableModal = signal(false);
 
   enableStatusStockHighlight = signal<boolean>(true);
   quantityProducts = signal<number>(15);
@@ -235,12 +238,20 @@ export class InventoryListComponent implements OnDestroy {
     }
   }
 
-  showDisableModal = signal(false);
-
-  disableProduct() {
+  changeStatusProduct() {
     const product = this.productSelected();
     if (!product) return;
-    this.productSelected.set(null);
-    this.showDisableModal.set(false);
+
+    this.inventoryService
+      .disabledProductOnInventory({
+        productId: product.product.id,
+        officeId: this.authStore.employee()?.officeId ?? 0,
+        status: !product.status,
+      })
+      .subscribe(() => {
+        this.productSelected.set(null);
+        this.showDisableModal.set(false);
+        this.inventoryStore.loadProductsOnInventory(this.isActiveProducts());
+      });
   }
 }

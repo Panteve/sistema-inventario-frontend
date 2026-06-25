@@ -6,8 +6,14 @@ export interface ProductOnInventoryResponse {
     description?: string;
     unitPrice: number;
     wholesalePrice: number;
-    status: boolean;
   };
+  status:true
+}
+
+export interface changeStatusProductOnInventoryRequest {
+  productId: number;
+  officeId: number;
+  status: boolean;
 }
 
 export interface ProductCatalogResponse extends CreateProductRequest {
