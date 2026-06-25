@@ -1,7 +1,14 @@
-import { patchState, signalStore, withMethods, withProps, withState } from '@ngrx/signals';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withHooks,
+  withMethods,
+  withProps,
+  withState,
+} from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { inject } from '@angular/core';
-import { AuthStore } from '../../core/store/auth-store';
+import { computed, inject } from '@angular/core';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { EmployeesByOfficeResponse } from '../interfaces/employee.interface';
 import { EmployeeService } from '../services/employee.service';
@@ -9,22 +16,34 @@ import { ToastService } from '../services/toast.service';
 
 type EmployeeState = {
   employees: EmployeesByOfficeResponse[];
+  selectedOfficeId: number;
   loading: boolean;
 };
 
 const initialState: EmployeeState = {
   employees: [],
+  selectedOfficeId: 0,
   loading: false,
 };
+
+//QUITAR EN EL BACKEND QUE SE PUEDA PASAR EL NUMERO YA NO ES NECESARIO YA QUE SE PUEDE OBTENER EL ID DE LA OFICINA DEL USUARIO LOGUEADO
 export const EmployeeStore = signalStore(
   withState(initialState),
   withProps(() => ({
-    authStore: inject(AuthStore),
     employeeService: inject(EmployeeService),
     toastService: inject(ToastService),
   })),
-  withMethods(({ authStore, employeeService, toastService, ...store }) => ({
-    loadEmployees: rxMethod<number>(
+  withComputed(({ employees, selectedOfficeId }) => ({
+    employeesByOffice: computed(() => {
+      if (selectedOfficeId() === 0) {
+        return employees();
+      } else {
+        return employees().filter((e) => e.office?.id === selectedOfficeId() || e.office === null);
+      }
+    }),
+  })),
+  withMethods(({ employeeService, toastService, ...store }) => ({
+    _loadEmployees: rxMethod<number>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
@@ -32,7 +51,7 @@ export const EmployeeStore = signalStore(
         switchMap((officeId) => {
           return employeeService.getEmployeesByOffice(officeId).pipe(
             tap((employees) => {
-              patchState(store, { employees });
+              patchState(store, { employees: employees });
             }),
             catchError((err) => {
               toastService.show({
@@ -49,6 +68,14 @@ export const EmployeeStore = signalStore(
         }),
       ),
     ),
-    
+    changeSelectedOffice(officeId: number) {
+      patchState(store, { selectedOfficeId: officeId });
+    },
   })),
+
+  withHooks({
+    onInit(store) {
+      store._loadEmployees(store.selectedOfficeId());
+    },
+  }),
 );

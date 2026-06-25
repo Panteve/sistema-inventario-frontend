@@ -162,17 +162,18 @@ export class ManageEmployeeComponent {
             content: `La informacion del empleado ${this.selectedEmployee()?.name} fue actualizada correctamente.`,
             type: 'success',
           });
+          if (this.sameUser()) {
+            this.authStore.checkSession();
+          }
           const selectedEmployee = this.selectedEmployee();
           if (selectedEmployee) {
             const updatedEmployee: EmployeeResponse = {
-              ...selectedEmployee,
               ...payload,
+              ...selectedEmployee,
             };
+            console.log('Emitting employeeChanged event with updated employee:', selectedEmployee);
+            console.log('Updated employee data:', payload);
             this.employeeChanged.emit(updatedEmployee);
-          }
-
-          if (this.sameUser()) {
-            this.authStore.checkSession();
           }
         },
         error: () => {

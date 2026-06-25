@@ -167,6 +167,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   onEmployeeChanged(updated: EmployeeResponse) {
+    console.log('Employee updated:', updated);
     this.employees.update((employees) =>
       employees.map((employee) => (employee.id === updated.id ? updated : employee)),
     );

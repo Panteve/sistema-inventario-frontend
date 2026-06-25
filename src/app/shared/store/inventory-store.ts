@@ -22,7 +22,6 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
-import { ProductService } from '../services/product.service';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ToastService } from '../services/toast.service';
 import { InventoryService } from '../services/inventory.service';

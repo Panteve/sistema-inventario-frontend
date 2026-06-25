@@ -17,14 +17,12 @@ export class EmployeeSelectComponent {
 
   constructor() {
     effect(() => {
-      this.employeeStore.loadEmployees(this.idOffice() ?? 0);
+      this.employeeStore.changeSelectedOffice(this.idOffice() ?? 0);
     })
   }
-
-
   changeEmployee(event: Event) {
     const employeeValue = Number((event.target as HTMLSelectElement).value);
     this.idEmployee.emit(employeeValue);
-    this.nameEmployee.emit(this.employeeStore.employees().find((e) => e.id === employeeValue)?.name ?? '');
+    this.nameEmployee.emit(this.employeeStore.employeesByOffice().find((e) => e.id === employeeValue)?.name ?? '');
   }
 }

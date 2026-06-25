@@ -1,5 +1,8 @@
 export interface EmployeesByOfficeResponse {
   id: number;
+  office: {
+    id: number;
+  };
   name: string;
 }
 
