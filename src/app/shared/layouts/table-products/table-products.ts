@@ -43,6 +43,7 @@ export class TableProducts {
   minPriceFilter = input<number | null>(null);
   maxPriceFilter = input<number | null>(null);
   selectedStockStatuses = input<StockStatusFilter[]>([]);
+  isActiveProducts = input<boolean>(true);
   rowSelected = output<ProductOnInventoryResponse>();
   filteredProductsCountChanged = output<number>();
 
@@ -192,7 +193,7 @@ export class TableProducts {
   }
   loadProducts() {
     this.globalFilter.set('');
-    this.inventoryStore.loadProductsOnInventory();
+    this.inventoryStore.loadProductsOnInventory(this.isActiveProducts());
   }
 
   table = createAngularTable(() => ({

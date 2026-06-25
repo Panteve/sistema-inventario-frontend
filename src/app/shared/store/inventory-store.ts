@@ -6,9 +6,7 @@ import {
   withProps,
   withState,
 } from '@ngrx/signals';
-import {
-  ProductOnInventoryResponse,
-} from '../interfaces/product.interface';
+import { ProductOnInventoryResponse } from '../interfaces/product.interface';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { computed, inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
@@ -46,11 +44,11 @@ export const InventoryStore = signalStore(
     toastService: inject(ToastService),
   })),
   withMethods(({ authStore, inventoryService, toastService, ...store }) => ({
-    loadProductsOnInventory: rxMethod<void>(
+    loadProductsOnInventory: rxMethod<boolean>(
       pipe(
         tap(() => patchState(store, { loading: true })),
-        switchMap(() =>
-          inventoryService.loadInventory().pipe(
+        switchMap((isActive) =>
+          inventoryService.loadInventory(isActive, authStore.employee()?.officeId).pipe(
             tap((products) => {
               patchState(store, { products });
             }),
@@ -71,7 +69,7 @@ export const InventoryStore = signalStore(
       ),
     ),
   })),
-  
+
   withHooks({
     onInit(store) {
       toObservable(computed(() => store.authStore.employee()?.officeId))
@@ -80,7 +78,7 @@ export const InventoryStore = signalStore(
           filter((id) => !!id),
         )
         .subscribe(() => {
-          store.loadProductsOnInventory();
+          store.loadProductsOnInventory(true);
         });
     },
   }),

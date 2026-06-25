@@ -40,6 +40,7 @@ export class InventoryListComponent implements OnDestroy {
   minPriceFilter = signal<number | null>(null);
   maxPriceFilter = signal<number | null>(null);
   selectedStockStatuses = signal<StockStatusFilter[]>([]);
+  isActiveProducts = signal<boolean>(true);
 
   enableStatusStockHighlight = signal<boolean>(true);
   quantityProducts = signal<number>(15);
@@ -218,6 +219,12 @@ export class InventoryListComponent implements OnDestroy {
   changeOffice(value: Event) {
     const selectElement = Number((value.target as HTMLSelectElement).value);
     this.authStore.setOfficeId(selectElement);
+  }
+
+  changeIsActive(event: Event) {
+    const checked = (event.target as HTMLInputElement).checked;
+    this.isActiveProducts.set(checked);
+    this.inventoryStore.loadProductsOnInventory(checked);
   }
 
   setSelectedProduct(product: ProductOnInventoryResponse) {
