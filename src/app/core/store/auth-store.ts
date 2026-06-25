@@ -53,7 +53,6 @@ export const AuthStore = signalStore(
                 employee: user,
                 officeIdFromCashRegister: user.officeId ?? null,
               });
-
               router.navigate(['/dashboard']);
             }),
             catchError((err) => {

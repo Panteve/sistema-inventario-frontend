@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
+import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -46,6 +47,8 @@ export class InventoryListComponent implements OnDestroy {
 
   minPriceFocus = signal<boolean>(false);
   maxPriceFocus = signal<boolean>(false);
+
+  productSelected = signal<ProductOnInventoryResponse | null>(null);
 
   displayMinPrice = computed(() => {
     if (this.minPriceFocus()) {
@@ -215,5 +218,19 @@ export class InventoryListComponent implements OnDestroy {
   changeOffice(value: Event) {
     const selectElement = Number((value.target as HTMLSelectElement).value);
     this.authStore.setOfficeId(selectElement);
+  }
+
+  setSelectedProduct(product: ProductOnInventoryResponse) {
+    if (this.productSelected() === product) {
+      this.productSelected.set(null);
+    } else {
+      this.productSelected.set(product);
+    }
+  }
+
+  disableProduct() {
+    const product = this.productSelected();
+    if (!product) return;
+    this.productSelected.set(null);
   }
 }
