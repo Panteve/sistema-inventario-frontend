@@ -90,7 +90,7 @@ export class MovementCreateComponent implements OnInit {
   );
 
   ngOnInit(): void {
-    this.productCatalogStore.loadProductsCatalog(false);
+    this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
   }
 
   openProductsModal() {

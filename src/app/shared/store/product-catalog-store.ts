@@ -3,18 +3,20 @@ import { ProductCatalogResponse } from '../interfaces/product.interface';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { inject } from '@angular/core';
 import { AuthStore } from '../../core/store/auth-store';
-import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ProductService } from '../services/product.service';
 
 import { ToastService } from '../services/toast.service';
 
 type ProductState = {
   catalogProducts: ProductCatalogResponse[];
+  showingDelete:boolean
   loading: boolean;
 };
 
 const initialState: ProductState = {
   catalogProducts: [],
+  showingDelete:false,
   loading: false,
 };
 export const ProductCatalogStore = signalStore(
@@ -26,11 +28,22 @@ export const ProductCatalogStore = signalStore(
     toastService: inject(ToastService),
   })),
   withMethods(({ authStore, productService, toastService, ...store }) => ({
-    loadProductsCatalog: rxMethod<boolean>(
+    loadProductsCatalog: rxMethod<{showDelete: boolean, refresh: boolean}>(
       pipe(
         tap(() => patchState(store, { loading: true })),
-        switchMap((showDelete) =>
-          productService.loadProductsCatalog(showDelete).pipe(
+        filter((params) => {
+          const { showDelete, refresh } = params;
+          if (store.showingDelete() === showDelete && store.catalogProducts().length > 0 && !refresh) {
+            patchState(store, { loading: false });
+            return false;
+          }else{
+            patchState(store, { showingDelete: showDelete });
+            return true;
+          }
+
+        }),
+        switchMap((params) =>
+          productService.loadProductsCatalog(params.showDelete).pipe(
             tap((catalogProducts) => {
               patchState(store, { catalogProducts });
             }),

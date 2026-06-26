@@ -40,9 +40,19 @@ export class ProductsComponent implements OnInit {
       nonNullable: true,
       validators: [Validators.required, Validators.min(0)],
     }),
+    unitPriceCalculated: new FormControl<number>(0, {
+      nonNullable: true,
+    }),
     wholesalePrice: new FormControl<number>(0, {
       nonNullable: true,
       validators: [Validators.required, Validators.min(0)],
+    }),
+    wholesalePriceCalculated: new FormControl<number>(0, {
+      nonNullable: true,
+    }),
+    taxPercentage: new FormControl<number>(19, {
+      nonNullable: true,
+      validators: [Validators.required, Validators.pattern(/^(0|5|19)$/)],
     }),
     status: new FormControl<boolean>(true, {
       nonNullable: true,
@@ -52,6 +62,8 @@ export class ProductsComponent implements OnInit {
   productExist = computed(() => this.productSelected() !== null);
   loading = signal<boolean>(false);
   productSelected = signal<ProductCatalogResponse | null>(null);
+
+  #syncing = false;
 
   #formValue = toSignal(this.productForm.valueChanges, {
     initialValue: this.productForm.getRawValue(),
@@ -66,6 +78,7 @@ export class ProductsComponent implements OnInit {
         selected.description !== formValue.description ||
         selected.unitPrice !== formValue.unitPrice ||
         selected.wholesalePrice !== formValue.wholesalePrice ||
+        selected.taxPercentage !== formValue.taxPercentage ||
         selected.status !== formValue.status
       );
     }
@@ -84,7 +97,7 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productCatalogStore.loadProductsCatalog(true);
+    this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
 
     this.productForm
       .get('status')
@@ -95,7 +108,9 @@ export class ProductsComponent implements OnInit {
             this.productForm.get('name')?.enable({ emitEvent: false });
             this.productForm.get('description')?.enable({ emitEvent: false });
             this.productForm.get('unitPrice')?.enable({ emitEvent: false });
+            this.productForm.get('unitPriceCalculated')?.enable({ emitEvent: false });
             this.productForm.get('wholesalePrice')?.enable({ emitEvent: false });
+            this.productForm.get('wholesalePriceCalculated')?.enable({ emitEvent: false });
           }
         } else {
           this.productForm.get('name')?.disable({ emitEvent: false });
@@ -110,12 +125,16 @@ export class ProductsComponent implements OnInit {
           this.productForm
             .get('unitPrice')
             ?.setValue(this.productSelected()?.unitPrice ?? 0, { emitEvent: false });
+          this.productForm.get('unitPriceCalculated')?.disable({ emitEvent: false });
           this.productForm.get('wholesalePrice')?.disable({ emitEvent: false });
           this.productForm
             .get('wholesalePrice')
             ?.setValue(this.productSelected()?.wholesalePrice ?? 0, { emitEvent: false });
+          this.productForm.get('wholesalePriceCalculated')?.disable({ emitEvent: false });
         }
       });
+
+    this.#setupPriceSync();
   }
 
   clearProductSelected(event: Event) {
@@ -139,12 +158,17 @@ export class ProductsComponent implements OnInit {
       return this.onProductFormReset();
     }
     this.productSelected.set(product);
+    const tax = product.taxPercentage;
+    const calc = (base: number) => Math.round(base * (1 + tax / 100));
     this.productForm.patchValue({
       id: product.id,
       name: product.name,
       description: product.description ?? '',
       unitPrice: product.unitPrice,
+      unitPriceCalculated: calc(product.unitPrice),
       wholesalePrice: product.wholesalePrice,
+      wholesalePriceCalculated: calc(product.wholesalePrice),
+      taxPercentage: tax,
       status: product.status,
     });
   }
@@ -156,8 +180,58 @@ export class ProductsComponent implements OnInit {
       name: '',
       description: '',
       unitPrice: 0,
+      unitPriceCalculated: 0,
       wholesalePrice: 0,
+      wholesalePriceCalculated: 0,
+      taxPercentage: 0,
       status: true,
+    });
+  }
+
+  #setupPriceSync() {
+    const taxCtrl = this.productForm.get('taxPercentage')!;
+    const unitCtrl = this.productForm.get('unitPrice')!;
+    const unitCalcCtrl = this.productForm.get('unitPriceCalculated')!;
+    const wholeCtrl = this.productForm.get('wholesalePrice')!;
+    const wholeCalcCtrl = this.productForm.get('wholesalePriceCalculated')!;
+
+    const calcFromBase = (base: number, tax: number) => Math.round(base * (1 + tax / 100));
+    const calcBase = (total: number, tax: number) => (tax > 0 ? Math.round(total / (1 + tax / 100)) : 0);
+
+    taxCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((tax) => {
+      if (this.#syncing) return;
+      this.#syncing = true;
+      unitCalcCtrl.setValue(calcFromBase(unitCtrl.value ?? 0, tax ?? 0), { emitEvent: false });
+      wholeCalcCtrl.setValue(calcFromBase(wholeCtrl.value ?? 0, tax ?? 0), { emitEvent: false });
+      this.#syncing = false;
+    });
+
+    unitCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((val) => {
+      if (this.#syncing) return;
+      this.#syncing = true;
+      unitCalcCtrl.setValue(calcFromBase(val ?? 0, taxCtrl.value ?? 0));
+      this.#syncing = false;
+    });
+
+    unitCalcCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((val) => {
+      if (this.#syncing) return;
+      this.#syncing = true;
+      unitCtrl.setValue(calcBase(val ?? 0, taxCtrl.value ?? 0));
+      this.#syncing = false;
+    });
+
+    wholeCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((val) => {
+      if (this.#syncing) return;
+      this.#syncing = true;
+      wholeCalcCtrl.setValue(calcFromBase(val ?? 0, taxCtrl.value ?? 0));
+      this.#syncing = false;
+    });
+
+    wholeCalcCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((val) => {
+      if (this.#syncing) return;
+      this.#syncing = true;
+      wholeCtrl.setValue(calcBase(val ?? 0, taxCtrl.value ?? 0));
+      this.#syncing = false;
     });
   }
 
@@ -202,6 +276,9 @@ export class ProductsComponent implements OnInit {
     if (product.wholesalePrice !== currentProduct?.wholesalePrice) {
       payload['wholesalePrice'] = product.wholesalePrice;
     }
+    if (product.taxPercentage !== currentProduct?.taxPercentage) {
+      payload['taxPercentage'] = product.taxPercentage;
+    }
     this.productService
       .updateProduct(product.id, payload)
       .pipe(finalize(() => this.loading.set(false)))
@@ -242,7 +319,7 @@ export class ProductsComponent implements OnInit {
             type: 'success',
           });
           this.onProductFormReset();
-          this.productCatalogStore.loadProductsCatalog(true);
+          this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: true });
         },
         error: () => {
           this.#toastService.show({

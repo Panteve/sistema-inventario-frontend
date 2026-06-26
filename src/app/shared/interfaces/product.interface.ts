@@ -27,4 +27,5 @@ export interface CreateProductRequest {
   description?: string;
   unitPrice: number;
   wholesalePrice: number;
+  taxPercentage: number;
 }

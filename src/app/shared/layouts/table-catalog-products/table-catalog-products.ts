@@ -144,7 +144,7 @@ export class TableCatalogProducts {
 
   loadProducts() {
     this.globalFilter.set('');
-    this.productCatalogStore.loadProductsCatalog(this.showDelete());
+    this.productCatalogStore.loadProductsCatalog({ showDelete: this.showDelete(), refresh: false });
   }
   columns = computed(() => {
     const columns: ColumnDef<ProductCatalogResponse, any>[] = [
@@ -193,7 +193,14 @@ export class TableCatalogProducts {
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getColumnCanGlobalFilter: (column) => {
+      return !!column.accessorFn;
+    },
     globalFilterFn: (row, columnId, filterValue) => {
+      if (columnId === 'status') {
+        const statusText = row.getValue(columnId) ? 'activo' : 'inactivo';
+        return statusText.includes(filterValue.toLowerCase());
+      }
       const value = String(row.getValue(columnId)).toLowerCase();
       return value.includes(filterValue.toLowerCase());
     },

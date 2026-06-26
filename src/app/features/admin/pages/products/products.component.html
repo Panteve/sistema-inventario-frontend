@@ -1,9 +1,10 @@
 <div class="flex justify-center px-4 py-10 md:py-14">
   <div class="w-full max-w-7xl mx-auto" (click)="clearProductSelected($event)">
-
-
-    <div class="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 lg:gap-6 items-start">
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+    <div class="grid grid-cols-1 lg:grid-cols-[420px_1fr] gap-4 lg:gap-6 items-start">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
           <div data-exception class="p-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
@@ -39,25 +40,66 @@
 
               <fieldset class="du-fieldset">
                 <legend class="du-fieldset-legend">Precio unitario</legend>
-                <input
-                  copMoneyInput
-                  type="text"
-                  autocomplete="off"
-                  inputmode="numeric"
-                  class="du-input w-full no-spinner"
-                  formControlName="unitPrice"
-                />
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <span class="text-[11px] opacity-60">Base</span>
+                    <input
+                      copMoneyInput
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      class="du-input w-full no-spinner"
+                      formControlName="unitPrice"
+                    />
+                  </div>
+                  <div>
+                    <span class="text-[11px] opacity-60">Con IVA</span>
+                    <input
+                      copMoneyInput
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      class="du-input w-full no-spinner"
+                      formControlName="unitPriceCalculated"
+                    />
+                  </div>
+                </div>
               </fieldset>
               <fieldset class="du-fieldset">
                 <legend class="du-fieldset-legend">Precio por mayor</legend>
-                <input
-                  copMoneyInput
-                  type="text"
-                  autocomplete="off"
-                  inputmode="numeric"
-                  class="du-input w-full no-spinner"
-                  formControlName="wholesalePrice"
-                />
+                <div class="grid grid-cols-2 gap-2">
+                  <div>
+                    <span class="text-[11px] opacity-60">Base</span>
+                    <input
+                      copMoneyInput
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      class="du-input w-full no-spinner"
+                      formControlName="wholesalePrice"
+                    />
+                  </div>
+                  <div>
+                    <span class="text-[11px] opacity-60">Con IVA</span>
+                    <input
+                      copMoneyInput
+                      type="text"
+                      autocomplete="off"
+                      inputmode="numeric"
+                      class="du-input w-full no-spinner"
+                      formControlName="wholesalePriceCalculated"
+                    />
+                  </div>
+                </div>
+              </fieldset>
+
+              <fieldset class="du-fieldset">
+                <legend class="du-fieldset-legend">IVA</legend>
+                <select class="du-select w-full" formControlName="taxPercentage">
+                  <option [value]="19">19%</option>
+                  <option [value]="5">5%</option>
+                  <option [value]="0">0%</option>
+                </select>
               </fieldset>
 
               <fieldset class="du-fieldset w-fit">
@@ -96,7 +138,10 @@
         </div>
       </article>
 
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
           @if (productCatalogStore.loading()) {
             <div class="text-center py-10 opacity-50">
@@ -106,6 +151,7 @@
           } @else {
             <div class="min-w-0" data-keep-product-selected>
               <app-table-catalog-products
+                [quantityProducts]="15"
                 [manageProduct]="true"
                 [showDelete]="true"
                 (rowSelected)="setProductSelected($event)"
