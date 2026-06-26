@@ -29,6 +29,7 @@ const initialState: BillState = {
   bill: {
     customerId: 0,
     paymentMethodId: 0,
+    amountReceived: 0,
     products: [],
   },
   loading: false,

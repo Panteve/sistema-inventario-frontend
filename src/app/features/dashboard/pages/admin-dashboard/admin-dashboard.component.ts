@@ -47,6 +47,8 @@ export class AdminDashboardComponent implements OnDestroy {
   loadingProducts = signal<boolean>(false);
   loadingCharts = signal<boolean>(false);
 
+  filters = signal<ParamsGetDashboard | null>(null);
+
   dashboardSummary = signal<DashboardSummary>({
     totalSales: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     totalBills: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
@@ -69,6 +71,7 @@ export class AdminDashboardComponent implements OnDestroy {
   pieChartData = signal<PieChartData[]>([]);
 
   onFiltersChange(data: { filters: ParamsGetDashboard; changeJustPaymentMethod: boolean }) {
+    this.filters.set(data.filters);
     this.applyFilters(data.filters, data.changeJustPaymentMethod);
   }
 
@@ -212,13 +215,23 @@ export class AdminDashboardComponent implements OnDestroy {
 
   navigateToExpense(expenseId: number) {
     this.#router.navigate(['expense-list'], {
-      queryParams: { fromDashboard: `${expenseId}` },
+      queryParams: {
+        fromDashboard: `${expenseId}`,
+        officeId: this.filters()?.officeId ?? null,
+        startDate: this.filters()?.startDate ?? null,
+        endDate: this.filters()?.endDate ?? null,
+      },
     });
   }
 
   navigateToInventoryMovement(movementId: number) {
     this.#router.navigate(['inventory/history-movement'], {
-      queryParams: { fromDashboard: `${movementId}` },
+      queryParams: {
+        fromDashboard: `${movementId}`,
+        officeId: this.filters()?.officeId ?? null,
+        startDate: this.filters()?.startDate ?? null,
+        endDate: this.filters()?.endDate ?? null,
+      },
     });
   }
 

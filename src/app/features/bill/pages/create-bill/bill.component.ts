@@ -78,10 +78,6 @@ export class BillComponent {
     this.billStore.quitProduct(productId);
   }
 
-  createBill() {
-    this.billStore.createBill();
-  }
-
   cancelBill() {
     this.billStore.cancelBill();
   }

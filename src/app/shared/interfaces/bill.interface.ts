@@ -9,6 +9,7 @@ export interface ProductOnBill {
 export interface CreateBillRequest {
   customerId?: number;
   paymentMethodId: number;
+  amountReceived: number;
   products: ProductOnBill[];
 }
 
@@ -58,6 +59,8 @@ export interface BillResponse {
   id: number;
   status: boolean;
   total: number;
+  amountReceived: number;
+  difference: number;
   createdAt: string;
   products: {
     quantity: number;

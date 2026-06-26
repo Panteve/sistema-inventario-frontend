@@ -58,6 +58,8 @@ export class ViewBillComponent implements OnInit {
     id: 0,
     status: true,
     total: 0,
+    amountReceived: 0,
+    difference: 0,
     createdAt: '',
     products: [],
     customer: null,

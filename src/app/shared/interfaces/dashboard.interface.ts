@@ -54,6 +54,7 @@ export interface DashboardTables {
     reason: string;
     amount: number;
     employeeName: string;
+    officeName:string;
     createdAt: string;
   }[];
   lastInventoryMovements: {

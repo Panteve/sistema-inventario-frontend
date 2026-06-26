@@ -764,6 +764,7 @@
                     <th>Motivo</th>
                     <th>Monto</th>
                     <th>Registrado por</th>
+                    <th>Sucursal</th>
                     <th>Fecha</th>
                   </tr>
                 </thead>
@@ -790,6 +791,7 @@
                           {{ item.amount | cop }}
                         </td>
                         <td class="text-base-content/70">{{ item.employeeName }}</td>
+                        <td class="text-base-content/70">{{ item.officeName }}</td>
                         <td class="whitespace-nowrap text-xs text-base-content/60">
                           {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
                         </td>
