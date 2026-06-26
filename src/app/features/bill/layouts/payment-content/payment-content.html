@@ -58,13 +58,13 @@
           Monto recibido
         </label>
         <label class="du-input du-input-bordered flex items-center gap-2 text-lg no-spinner  transition-all focus-within:border-primary">
-          <span class="text-xs opacity-40">$</span>
+          <span class="text-xs opacity-40"></span>
           <input
             type="text"
             placeholder="0"
             inputmode="numeric"
             class="grow"
-            [value]="displayAmount()"
+            copMoneyInput
             (input)="onAmountReceivedChange($event)"
             (click)="onAmountReceivedClick($event)"
           />

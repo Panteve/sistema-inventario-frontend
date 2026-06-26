@@ -87,4 +87,5 @@ export interface BillResponse {
     document: string;
     phone: string;
   };
+  payments: { paymentMethodName: string}[];
 }

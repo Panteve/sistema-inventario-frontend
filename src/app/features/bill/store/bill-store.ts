@@ -118,6 +118,14 @@ export const BillStore = signalStore(
       customerStore.clearCustomer();
       patchState(store, { bill: initialState.bill, loading: false });
     },
+    setAmountReceived(amount: number) {
+      patchState(store, (state) => ({
+        bill: {
+          ...state.bill,
+          amountReceived: amount,
+        },
+      }));
+    },
     addProduct(product: ProductSelected) {
       const productTo: ProductOnBill = {
         productId: product.id,

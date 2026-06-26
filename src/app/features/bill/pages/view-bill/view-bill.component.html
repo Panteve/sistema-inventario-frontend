@@ -174,6 +174,20 @@
                   <span>Total</span>
                   <strong class="">{{ bill().total | cop }}</strong>
                 </div>
+                <div class="du-divider my-1"></div>
+                @for (payment of bill().payments; track $index) {
+                  <div class="flex items-center justify-between text-sm md:text-base">
+                    <span class="font-semibold opacity-80">Método de pago: {{ payment.paymentMethodName }}</span>
+                  </div>
+                }
+                <div class="flex items-center justify-between text-sm md:text-base">
+                  <span class="opacity-65">Recibido</span>
+                  <strong class="">{{ bill().amountReceived | cop }}</strong>
+                </div>
+                <div class="flex items-center justify-between text-sm md:text-base">
+                  <span class="opacity-65">Cambio</span>
+                  <strong class="">{{ bill().difference | cop }}</strong>
+                </div>
               </div>
             </div>
           </article>

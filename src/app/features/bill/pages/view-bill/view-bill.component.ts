@@ -73,6 +73,7 @@ export class ViewBillComponent implements OnInit {
       document: '',
       phone: '',
     },
+    payments: [],
   });
 
   #billService = inject(BillService);
