@@ -54,7 +54,10 @@
         <div class="lg:grid lg:grid-cols-[1fr_400px] lg:gap-6">
           <!-- Left: main content -->
           <div class="min-w-0">
-            <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl">
+            <article
+              data-reveal="up"
+              class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl"
+            >
               <div class="du-card-body p-5 md:p-8 lg:p-10">
                 <div class="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -62,9 +65,7 @@
                     <p class="mt-0.5 text-xs opacity-50 md:text-sm">Información de la factura</p>
                   </div>
                   <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-                    <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md "
-                      >#00123</span
-                    >
+                    <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md">#00123</span>
                     <p
                       class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80 md:text-base"
                     >
@@ -78,7 +79,9 @@
                     name="my-accordion-det-1"
                     close
                   >
-                    <summary class="du-collapse-title text-sm font-semibold md:text-base flex gap-1">
+                    <summary
+                      class="du-collapse-title text-sm font-semibold md:text-base flex gap-1"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="h-6 w-6 shrink-0 stroke-current"
@@ -93,11 +96,13 @@
                         />
                       </svg>
                       Esta factura se registrara en la sucursal
-                      <p class="font-bold">{{ authStore.employee()?.officeName || 'Cargando...' }}.</p>
+                      <p class="font-bold">
+                        {{ authStore.employee()?.officeName || 'Cargando...' }}.
+                      </p>
                     </summary>
                     <div class="du-collapse-content text-xs font-medium opacity-85 md:text-sm">
-                      Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la caja
-                      abierta del usuario.
+                      Al confirmar, se actualizara el inventario de esa sucursal y se imputara a la
+                      caja abierta del usuario.
                     </div>
                   </details>
                 }
@@ -171,7 +176,7 @@
                         <th class="text-center font-semibold">Nombre</th>
                         <th class="text-center font-semibold">Cantidad</th>
                         <th class="text-center font-semibold">Precio</th>
-                        <th class="text-center font-semibold">Total</th>
+                        <th class="text-center font-semibold">Subtotal</th>
                         <th class="w-12"></th>
                       </tr>
                     </thead>
@@ -206,7 +211,9 @@
                           } @else {
                             <td
                               class="text-center hover:text-primary cursor-pointer transition-colors"
-                              (click)="this.startModifyPrice(product.productId, product.priceUnique)"
+                              (click)="
+                                this.startModifyPrice(product.productId, product.priceUnique)
+                              "
                             >
                               {{ product.priceUnique | cop }}
                             </td>
@@ -214,6 +221,7 @@
                           <td class="text-center font-semibold">
                             {{ product.priceUnique * product.quantity | cop }}
                           </td>
+
                           <td class="text-center">
                             <button
                               class="du-btn du-btn-error du-btn-soft du-btn-xs du-btn-circle"
@@ -266,7 +274,9 @@
 
           <!-- Right: totals sidebar -->
           <div class="lg:sticky lg:top-24 self-start">
-            <article class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl">
+            <article
+              class="du-card rounded-4xl border border-base-content/10 bg-base-100 shadow-xl"
+            >
               <div class="du-card-body p-5 md:p-8">
                 <h3 class="text-lg font-bold tracking-tight">Resumen</h3>
 
@@ -277,8 +287,14 @@
                   </div>
                   <div class="flex justify-between text-base">
                     <span class="opacity-60">IVA (19%)</span>
-                    <span class="font-medium tabular-nums">{{ billStore.iva() | cop }}</span>
+                    <span class="font-medium tabular-nums">{{ billStore.iva19() | cop }}</span>
                   </div>
+                  @if (billStore.iva5() > 0) {
+                    <div class="flex justify-between text-base">
+                      <span class="opacity-60">IVA (5%)</span>
+                      <span class="font-medium tabular-nums">{{ billStore.iva5() | cop }}</span>
+                    </div>
+                  }
                   <div class="du-divider my-1"></div>
                   <div class="flex justify-between text-xl font-bold">
                     <span>Total</span>
@@ -346,7 +362,9 @@
                 </div>
 
                 @if (billStore.loading()) {
-                  <div class="mt-4 flex items-center justify-center gap-2 rounded-xl bg-base-200/50 py-3 text-sm">
+                  <div
+                    class="mt-4 flex items-center justify-center gap-2 rounded-xl bg-base-200/50 py-3 text-sm"
+                  >
                     <span class="du-loading du-loading-spinner du-loading-sm"></span>
                     Procesando factura...
                   </div>

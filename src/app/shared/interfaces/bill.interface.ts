@@ -3,7 +3,8 @@ export interface ProductOnBill {
   name?: string;
   priceUnique: number;
   quantity: number;
-  taxPercentage: number;
+  taxPercentage?: number;
+  taxAmount?: number;
 }
 
 export interface CreateBillRequest {
@@ -20,6 +21,7 @@ export interface ProductSelected {
   wholesalePrice: number;
   priceSelected: number;
   quantity: number;
+  taxpercentage: number;
 }
 
 export interface BillsHistoryResponse {
@@ -58,6 +60,8 @@ export interface ParamsGetBills {
 export interface BillResponse {
   id: number;
   status: boolean;
+  subtotal: number;
+  taxAmount: number;
   total: number;
   amountReceived: number;
   difference: number;
@@ -65,7 +69,8 @@ export interface BillResponse {
   products: {
     quantity: number;
     priceUnique: number;
-    priceTotal: number;
+    subtotal: number;
+    total: number;
     taxPercentage: number;
     taxAmount: number;
     id: number;
@@ -87,5 +92,5 @@ export interface BillResponse {
     document: string;
     phone: string;
   };
-  payments: { paymentMethodName: string}[];
+  payments: { paymentMethodName: string }[];
 }

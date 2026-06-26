@@ -57,6 +57,8 @@ export class ViewBillComponent implements OnInit {
   bill = signal<BillResponse>({
     id: 0,
     status: true,
+    subtotal: 0,
+    taxAmount: 0,
     total: 0,
     amountReceived: 0,
     difference: 0,
@@ -78,15 +80,6 @@ export class ViewBillComponent implements OnInit {
 
   #billService = inject(BillService);
 
-  subtotal = computed(() =>
-    this.bill().products.reduce(
-      (acc, product) => acc + (product.priceTotal - product.taxAmount),
-      0,
-    ),
-  );
-  taxTotal = computed(() =>
-    this.bill().products.reduce((acc, product) => acc + product.taxAmount, 0),
-  );
   ngOnInit(): void {
     this.#billService
       .getBillById(Number(this.billIdParams()))

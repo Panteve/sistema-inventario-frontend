@@ -91,6 +91,8 @@
                       <th class="font-semibold">Producto</th>
                       <th class="text-center font-semibold">Cantidad</th>
                       <th class="text-right font-semibold">Precio unitario</th>
+                      <th class="text-right font-semibold">Subtotal</th>
+                      <th class="text-right font-semibold">Impuesto</th>
                       <th class="text-right font-semibold">Total</th>
                     </tr>
                   </thead>
@@ -104,8 +106,15 @@
                         </td>
                         <td class="text-center">{{ product.quantity }}</td>
                         <td class="text-right ">{{ product.priceUnique | cop }}</td>
-                        <td class="text-right  font-semibold">
-                          {{ product.priceTotal | cop }}
+                        <td class="text-right font-semibold">
+                          {{ product.subtotal | cop }}
+                        </td>
+                        <td class="text-left">
+                          <span class="font-semibold">{{ product.taxAmount | cop }}</span>
+                          <span class="block text-[10px] opacity-50 leading-tight">{{ product.taxPercentage }}%</span>
+                        </td>
+                        <td class="text-right font-semibold">
+                          {{ product.total | cop }}
                         </td>
                       </tr>
                     } @empty {
@@ -163,11 +172,11 @@
               <div class="rounded-2xl border border-primary/15 bg-primary/5 p-3">
                 <div class="flex items-center justify-between text-sm md:text-base">
                   <span class="opacity-65">Subtotal</span>
-                  <strong class="">{{ subtotal() | cop }}</strong>
+                  <strong class="">{{ bill().subtotal | cop }}</strong>
                 </div>
                 <div class="mt-1 flex items-center justify-between text-sm md:text-base">
                   <span class="opacity-65">IVA</span>
-                  <strong class="">{{ taxTotal() | cop }}</strong>
+                  <strong class="">{{ bill().taxAmount | cop }}</strong>
                 </div>
                 <div class="du-divider my-1"></div>
                 <div class="flex items-center justify-between text-lg font-bold md:text-xl">

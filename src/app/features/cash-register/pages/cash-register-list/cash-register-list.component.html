@@ -1,8 +1,9 @@
 <section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
   <div class="w-full max-w-5xl md:max-w-7xl">
-
-    
-    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+    <article
+      data-reveal="up"
+      class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10"
+    >
       <div class="du-card-body p-4 md:p-6 lg:p-8">
         <div
           class="z-10 rounded-2xl border border-base-content/10 bg-base-200/50 backdrop-blur-xs p-3 md:p-4"
@@ -75,8 +76,10 @@
 
         @if (loading()) {
           <div class="space-y-2">
-            @for (_ of [1,2,3,4,5]; track _) {
-              <div class="flex items-center gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-4">
+            @for (_ of [1, 2, 3, 4, 5]; track _) {
+              <div
+                class="flex items-center gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-4"
+              >
                 <div class="du-skeleton h-5 w-12 rounded"></div>
                 <div class="du-skeleton h-5 w-20 rounded"></div>
                 <div class="du-skeleton h-5 w-32 rounded"></div>
@@ -151,20 +154,14 @@
                       </td>
                       <td
                         class="text-right font-semibold"
-                        [class.text-warning]="cashRegister.difference > 0"
-                        [class.text-error]="cashRegister.difference < 0"
-                        [class.opacity-70]="cashRegister.difference === 0"
+                        [class.text-warning]="cashRegister.difference > 50"
+                        [class.text-error]="cashRegister.difference < -50"
+                        [class.opacity-70]="isNearZero(cashRegister.difference)"
                       >
                         {{ cashRegister.difference | cop }}
                       </td>
                       <td class="text-center">
-                        <span
-                          class="du-badge"
-                          [class.du-badge-success]="cashRegister.status"
-                          [class.du-badge-error]="!cashRegister.status"
-                        >
-                          {{ cashRegister.status ? 'Abierta' : 'Cerrada' }}
-                        </span>
+                        <span class="inline-block h-3 w-3 rounded-full" [class.bg-success]="cashRegister.status" [class.bg-error]="!cashRegister.status"></span>
                       </td>
                     </tr>
                   } @empty {

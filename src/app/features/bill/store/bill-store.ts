@@ -41,12 +41,24 @@ export const BillStore = signalStore(
     subtotal: computed(
       () => bill().products?.reduce((acc, p) => acc + (p.priceUnique || 0) * p.quantity, 0) ?? 0,
     ),
+    iva19: computed(
+      () =>
+        bill()
+          .products?.filter((p) => p.taxPercentage === 19)
+          .reduce((acc, p) => acc + p.taxAmount!, 0) ?? 0,
+    ),
+    iva5: computed(
+      () =>
+        bill()
+          .products?.filter((p) => p.taxPercentage === 5)
+          .reduce((acc, p) => acc + p?.taxAmount! * p.quantity, 0) ?? 0,
+    ),
     length: computed(() => bill().products.length),
   })),
-  withLinkedState(({ subtotal }) => ({
-    iva: () => subtotal() * 0.19,
-    total: () => subtotal() * 1.19,
+  withLinkedState(({ subtotal, iva19, iva5 }) => ({
+    total: computed(() => subtotal() + iva19() + iva5()),
   })),
+
   withProps(() => ({
     billService: inject(BillService),
     customerStore: inject(CustomerStore),
@@ -94,7 +106,9 @@ export const BillStore = signalStore(
         switchMap(() => {
           const cleanBill = {
             ...store.bill(),
-            products: store.bill().products.map(({ name, ...rest }) => rest),
+            products: store
+              .bill()
+              .products.map(({ name, taxPercentage, taxAmount, ...rest }) => rest),
           };
           return billService.createBill(cleanBill).pipe(
             tap((billId) => {
@@ -131,8 +145,9 @@ export const BillStore = signalStore(
         productId: product.id,
         name: product.name,
         priceUnique: product.priceSelected,
+        taxPercentage: product.taxpercentage,
+        taxAmount: product.priceSelected * (product.taxpercentage / 100),
         quantity: 1,
-        taxPercentage: 0.1,
       };
       if (!store.bill().products.some((p) => p.productId === productTo.productId)) {
         patchState(store, (state) => ({
@@ -174,7 +189,8 @@ export const BillStore = signalStore(
           ...state.bill,
           products: state.bill.products.map((p) => {
             if (p.productId === productId) {
-              return { ...p, quantity };
+              const taxAmount = Math.round(p.priceUnique * quantity * (p.taxPercentage! / 100));
+              return { ...p, quantity, taxAmount };
             }
             return p;
           }),

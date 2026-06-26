@@ -85,9 +85,7 @@ export class CashRegisterListComponent implements OnInit {
       nextParams.officeId = defaults.officeId;
     }
 
-    this.queryParams.set(
-      normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()),
-    );
+    this.queryParams.set(normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()));
     this.applyFilters();
   }
 
@@ -223,5 +221,9 @@ export class CashRegisterListComponent implements OnInit {
 
   openCashRegisterDetail(cashRegisterId: number) {
     this.#router.navigate(['..', 'cash-register', cashRegisterId], { relativeTo: this.#route });
+  }
+
+  isNearZero(difference: number): boolean {
+    return Math.abs(difference) <= 50;
   }
 }

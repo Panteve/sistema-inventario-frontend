@@ -37,6 +37,7 @@ export class ProductPanel {
     name: '',
     priceSelected: 0,
     quantity: 0,
+    taxpercentage: 0,
   });
 
   onPriceSelected(price: number) {
@@ -56,6 +57,7 @@ export class ProductPanel {
       name: product.product.name,
       unitPrice: product.product.unitPrice,
       wholesalePrice: product.product.wholesalePrice,
+      taxpercentage: product.product.taxPercentage,
       priceSelected: 0,
       quantity: 0,
     };

@@ -6,6 +6,7 @@ export interface ProductOnInventoryResponse {
     description?: string;
     unitPrice: number;
     wholesalePrice: number;
+    taxPercentage: number;
   };
   status:true
 }

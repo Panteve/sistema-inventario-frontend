@@ -37,7 +37,7 @@ export class CloseCashRegisterComponent {
   });
   differenceStatus = computed<'ok' | 'short' | 'over'>(() => {
     const difference = this.cashDifference();
-    if (difference === 0) return 'ok';
+    if (Math.abs(difference) <= 50) return 'ok';
     return difference < 0 ? 'short' : 'over';
   });
 
