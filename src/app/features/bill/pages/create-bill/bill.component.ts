@@ -6,10 +6,21 @@ import { BillStore } from '../../store/bill-store';
 import { CustomerStore } from '../../store/customer-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
+import { ProductPanel } from '../../layouts/product-panel/product-panel';
+import { PaymentContent } from '../../layouts/payment-content/payment-content';
 
 @Component({
   selector: 'app-bill.component',
-  imports: [RouterOutlet, CopPipe, DatePipe, RouterLinkWithHref],
+  imports: [
+    RouterOutlet,
+    CopPipe,
+    DatePipe,
+    RouterLinkWithHref,
+    ModalComponent,
+    ProductPanel,
+    PaymentContent,
+  ],
   providers: [BillStore, CustomerStore, CopPipe],
   templateUrl: './bill.component.html',
   styleUrl: './bill.component.css',
@@ -17,7 +28,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 export class BillComponent {
   constructor() {
     effect(() => {
-      document.body.style.overflow = this.panelOpen() ? 'hidden' : '';
+      document.body.style.overflow = this.customerPanelOpen() ? 'hidden' : '';
     });
   }
   customerStore = inject(CustomerStore);
@@ -37,8 +48,9 @@ export class BillComponent {
     return '';
   });
   modifiyingPrice = signal<boolean>(false);
-  modalAbierto = signal<boolean>(false);
-  panelOpen = signal<boolean>(false);
+  customerPanelOpen = signal<boolean>(false);
+  paymentModalOpen = signal<boolean>(false);
+  productsModalOpen = signal<boolean>(false);
 
   currentDate = Date.now();
   billId = 0;
@@ -80,5 +92,19 @@ export class BillComponent {
 
   cancelBill() {
     this.billStore.cancelBill();
+  }
+
+  openProductModal() {
+    this.productsModalOpen.set(true);
+  }
+  closeProductModal() {
+    this.productsModalOpen.set(false);
+  }
+  
+  openPaymentModal() {
+    this.paymentModalOpen.set(true);
+  }
+  closePaymentModal() {
+    this.paymentModalOpen.set(false);
   }
 }

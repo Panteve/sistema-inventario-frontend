@@ -3,7 +3,7 @@
     id="my-drawer-1"
     type="checkbox"
     class="du-drawer-toggle"
-    (change)="panelOpen.set($any($event.target).checked)"
+    (change)="customerPanelOpen.set($any($event.target).checked)"
   />
   <div class="du-drawer-content relative">
     @if (!authStore.cashRegisterIsOpen()) {
@@ -124,7 +124,7 @@
                   <label
                     for="my-drawer-1"
                     class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
-                    (click)="panelOpen.set(true)"
+                    (click)="customerPanelOpen.set(true)"
                     [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
                   >
                     @if (this.customerStore.customer()) {
@@ -308,9 +308,7 @@
                   <button
                     class="du-btn du-btn-primary du-btn-md w-full"
                     [disabled]="billStore.length() === 0 || billStore.loading()"
-                    (click)="panelOpen.set(true)"
-                    onclick="payment.showModal()"
-                    [routerLink]="[{ outlets: { payment: ['payment'] } }]"
+                    (click)="openPaymentModal()"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -331,9 +329,8 @@
 
                   <button
                     class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
-                    onclick="viewProducts.showModal()"
+                    (click)="openProductModal()"
                     [disabled]="billStore.loading()"
-                    [routerLink]="[{ outlets: { 'view-products-table': ['view-products'] } }]"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -381,7 +378,7 @@
       for="my-drawer-1"
       aria-label="close sidebar"
       class="du-drawer-overlay"
-      (click)="panelOpen.set(false)"
+      (click)="customerPanelOpen.set(false)"
     ></label>
     <ul class="du-menu bg-base-100 min-h-full w-80 md:w-100 p-4">
       <router-outlet name="add-client-info" />
@@ -389,38 +386,22 @@
   </div>
 </div>
 <!-- Modal para ver productos -->
-<dialog id="viewProducts" class="du-modal">
-  <div class="du-modal-box w-11/12 max-w-2xl max-h-11/12 h-auto">
-    <form method="dialog">
-      <button
-        class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
-        (click)="panelOpen.set(false)"
-      >
-        ✕
-      </button>
-    </form>
-    @defer {
-      <router-outlet name="view-products-table" />
-    }
+<app-modal
+  [isOpen]="productsModalOpen()"
+  [ariaLabel]="'Productos disponibles'"
+  (close)="closeProductModal()"
+>
+  <div class="w-2xl h-full">
+    <app-product-panel/>
   </div>
-  <form method="dialog" class="du-modal-backdrop">
-    <button (click)="panelOpen.set(false)">close</button>
-  </form>
-</dialog>
+</app-modal>
 <!-- Modal para pagar -->
-<dialog id="payment" class="du-modal">
-  <div class="du-modal-box w-11/12 max-w-md">
-    <form method="dialog">
-      <button
-        class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3"
-        (click)="panelOpen.set(false)"
-      >
-        ✕
-      </button>
-    </form>
-    <router-outlet name="payment" />
+ <app-modal
+  [isOpen]="paymentModalOpen()"
+  [ariaLabel]="'Pagar factura'"
+  (close)="closePaymentModal()">
+  <div class="w-sm h-full">
+    <app-payment-content/>
   </div>
-  <form method="dialog" class="du-modal-backdrop">
-    <button (click)="panelOpen.set(false)">close</button>
-  </form>
-</dialog>
+ </app-modal>
+

@@ -1,57 +1,62 @@
-<div class="relative rounded-3xl h-fit px-4 py-2 md:py-3">
-  <div class="relative z-10 mx-auto w-full max-w-5xl">
-    <header class="mb-3 flex items-center gap-2" data-reveal="up">
-      <div
-        class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20 pulse-dot pulse-dot-accent"
+<header class="mb-3 flex items-center gap-2" data-reveal="up">
+  <div
+    class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20 pulse-dot pulse-dot-accent"
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      class="text-accent"
+      viewBox="0 0 24 24"
+    >
+      <g
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
       >
-        <svg xmlns="http://www.w3.org/2000/svg"  width="20" height="20"  class="text-accent" viewBox="0 0 24 24">
-          <g
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-          >
-            <path
-              d="M21 15h-2.5a1.503 1.503 0 0 0-1.5 1.5a1.503 1.503 0 0 0 1.5 1.5h1a1.503 1.503 0 0 1 1.5 1.5a1.503 1.503 0 0 1-1.5 1.5H17m2 0v1m0-8v1m-6 6H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2m12 3.12V9a2 2 0 0 0-2-2h-2"
-            />
-            <path
-              d="M16 10V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6m8 0H8m8 0h1m-9 0H7m1 4v.01M8 17v.01m4-3.02V14m0 3v.01"
-            />
-          </g>
-        </svg>
-      </div>
-      <div>
-        @if (authStore.cashRegisterIsOpen()) {
-          <h1 class="text-xl font-bold tracking-tight">Cierre de caja</h1>
-          <p class="text-sm opacity-50">Valida el efectivo físico y revisa el cuadre final.</p>
-        } @else {
-          <h1 class="text-xl font-bold tracking-tight">Apertura de caja</h1>
-          <p class="text-sm opacity-50">Registra el monto inicial para comenzar la jornada.</p>
-        }
-      </div>
-    </header>
-
-    <article data-reveal="up" class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
-      <div class="du-card-body p-2.5 md:p-3">
-        @if (authStore.cashRegisterIsOpen()) {
-          <app-close-cash-register
-            [employee]="authStore.employee()"
-            [cashRegisterSummary]="cashRegisterStore.cashRegisterSummary()"
-            [loading]="cashRegisterStore.loading()"
-            [loadingSummary]="cashRegisterStore.loadingSummary()"
-            (closeModal)="closeCashModal()"
-            (closeCashRegister)="closeCashRegister($event)"
-          ></app-close-cash-register>
-        } @else {
-          <app-open-cash-register
-            [employee]="authStore.employee()"
-            [loading]="cashRegisterStore.loading()"
-            (closeModal)="closeCashModal()"
-            (openCashRegister)="openCashRegister($event)"
-          ></app-open-cash-register>
-        }
-      </div>
-    </article>
+        <path
+          d="M21 15h-2.5a1.503 1.503 0 0 0-1.5 1.5a1.503 1.503 0 0 0 1.5 1.5h1a1.503 1.503 0 0 1 1.5 1.5a1.503 1.503 0 0 1-1.5 1.5H17m2 0v1m0-8v1m-6 6H6a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h2m12 3.12V9a2 2 0 0 0-2-2h-2"
+        />
+        <path
+          d="M16 10V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v6m8 0H8m8 0h1m-9 0H7m1 4v.01M8 17v.01m4-3.02V14m0 3v.01"
+        />
+      </g>
+    </svg>
   </div>
-</div>
+  <div>
+    @if (authStore.cashRegisterIsOpen()) {
+      <h1 class="text-xl font-bold tracking-tight">Cierre de caja</h1>
+      <p class="text-sm opacity-50">Valida el efectivo físico y revisa el cuadre final.</p>
+    } @else {
+      <h1 class="text-xl font-bold tracking-tight">Apertura de caja</h1>
+      <p class="text-sm opacity-50">Registra el monto inicial para comenzar la jornada.</p>
+    }
+  </div>
+</header>
+
+<article
+  data-reveal="up"
+  class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl"
+>
+  <div class="du-card-body p-2.5 md:p-3">
+    @if (authStore.cashRegisterIsOpen()) {
+      <app-close-cash-register
+        [employee]="authStore.employee()"
+        [cashRegisterSummary]="cashRegisterStore.cashRegisterSummary()"
+        [loading]="cashRegisterStore.loading()"
+        [loadingSummary]="cashRegisterStore.loadingSummary()"
+        (closeModal)="closeCashModal()"
+        (closeCashRegister)="closeCashRegister($event)"
+      ></app-close-cash-register>
+    } @else {
+      <app-open-cash-register
+        [employee]="authStore.employee()"
+        [loading]="cashRegisterStore.loading()"
+        (closeModal)="closeCashModal()"
+        (openCashRegister)="openCashRegister($event)"
+      ></app-open-cash-register>
+    }
+  </div>
+</article>

@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, inject, signal, viewChild } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { Router } from '@angular/router';
@@ -6,10 +6,11 @@ import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductPricesPanel } from '../product-prices-panel/product-prices-panel';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-product-panel',
-  imports: [TableProducts, ProductPricesPanel],
+  imports: [TableProducts, ProductPricesPanel, ModalComponent],
   providers: [],
   templateUrl: './product-panel.html',
 })
@@ -18,17 +19,8 @@ export class ProductPanel {
   billStore = inject(BillStore);
   router = inject(Router);
 
-  constructor() {
-    effect(() => {
-      if (this.boolean()) {
-        this.productModal()?.nativeElement.showModal();
-      }
-    });
-  }
 
-  productModal = viewChild<ElementRef>('my_modal_2');
-
-  boolean = signal(false);
+  priceModalOpen = signal<boolean>(false);
 
   productSelected = signal<ProductSelected>({
     id: 0,
@@ -46,12 +38,11 @@ export class ProductPanel {
       priceSelected: price,
     }));
     this.billStore.addProduct(this.productSelected());
-    this.productModal()?.nativeElement.close();
-    this.boolean.set(false);
+    this.priceModalOpen.set(false);
   }
 
   async getProductTable(product: ProductOnInventoryResponse) {
-    this.boolean.set(true);
+    this.priceModalOpen.set(true);
     const productSelected: ProductSelected = {
       id: product.product.id,
       name: product.product.name,

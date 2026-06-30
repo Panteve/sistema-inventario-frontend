@@ -12,10 +12,11 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { EmployeeAction, EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { finalize } from 'rxjs';
 import { ManageEmployeeComponent } from '../../layouts/manage-employee/manage-employee.component';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-employees.component',
-  imports: [FlexRenderDirective, ManageEmployeeComponent],
+  imports: [FlexRenderDirective, ManageEmployeeComponent, ModalComponent],
   templateUrl: './employees.component.html',
 })
 export class EmployeesComponent implements OnInit {
@@ -145,24 +146,27 @@ export class EmployeesComponent implements OnInit {
     this.numberPage.update((n) => n - 1);
   }
 
-  openCreateEmployeeModal() {
-    this.currentAction.set(EmployeeAction.CREATE);
-  }
-
   onRowClick(employee: EmployeeResponse) {
     const currentEmployee = this.selectedEmployee();
     this.selectedEmployee.set(currentEmployee?.id === employee.id ? null : employee);
   }
 
   openEditInfoModal() {
+    this.employeeModalOpen.set(true);
     this.currentAction.set(EmployeeAction.EDIT_INFO);
   }
 
+  openCreateEmployeeModal() {
+    this.employeeModalOpen.set(true);
+    this.currentAction.set(EmployeeAction.CREATE);
+  }
   openChangePasswordModal() {
+    this.employeeModalOpen.set(true);
     this.currentAction.set(EmployeeAction.CHANGE_PASSWORD);
   }
 
   openDeactivateModal() {
+    this.employeeModalOpen.set(true);
     this.currentAction.set(EmployeeAction.STATUS_TOGGLE);
   }
 
@@ -198,6 +202,10 @@ export class EmployeesComponent implements OnInit {
     if (this.loadingModal()) {
       event.preventDefault();
     }
+  }
+  closeEmployeeModal() {
+    this.employeeModalOpen.set(false);
+    this.currentAction.set(null);
   }
 
   getRoleLabel(role: EmployeeResponse['role']) {

@@ -51,13 +51,6 @@ export const routes: Routes = [
     providers: [BillStore],
     children: [
       {
-        path: 'view-products',
-        title: 'Productos disponibles',
-        canActivate: [authGuard],
-        component: ProductPanel,
-        outlet: 'view-products-table',
-      },
-      {
         path: 'payment',
         title: 'Metodo de pago',
         canActivate: [authGuard],

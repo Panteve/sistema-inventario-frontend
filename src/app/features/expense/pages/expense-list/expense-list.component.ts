@@ -23,6 +23,7 @@ import {
   toIsoDate,
 } from '../../../../shared/utils/filter-query.utils';
 import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-expense-list.component',
@@ -33,6 +34,7 @@ import { FiltersComponent } from '../../../../shared/components/filters.componen
     CopMoneyInputDirective,
     ViewExpenseComponent,
     FiltersComponent,
+    ModalComponent
   ],
   providers: [DatePipe],
   templateUrl: './expense-list.component.html',

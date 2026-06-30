@@ -8,19 +8,17 @@
     (click)="close.emit()"
   >
     <div
-      class="relative w-fit h-fit max-w-full max-h-[80vh] overflow-y-auto rounded-3xl bg-(--color-base-100) shadow-2xl ring-1 ring-(--color-base-300) p-6 modal-scale-in"
+      class="relative w-fit h-fit max-w-full max-h-12/13 overflow-y-auto rounded-3xl bg-(--color-base-100) shadow-2xl ring-1 ring-(--color-base-300) p-8 modal-scale-in"
       (click)="$event.stopPropagation()"
     >
       @if (showCloseButton()) {
-        <div class="flex justify-end">
-          <button
-            class="inline-flex items-center justify-center size-8 rounded-full border-0 bg-transparent cursor-pointer transition-colors duration-150 text-(--color-base-content) hover:bg-[color-mix(in_oklab,var(--color-base-content)_10%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
-            aria-label="Cerrar"
-            (click)="close.emit()"
-          >
-            ✕
-          </button>
-        </div>
+        <button
+          class="absolute top-4 right-4 z-10 inline-flex items-center justify-center size-8 rounded-full border-0 bg-(--color-base-100)/80 backdrop-blur-xs cursor-pointer transition-colors duration-150 text-(--color-base-content) hover:bg-[color-mix(in_oklab,var(--color-base-content)_10%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
+          aria-label="Cerrar"
+          (click)="close.emit()"
+        >
+          ✕
+        </button>
       }
       <ng-content></ng-content>
     </div>

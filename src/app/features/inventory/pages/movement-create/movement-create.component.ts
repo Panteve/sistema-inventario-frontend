@@ -15,8 +15,6 @@ import {
 import { DatePipe } from '@angular/common';
 import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -25,6 +23,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { ProductCatalogStore } from '../../../../shared/store/product-catalog-store';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-movement-create.component',
@@ -34,6 +33,7 @@ import { OfficeSelectComponent } from '../../../../shared/components/office-sele
     ReactiveFormsModule,
     TableCatalogProducts,
     OfficeSelectComponent,
+    ModalComponent,
   ],
   providers: [MovementInventoryStore],
   templateUrl: './movement-create.component.html',
@@ -47,7 +47,6 @@ export class MovementCreateComponent implements OnInit {
   movementStore = inject(MovementInventoryStore);
   toastService = inject(ToastService);
   router = inject(Router);
-  #route = inject(ActivatedRoute);
 
   readonly MOVEMENTYPE = {
     IN: 'IN',
@@ -64,6 +63,8 @@ export class MovementCreateComponent implements OnInit {
     reason: '',
     products: [],
   });
+
+  productsModalOpen = signal<boolean>(false);
 
   canConfirm = computed(() => {
     if (this.notSelectedOffice()) return false;
@@ -84,29 +85,16 @@ export class MovementCreateComponent implements OnInit {
     return false;
   });
 
-  productsModalOpen = toSignal(
-    this.#route.queryParamMap.pipe(map((params) => params.get('productsModal') === 'open')),
-    { initialValue: false },
-  );
 
   ngOnInit(): void {
     this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
   }
 
   openProductsModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { productsModal: 'open' },
-      queryParamsHandling: 'merge',
-    });
+    this.productsModalOpen.set(true);
   }
-
   closeProductsModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { productsModal: null },
-      queryParamsHandling: 'merge',
-    });
+    this.productsModalOpen.set(false);
   }
 
   ngOnDestroy(): void {

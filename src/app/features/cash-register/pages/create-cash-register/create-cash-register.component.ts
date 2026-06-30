@@ -1,6 +1,5 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { CashRegisterStore } from '../../store/cash-register-store';
-import { ActivatedRoute, Router } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -15,11 +14,11 @@ import { OpenCashRegisterComponent } from '../../layouts/open-cash-register/open
   styleUrl: './create-cash-register.component.css',
 })
 export class CreateCashRegisterComponent {
-  #router = inject(Router);
-  #route = inject(ActivatedRoute);
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   cashRegisterStore = inject(CashRegisterStore);
+
+  closeModal = output<void>();
 
   openCashRegister({ officeId, initialAmount }: { officeId: number; initialAmount: number }) {
     this.cashRegisterStore.openCashRegister({
@@ -33,10 +32,6 @@ export class CreateCashRegisterComponent {
   }
 
   closeCashModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { cashModal: null },
-      queryParamsHandling: 'merge',
-    });
+    this.closeModal.emit();
   }
 }

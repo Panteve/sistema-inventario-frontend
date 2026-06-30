@@ -21,7 +21,9 @@
       [ariaLabel]="'Apertura de caja'"
       (close)="closeCashModal()"
     >
-      <app-cash-register></app-cash-register>
+      <div class="w-4xl h-full">
+        <app-cash-register (closeModal)="closeCashModal()"></app-cash-register>
+      </div>
     </app-modal>
 
     <app-modal

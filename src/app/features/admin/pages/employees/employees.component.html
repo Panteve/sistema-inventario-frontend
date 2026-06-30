@@ -1,9 +1,10 @@
 <div class="flex justify-center px-4 py-10 md:py-14" (click)="clearSelectedEmployee($event)">
   <div class="w-full max-w-7xl mx-auto">
-
-
     <div class="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 lg:gap-6 items-start">
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
           <div data-exception class="p-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
@@ -31,7 +32,6 @@
             <button
               class="du-btn du-btn-primary w-full mt-4"
               type="button"
-              onclick="employee_modal.showModal()"
               (click)="openCreateEmployeeModal()"
               [disabled]="selectedEmployee()"
             >
@@ -49,7 +49,6 @@
               <button
                 class="du-btn du-btn-sm du-btn-outline w-full disabled:opacity-50"
                 type="button"
-                onclick="employee_modal.showModal()"
                 (click)="openEditInfoModal()"
                 [disabled]="!employee?.status || !employee"
               >
@@ -70,7 +69,6 @@
               <button
                 class="du-btn du-btn-sm du-btn-outline w-full disabled:opacity-50"
                 type="button"
-                onclick="employee_modal.showModal()"
                 (click)="openChangePasswordModal()"
                 [disabled]="!employee?.status || !employee"
               >
@@ -94,7 +92,6 @@
                   (employee?.status ? 'du-btn-error' : 'du-btn-success')
                 "
                 type="button"
-                onclick="employee_modal.showModal()"
                 (click)="openDeactivateModal()"
                 [disabled]="!employee"
               >
@@ -140,7 +137,10 @@
         </div>
       </article>
 
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
           @if (loadingEmployees()) {
             <div class="text-center py-10 opacity-50">
@@ -322,38 +322,13 @@
     </div>
   </div>
 </div>
-<dialog id="employee_modal" class="du-modal rounded-3xl" (cancel)="preventModalCancel($event)">
-  <div
-    class="du-modal-box relative rounded-3xl w-11/12 max-w-4xl max-h-[90vh] overflow-y-auto overflow-x-hidden"
-  >
-    @if (loadingModal()) {
-      <div class="p-6 space-y-4">
-        <div class="flex items-center gap-3">
-          <div class="du-skeleton h-10 w-10 rounded-full"></div>
-          <div class="space-y-2 flex-1">
-            <div class="du-skeleton h-5 w-40 rounded"></div>
-            <div class="du-skeleton h-4 w-24 rounded"></div>
-          </div>
-        </div>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          @for (_ of [1,2,3,4]; track _) {
-            <div class="du-skeleton h-12 rounded-xl"></div>
-          }
-        </div>
-        <div class="du-skeleton h-10 w-full rounded-xl"></div>
-      </div>
-    }
-
-    <form method="dialog">
-      <button
-        class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-10"
-        [disabled]="loadingModal()"
-        aria-label="close"
-      >
-        ✕
-      </button>
-    </form>
-
+<!-- AGREGAR QUE NO SE PUEDA CERRAR EL MODAL SI SE ESTA CARGANDO -->
+<app-modal
+  [isOpen]="employeeModalOpen()"
+  [ariaLabel]="'Acciones para el empleado'"
+  (close)="closeEmployeeModal()"
+>
+  <div class="w-3xl h-full">
     <app-manage-employee
       [selectedEmployee]="selectedEmployee()"
       [currentAction]="currentAction()"
@@ -362,9 +337,4 @@
       (loadingModal)="setLoadingModal($event)"
     ></app-manage-employee>
   </div>
-  @if (!loadingModal()) {
-    <form method="dialog" class="du-modal-backdrop">
-      <button>close</button>
-    </form>
-  }
-</dialog>
+</app-modal>
