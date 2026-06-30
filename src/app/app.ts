@@ -1,19 +1,24 @@
-import { Component, HostListener, inject, OnInit } from '@angular/core';
+import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
-
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 import { CreateCashRegisterComponent } from './features/cash-register/pages/create-cash-register/create-cash-register.component';
 import { FIXED_LAYOUT_THEME } from './constants/theme.constants';
 import { ExpenseComponent } from './features/expense/pages/expense-create/expense.component';
 import { ToastComponent } from './shared/layouts/toast/toast.component';
 import { ScrollRevealService } from './shared/services/scroll-reveal.service';
+import { ModalComponent } from './shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, Navbar, CreateCashRegisterComponent, ExpenseComponent, ToastComponent],
+  imports: [
+    RouterOutlet,
+    Navbar,
+    CreateCashRegisterComponent,
+    ExpenseComponent,
+    ToastComponent,
+    ModalComponent,
+  ],
   templateUrl: './app.html',
   styleUrl: './app.css',
 })
@@ -23,47 +28,33 @@ export class App implements OnInit {
   #route = inject(ActivatedRoute);
   #scrollReveal = inject(ScrollRevealService);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
-
-  cashModalOpen = toSignal(
-    this.#route.queryParamMap.pipe(map((params) => params.get('cashModal') === 'open')),
-    { initialValue: false },
-  );
-
-  expenseModalOpen = toSignal(
-    this.#route.queryParamMap.pipe(map((params) => params.get('expenseModal') === 'open')),
-    { initialValue: false },
-  );
+  cashModalOpen = signal<boolean>(false);
+  expenseModalOpen = signal<boolean>(false);
 
   openCashModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { cashModal: 'open' },
-      queryParamsHandling: 'merge',
-    });
+    if (!this.authStore.cashRegisterIsOpen()) {
+      return;
+    }
+    this.cashModalOpen.set(true);
   }
 
   closeCashModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { cashModal: null },
-      queryParamsHandling: 'merge',
-    });
+    if (!this.authStore.cashRegisterIsOpen()) {
+      return;
+    }
+    this.cashModalOpen.set(false);
   }
-
   openExpenseModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { expenseModal: 'open' },
-      queryParamsHandling: 'merge',
-    });
+    if (!this.authStore.cashRegisterIsOpen()) {
+      return;
+    }
+    this.expenseModalOpen.set(true);
   }
-
   closeExpenseModal() {
-    this.router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { expenseModal: null },
-      queryParamsHandling: 'merge',
-    });
+    if (!this.authStore.cashRegisterIsOpen()) {
+      return;
+    }
+    this.expenseModalOpen.set(false);
   }
 
   handleAction(route?: string, action?: 'cashModal' | 'expenseModal') {

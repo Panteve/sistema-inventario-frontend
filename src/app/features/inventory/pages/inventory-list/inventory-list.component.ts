@@ -7,6 +7,7 @@ import { CurrencyPipe } from '@angular/common';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { InventoryService } from '../../../../shared/services/inventory.service';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 type PriceFilterType = 'unitPrice' | 'wholesalePrice' | 'none';
 type PriceOrderType = 'none' | 'asc' | 'desc';
@@ -14,7 +15,7 @@ type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
   selector: 'app-inventory-list',
-  imports: [TableProducts],
+  imports: [TableProducts, ModalComponent],
   providers: [CurrencyPipe],
   templateUrl: './inventory-list.component.html',
 })

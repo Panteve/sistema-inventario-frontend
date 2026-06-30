@@ -70,6 +70,19 @@
       </div>
     </header>
 
+    @if (movement.reason) {
+      <article class="rounded-2xl border border-base-content/10 bg-base-100 p-3">
+        <div class="flex items-center gap-2">
+          <div class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-base-200/70">
+            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </div>
+          <h3 class="text-xs font-semibold uppercase tracking-[0.14em] opacity-70">Motivo</h3>
+        </div>
+        <div class="du-divider my-2"></div>
+        <p class="text-sm">{{ movement.reason }}</p>
+      </article>
+    }
+
     <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
       <article class="rounded-2xl border border-base-content/10 bg-base-100 p-3">
         <div class="flex items-center gap-2">

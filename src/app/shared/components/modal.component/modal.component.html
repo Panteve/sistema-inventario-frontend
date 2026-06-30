@@ -1,0 +1,28 @@
+@if (isOpen()) {
+  <div class="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs modal-fade-in"></div>
+  <div
+    class="fixed inset-0 z-51 flex items-center justify-center p-4"
+    role="dialog"
+    aria-modal="true"
+    [attr.aria-label]="ariaLabel()"
+    (click)="close.emit()"
+  >
+    <div
+      class="relative w-fit h-fit max-w-full max-h-[80vh] overflow-y-auto rounded-3xl bg-(--color-base-100) shadow-2xl ring-1 ring-(--color-base-300) p-6 modal-scale-in"
+      (click)="$event.stopPropagation()"
+    >
+      @if (showCloseButton()) {
+        <div class="flex justify-end">
+          <button
+            class="inline-flex items-center justify-center size-8 rounded-full border-0 bg-transparent cursor-pointer transition-colors duration-150 text-(--color-base-content) hover:bg-[color-mix(in_oklab,var(--color-base-content)_10%,transparent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-(--color-primary)"
+            aria-label="Cerrar"
+            (click)="close.emit()"
+          >
+            ✕
+          </button>
+        </div>
+      }
+      <ng-content></ng-content>
+    </div>
+  </div>
+}

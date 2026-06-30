@@ -1,4 +1,11 @@
 @import 'tailwindcss';
+
+html {
+  scrollbar-width: none;
+}
+html::-webkit-scrollbar {
+  display: none;
+}
 @plugin "daisyui" {
   prefix: 'du-';
 }

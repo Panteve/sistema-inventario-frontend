@@ -9,46 +9,30 @@
   <input id="my-drawer-4" type="checkbox" class="du-drawer-toggle" />
   <div class="du-drawer-content min-h-screen overflow-x-clip bg-base-content/5">
     <app-navbar />
-    <main class="flex-1 px-2 py-2 md:px-3 md:py-3 ">
+    <main class="flex-1 px-2 py-2 md:px-3 md:py-3">
       <div class="fixed z-9999">
         <toast-notifications></toast-notifications>
       </div>
       <router-outlet />
     </main>
-    @if (authStore.isAuthenticated() && cashModalOpen()) {
-      <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeCashModal()">
-        <div class="du-modal-box rounded-3xl w-11/12 max-w-4xl">
-          <button
-            class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-10"
-            aria-label="close"
-            (click)="closeCashModal()"
-          >
-            ✕
-          </button>
-          <app-cash-register></app-cash-register>
-        </div>
-        <form method="dialog" class="du-modal-backdrop">
-          <button (click)="closeCashModal()">close</button>
-        </form>
-      </dialog>
-    }
-    @if (authStore.isAuthenticated() && expenseModalOpen()) {
-      <dialog class="du-modal rounded-3xl du-modal-open" (close)="closeExpenseModal()">
-        <div class="du-modal-box rounded-3xl w-11/12 max-w-2xl">
-          <button
-            class="du-btn du-btn-sm du-btn-circle du-btn-ghost absolute right-3 top-3 z-50"
-            aria-label="close"
-            (click)="closeExpenseModal()"
-          >
-            ✕
-          </button>
-          <app-expense></app-expense>
-        </div>
-        <form method="dialog" class="du-modal-backdrop">
-          <button (click)="closeExpenseModal()">close</button>
-        </form>
-      </dialog>
-    }
+
+    <app-modal
+      [isOpen]="cashModalOpen()"
+      [ariaLabel]="'Apertura de caja'"
+      (close)="closeCashModal()"
+    >
+      <app-cash-register></app-cash-register>
+    </app-modal>
+
+    <app-modal
+      [isOpen]="expenseModalOpen()"
+      [ariaLabel]="'Crear gasto'"
+      (close)="closeExpenseModal()"
+    >
+      <div class="w-xl">
+        <app-expense (closeModal)="closeExpenseModal()"></app-expense>
+      </div>
+    </app-modal>
   </div>
   <div
     class="du-drawer-side du-is-drawer-close:overflow-visible drawer-scrollbar scrollbar-thumb-black"
@@ -157,10 +141,9 @@
 
           <li>
             <button
-              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
+              class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost du-btn-primary justify-start"
               [class.du-btn-active]="isActive('/create-bill')"
-              [class.opacity-50]="!authStore.cashRegisterIsOpen()"
-              [class.du-btn-primary]="authStore.cashRegisterIsOpen()"
+              [class.du-btn-disabled]="!authStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
               (click)="router.navigate(['create-bill'])"
             >
@@ -181,7 +164,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
-              [class.opacity-50]="!authStore.cashRegisterIsOpen()"
+              [class.du-btn-disabled]="!authStore.cashRegisterIsOpen()"
               data-tip="Crear gasto"
               (click)="openExpenseModal()"
             >
@@ -257,9 +240,7 @@
                   />
                 </g>
               </svg>
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Ventas</span
-              >
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Ventas</span>
             </button>
           </li>
 
@@ -286,9 +267,7 @@
                   />
                 </g>
               </svg>
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Gastos</span
-              >
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Gastos</span>
             </button>
           </li>
           <li>
@@ -311,9 +290,7 @@
                 </g>
               </svg>
 
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Cajas</span
-              >
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Cajas</span>
             </button>
           </li>
 
@@ -359,9 +336,7 @@
                   d="m10 8l-6 6l6 6m28 8l6 6l-6 6M4 14h40M4 34h40"
                 />
               </svg>
-              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2"
-                >Movimientos</span
-              >
+              <span class="du-is-drawer-close:hidden du-is-drawer-open:pl-2">Movimientos</span>
             </button>
           </li>
 

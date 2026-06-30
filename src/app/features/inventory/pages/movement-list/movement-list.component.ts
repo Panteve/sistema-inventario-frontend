@@ -1,4 +1,11 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
@@ -19,10 +26,11 @@ import {
   subtractMonths,
   toIsoDate,
 } from '../../../../shared/utils/filter-query.utils';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-movement-list.component',
-  imports: [DatePipe, ViewMovementComponent, FiltersComponent],
+  imports: [DatePipe, ViewMovementComponent, FiltersComponent, ModalComponent],
   providers: [DatePipe],
   templateUrl: './movement-list.component.html',
 })

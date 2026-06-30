@@ -1,179 +1,134 @@
-<!-- Block for cash register -->
-@if (!authStore.cashRegisterIsOpen()) {
+<header class="mb-2 flex items-center gap-2" data-reveal="up">
   <div
-    class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs rounded-3xl"
+    class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 pulse-dot pulse-dot-error"
   >
-    <div
-      class="w-full max-w-md rounded-3xl border border-accent/20 bg-base-100 p-5 shadow-2xl md:p-6"
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="20"
+      height="20"
+      class="text-error"
+      viewBox="0 0 24 24"
     >
-      <div class="mb-3 flex items-center gap-3">
-        <div
-          class="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-accent/10 text-accent"
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="22"
-            height="22"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          >
-            <rect x="3" y="11" width="18" height="10" rx="2" />
-            <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-          </svg>
-        </div>
-        <span class="du-badge du-badge-warning">Caja cerrada</span>
-      </div>
-
-      <h3 class="text-lg font-bold tracking-tight">Apertura requerida</h3>
-      <p class="mt-1 text-sm opacity-70">
-        Debes realizar primero la apertura de caja para continuar con la facturacion.
-      </p>
-
-      <div class="du-divider my-3"></div>
-
-      <div class="rounded-xl bg-base-200/70 border border-base-content/10 p-3">
-        <p class="text-xs font-semibold uppercase tracking-wider opacity-50">Estado actual</p>
-        <p class="mt-1 text-sm font-medium">No hay una caja activa para esta sesion.</p>
-      </div>
-    </div>
-  </div>
-}
-
-<div class="relative mx-auto w-full max-w-2xl">
-  <header class="mb-2 flex items-center gap-2" data-reveal="up">
-    <div class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 pulse-dot pulse-dot-error">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
-        class="text-error"
-        viewBox="0 0 24 24"
+      <g
+        fill="none"
+        stroke="currentColor"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
       >
-        <g
-          fill="none"
-          stroke="currentColor"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
+        <path
+          d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5m-6 6l3 3l3-3m-4-7h.01m.99 4v6M6 12h.01"
+        />
+        <circle cx="12" cy="12" r="2" />
+      </g>
+    </svg>
+  </div>
+  <div>
+    <h1 class="text-xl font-bold tracking-tight">Registrar gasto</h1>
+    <p class="text-sm opacity-50">Crea un egreso y descuentalo del cierre de caja actual.</p>
+  </div>
+</header>
+
+<article
+  data-reveal="up"
+  class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl"
+>
+  <div class="du-card-body p-3 md:p-4">
+    <form class="space-y-2.5" [formGroup]="expenseForm" (submit)="onSubmit($event)">
+      <fieldset
+        class="du-fieldset w-full rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+      >
+        <legend
+          class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
         >
-          <path
-            d="M12 18H4a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5m-6 6l3 3l3-3m-4-7h.01m.99 4v6M6 12h.01"
+          Monto
+        </legend>
+        <label
+          class="du-input du-input-error flex min-h-11 w-full items-center gap-2 rounded-xl border border-base-content/10 bg-base-100 px-3 text-base"
+        >
+          <input
+            copMoneyInput
+            type="text"
+            class="grow bg-transparent no-spinner outline-none"
+            placeholder="0"
+            inputmode="numeric"
+            (input)="onAmountInput($event)"
+            (click)="onAmountClick($event)"
+            (blur)="expenseForm.get('amount')?.markAsTouched()"
           />
-          <circle cx="12" cy="12" r="2" />
-        </g>
-      </svg>
-    </div>
-    <div>
-      <h1 class="text-xl font-bold tracking-tight">Registrar gasto</h1>
-      <p class="text-sm opacity-50">Crea un egreso y descuentalo del cierre de caja actual.</p>
-    </div>
-  </header>
-
-  <article data-reveal="up" class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl">
-    <div class="du-card-body p-3 md:p-4">
-      <form class="space-y-2.5" [formGroup]="expenseForm" (submit)="onSubmit($event)">
-        <fieldset
-          class="du-fieldset w-full rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
-        >
-          <legend
-            class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
-          >
-            Monto
-          </legend>
-          <label
-            class="du-input du-input-error flex min-h-11 w-full items-center gap-2 rounded-xl border border-base-content/10 bg-base-100 px-3  text-base"
-          >
-            <span class="font-bold opacity-40">$</span>
-            <input
-              type="text"
-              class="grow bg-transparent no-spinner outline-none"
-              placeholder="0"
-              inputmode="numeric"
-              [value]="displayAmount()"
-              (input)="onAmountInput($event)"
-              (click)="onAmountClick($event)"
-              (blur)="expenseForm.get('amount')?.markAsTouched()"
-            />
+        </label>
+        @if (expenseForm.get('amount')?.touched && expenseForm.get('amount')?.invalid) {
+          <label class="du-label pt-1">
+            <span class="text-xs text-error">
+              @if (expenseForm.get('amount')?.hasError('required')) {
+                El monto es obligatorio.
+              } @else if (expenseForm.get('amount')?.hasError('min')) {
+                El monto debe ser mayor a 0.
+              } @else if (expenseForm.get('amount')?.hasError('pattern')) {
+                Solo se permiten numeros.
+              }
+            </span>
           </label>
-          @if (expenseForm.get('amount')?.touched && expenseForm.get('amount')?.invalid) {
-            <label class="du-label pt-1">
-              <span class="text-xs text-error">
-                @if (expenseForm.get('amount')?.hasError('required')) {
-                  El monto es obligatorio.
-                } @else if (expenseForm.get('amount')?.hasError('min')) {
-                  El monto debe ser mayor a 0.
-                } @else if (expenseForm.get('amount')?.hasError('pattern')) {
-                  Solo se permiten numeros.
-                }
-              </span>
-            </label>
-          }
-        </fieldset>
+        }
+      </fieldset>
 
-        <fieldset
-          class="du-fieldset flex w-full flex-col rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+      <fieldset
+        class="du-fieldset flex w-full flex-col rounded-2xl border border-base-content/10 bg-base-200/40 p-2.5"
+      >
+        <legend
+          class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
         >
-          <legend
-            class="du-fieldset-legend text-sm font-semibold uppercase tracking-[0.16em] opacity-50"
-          >
-            Motivo del gasto
-          </legend>
-          <textarea
-            class="du-textarea du-textarea-bordered du-textarea-error h-20 w-full resize-none rounded-xl bg-base-100"
-            placeholder="Ejemplo: compra de papeleria, insumos de limpieza, transporte..."
-            formControlName="reason"
-          ></textarea>
-          <div class="mt-1 flex items-center justify-between gap-2">
-            @if (expenseForm.get('reason')?.touched && expenseForm.get('reason')?.invalid) {
-              <span class="text-xs text-error">
-                @if (expenseForm.get('reason')?.hasError('required')) {
-                  El motivo es obligatorio.
-                } @else if (expenseForm.get('reason')?.hasError('minlength')) {
-                  Describe el motivo con al menos 5 caracteres.
-                } @else if (expenseForm.get('reason')?.hasError('maxlength')) {
-                  El motivo no puede superar 250 caracteres.
-                }
-              </span>
-            } @else {
-              <span class="text-xs opacity-50"
-                >Describe claramente por que se realizo el egreso.</span
-              >
-            }
-            <span class="text-xs opacity-60"
-              >{{ expenseForm.get('reason')?.value?.length }}/250</span
-            >
-          </div>
-        </fieldset>
-
-        <div class="flex flex-col-reverse gap-2 pt-1 sm:flex-row">
-          <button
-            class="du-btn du-btn-soft flex-1"
-            type="button"
-            [disabled]="expenseStore.loading()"
-            (click)="closeExpenseModal()"
-          >
-            Cancelar
-          </button>
-          @if (expenseStore.loading()) {
-            <button class="du-btn du-btn-error du-btn-disabled flex-1 gap-2" type="button">
-              <span class="du-loading du-loading-spinner du-loading-sm"></span>
-              Guardando
-            </button>
+          Motivo del gasto
+        </legend>
+        <textarea
+          class="du-textarea du-textarea-bordered du-textarea-error h-20 w-full resize-none rounded-xl bg-base-100"
+          placeholder="Ejemplo: compra de papeleria, insumos de limpieza, transporte..."
+          formControlName="reason"
+        ></textarea>
+        <div class="mt-1 flex items-center justify-between gap-2">
+          @if (expenseForm.get('reason')?.touched && expenseForm.get('reason')?.invalid) {
+            <span class="text-xs text-error">
+              @if (expenseForm.get('reason')?.hasError('required')) {
+                El motivo es obligatorio.
+              } @else if (expenseForm.get('reason')?.hasError('minlength')) {
+                Describe el motivo con al menos 5 caracteres.
+              } @else if (expenseForm.get('reason')?.hasError('maxlength')) {
+                El motivo no puede superar 250 caracteres.
+              }
+            </span>
           } @else {
-            <button
-              class="du-btn du-btn-error flex-1 gap-2"
-              [disabled]="!authStore.cashRegisterIsOpen()"
-              type="submit"
+            <span class="text-xs opacity-50"
+              >Describe claramente por que se realizo el egreso.</span
             >
-              Crear gasto
-            </button>
           }
+          <span class="text-xs opacity-60">{{ expenseForm.get('reason')?.value?.length }}/250</span>
         </div>
-      </form>
-    </div>
-  </article>
-</div>
+      </fieldset>
+
+      <div class="flex flex-col-reverse gap-2 pt-1 sm:flex-row">
+        <button
+          class="du-btn du-btn-soft flex-1"
+          type="button"
+          [disabled]="expenseStore.loading()"
+          (click)="closeExpenseModal()"
+        >
+          Cancelar
+        </button>
+        @if (expenseStore.loading()) {
+          <button class="du-btn du-btn-error du-btn-disabled flex-1 gap-2" type="button">
+            <span class="du-loading du-loading-spinner du-loading-sm"></span>
+            Guardando
+          </button>
+        } @else {
+          <button
+            class="du-btn du-btn-error flex-1 gap-2"
+            [disabled]="!authStore.cashRegisterIsOpen()"
+            type="submit"
+          >
+            Crear gasto
+          </button>
+        }
+      </div>
+    </form>
+  </div>
+</article>

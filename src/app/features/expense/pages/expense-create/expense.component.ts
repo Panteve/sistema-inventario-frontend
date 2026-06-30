@@ -1,26 +1,25 @@
-import { CurrencyPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, output } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
 import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
 import { ExpenseStore } from '../../store/expense-store';
 import { AuthStore } from '../../../../core/store/auth-store';
+import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 
 
 @Component({
   selector: 'app-expense',
-  imports: [ReactiveFormsModule],
-  providers: [ExpenseStore, CurrencyPipe],
+  imports: [ReactiveFormsModule, CopMoneyInputDirective],
+  providers: [ExpenseStore],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css',
 })
 export class ExpenseComponent {
-  #router = inject(Router);
-  #route = inject(ActivatedRoute);
-  #currencyPipe = inject(CurrencyPipe);
+
 
   expenseStore = inject(ExpenseStore);
   authStore = inject(AuthStore);
+
+  closeModal = output<void>();
 
   expenseForm = new FormGroup({
     amount: new FormControl<number>(0, [
@@ -34,11 +33,6 @@ export class ExpenseComponent {
       Validators.maxLength(250),
     ]),
   });
-
-  displayAmount() {
-    const amount = this.expenseForm.get('amount')?.value ?? 0;
-    return this.#currencyPipe.transform(amount, 'COP', '', '1.0-0') ?? '0';
-  }
 
   onAmountInput(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
@@ -67,10 +61,6 @@ export class ExpenseComponent {
   }
 
   closeExpenseModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { expenseModal: null },
-      queryParamsHandling: 'merge',
-    });
+    this.closeModal.emit();
   }
 }
