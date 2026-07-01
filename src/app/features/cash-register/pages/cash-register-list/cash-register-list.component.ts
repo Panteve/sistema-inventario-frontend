@@ -16,6 +16,7 @@ import { CashRegisterService } from '../../services/cash-register.service';
 import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
 import {
   isIsoDate,
+  maxRangeMonths,
   normalizeDateRange,
   parseNumber,
   parseStatus,
@@ -31,7 +32,6 @@ import {
   templateUrl: './cash-register-list.component.html',
 })
 export class CashRegisterListComponent implements OnInit {
-  readonly maxRangeMonths = 3;
   readonly defaultItemsPerPage = 30;
   readonly #filtersStorageKey = 'cashRegisterFilters';
 
@@ -90,7 +90,7 @@ export class CashRegisterListComponent implements OnInit {
   }
 
   #buildDefaultParams(): ParamsGetCashRegisters {
-    const startDate = toIsoDate(subtractMonths(this.#today, this.maxRangeMonths));
+    const startDate = toIsoDate(subtractMonths(this.#today, maxRangeMonths));
     const endDate = toIsoDate(this.#today);
     const officeId = this.authStore.isAdmin() ? undefined : this.authStore.employee()?.officeId;
 

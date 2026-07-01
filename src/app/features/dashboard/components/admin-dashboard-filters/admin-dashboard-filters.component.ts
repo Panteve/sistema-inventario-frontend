@@ -9,6 +9,7 @@ import { DateRangePopoverComponent } from '../../../../shared/components/date-ra
 import { AuthStore } from '../../../../core/store/auth-store';
 import {
   isIsoDate,
+  normalizeDateRange,
   parseNumber,
   toIsoDate,
 } from '../../../../shared/utils/filter-query.utils';
@@ -20,7 +21,6 @@ import {
   templateUrl: './admin-dashboard-filters.component.html',
 })
 export class AdminDashboardFiltersComponent implements OnInit {
-  readonly maxRangeMonths = 3;
   readonly #filtersStorageKey = 'adminDashboardFilters';
 
   paymentMethodStore = inject(PaymentMethodStore);
@@ -61,14 +61,14 @@ export class AdminDashboardFiltersComponent implements OnInit {
       parseNumber(params.get('paymentMethodId')) ?? sourceParams.paymentMethodId;
 
     this.filters.set(
-      this.#normalizeDateRange({
+      normalizeDateRange({
         ...defaults,
         startDate,
         endDate,
         officeId,
         employeeId,
         paymentMethodId,
-      }),
+      }, this.todayIso, this.authStore.isAdmin()),
     );
     this.#emitFilters();
   }
@@ -120,11 +120,11 @@ export class AdminDashboardFiltersComponent implements OnInit {
   setTodayRange() {
     const today = this.todayIso;
     this.filters.update((filters) =>
-      this.#normalizeDateRange({
+      normalizeDateRange({
         ...filters,
         startDate: today,
         endDate: today,
-      }),
+      }, this.todayIso, this.authStore.isAdmin()),
     );
     this.#emitFilters();
   }
@@ -132,11 +132,11 @@ export class AdminDashboardFiltersComponent implements OnInit {
   setCurrentWeekRange() {
     const startDate = toIsoDate(this.#startOfWeek(this.#today));
     this.filters.update((filters) =>
-      this.#normalizeDateRange({
+      normalizeDateRange({
         ...filters,
         startDate,
         endDate: this.todayIso,
-      }),
+      }, this.todayIso, this.authStore.isAdmin()),
     );
     this.#emitFilters();
   }
@@ -144,11 +144,11 @@ export class AdminDashboardFiltersComponent implements OnInit {
   setCurrentMonthRange() {
     const startDate = toIsoDate(this.#startOfMonth(this.#today));
     this.filters.update((filters) =>
-      this.#normalizeDateRange({
+      normalizeDateRange({
         ...filters,
         startDate,
         endDate: this.todayIso,
-      }),
+      }, this.todayIso, this.authStore.isAdmin()),
     );
     this.#emitFilters();
   }
@@ -179,30 +179,6 @@ export class AdminDashboardFiltersComponent implements OnInit {
       officeId: undefined,
       employeeId: undefined,
       paymentMethodId: undefined,
-    };
-  }
-
-  #normalizeDateRange(filters: ParamsGetDashboard): ParamsGetDashboard {
-    let { startDate, endDate } = filters;
-
-    if (startDate > this.todayIso) {
-      startDate = this.todayIso;
-    }
-
-    const maxEndDate = this.#addMonthsIso(startDate, this.maxRangeMonths);
-    const cappedMaxEndDate = maxEndDate > this.todayIso ? this.todayIso : maxEndDate;
-
-    if (endDate < startDate) {
-      endDate = startDate;
-    }
-    if (endDate > cappedMaxEndDate) {
-      endDate = cappedMaxEndDate;
-    }
-
-    return {
-      ...filters,
-      startDate,
-      endDate,
     };
   }
 
@@ -280,10 +256,4 @@ export class AdminDashboardFiltersComponent implements OnInit {
     return new Date(date.getFullYear(), date.getMonth(), 1);
   }
 
-  #addMonthsIso(isoDate: string, months: number): string {
-    const [year, month, day] = isoDate.split('-').map(Number);
-    const date = new Date(year, month - 1, day);
-    date.setMonth(date.getMonth() + months);
-    return toIsoDate(date);
-  }
 }
