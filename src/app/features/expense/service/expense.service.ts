@@ -32,16 +32,16 @@ export class ExpenseService {
       orderDirection: params.orderDirection,
     };
 
-    if (params.officeId !== undefined) {
+    if (params.officeId) {
       queryParams.officeId = params.officeId;
     }
-    if (params.employeeId !== undefined) {
+    if (params.employeeId) {
       queryParams.employeeId = params.employeeId;
     }
-    if (params.amountMin !== undefined) {
+    if (params.amountMin) {
       queryParams.amountMin = params.amountMin;
     }
-    if (params.amountMax !== undefined) {
+    if (params.amountMax) {
       queryParams.amountMax = params.amountMax;
     }
     if (params.reasonKeyword) {

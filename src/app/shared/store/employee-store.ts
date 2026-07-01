@@ -28,6 +28,7 @@ const initialState: EmployeeState = {
 
 //QUITAR EN EL BACKEND QUE SE PUEDA PASAR EL NUMERO YA NO ES NECESARIO YA QUE SE PUEDE OBTENER EL ID DE LA OFICINA DEL USUARIO LOGUEADO
 export const EmployeeStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
   withProps(() => ({
     employeeService: inject(EmployeeService),
