@@ -64,6 +64,7 @@ export class AdminDashboardComponent implements OnDestroy {
     outOfStockProducts: [],
     lastExpenses: [],
     lastInventoryMovements: [],
+    lastBills: [],
   });
 
   barChartData = signal<BarChartData>({ currentData: [], previousData: [] });
@@ -221,6 +222,12 @@ export class AdminDashboardComponent implements OnDestroy {
         startDate: this.filters()?.startDate ?? null,
         endDate: this.filters()?.endDate ?? null,
       },
+    });
+  }
+
+  navigateToBill(billId: number) {
+    this.#router.navigate(['view-bills/bill', billId], {
+      queryParams: { from: '/dashboard' },
     });
   }
 

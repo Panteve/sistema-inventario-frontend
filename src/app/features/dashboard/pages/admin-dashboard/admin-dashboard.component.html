@@ -709,10 +709,10 @@
                   } @else {
                     @for (
                       item of dashboardProducts().lowStockProducts;
-                      track item.name + '-' + item.officeName
+                      track item.productName + '-' + item.officeName
                     ) {
                       <tr class="transition-colors hover:bg-warning/5">
-                        <td>{{ item.name }}</td>
+                        <td>{{ item.productName }}</td>
                         <td class="text-base-content/70">{{ item.officeName }}</td>
                         <td class="text-right">
                           <span class="du-badge du-badge-warning du-badge-sm border-0">{{
@@ -758,69 +758,77 @@
                   Últimos gastos
                 </p>
               </div>
-              <table class="du-table du-table-zebra w-full">
-                <thead>
-                  <tr class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error">
-                    <th>Motivo</th>
-                    <th>Monto</th>
-                    <th>Registrado por</th>
-                    <th>Sucursal</th>
-                    <th>Fecha</th>
-                  </tr>
-                </thead>
-                <tbody class="text-sm">
-                  @if (loadingProducts()) {
-                    @for (_ of [1, 2, 3]; track _) {
-                      <tr>
-                        <td><div class="du-skeleton h-5 w-28"></div></td>
-                        <td><div class="du-skeleton h-5 w-16"></div></td>
-                        <td><div class="du-skeleton h-5 w-20"></div></td>
-                        <td><div class="du-skeleton h-5 w-24"></div></td>
-                      </tr>
-                    }
-                  } @else {
-                    @for (item of dashboardProducts().lastExpenses; track item.id) {
-                      <tr class="transition-colors hover:bg-error/5 hover:cursor-pointer" (click)="navigateToExpense(item.id)">
-                        <td class="font-medium">{{
-                            item.reason.length > 20
-                              ? (item.reason | slice: 0 : 20) + '...'
-                              : item.reason
-                          }}
-                        </td>
-                        <td class="font-semibold text-error">
-                          {{ item.amount | cop }}
-                        </td>
-                        <td class="text-base-content/70">{{ item.employeeName }}</td>
-                        <td class="text-base-content/70">{{ item.officeName }}</td>
-                        <td class="whitespace-nowrap text-xs text-base-content/60">
-                          {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
-                        </td>
-                      </tr>
-                    } @empty {
-                      <tr>
-                        <td colspan="4">
-                          <div
-                            class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center"
-                            role="status"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="size-10 text-error/40"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              stroke-width="1.5"
+              <div class="overflow-x-auto">
+                <table class="du-table du-table-zebra w-full">
+                  <thead>
+                    <tr
+                      class="bg-error/10 text-xs font-bold uppercase tracking-[0.12em] text-error"
+                    >
+                      <th>Motivo</th>
+                      <th>Monto</th>
+                      <th>Registrado por</th>
+                      <th>Sucursal</th>
+                      <th>Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    @if (loadingProducts()) {
+                      @for (_ of [1, 2, 3]; track _) {
+                        <tr>
+                          <td><div class="du-skeleton h-5 w-28"></div></td>
+                          <td><div class="du-skeleton h-5 w-16"></div></td>
+                          <td><div class="du-skeleton h-5 w-20"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                        </tr>
+                      }
+                    } @else {
+                      @for (item of dashboardProducts().lastExpenses; track item.id) {
+                        <tr
+                          class="transition-colors hover:bg-error/5 hover:cursor-pointer"
+                          (click)="navigateToExpense(item.id)"
+                        >
+                          <td class="font-medium">
+                            {{
+                              item.reason.length > 20
+                                ? (item.reason | slice: 0 : 20) + '...'
+                                : item.reason
+                            }}
+                          </td>
+                          <td class="font-semibold text-error">
+                            {{ item.amount | cop }}
+                          </td>
+                          <td class="text-base-content/70">{{ item.employeeName }}</td>
+                          <td class="text-base-content/70">{{ item.officeName }}</td>
+                          <td class="whitespace-nowrap text-xs text-base-content/60">
+                            {{ item.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="4">
+                            <div
+                              class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-error/30 bg-error/5 px-4 py-8 text-center"
+                              role="status"
                             >
-                              <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p class="text-sm text-base-content/60">No hay gastos registrados</p>
-                          </div>
-                        </td>
-                      </tr>
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-10 text-error/40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              >
+                                <path d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                              </svg>
+                              <p class="text-sm text-base-content/60">No hay gastos registrados</p>
+                            </div>
+                          </td>
+                        </tr>
+                      }
                     }
-                  }
-                </tbody>
-              </table>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </article>
 
@@ -834,7 +842,7 @@
                   Fuera de stock
                 </p>
               </div>
-              <div class="max-h-64 overflow-x-auto overflow-y-auto pr-1">
+              <div class="overflow-x-auto">
                 <table class="du-table du-table-zebra w-full">
                   <thead>
                     <tr
@@ -859,10 +867,10 @@
                     } @else {
                       @for (
                         item of dashboardProducts().outOfStockProducts;
-                        track item.name + '-' + item.officeName
+                        track item.productName + '-' + item.officeName
                       ) {
                         <tr class="transition-colors hover:bg-error/5">
-                          <td>{{ item.name }}</td>
+                          <td>{{ item.productName }}</td>
                           <td class="text-base-content/70">{{ item.officeName }}</td>
                           <td class="text-right">
                             <span class="du-badge du-badge-error du-badge-sm border-0">{{
@@ -888,6 +896,85 @@
                                 <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                               </svg>
                               <p class="text-sm text-base-content/60">Sin productos agotados</p>
+                            </div>
+                          </td>
+                        </tr>
+                      }
+                    }
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </article>
+
+          <article
+            class="du-card rounded-2xl border border-info/20 bg-base-100 shadow-lg shadow-info/10 lg:col-span-2"
+          >
+            <div class="du-card-body space-y-2">
+              <div class="flex items-center gap-2">
+                <span class="size-2 rounded-full bg-info pulse-dot"></span>
+                <p class="text-xs font-bold uppercase tracking-[0.2em] text-info">
+                  Últimas facturas
+                </p>
+              </div>
+              <div class="max-h-80 overflow-x-auto overflow-y-auto pr-1">
+                <table class="du-table du-table-zebra w-full">
+                  <thead>
+                    <tr class="bg-info/10 text-xs font-bold uppercase tracking-[0.12em] text-info">
+                      <th>#</th>
+                      <th>Cliente</th>
+                      <th>Total</th>
+                      <th>Cajero</th>
+                      <th>Sucursal</th>
+                      <th>Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody class="text-sm">
+                    @if (loadingProducts()) {
+                      @for (_ of [1, 2, 3]; track _) {
+                        <tr>
+                          <td><div class="du-skeleton h-5 w-10"></div></td>
+                          <td><div class="du-skeleton h-5 w-28"></div></td>
+                          <td><div class="du-skeleton h-5 w-16"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                          <td><div class="du-skeleton h-5 w-24"></div></td>
+                          <td><div class="du-skeleton h-5 w-20"></div></td>
+                        </tr>
+                      }
+                    } @else {
+                      @for (bill of dashboardProducts().lastBills; track bill.id) {
+                        <tr class="transition-colors hover:bg-info/5 hover:cursor-pointer" (click)="navigateToBill(bill.id)">
+                          <td class="font-mono text-xs text-base-content/60">#{{ bill.id }}</td>
+                          <td class="font-medium">{{ bill.customerName || '—' }}</td>
+                          <td class="font-semibold text-info">{{ bill.total | cop }}</td>
+                          <td class="text-base-content/70">{{ bill.employeeName }}</td>
+                          <td class="text-base-content/70">{{ bill.officeName }}</td>
+                          <td class="whitespace-nowrap text-xs text-base-content/60">
+                            {{ bill.createdAt | date: 'dd/MM/yyyy HH:mm' }}
+                          </td>
+                        </tr>
+                      } @empty {
+                        <tr>
+                          <td colspan="6">
+                            <div
+                              class="flex flex-col items-center justify-center gap-2 min-h-40 rounded-2xl border border-dashed border-info/30 bg-info/5 px-4 py-8 text-center"
+                              role="status"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="size-10 text-info/40"
+                                viewBox="0 0 24 24"
+                                fill="none"
+                                stroke="currentColor"
+                                stroke-width="1.5"
+                              >
+                                <path
+                                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                                />
+                              </svg>
+                              <p class="text-sm text-base-content/60">
+                                No hay facturas en este período
+                              </p>
                             </div>
                           </td>
                         </tr>
@@ -941,7 +1028,10 @@
                       }
                     } @else {
                       @for (item of dashboardProducts().lastInventoryMovements; track item.id) {
-                        <tr class="transition-colors hover:bg-accent/5 hover:cursor-pointer" (click)="navigateToInventoryMovement(item.id)">
+                        <tr
+                          class="transition-colors hover:bg-accent/5 hover:cursor-pointer"
+                          (click)="navigateToInventoryMovement(item.id)"
+                        >
                           <td>
                             <span
                               class="inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest"

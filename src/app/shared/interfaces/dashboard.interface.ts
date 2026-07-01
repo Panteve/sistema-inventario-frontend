@@ -40,12 +40,12 @@ export interface DashboardTables {
   }[];
 
   lowStockProducts: {
-    name: string;
+    productName: string;
     officeName: string;
     quantity: number;
   }[];
   outOfStockProducts: {
-    name: string;
+    productName: string;
     officeName: string;
     quantity: number;
   }[];
@@ -54,7 +54,7 @@ export interface DashboardTables {
     reason: string;
     amount: number;
     employeeName: string;
-    officeName:string;
+    officeName: string;
     createdAt: string;
   }[];
   lastInventoryMovements: {
@@ -64,6 +64,14 @@ export interface DashboardTables {
     toOfficeName?: string;
     productsAffectedCount: number;
     type: 'IN' | 'OUT' | 'TRANSFER';
+    createdAt: string;
+  }[];
+  lastBills: {
+    id: number;
+    employeeName: string;
+    officeName: string;
+    total: number;
+    customerName: string | null;
     createdAt: string;
   }[];
 }

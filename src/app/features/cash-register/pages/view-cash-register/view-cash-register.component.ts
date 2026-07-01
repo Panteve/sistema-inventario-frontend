@@ -94,6 +94,28 @@ export class ViewCashRegisterComponent implements OnInit {
 
   duration = computed(() => this.#calculateDuration().display);
 
+  transferBreakdown = computed(() => {
+    const bills = this.cashRegisterHistory().bills;
+    const groups = new Map<string, { count: number; total: number }>();
+
+    for (const bill of bills) {
+      const methods = bill.payments
+        .filter(p => p.paymentMethod.name.toLowerCase() !== 'efectivo')
+        .map(p => p.paymentMethod.name);
+      const unique = new Set(methods);
+      for (const name of unique) {
+        const entry = groups.get(name) ?? { count: 0, total: 0 };
+        entry.count++;
+        entry.total += bill.total;
+        groups.set(name, entry);
+      }
+    }
+
+    return Array.from(groups.entries())
+      .map(([name, data]) => ({ name, count: data.count, total: data.total }))
+      .sort((a, b) => b.total - a.total);
+  });
+
   ngOnInit(): void {
     this.#cashRegisterService
       .getCashRegisterHistory(Number(this.cashRegisterIdParams()))
