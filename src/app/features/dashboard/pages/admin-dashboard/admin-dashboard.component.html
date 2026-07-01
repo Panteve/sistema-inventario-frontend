@@ -10,350 +10,197 @@
       </div>
     </article>
 
-    <div class="reveal-stagger grid gap-2 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
+    <div class="reveal-stagger grid gap-3 sm:grid-cols-2 xl:grid-cols-5" data-reveal="up">
       <article
-        class="du-card relative overflow-hidden rounded-2xl border border-success/20 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-sm shadow-success/10"
+        class="du-card group relative overflow-hidden rounded-2xl border border-success/20 bg-linear-to-br from-success/20 via-base-100 to-base-200 shadow-sm shadow-success/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-success/15"
       >
-        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-success/60 to-success"></div>
-        <div class="du-card-body gap-2 p-3.5">
+        <div class="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-success/60 to-success"></div>
+        <div class="du-card-body gap-2.5 p-4">
           <div class="flex items-center justify-between gap-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-success/80">
-              Ventas totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
-              [class.bg-success]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0
-              "
-              [class.bg-error]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
-              [class.text-error-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
-              >{{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%</span
-            >
-          </div>
-          <div class="flex min-w-0 items-center gap-2.5">
-            <span
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-success/20 text-success"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
-              </svg>
-            </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-7 w-32"></div>
-            } @else {
-              <p class="min-w-0 truncate text-xl font-bold tracking-tight text-success">
-                {{ dashboardSummary().totalSales.current | cop }}
-              </p>
-            }
-          </div>
-          <div
-            class="flex items-center justify-between rounded-xl border border-success/20 bg-success/10 px-2.5 py-1.5 text-xs"
-          >
-            <span class="opacity-70">Antes</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-20"></div>
-            } @else {
-              <span class="font-semibold">{{ dashboardSummary().totalSales.previous | cop }}</span>
-            }
-            <span class="opacity-40">|</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-16"></div>
-            } @else {
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-success/70">Ventas totales</p>
+            @if (!loadingSummary()) {
               <span
-                class="font-semibold"
-                [class.text-success]="dashboardSummary().totalSales.diff >= 0"
-                [class.text-error]="dashboardSummary().totalSales.diff < 0"
-                >{{ dashboardSummary().totalSales.diff | cop }}</span
+                class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold leading-none tabular-nums"
+                [class.bg-success]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
+                [class.text-success-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) >= 0"
+                [class.bg-error]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
+                [class.text-error-content]="(dashboardSummary().totalSales.diffPercentage ?? 0) < 0"
+                >{{ (dashboardSummary().totalSales.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalSales.diffPercentage ?? 0 }}%</span
               >
             }
+          </div>
+          <div class="flex items-end justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-success/15 text-success ring-1 ring-success/20 transition-all duration-200 group-hover:bg-success/20 group-hover:ring-success/30" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </span>
+              @if (loadingSummary()) {
+                <div class="du-skeleton h-8 w-32"></div>
+              } @else {
+                <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-success">{{ dashboardSummary().totalSales.current | cop }}</p>
+              }
+            </div>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg border border-success/15 bg-success/6 px-2.5 py-1.5 text-xs">
+            <span class="opacity-50">Periodo anterior</span>
+            <span class="font-semibold opacity-80">{{ dashboardSummary().totalSales.previous | cop }}</span>
+            <span class="opacity-30 mx-0.5">·</span>
+            <span class="font-semibold" [class.text-success]="dashboardSummary().totalSales.diff >= 0" [class.text-error]="dashboardSummary().totalSales.diff < 0">
+              {{ dashboardSummary().totalSales.diff >= 0 ? '+' : '' }}{{ dashboardSummary().totalSales.diff | cop }}
+            </span>
           </div>
         </div>
       </article>
 
       <article
-        class="du-card relative overflow-hidden rounded-2xl border border-warning/20 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-sm shadow-warning/10"
+        class="du-card group relative overflow-hidden rounded-2xl border border-warning/20 bg-linear-to-br from-warning/20 via-base-100 to-base-200 shadow-sm shadow-warning/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-warning/15"
       >
-        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-warning/60 to-warning"></div>
-        <div class="du-card-body gap-2 p-3.5">
+        <div class="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-warning/60 to-warning"></div>
+        <div class="du-card-body gap-2.5 p-4">
           <div class="flex items-center justify-between gap-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-warning/80">
-              Transacciones
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
-              [class.bg-success]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0
-              "
-              [class.bg-error]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
-              [class.text-error-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
-              >{{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%</span
-            >
-          </div>
-          <div class="flex min-w-0 items-center gap-2.5">
-            <span
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-warning/20 text-warning"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
-              </svg>
-            </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-7 w-20"></div>
-            } @else {
-              <p class="text-xl font-bold tracking-tight text-warning">
-                {{ dashboardSummary().totalBills.current }}
-              </p>
-            }
-          </div>
-          <div
-            class="flex items-center justify-between rounded-xl border border-warning/20 bg-warning/10 px-2.5 py-1.5 text-xs"
-          >
-            <span class="opacity-70">Antes</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-16"></div>
-            } @else {
-              <span class="font-semibold">{{ dashboardSummary().totalBills.previous }}</span>
-            }
-            <span class="opacity-40">|</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-12"></div>
-            } @else {
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-warning/70">Transacciones</p>
+            @if (!loadingSummary()) {
               <span
-                class="font-semibold"
-                [class.text-success]="dashboardSummary().totalBills.diff >= 0"
-                [class.text-error]="dashboardSummary().totalBills.diff < 0"
-                >{{ dashboardSummary().totalBills.diff >= 0 ? '+' : ''
-                }}{{ dashboardSummary().totalBills.diff }}</span
+                class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold leading-none tabular-nums"
+                [class.bg-success]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
+                [class.text-success-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) >= 0"
+                [class.bg-error]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
+                [class.text-error-content]="(dashboardSummary().totalBills.diffPercentage ?? 0) < 0"
+                >{{ (dashboardSummary().totalBills.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diffPercentage ?? 0 }}%</span
               >
             }
+          </div>
+          <div class="flex items-end justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-warning/15 text-warning ring-1 ring-warning/20 transition-all duration-200 group-hover:bg-warning/20 group-hover:ring-warning/30" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
+              </span>
+              @if (loadingSummary()) {
+                <div class="du-skeleton h-8 w-20"></div>
+              } @else {
+                <p class="text-2xl font-bold tracking-tight text-warning">{{ dashboardSummary().totalBills.current }}</p>
+              }
+            </div>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg border border-warning/15 bg-warning/6 px-2.5 py-1.5 text-xs">
+            <span class="opacity-50">Periodo anterior</span>
+            <span class="font-semibold opacity-80">{{ dashboardSummary().totalBills.previous }}</span>
+            <span class="opacity-30 mx-0.5">·</span>
+            <span class="font-semibold" [class.text-success]="dashboardSummary().totalBills.diff >= 0" [class.text-error]="dashboardSummary().totalBills.diff < 0">
+              {{ dashboardSummary().totalBills.diff >= 0 ? '+' : '' }}{{ dashboardSummary().totalBills.diff }}
+            </span>
           </div>
         </div>
       </article>
 
       <article
-        class="du-card relative overflow-hidden rounded-2xl border border-info/20 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-sm shadow-info/10"
+        class="du-card group relative overflow-hidden rounded-2xl border border-info/20 bg-linear-to-br from-info/20 via-base-100 to-base-200 shadow-sm shadow-info/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-info/15"
       >
-        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-info/60 to-info"></div>
-        <div class="du-card-body gap-2 p-3.5">
+        <div class="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-info/60 to-info"></div>
+        <div class="du-card-body gap-2.5 p-4">
           <div class="flex items-center justify-between gap-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-info/80">
-              Ticket promedio
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
-              [class.bg-success]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
-              [class.text-success-content]="
-                (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0
-              "
-              [class.bg-error]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
-              [class.text-error-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
-              >{{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%</span
-            >
-          </div>
-          <div class="flex min-w-0 items-center gap-2.5">
-            <span
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-info/20 text-info"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M3 3v18h18" />
-                <path d="m19 9-5 5-4-4-3 3" />
-              </svg>
-            </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-7 w-32"></div>
-            } @else {
-              <p class="min-w-0 truncate text-xl font-bold tracking-tight text-info">
-                {{ dashboardSummary().averageBill.current | cop }}
-              </p>
-            }
-          </div>
-          <div
-            class="flex items-center justify-between rounded-xl border border-info/20 bg-info/10 px-2.5 py-1.5 text-xs"
-          >
-            <span class="opacity-70">Antes</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-20"></div>
-            } @else {
-              <span class="font-semibold">{{ dashboardSummary().averageBill.previous | cop }}</span>
-            }
-            <span class="opacity-40">|</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-16"></div>
-            } @else {
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-info/70">Ticket promedio</p>
+            @if (!loadingSummary()) {
               <span
-                class="font-semibold"
-                [class.text-success]="dashboardSummary().averageBill.diff >= 0"
-                [class.text-error]="dashboardSummary().averageBill.diff < 0"
-                >{{ dashboardSummary().averageBill.diff | cop }}</span
+                class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold leading-none tabular-nums"
+                [class.bg-success]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
+                [class.text-success-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) >= 0"
+                [class.bg-error]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
+                [class.text-error-content]="(dashboardSummary().averageBill.diffPercentage ?? 0) < 0"
+                >{{ (dashboardSummary().averageBill.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().averageBill.diffPercentage ?? 0 }}%</span
               >
             }
+          </div>
+          <div class="flex items-end justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-info/15 text-info ring-1 ring-info/20 transition-all duration-200 group-hover:bg-info/20 group-hover:ring-info/30" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="m19 9-5 5-4-4-3 3"/></svg>
+              </span>
+              @if (loadingSummary()) {
+                <div class="du-skeleton h-8 w-32"></div>
+              } @else {
+                <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-info">{{ dashboardSummary().averageBill.current | cop }}</p>
+              }
+            </div>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg border border-info/15 bg-info/6 px-2.5 py-1.5 text-xs">
+            <span class="opacity-50">Periodo anterior</span>
+            <span class="font-semibold opacity-80">{{ dashboardSummary().averageBill.previous | cop }}</span>
+            <span class="opacity-30 mx-0.5">·</span>
+            <span class="font-semibold" [class.text-success]="dashboardSummary().averageBill.diff >= 0" [class.text-error]="dashboardSummary().averageBill.diff < 0">
+              {{ dashboardSummary().averageBill.diff | cop }}
+            </span>
           </div>
         </div>
       </article>
 
       <article
-        class="du-card relative overflow-hidden rounded-2xl border border-secondary/20 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-sm shadow-secondary/10"
+        class="du-card group relative overflow-hidden rounded-2xl border border-secondary/20 bg-linear-to-br from-secondary/20 via-base-100 to-base-200 shadow-sm shadow-secondary/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-secondary/15"
       >
-        <div
-          class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-secondary/60 to-secondary"
-        ></div>
-        <div class="du-card-body gap-2 p-3.5">
+        <div class="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-secondary/60 to-secondary"></div>
+        <div class="du-card-body gap-2.5 p-4">
           <div class="flex items-center justify-between gap-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-secondary/80">
-              Cajas activas
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap text-secondary-content"
-              >{{ dashboardSummary().activeOffices }} suc.</span
-            >
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-secondary/70">Cajas activas</p>
+            <span class="inline-flex shrink-0 items-center rounded-full bg-secondary px-2 py-0.5 text-[10px] font-bold leading-none text-secondary-content">{{ dashboardSummary().activeOffices }} suc.</span>
           </div>
-          <div class="flex min-w-0 items-center gap-2.5">
-            <span
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-secondary/20 text-secondary"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="2" y="7" width="20" height="14" rx="2" />
-                <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2" />
-              </svg>
-            </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-7 w-12"></div>
-            } @else {
-              <p class="text-xl font-bold tracking-tight text-secondary">
-                {{ dashboardSummary().activeCashRegisters.length }}
-              </p>
-            }
+          <div class="flex items-end justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-secondary/15 text-secondary ring-1 ring-secondary/20 transition-all duration-200 group-hover:bg-secondary/20 group-hover:ring-secondary/30" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              </span>
+              @if (loadingSummary()) {
+                <div class="du-skeleton h-8 w-12"></div>
+              } @else {
+                <p class="text-2xl font-bold tracking-tight text-secondary">{{ dashboardSummary().activeCashRegisters.length }}</p>
+              }
+            </div>
           </div>
-          <div
-            class="flex items-center justify-between rounded-xl border border-secondary/20 bg-secondary/10 px-2.5 py-1.5 text-xs"
-          >
-            <span class="opacity-70">Sucursales</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-12"></div>
-            } @else {
-              <span class="font-semibold">{{ dashboardSummary().activeOffices }}</span>
-            }
-            <span class="opacity-40">|</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-10"></div>
-            } @else {
-              <span class="font-semibold"
-                >{{ dashboardSummary().activeCashRegisters.length }} abiertas</span
-              >
-            }
+          <div class="flex items-center gap-2 rounded-lg border border-secondary/15 bg-secondary/6 px-2.5 py-1.5 text-xs">
+            <span class="opacity-50">Sucursales activas</span>
+            <span class="font-semibold opacity-80">{{ dashboardSummary().activeOffices }}</span>
+            <span class="opacity-30 mx-0.5">·</span>
+            <span class="font-semibold">{{ dashboardSummary().activeCashRegisters.length }} abiertas</span>
           </div>
         </div>
       </article>
 
       <article
-        class="du-card relative overflow-hidden rounded-2xl border border-error/20 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-sm shadow-error/10"
+        class="du-card group relative overflow-hidden rounded-2xl border border-error/20 bg-linear-to-br from-error/20 via-base-100 to-base-200 shadow-sm shadow-error/10 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:shadow-error/15"
       >
-        <div class="absolute inset-x-0 top-0 h-1 bg-linear-to-r from-error/60 to-error"></div>
-        <div class="du-card-body gap-2 p-3.5">
+        <div class="absolute inset-x-0 top-0 h-0.5 bg-linear-to-r from-error/60 to-error"></div>
+        <div class="du-card-body gap-2.5 p-4">
           <div class="flex items-center justify-between gap-1">
-            <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-error/80">
-              Gastos totales
-            </p>
-            <span
-              class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[11px] font-bold leading-none whitespace-nowrap tabular-nums"
-              [class.bg-success]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
-              [class.text-success-content]="
-                (dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0
-              "
-              [class.bg-error]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
-              [class.text-error-content]="
-                (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0
-              "
-              >{{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : ''
-              }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%</span
-            >
-          </div>
-          <div class="flex min-w-0 items-center gap-2.5">
-            <span
-              class="flex size-8 shrink-0 items-center justify-center rounded-lg bg-error/20 text-error"
-              aria-hidden="true"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="size-4"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0" />
-                <path d="M12 17v-7.5" />
-                <path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z" />
-              </svg>
-            </span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-7 w-32"></div>
-            } @else {
-              <p class="min-w-0 truncate text-xl font-bold tracking-tight text-error">
-                {{ dashboardSummary().totalExpenses.current | cop }}
-              </p>
-            }
-          </div>
-          <div
-            class="flex items-center justify-between rounded-xl border border-error/20 bg-error/10 px-2.5 py-1.5 text-xs"
-          >
-            <span class="opacity-70">Antes</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-20"></div>
-            } @else {
-              <span class="font-semibold">{{
-                dashboardSummary().totalExpenses.previous | cop
-              }}</span>
-            }
-            <span class="opacity-40">|</span>
-            @if (loadingSummary()) {
-              <div class="du-skeleton h-4 w-16"></div>
-            } @else {
+            <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-error/70">Gastos totales</p>
+            @if (!loadingSummary()) {
               <span
-                class="font-semibold"
-                [class.text-success]="dashboardSummary().totalExpenses.diff < 0"
-                [class.text-error]="dashboardSummary().totalExpenses.diff >= 0"
-                >{{ dashboardSummary().totalExpenses.diff | cop }}</span
+                class="inline-flex shrink-0 items-center rounded-full px-2 py-0.5 text-[10px] font-bold leading-none tabular-nums"
+                [class.bg-success]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
+                [class.text-success-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) < 0"
+                [class.bg-error]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
+                [class.text-error-content]="(dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0"
+                >{{ (dashboardSummary().totalExpenses.diffPercentage ?? 0) >= 0 ? '+' : '' }}{{ dashboardSummary().totalExpenses.diffPercentage ?? 0 }}%</span
               >
             }
+          </div>
+          <div class="flex items-end justify-between gap-2">
+            <div class="flex items-center gap-3">
+              <span class="flex size-9 shrink-0 items-center justify-center rounded-xl bg-error/15 text-error ring-1 ring-error/20 transition-all duration-200 group-hover:bg-error/20 group-hover:ring-error/30" aria-hidden="true">
+                <svg xmlns="http://www.w3.org/2000/svg" class="size-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 9.5a3.5 3.5 0 1 0-7 0M7 9.5a3.5 3.5 0 1 0 7 0"/><path d="M12 17v-7.5"/><path d="M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z"/></svg>
+              </span>
+              @if (loadingSummary()) {
+                <div class="du-skeleton h-8 w-32"></div>
+              } @else {
+                <p class="min-w-0 truncate text-2xl font-bold tracking-tight text-error">{{ dashboardSummary().totalExpenses.current | cop }}</p>
+              }
+            </div>
+          </div>
+          <div class="flex items-center gap-2 rounded-lg border border-error/15 bg-error/6 px-2.5 py-1.5 text-xs">
+            <span class="opacity-50">Periodo anterior</span>
+            <span class="font-semibold opacity-80">{{ dashboardSummary().totalExpenses.previous | cop }}</span>
+            <span class="opacity-30 mx-0.5">·</span>
+            <span class="font-semibold" [class.text-success]="dashboardSummary().totalExpenses.diff < 0" [class.text-error]="dashboardSummary().totalExpenses.diff >= 0">
+              {{ dashboardSummary().totalExpenses.diff | cop }}
+            </span>
           </div>
         </div>
       </article>
