@@ -5,9 +5,7 @@ import { BillComponent } from './features/bill/pages/create-bill/bill.component'
 import { authGuard } from './core/guards/auth-guard';
 import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
 import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
-import { MovementInventoryStore } from './features/inventory/store/movement-inventory-store';
 import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
-import { EmployeeStore } from './shared/store/employee-store';
 import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
 import { adminChildGuard } from './core/guards/admin-child-guard';
 import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
@@ -25,7 +23,6 @@ export const routes: Routes = [
   },
   {
     path: 'dashboard/admin',
-    providers: [EmployeeStore],
     loadComponent: () =>
       import('./features/dashboard/pages/admin-dashboard/admin-dashboard.component').then(
         (c) => c.AdminDashboardComponent,
@@ -59,7 +56,6 @@ export const routes: Routes = [
         path: 'list',
         title: 'Historial de facturas',
         canActivate: [authGuard],
-        providers: [EmployeeStore],
         loadComponent: () =>
           import('./features/bill/pages/bill-list/bill-list.component').then(
             (c) => c.BillListComponent,
@@ -81,7 +77,6 @@ export const routes: Routes = [
         path: 'list',
         title: 'Historial de registros de caja',
         canActivate: [authGuard],
-        providers: [EmployeeStore],
         loadComponent: () =>
           import('./features/cash-register/pages/cash-register-list/cash-register-list.component').then(
             (c) => c.CashRegisterListComponent,
@@ -140,14 +135,12 @@ export const routes: Routes = [
         path: 'new-movement',
         title: 'Nuevo movimiento',
         canActivate: [authGuard],
-        providers: [MovementInventoryStore],
         component: MovementCreateComponent,
       },
       {
         path: 'history-movement',
         title: 'Historial de movimientos',
         canActivate: [authGuard],
-        providers: [MovementInventoryStore, EmployeeStore],
         component: MovementListComponent,
       },
     ],
@@ -155,7 +148,6 @@ export const routes: Routes = [
   {
     path: 'expense-list',
     component: ExpenseListComponent,
-    providers: [EmployeeStore],
     title: 'Lista de gastos',
     canActivate: [authGuard],
   },

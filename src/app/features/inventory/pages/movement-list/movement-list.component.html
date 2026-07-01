@@ -124,7 +124,7 @@
 
         <div class="du-divider my-4"></div>
 
-        @if (movementInventoryStore.loading()) {
+        @if (loading()) {
           <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
             @for (_ of [1, 2, 3, 4, 5, 6, 7, 8]; track _) {
               <div class="rounded-2xl border border-base-content/10 bg-base-100 p-4 space-y-3">
@@ -369,7 +369,7 @@
             <button
               class="du-join-item du-btn"
               (click)="changePage(1)"
-              [disabled]="queryParams().page >= movementInventoryStore.pagination().totalPages"
+              [disabled]="queryParams().page >= pagination().totalPages"
             >
               »
             </button>

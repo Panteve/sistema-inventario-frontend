@@ -13,10 +13,8 @@ import {
   ProductOnInventoryResponse,
 } from '../../../../shared/interfaces/product.interface';
 import { DatePipe } from '@angular/common';
-import { MovementInventoryStore } from '../../store/movement-inventory-store';
-import { ActivatedRoute, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { OfficeStore } from '../../../../shared/store/office-store';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -24,6 +22,7 @@ import { CreateInventoryMovementRequest } from '../../../../shared/interfaces/in
 import { ProductCatalogStore } from '../../../../shared/store/product-catalog-store';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
+import { MovementInventoryService } from '../../services/inventory-movement.service';
 
 @Component({
   selector: 'app-movement-create.component',
@@ -35,7 +34,7 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
     OfficeSelectComponent,
     ModalComponent,
   ],
-  providers: [MovementInventoryStore],
+  providers: [],
   templateUrl: './movement-create.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
@@ -43,8 +42,7 @@ export class MovementCreateComponent implements OnInit {
   authStore = inject(AuthStore);
   inventoryStore = inject(InventoryStore);
   productCatalogStore = inject(ProductCatalogStore);
-  officeStore = inject(OfficeStore);
-  movementStore = inject(MovementInventoryStore);
+  movementService = inject(MovementInventoryService);
   toastService = inject(ToastService);
   router = inject(Router);
 
@@ -65,6 +63,7 @@ export class MovementCreateComponent implements OnInit {
   });
 
   productsModalOpen = signal<boolean>(false);
+  loading = signal<boolean>(false);
 
   canConfirm = computed(() => {
     if (this.notSelectedOffice()) return false;
@@ -84,7 +83,6 @@ export class MovementCreateComponent implements OnInit {
     }
     return false;
   });
-
 
   ngOnInit(): void {
     this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
@@ -265,7 +263,29 @@ export class MovementCreateComponent implements OnInit {
       });
       return;
     }
-    this.movementStore.createMovementInventory(this.movementData());
+    this.loading.set(true);
+    this.movementService.createMovementInventory(this.movementData()).subscribe({
+      next: (inventoryMovementResponse) => {
+        this.loading.set(false);
+        this.toastService.show({
+          title: 'Éxito',
+          content: 'Movimiento de inventario creado exitosamente.',
+          type: 'success',
+        });
+        this.router.navigate([`/inventory/history-movement/`], {
+          state: { inventoryMovement: inventoryMovementResponse },
+        });
+      },
+      error: (error) => {
+        this.loading.set(false);
+        this.toastService.show({
+          title: 'Error',
+          content: 'Error al crear el movimiento de inventario.',
+          type: 'error',
+        });
+        
+      },
+    });
   }
 
   setReason(event: Event) {

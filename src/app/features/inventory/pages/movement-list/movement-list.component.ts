@@ -1,17 +1,10 @@
-import {
-  Component,
-  computed,
-  effect,
-  inject,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
+  InventoryMovementPagination,
   ParamsGetInventoryMovements,
 } from '../../../../shared/interfaces/inventoryMovement.interface';
-import { MovementInventoryStore } from '../../store/movement-inventory-store';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { toSignal } from '@angular/core/rxjs-interop';
@@ -27,6 +20,8 @@ import {
   toIsoDate,
 } from '../../../../shared/utils/filter-query.utils';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
+import { MovementInventoryService } from '../../services/inventory-movement.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-movement-list.component',
@@ -38,16 +33,21 @@ export class MovementListComponent implements OnInit {
   readonly defaultItemsPerPage = 20;
 
   authStore = inject(AuthStore);
+  movementInventoryService = inject(MovementInventoryService);
+  toastService = inject(ToastService);
   #router = inject(Router);
   #route = inject(ActivatedRoute);
-  movementInventoryStore = inject(MovementInventoryStore);
 
   readonly #today = new Date();
   readonly todayIso = toIsoDate(this.#today);
   queryParams = signal<ParamsGetInventoryMovements>(this.#buildDefaultParams());
 
+  movementList = signal<InventoryMovement[]>([]);
+  loading = signal(false);
+  pagination = signal<InventoryMovementPagination>({ totalItems: 0, totalPages: 0 });
   movementSelected = signal<InventoryMovement | null>(null);
   filterPanelSticky = signal(false);
+
   viewModalOpen = toSignal(
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
     { initialValue: false },
@@ -55,7 +55,7 @@ export class MovementListComponent implements OnInit {
   readonly groupedMovements = computed(() => {
     const todayMovements: InventoryMovement[] = [];
     const olderMovements: InventoryMovement[] = [];
-    for (const movement of this.movementInventoryStore.movementList()) {
+    for (const movement of this.movementList()) {
       if (this.#isMovementFromToday(movement.createdAt)) {
         todayMovements.push(movement);
       } else {
@@ -72,15 +72,20 @@ export class MovementListComponent implements OnInit {
   });
 
   constructor() {
+    const navInventoryMovement = this.#router.currentNavigation()?.extras.state?.['inventoryMovement'] as
+      | InventoryMovement
+      | undefined;
+    if (navInventoryMovement) {
+      this.movementSelected.set(navInventoryMovement);
+      this.openViewModal();
+      this.loading.set(false);
+    }
     effect(() => {
-      if (
-        !this.movementInventoryStore.loading() &&
-        this.#route.snapshot.queryParamMap.get('fromDashboard')
-      ) {
+      if (!this.loading() && this.#route.snapshot.queryParamMap.get('fromDashboard')) {
         this.movementSelected.set(
-          this.movementInventoryStore
-            .movementList()
-            .find((m) => m.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')))!,
+          this.movementList().find(
+            (m) => m.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')),
+          )!,
         );
         this.openViewModal();
       }
@@ -172,7 +177,7 @@ export class MovementListComponent implements OnInit {
 
   changePage(value: number) {
     const page = this.queryParams().page + value;
-    if (page < 1 || page > this.movementInventoryStore.pagination().totalPages) {
+    if (page < 1 || page > this.pagination().totalPages) {
       return;
     }
     this.queryParams.update((params) => ({
@@ -192,7 +197,22 @@ export class MovementListComponent implements OnInit {
   }
 
   applyFilters() {
-    this.movementInventoryStore.getInventoyryMovements(this.queryParams());
+    this.loading.set(true);
+    this.movementInventoryService.getInventoryMovements(this.queryParams()).subscribe({
+      next: (response) => {
+        this.movementList.set(response.data);
+        this.pagination.set(response.pagination);
+        this.loading.set(false);
+      },
+      error: () => {
+        this.loading.set(false);
+        this.toastService.show({
+          title: 'Error',
+          content: 'Error al cargar los movimientos de inventario.',
+          type: 'error',
+        });
+      },
+    });
   }
 
   setMovementSelected(movement: InventoryMovement) {

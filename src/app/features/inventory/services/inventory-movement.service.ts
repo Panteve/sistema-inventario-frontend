@@ -22,7 +22,7 @@ export class MovementInventoryService {
         quantity: p.quantity,
       })),
     };
-    return this.http.post(`${environment.apiUrl}/inventory-movement`, payload);
+    return this.http.post<InventoryMovement>(`${environment.apiUrl}/inventory-movement`, payload);
   }
   getInventoryMovements(params: ParamsGetInventoryMovements) {
     const queryParams: any = {

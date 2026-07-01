@@ -204,7 +204,7 @@
 
             <button
               class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
-              [disabled]="movementStore.loading() || officeStore.loading() || notSelectedOffice()"
+              [disabled]="loading()|| notSelectedOffice()"
               (click)="openProductsModal()"
             >
               <svg
@@ -224,7 +224,7 @@
               Agregar producto
             </button>
 
-            @if (movementStore.loading()) {
+            @if (loading()) {
               <button class="du-btn du-btn-disabled du-btn-md w-full mt-3">
                 <span class="du-loading du-loading-spinner du-loading-sm"></span>
                 Procesando
@@ -232,7 +232,7 @@
             } @else {
               <button
                 class="du-btn du-btn-primary du-btn-md w-full mt-3"
-                [disabled]="!canConfirm() || officeStore.loading() || notSelectedOffice()"
+                [disabled]="!canConfirm() || notSelectedOffice()"
                 (click)="submitMovement()"
               >
                 Crear movimiento
@@ -241,7 +241,6 @@
 
             <button
               class="du-btn du-btn-ghost du-btn-error du-btn-md w-full mt-2"
-              [disabled]="officeStore.loading()"
               (click)="this.resetMovementData()"
             >
               Cancelar
