@@ -67,7 +67,9 @@ export class ViewBillComponent implements OnInit {
     customer: null,
     cashRegister: {
       id: 0,
-      officeId: 0,
+      office: {
+        name: '',
+      },
     },
     employee: {
       id: 0,

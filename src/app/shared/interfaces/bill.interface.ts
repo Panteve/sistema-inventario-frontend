@@ -84,7 +84,9 @@ export interface BillResponse {
   } | null;
   cashRegister: {
     id: number;
-    officeId: number;
+    office: {
+      name: string;
+    };
   };
   employee: {
     id: number;

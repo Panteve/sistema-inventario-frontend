@@ -213,7 +213,7 @@
                   <p class="font-semibold hover:underline hover:cursor-pointer" (click)="viewCashRegister(bill().cashRegister.id)">
                     Caja #{{ bill().cashRegister.id }}
                   </p>
-                  <p class="opacity-75">Sucursal {{ bill().cashRegister.officeId }}</p>
+                  <p class="opacity-75">Sucursal {{ bill().cashRegister.office.name }}</p>
                 </div>
                 <div class="du-divider my-0"></div>
                 <div class="rounded-xl border border-base-content/10 bg-base-200/35 p-2.5">
