@@ -11,12 +11,22 @@ import {
 import { ToastService } from '../../../../shared/services/toast.service';
 import { EmployeeAction, EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { finalize } from 'rxjs';
-import { ManageEmployeeComponent } from '../../layouts/manage-employee/manage-employee.component';
+import { EmployeeCreateComponent } from '../../components/employee-create/employee-create.component';
+import { EmployeeEditInfoComponent } from '../../components/employee-edit-info/employee-edit-info.component';
+import { EmployeeChangePasswordComponent } from '../../components/employee-change-password/employee-change-password.component';
+import { EmployeeStatusToggleComponent } from '../../components/employee-status-toggle/employee-status-toggle.component';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-employees.component',
-  imports: [FlexRenderDirective, ManageEmployeeComponent, ModalComponent],
+  imports: [
+    FlexRenderDirective,
+    EmployeeCreateComponent,
+    EmployeeEditInfoComponent,
+    EmployeeChangePasswordComponent,
+    EmployeeStatusToggleComponent,
+    ModalComponent,
+  ],
   templateUrl: './employees.component.html',
 })
 export class EmployeesComponent implements OnInit {
@@ -40,6 +50,9 @@ export class EmployeesComponent implements OnInit {
     this.loadEmployees();
   }
 
+  addEmployee(employee: EmployeeResponse) {
+    this.employees.update((employees) => [...employees, employee]);
+  }
   loadEmployees() {
     this.loadingEmployees.set(true);
     this.globalFilter.set('');
@@ -171,11 +184,11 @@ export class EmployeesComponent implements OnInit {
   }
 
   onEmployeeChanged(updated: EmployeeResponse) {
-    console.log('Employee updated:', updated);
     this.employees.update((employees) =>
       employees.map((employee) => (employee.id === updated.id ? updated : employee)),
     );
     const selected = this.selectedEmployee();
+    
     if (selected?.id === updated.id) {
       this.selectedEmployee.set(updated);
     }

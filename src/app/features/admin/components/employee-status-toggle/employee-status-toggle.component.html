@@ -1,0 +1,53 @@
+<div class="mb-5 flex items-start justify-between gap-3 pr-12">
+  <div>
+    <h3 class="text-xl font-bold tracking-tight">{{ selectedEmployee().status ? 'Dar de baja' : 'Dar de alta' }}</h3>
+    <p class="text-sm text-base-content/60">
+      {{ selectedEmployee().status ? 'Desactiva el empleado del sistema.' : 'Reactiva el empleado en el sistema.' }}
+    </p>
+  </div>
+  @let employee = selectedEmployee();
+  <span class="du-badge mt-1 shrink-0" [class.du-badge-success]="employee.status" [class.du-badge-ghost]="!employee.status">
+    {{ employee.status ? 'Activo' : 'Inactivo' }}
+  </span>
+</div>
+@if (!selectedEmployee().status) {
+  <fieldset class="du-fieldset">
+    <div class="du-alert du-alert-success border-2 border-success/30 bg-success/5">
+      <div>
+        <h3 class="font-bold text-success">Reactivar empleado</h3>
+        <div class="text-sm text-success/80">
+          <p class="mb-3">El empleado está actualmente inactivo. Actívalo nuevamente para que pueda acceder al sistema.</p>
+          <label class="du-label justify-start items-start gap-3 flex-wrap">
+            <input type="checkbox" class="du-checkbox du-checkbox-sm du-checkbox-success" [value]="understandAction()" (change)="understandToggleStatus($event)" />
+            <span class="du-label-text text-success whitespace-normal wrap-break-word">Confirmo que deseo dar de alta este empleado</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+} @else {
+  <fieldset class="du-fieldset">
+    <div class="du-alert du-alert-error border-2 border-error/30 bg-error/5">
+      <div>
+        <h3 class="font-bold text-error">Dar de baja al empleado</h3>
+        <div class="text-sm text-error/80">
+          <p class="mb-3">Esta es una operación crítica. El empleado será desactivado y no podrá acceder al sistema.</p>
+          <label class="du-label justify-start items-start gap-3 flex-wrap">
+            <input type="checkbox" class="du-checkbox du-checkbox-sm du-checkbox-error" [value]="understandAction()" (change)="understandToggleStatus($event)" />
+            <span class="du-label-text text-error whitespace-normal wrap-break-word">Confirmo que deseo dar de baja este empleado</span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+}
+<div class="flex justify-end gap-2 pt-4">
+  <form method="dialog">
+    <button class="du-btn du-btn-soft" [disabled]="isLoading()" (click)="close.emit()">Cancelar</button>
+  </form>
+@if (!selectedEmployee().status) {
+    <button class="du-btn du-btn-success gap-2" [disabled]="isLoading() || !understandAction()" (click)="save()">Dar de alta al empleado</button>
+  } @else {
+    <button class="du-btn du-btn-error gap-2" [disabled]="isLoading() || !understandAction()" (click)="save()">Dar de baja al empleado</button>
+  }
+</div>

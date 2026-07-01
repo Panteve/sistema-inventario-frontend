@@ -1,0 +1,71 @@
+<div class="mb-5 flex items-start justify-between gap-3 pr-12">
+  <div>
+    <h3 class="text-xl font-bold tracking-tight">Editar información del empleado</h3>
+    <p class="text-sm text-base-content/60">Modifica la información básica del empleado.</p>
+  </div>
+  @let employee = selectedEmployee();
+  <span class="du-badge mt-1 shrink-0" [class.du-badge-success]="employee.status" [class.du-badge-ghost]="!employee.status">
+    {{ employee.status ? 'Activo' : 'Inactivo' }}
+  </span>
+</div>
+<form class="space-y-4 min-w-0" [formGroup]="employeeForm" (ngSubmit)="save()">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Nombre</legend>
+      <input type="text" class="du-input du-input-bordered w-full" formControlName="name" placeholder="Ej: Juan Perez" />
+      @if (employeeForm.get('name')?.invalid && employeeForm.get('name')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">Ingresa un nombre válido de al menos 3 caracteres.</span>
+      }
+    </fieldset>
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Documento</legend>
+      <input type="text" class="du-input du-input-bordered w-full" formControlName="document" placeholder="Ej: 123456789" />
+      @if (employeeForm.get('document')?.invalid && employeeForm.get('document')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">El documento es obligatorio y debe tener al menos 8 caracteres.</span>
+      }
+    </fieldset>
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Correo</legend>
+      <input type="email" class="du-input du-input-bordered w-full" formControlName="email" placeholder="Ej: usuario@empresa.com" />
+      @if (employeeForm.get('email')?.invalid && employeeForm.get('email')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">Ingresa un correo válido.</span>
+      }
+    </fieldset>
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Teléfono</legend>
+      <input type="tel" class="du-input du-input-bordered w-full" formControlName="phone" placeholder="Ej: 3001234567" />
+      @if (employeeForm.get('phone')?.invalid && employeeForm.get('phone')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">El teléfono es obligatorio y solo debe contener números.</span>
+      }
+    </fieldset>
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Sucursal</legend>
+      <select class="du-select du-select-bordered w-full" formControlName="officeId">
+        @if (employeeForm.getRawValue().role !== 'ADMIN') {
+          @for (office of officeStore.offices(); track office.id) {
+            <option [ngValue]="office.id">{{ office.name }}</option>
+          }
+        }
+      </select>
+      @if (employeeForm.get('officeId')?.invalid && employeeForm.get('officeId')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">Selecciona una sucursal válida.</span>
+      }
+    </fieldset>
+    <fieldset class="du-fieldset">
+      <legend class="du-fieldset-legend">Rol</legend>
+      <select class="du-select du-select-bordered w-full" formControlName="role">
+        <option value="CASHIER">Cajero</option>
+        <option value="ADMIN">Administrador</option>
+      </select>
+      @if (employeeForm.get('role')?.invalid && employeeForm.get('role')?.touched) {
+        <span class="mt-0.5 text-xs font-medium text-error">Selecciona un rol para continuar.</span>
+      }
+    </fieldset>
+  </div>
+  <div>
+    <form method="dialog" class="flex flex-col-reverse gap-2 pt-1 sm:flex-row">
+      <button class="du-btn du-btn-soft flex-1" [disabled]="isLoading()" (click)="close.emit()">Cancelar</button>
+      <button class="du-btn du-btn-primary flex-1 gap-2" [disabled]="isLoading() || employeeForm.invalid" (click)="save()">Guardar cambios</button>
+    </form>
+  </div>
+</form>

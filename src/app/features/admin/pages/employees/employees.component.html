@@ -329,12 +329,37 @@
   (close)="closeEmployeeModal()"
 >
   <div class="w-3xl h-full">
-    <app-manage-employee
-      [selectedEmployee]="selectedEmployee()"
-      [currentAction]="currentAction()"
-      (refresh)="loadEmployees()"
-      (employeeChanged)="onEmployeeChanged($event)"
-      (loadingModal)="setLoadingModal($event)"
-    ></app-manage-employee>
+    @switch (currentAction()) {
+      @case ('create') {
+        <app-employee-create
+          (addEmployee)="addEmployee($event)"
+          (loadingModal)="setLoadingModal($event)"
+          (close)="closeEmployeeModal()"
+        />
+      }
+      @case ('edit-info') {
+        <app-employee-edit-info
+          [selectedEmployee]="selectedEmployee()!"
+          (employeeChanged)="onEmployeeChanged($event)"
+          (loadingModal)="setLoadingModal($event)"
+          (close)="closeEmployeeModal()"
+        />
+      }
+      @case ('change-password') {
+        <app-employee-change-password
+          [selectedEmployee]="selectedEmployee()!"
+          (loadingModal)="setLoadingModal($event)"
+          (close)="closeEmployeeModal()"
+        />
+      }
+      @case ('status-toggle') {
+        <app-employee-status-toggle
+          [selectedEmployee]="selectedEmployee()!"
+          (employeeChanged)="onEmployeeChanged($event)"
+          (loadingModal)="setLoadingModal($event)"
+          (close)="closeEmployeeModal()"
+        />
+      }
+    }
   </div>
 </app-modal>

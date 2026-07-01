@@ -24,10 +24,10 @@ export class EmployeeService {
     return this.#http.get<EmployeeResponse[]>(`${environment.apiUrl}/employees`);
   }
   createEmployee(employeeData: CreateEmployeeRequest) {
-    return this.#http.post(`${environment.apiUrl}/employees/employee`, employeeData);
+    return this.#http.post<EmployeeResponse>(`${environment.apiUrl}/employees/employee`, employeeData);
   }
   updateEmployee(employeeId: number, employeeData: UpdateEmployeeRequest) {
-    return this.#http.patch(`${environment.apiUrl}/employees/update/${employeeId}`, employeeData);
+    return this.#http.patch<EmployeeResponse>(`${environment.apiUrl}/employees/update/${employeeId}`, employeeData);
   }
   updateEmployeePassword(employeeId: number, newPassword: string) {
     return this.#http.patch(`${environment.apiUrl}/employees/employee/${employeeId}/password`, {
