@@ -1,5 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
-import { BillStore } from '../../store/bill-store';
+import { Component, computed, inject, input, output, signal } from '@angular/core';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMethod.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -13,18 +12,26 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
   styleUrl: './payment-content.css',
 })
 export class PaymentContent {
-  billStore = inject(BillStore);
   paymentMethodStore = inject(PaymentMethodStore);
   
   paymentMethods = this.paymentMethodStore.paymentMethods;
   selectedMethod = signal<PaymentMethodResponse | null>(null);
   amountReceived = signal<number>(0);
 
+  total = input<number>(0);
+  subtotal = input<number>(0);
+  iva19 = input<number>(0);
+  iva5 = input<number>(0);
+  loading = input<boolean>(false);
+
+  changeAmountReceived = output<number>();
+  changeSelectedMethod = output<PaymentMethodResponse>();
+  createBill = output<void>();
+
   affectsCash = computed(() => this.selectedMethod()?.affectsCash ?? false);
-  change = computed(() => this.amountReceived() - this.billStore.total());
+  change = computed(() => this.amountReceived() - this.total());
 
   canConfirm = computed(() => {
-    if (this.billStore.length() === 0) return false;
     if (!this.selectedMethod()) return false;
     if (this.affectsCash() && this.change() < 0) return false;
     return true;
@@ -34,18 +41,14 @@ export class PaymentContent {
     const id = Number((event.target as HTMLSelectElement).value);
     const method = this.paymentMethods().find((m) => m.id === id) ?? null;
     this.selectedMethod.set(method);
-    this.billStore.setMethodOfPayment(id);
-
-    if (!method?.affectsCash) {
-      this.billStore.setAmountReceived(this.billStore.total());
-    }
+    this.changeSelectedMethod.emit(method!);
   }
 
   onAmountReceivedChange(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
     const value = Number(raw);
     this.amountReceived.set(isNaN(value) ? 0 : value);
-    this.billStore.setAmountReceived(this.amountReceived());
+    this.changeAmountReceived.emit(this.amountReceived());
   }
 
   onAmountReceivedClick(event: Event) {
@@ -53,6 +56,6 @@ export class PaymentContent {
   }
 
   confirm() {
-    this.billStore.createBill();
+    this.createBill.emit();
   }
 }

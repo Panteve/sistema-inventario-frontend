@@ -114,7 +114,7 @@
                 >
                   <div>
                     <p class="mb-1 text-xs uppercase tracking-wider opacity-50">Facturar a</p>
-                    @if (this.customerStore.customer(); as customer) {
+                    @if (this.customer(); as customer) {
                       <p class="text-lg font-semibold">{{ customer?.name }}</p>
                       <p class="text-sm opacity-50">{{ customer?.document }}</p>
                     } @else {
@@ -125,9 +125,8 @@
                     for="my-drawer-1"
                     class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
                     (click)="customerPanelOpen.set(true)"
-                    [routerLink]="[{ outlets: { 'add-client-info': ['add-client'] } }]"
                   >
-                    @if (this.customerStore.customer()) {
+                    @if (this.customer()) {
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="18"
@@ -165,7 +164,7 @@
                 <div class="mb-3 flex items-center justify-between gap-2">
                   <h3 class="text-sm md:text-base font-semibold">Productos</h3>
                   <p class="text-xs opacity-60">
-                    {{ billStore.bill().products.length }} productos seleccionados
+                    {{ bill().products.length }} productos seleccionados
                   </p>
                 </div>
 
@@ -181,7 +180,7 @@
                       </tr>
                     </thead>
                     <tbody class="text-sm md:text-base text-center">
-                      @for (product of billStore.bill().products; track product.productId) {
+                      @for (product of bill().products; track product.productId) {
                         <tr class="hover:bg-base-200 transition-colors">
                           <td>{{ product.name }}</td>
                           <td>
@@ -195,29 +194,19 @@
                               (keydown.enter)="modifyingQuantity($event, product.productId)"
                             />
                           </td>
-                          @if (this.modifiyingPrice() && productInputId() === product.productId) {
-                            <td>
-                              <input
-                                type="text"
-                                min="1"
-                                class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
-                                (focus)="selectAll($event)"
-                                (input)="onModifyPriceChange($event, product.productId)"
-                                (focusout)="finishModifyPrice()"
-                                (keydown.enter)="finishModifyPrice()"
-                                [value]="displayPrice()"
-                              />
-                            </td>
-                          } @else {
-                            <td
-                              class="text-center hover:text-primary cursor-pointer transition-colors"
-                              (click)="
-                                this.startModifyPrice(product.productId, product.priceUnique)
-                              "
-                            >
-                              {{ product.priceUnique | cop }}
-                            </td>
-                          }
+
+                          <td>
+                            <input
+                              type="text"
+                              min="1"
+                              class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
+                              (focus)="selectAll($event)"
+                              (input)="onModifyPriceChange($event, product.productId)"
+                              [value]="product.priceUnique | cop"
+                              inputmode="numeric"
+                              copMoneyInput
+                            />
+                          </td>
                           <td class="text-center font-semibold">
                             {{ product.priceUnique * product.quantity | cop }}
                           </td>
@@ -283,22 +272,22 @@
                 <div class="mt-4 space-y-3">
                   <div class="flex justify-between text-base">
                     <span class="opacity-60">Subtotal</span>
-                    <span class="font-medium tabular-nums">{{ billStore.subtotal() | cop }}</span>
+                    <span class="font-medium tabular-nums">{{ subtotal() | cop }}</span>
                   </div>
                   <div class="flex justify-between text-base">
                     <span class="opacity-60">IVA (19%)</span>
-                    <span class="font-medium tabular-nums">{{ billStore.iva19() | cop }}</span>
+                    <span class="font-medium tabular-nums">{{ iva19() | cop }}</span>
                   </div>
-                  @if (billStore.iva5() > 0) {
+                  @if (iva5() > 0) {
                     <div class="flex justify-between text-base">
                       <span class="opacity-60">IVA (5%)</span>
-                      <span class="font-medium tabular-nums">{{ billStore.iva5() | cop }}</span>
+                      <span class="font-medium tabular-nums">{{ iva5() | cop }}</span>
                     </div>
                   }
                   <div class="du-divider my-1"></div>
                   <div class="flex justify-between text-xl font-bold">
                     <span>Total</span>
-                    <span class="tabular-nums">{{ billStore.total() | cop }}</span>
+                    <span class="tabular-nums">{{ total() | cop }}</span>
                   </div>
                 </div>
 
@@ -307,7 +296,7 @@
                 <div class="flex flex-col gap-3">
                   <button
                     class="du-btn du-btn-primary du-btn-md w-full"
-                    [disabled]="billStore.length() === 0 || billStore.loading()"
+                    [disabled]="bill().products.length === 0 || loading()"
                     (click)="openPaymentModal()"
                   >
                     <svg
@@ -330,7 +319,7 @@
                   <button
                     class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
                     (click)="openProductModal()"
-                    [disabled]="billStore.loading()"
+                    [disabled]="loading()"
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -352,13 +341,13 @@
                   <button
                     class="du-btn du-btn-ghost du-btn-error du-btn-md w-full"
                     (click)="cancelBill()"
-                    [disabled]="billStore.loading()"
+                    [disabled]="loading()"
                   >
                     Cancelar
                   </button>
                 </div>
 
-                @if (billStore.loading()) {
+                @if (loading()) {
                   <div
                     class="mt-4 flex items-center justify-center gap-2 rounded-xl bg-base-200/50 py-3 text-sm"
                   >
@@ -381,7 +370,7 @@
       (click)="customerPanelOpen.set(false)"
     ></label>
     <ul class="du-menu bg-base-100 min-h-full w-80 md:w-100 p-4">
-      <router-outlet name="add-client-info" />
+      <app-add-customer [(customer)]="customer"></app-add-customer>
     </ul>
   </div>
 </div>
@@ -392,16 +381,25 @@
   (close)="closeProductModal()"
 >
   <div class="w-2xl h-full">
-    <app-product-panel/>
+    <app-product-panel (addProductToBill)="addProduct($event)" />
   </div>
 </app-modal>
 <!-- Modal para pagar -->
- <app-modal
+<app-modal
   [isOpen]="paymentModalOpen()"
   [ariaLabel]="'Pagar factura'"
-  (close)="closePaymentModal()">
+  (close)="closePaymentModal()"
+>
   <div class="w-sm h-full">
-    <app-payment-content/>
+    <app-payment-content
+      [total]="total()"
+      [subtotal]="subtotal()"
+      [iva19]="iva19()"
+      [iva5]="iva5()"
+      [loading]="loading()"
+      (changeAmountReceived)="setAmountReceived($event)"
+      (changeSelectedMethod)="setPaymentMethod($event)"
+      (createBill)="createBill()"
+    />
   </div>
- </app-modal>
-
+</app-modal>

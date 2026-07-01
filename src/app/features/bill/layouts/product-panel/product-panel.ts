@@ -1,12 +1,12 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { Router } from '@angular/router';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
-import { BillStore } from '../../store/bill-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductPricesPanel } from '../product-prices-panel/product-prices-panel';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
+
 
 @Component({
   selector: 'app-product-panel',
@@ -16,11 +16,10 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
 })
 export class ProductPanel {
   inventoryStore = inject(InventoryStore);
-  billStore = inject(BillStore);
   router = inject(Router);
 
-
   priceModalOpen = signal<boolean>(false);
+  addProductToBill = output<ProductSelected>();
 
   productSelected = signal<ProductSelected>({
     id: 0,
@@ -37,12 +36,11 @@ export class ProductPanel {
       ...current,
       priceSelected: price,
     }));
-    this.billStore.addProduct(this.productSelected());
+    this.addProductToBill.emit(this.productSelected());
     this.priceModalOpen.set(false);
   }
 
-  async getProductTable(product: ProductOnInventoryResponse) {
-    this.priceModalOpen.set(true);
+  getProductTable(product: ProductOnInventoryResponse) {
     const productSelected: ProductSelected = {
       id: product.product.id,
       name: product.product.name,
@@ -53,5 +51,6 @@ export class ProductPanel {
       quantity: 0,
     };
     this.productSelected.set(productSelected);
+    this.priceModalOpen.set(true);
   }
 }

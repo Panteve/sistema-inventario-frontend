@@ -37,23 +37,23 @@
   <div class="rounded-2xl border border-base-content/10 bg-base-200/40 p-5">
     <div class="flex items-center justify-between text-sm">
       <span class="opacity-60">Subtotal</span>
-      <span class="font-medium tabular-nums">{{ billStore.subtotal() | cop }}</span>
+      <span class="font-medium tabular-nums">{{ subtotal() | cop }}</span>
     </div>
     <div class="mt-3 flex items-center justify-between text-sm">
       <span class="opacity-60">IVA (19%)</span>
-      <span class="font-medium tabular-nums">{{ billStore.iva19() | cop }}</span>
+      <span class="font-medium tabular-nums">{{ iva19() | cop }}</span>
     </div>
-    @if(billStore.iva5() > 0){
+    @if(iva5() > 0){
       <div class="mt-3 flex items-center justify-between text-sm">
       <span class="opacity-60">IVA (5%)</span>
-      <span class="font-medium tabular-nums">{{ billStore.iva5() | cop }}</span>
+      <span class="font-medium tabular-nums">{{ iva5() | cop }}</span>
     </div>
     }
     
     <div class="du-divider my-3"></div>
     <div class="flex items-center justify-between">
       <span class="text-base font-bold">Total a pagar</span>
-      <span class="text-xl font-bold tabular-nums text-primary">{{ billStore.total() | cop }}</span>
+      <span class="text-xl font-bold tabular-nums text-primary">{{ total() | cop }}</span>
     </div>
   </div>
 
@@ -122,10 +122,10 @@
   <!-- Botón confirmar -->
   <button
     class="du-btn du-btn-primary w-full du-btn-md transition-all active:scale-[0.98]"
-    [disabled]="!canConfirm() || billStore.loading()"
+    [disabled]="!canConfirm() || loading()"
     (click)="confirm()"
   >
-    @if (billStore.loading()) {
+    @if (loading()) {
       <span class="du-loading du-loading-spinner"></span>
       Procesando...
     } @else {

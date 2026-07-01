@@ -3,10 +3,6 @@ import { LoginComponent } from './features/login/pages/login.component';
 import { DashboardComponent } from './features/dashboard/pages/dashboard.component';
 import { BillComponent } from './features/bill/pages/create-bill/bill.component';
 import { authGuard } from './core/guards/auth-guard';
-import { ProductPanel } from './features/bill/layouts/product-panel/product-panel';
-import { BillStore } from './features/bill/store/bill-store';
-import { AgregarCliente } from './features/bill/layouts/add-customer/add-customer';
-import { PaymentContent } from './features/bill/layouts/payment-content/payment-content';
 import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
 import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
 import { MovementInventoryStore } from './features/inventory/store/movement-inventory-store';
@@ -48,23 +44,6 @@ export const routes: Routes = [
     component: BillComponent,
     title: 'Crear factura',
     canActivate: [authGuard],
-    providers: [BillStore],
-    children: [
-      {
-        path: 'payment',
-        title: 'Metodo de pago',
-        canActivate: [authGuard],
-        component: PaymentContent,
-        outlet: 'payment',
-      },
-      {
-        path: 'add-client',
-        title: 'Agregar cliente',
-        outlet: 'add-client-info',
-        canActivate: [authGuard],
-        component: AgregarCliente,
-      },
-    ],
   },
   {
     path: 'view-bills',
@@ -143,9 +122,7 @@ export const routes: Routes = [
         path: 'offices',
         title: 'Administración de sucursales',
         loadComponent: () =>
-          import('./features/admin/pages/offices/office.component').then(
-            (c) => c.OfficeComponent,
-          )
+          import('./features/admin/pages/offices/office.component').then((c) => c.OfficeComponent),
       },
     ],
   },

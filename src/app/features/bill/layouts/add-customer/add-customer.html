@@ -30,7 +30,7 @@
 
 <!-- Form -->
 <form [formGroup]="customerForm" class="relative space-y-3 mt-2">
-  @if (customerStore.loading()) {
+  @if (loading()) {
     <div
       class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/70 backdrop-blur-[1px] rounded-2xl"
     >
@@ -138,7 +138,7 @@
       <input
         type="text"
         formControlName="name"
-        [class.text-base-content]="customerStore.customer() === null"
+        [class.text-base-content]="customer() === null"
         (input)="customerForm.get('name')?.markAsUntouched()"
       />
     </label>
@@ -186,7 +186,7 @@
       <input
         type="text"
         formControlName="email"
-        [class.text-base-content]="customerStore.customer() !== null"
+        [class.text-base-content]="customer() !== null"
         (input)="customerForm.get('email')?.markAsUntouched()"
       />
     </label>
@@ -233,7 +233,7 @@
       <input
         type="text"
         formControlName="phone"
-        [class.text-base-content]="customerStore.customer() !== null"
+        [class.text-base-content]="customer() !== null"
         (input)="customerForm.get('phone')?.markAsUntouched()"
       />
     </label>
@@ -262,7 +262,7 @@
     <select
       class="du-select du-select-bordered w-full"
       formControlName="role"
-      [class.text-base-content]="customerStore.customer() !== null"
+      [class.text-base-content]="customer() !== null"
       [class.du-select-error]="
         customerForm.get('role')?.invalid && customerForm.get('role')?.touched
       "
@@ -279,7 +279,7 @@
 
   <!-- Action buttons -->
   <div class="pt-2">
-    @if (this.customerStore.customer() && !this.customerStore.editarClienteActivo()) {
+    @if (this.customer() && !this.editarClienteActivo()) {
       <div class="flex gap-2">
         <button class="du-btn du-btn-soft flex-1" type="button" (click)="limpiarBusqueda()">
           Limpiar
@@ -306,7 +306,7 @@
           Editar
         </button>
       </div>
-    } @else if (this.customerStore.newCustomer()) {
+    } @else if (this.newCustomer()) {
       <button class="du-btn du-btn-primary w-full" type="submit" (click)="crearCliente()">
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -327,7 +327,7 @@
         Crear cliente
       </button>
     }
-    @if (this.customerStore.editarClienteActivo()) {
+    @if (this.editarClienteActivo()) {
       <div class="flex gap-2">
         <button
           class="du-btn du-btn-ghost du-btn-error flex-1"

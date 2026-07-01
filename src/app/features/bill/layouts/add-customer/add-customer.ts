@@ -1,4 +1,4 @@
-import { Component, effect, inject } from '@angular/core';
+import { Component, effect, inject, model, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -8,29 +8,48 @@ import {
   ValidatorFn,
   Validators,
 } from '@angular/forms';
-import { CustomerStore } from '../../store/customer-store';
-import { Role, UpdateCustomerRequest } from '../../../../shared/interfaces/customer-interface';
-
+import {
+  CreateCustomerRequest,
+  Role,
+  UpdateCustomerRequest,
+} from '../../../../shared/interfaces/customer-interface';
+import { CustomerService } from '../../services/customer.service';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
-  selector: 'app-agregar-cliente',
+  selector: 'app-add-customer',
   imports: [ReactiveFormsModule],
   templateUrl: './add-customer.html',
 })
 export class AgregarCliente {
+  customerService = inject(CustomerService);
+  toastService = inject(ToastService);
+
+  rolesCustomer = [
+    { id: 1, name: 'Natural', code: 'CLIENT' as Role },
+    { id: 2, name: 'Negocio', code: 'BUSINESS' as Role },
+  ];
+
+  customer = model<CreateCustomerRequest | null>(null);
+  editarClienteActivo = signal<boolean>(false);
+  newCustomer = signal<boolean>(false);
+  loading = signal<boolean>(false);
+
+  clearCustomer = model<boolean>(false);
+
   constructor() {
     effect(() => {
-      if (this.customerStore.customer()) {
+      if (this.customer()) {
         this.customerForm.patchValue({
-          document: this.customerStore.customer()?.document,
-          name: this.customerStore.customer()?.name,
-          email: this.customerStore.customer()?.email,
-          phone: this.customerStore.customer()?.phone,
-          role: this.customerStore.customer()?.role,
+          document: this.customer()?.document,
+          name: this.customer()?.name,
+          email: this.customer()?.email,
+          phone: this.customer()?.phone,
+          role: this.customer()?.role,
         });
         this.customerForm.disable();
         this.customerForm.get('document')?.enable();
-      } else if (this.customerStore.newCustomer()) {
+      } else if (this.newCustomer()) {
         this.customerForm.enable();
         this.customerForm.patchValue({
           name: '',
@@ -40,13 +59,13 @@ export class AgregarCliente {
         });
       }
     });
+    effect(() => {
+      if (this.clearCustomer()) {
+        this.limpiarBusqueda();
+        this.clearCustomer.set(false);
+      }
+    });
   }
-
-  customerStore = inject(CustomerStore);
-  rolesCustomer = [
-    { id: 1, name: 'Natural', code: 'CLIENT' as Role },
-    { id: 2, name: 'Negocio', code: 'BUSINESS' as Role },
-  ];
 
   validoParaEnviar: ValidatorFn = (control: AbstractControl): ValidationErrors | null => {
     const document = control.get('document');
@@ -85,53 +104,115 @@ export class AgregarCliente {
     { validators: this.validoParaEnviar },
   );
 
-  buscarCliente() {
-    const document = this.customerForm.get('document')?.value;
-    if (this.customerForm.get('document')?.valid && document) {
-      this.customerStore.searchCustomer(document);
-    }
-  }
-
   limpiarBusqueda() {
-    this.customerStore.clearCustomer();
+    this.customer.set(null);
+    this.newCustomer.set(false);
     this.customerForm.reset();
   }
 
   enableEditarCliente() {
     this.customerForm.enable();
     this.customerForm.get('document')?.disable();
-    this.customerStore.changeEditarClienteActivo(true);
+    this.editarClienteActivo.set(true);
   }
   disabledEditarCliente() {
     this.customerForm.disable();
     this.customerForm.get('document')?.enable();
-    this.customerStore.changeEditarClienteActivo(false);
+    this.editarClienteActivo.set(false);
+  }
+
+  buscarCliente() {
+    const document = this.customerForm.get('document')?.value;
+    if (this.customerForm.get('document')?.valid && document) {
+      this.loading.set(true);
+      this.customer.set(null);
+      this.newCustomer.set(false);
+      this.customerService.searchCustomerByDoc(document).subscribe({
+        next: (customer) => {
+          this.customer.set(customer);
+          this.loading.set(false);
+        },
+        error: (error) => {
+          if (error.status === 404) {
+            this.newCustomer.set(true);
+            this.toastService.show({
+              title: 'Cliente no encontrado',
+              content: 'El cliente no existe, por favor ingresa los datos para crearlo.',
+              type: 'info',
+            });
+          } else {
+            this.toastService.show({
+              title: 'Error al buscar el cliente',
+              content: 'Ocurrió un error al buscar el cliente.',
+              type: 'error',
+            });
+          }
+          this.loading.set(false);
+        },
+      });
+    }
   }
 
   editarCliente() {
-    if (this.customerForm.valid) {
-      const currentCustomer = this.customerStore.customer();
-      const formValue = this.customerForm.getRawValue();
-
-      const payload: UpdateCustomerRequest = {};
-
-      if (!currentCustomer || formValue.name !== currentCustomer.name) {
-        payload.name = formValue.name ?? '';
-      }
-      if (!currentCustomer || formValue.email !== currentCustomer.email) {
-        payload.email = formValue.email ?? '';
-      }
-      if (!currentCustomer || formValue.phone !== currentCustomer.phone) {
-        payload.phone = formValue.phone ?? '';
-      }
-      if (!currentCustomer || (formValue.role as Role) !== currentCustomer.role) {
-        payload.role = formValue.role as Role;
-      }
-      this.customerStore.updateCustomer({
-        document: formValue.document ?? '',
-        customerData: payload,
-      });
+    if (this.customerForm.invalid) {
+      this.customerForm.markAllAsTouched();
+      return;
     }
+
+    this.loading.set(true);
+    const currentCustomer = this.customer();
+    const formValue = this.customerForm.getRawValue();
+
+    const payload: UpdateCustomerRequest = {};
+
+    if (!currentCustomer || formValue.name !== currentCustomer.name) {
+      payload.name = formValue.name!;
+    }
+    if (!currentCustomer || formValue.email !== currentCustomer.email) {
+      payload.email = formValue.email!;
+    }
+    if (!currentCustomer || formValue.phone !== currentCustomer.phone) {
+      payload.phone = formValue.phone!;
+    }
+    if (!currentCustomer || (formValue.role as Role) !== currentCustomer.role) {
+      payload.role = formValue.role as Role;
+    }
+    if (!formValue.document) {
+      this.toastService.show({
+        title: 'Documento inválido',
+        content: 'El documento no puede estar vacío.',
+        type: 'error',
+      });
+      return;
+    }
+    this.customerService.updateCustomerByDoc(formValue.document, payload).subscribe({
+      next: (customer) => {
+        this.customer.set(customer);
+        this.toastService.show({
+          title: 'Cliente actualizado',
+          content: 'El cliente ha sido actualizado exitosamente.',
+          type: 'success',
+        });
+        this.disabledEditarCliente();
+        this.loading.set(false);
+      },
+      error: (error) => {
+        if (error.status === 400) {
+          this.toastService.show({
+            title: 'Error al actualizar el cliente',
+            content: 'Verifique los datos ingresados.',
+            type: 'error',
+          });
+        } else {
+          this.toastService.show({
+            title: 'Error al actualizar el cliente',
+            content: 'Ocurrió un error al actualizar el cliente.',
+            type: 'error',
+          });
+        }
+        this.loading.set(false);
+      },
+    });
   }
 
   crearCliente() {
@@ -139,13 +220,44 @@ export class AgregarCliente {
       this.customerForm.markAllAsTouched();
       return;
     }
+    this.loading.set(true);
     const formValue = this.customerForm.getRawValue();
-    this.customerStore.createCustomer({
-      document: formValue.document ?? '',
-      name: formValue.name ?? '',
-      email: formValue.email ?? '',
-      phone: formValue.phone ?? '',
+    const customerData: CreateCustomerRequest = {
+      document: formValue.document!,
+      name: formValue.name!,
+      email: formValue.email!,
+      phone: formValue.phone!,
       role: formValue.role as Role,
+    };
+
+    this.customerService.createCustomer(customerData).subscribe({
+      next: (customer) => {
+        this.customer.set(customer);
+        this.newCustomer.set(false);
+        this.toastService.show({
+          title: 'Cliente creado',
+          content: 'El cliente ha sido creado exitosamente.',
+          type: 'success',
+        });
+        this.loading.set(false);
+      },
+      error: (error) => {
+        if (error.status === 400) {
+          this.toastService.show({
+            title: 'Error al crear el cliente',
+            content: 'Verifique los datos ingresados.',
+            type: 'error',
+          });
+        } else {
+          this.toastService.show({
+            title: 'Error al crear el cliente',
+            content: 'Ocurrió un error al crear el cliente.',
+            type: 'error',
+          });
+        }
+        this.loading.set(false);
+      },
     });
   }
+
 }
