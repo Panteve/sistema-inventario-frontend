@@ -29,15 +29,15 @@ const initialState: AuthState = {
 export const AuthStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
-  withComputed(({ employee }) => ({
-    cashRegisterIsOpen: computed(() => employee()?.cashRegister),
-    isAdmin: computed(() => employee()?.role === 'ADMIN'),
-    isAuthenticated: computed(() => !!employee()),
-  })),
   withProps(() => ({
     authService: inject(AuthService),
     router: inject(Router),
     toastService: inject(ToastService),
+  })),
+  withComputed(({ employee }) => ({
+    cashRegisterIsOpen: computed(() => employee()?.cashRegister),
+    isAdmin: computed(() => employee()?.role === 'ADMIN'),
+    isAuthenticated: computed(() => !!employee()),
   })),
   withMethods(({ authService, router, toastService, ...store }) => ({
     login: rxMethod<{ document: string; password: string }>(

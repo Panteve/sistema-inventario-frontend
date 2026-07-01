@@ -23,11 +23,9 @@ export const ThemeStore = signalStore(
       document.documentElement.setAttribute('data-theme', value);
       window.electronAPI.saveTheme(value);
     },
-  })),
-  withMethods((store) => ({
     async init() {
       const savedTheme = await window.electronAPI.getTheme();
-      store.setTheme(savedTheme ? savedTheme === THEMES.LIGHT : true);
+      this.setTheme(savedTheme ? savedTheme === THEMES.LIGHT : true);
     },
   })),
 );
