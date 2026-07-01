@@ -131,10 +131,13 @@ export class EmployeesComponent implements OnInit {
         employee.email,
         employee.office?.name ? employee.office.name : 'sin oficina',
         this.getRoleLabel(employee.role),
-        employee.status ? 'activo' : 'inactivo',
       ];
+      const statusLabel = employee.status ? 'activo' : 'inactivo';
 
-      return searchableValues.some((value) => String(value).toLowerCase().includes(filter));
+      return (
+        statusLabel.startsWith(filter) ||
+        searchableValues.some((value) => String(value).toLowerCase().includes(filter))
+      );
     },
     getPaginationRowModel: getPaginationRowModel(),
     initialState: {
@@ -224,4 +227,5 @@ export class EmployeesComponent implements OnInit {
   getRoleLabel(role: EmployeeResponse['role']) {
     return role === 'ADMIN' ? 'Administrador' : 'Cajero';
   }
+
 }

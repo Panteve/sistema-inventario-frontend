@@ -1,4 +1,4 @@
-<header class="mb-3 flex items-center gap-2" data-reveal="up">
+<header class="mb-3 flex items-center gap-2">
   <div
     class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 ring-1 ring-accent/20 pulse-dot pulse-dot-accent"
   >
@@ -36,27 +36,22 @@
   </div>
 </header>
 
-<article
-  data-reveal="up"
-  class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl"
->
-  <div class="du-card-body p-2.5 md:p-3">
-    @if (authStore.cashRegisterIsOpen()) {
-      <app-close-cash-register
-        [employee]="authStore.employee()"
-        [cashRegisterSummary]="cashRegisterStore.cashRegisterSummary()"
-        [loading]="cashRegisterStore.loading()"
-        [loadingSummary]="cashRegisterStore.loadingSummary()"
-        (closeModal)="closeCashModal()"
-        (closeCashRegister)="closeCashRegister($event)"
-      ></app-close-cash-register>
-    } @else {
-      <app-open-cash-register
-        [employee]="authStore.employee()"
-        [loading]="cashRegisterStore.loading()"
-        (closeModal)="closeCashModal()"
-        (openCashRegister)="openCashRegister($event)"
-      ></app-open-cash-register>
-    }
-  </div>
-</article>
+
+  @if (authStore.cashRegisterIsOpen()) {
+    <app-close-cash-register
+      [employee]="authStore.employee()"
+      [cashRegisterSummary]="cashRegisterStore.cashRegisterSummary()"
+      [loading]="cashRegisterStore.loading()"
+      [loadingSummary]="cashRegisterStore.loadingSummary()"
+      (closeModal)="closeCashModal()"
+      (closeCashRegister)="closeCashRegister($event)"
+    ></app-close-cash-register>
+  } @else {
+    <app-open-cash-register
+      [employee]="authStore.employee()"
+      [loading]="cashRegisterStore.loading()"
+      (closeModal)="closeCashModal()"
+      (openCashRegister)="openCashRegister($event)"
+    ></app-open-cash-register>
+  }
+

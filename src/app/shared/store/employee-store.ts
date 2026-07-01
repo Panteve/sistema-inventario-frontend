@@ -26,7 +26,6 @@ const initialState: EmployeeState = {
   loading: false,
 };
 
-//QUITAR EN EL BACKEND QUE SE PUEDA PASAR EL NUMERO YA NO ES NECESARIO YA QUE SE PUEDE OBTENER EL ID DE LA OFICINA DEL USUARIO LOGUEADO
 export const EmployeeStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -44,13 +43,13 @@ export const EmployeeStore = signalStore(
     }),
   })),
   withMethods(({ employeeService, toastService, ...store }) => ({
-    _loadEmployees: rxMethod<number>(
+    _loadEmployees: rxMethod<void>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
-        switchMap((officeId) => {
-          return employeeService.getEmployeesByOffice(officeId).pipe(
+        switchMap(() => {
+          return employeeService.getEmployeesByOffice().pipe(
             tap((employees) => {
               patchState(store, { employees: employees });
             }),
@@ -76,7 +75,7 @@ export const EmployeeStore = signalStore(
 
   withHooks({
     onInit(store) {
-      store._loadEmployees(store.selectedOfficeId());
+      store._loadEmployees();
     },
   }),
 );

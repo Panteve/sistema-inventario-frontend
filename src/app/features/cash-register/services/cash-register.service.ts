@@ -26,6 +26,7 @@ export class CashRegisterService {
     return this.#http.patch(`${environment.apiUrl}/cash-register/close`, { amountReceived });
   }
   getCashRegisterSummary() {
+    console.log('Fetching cash register summary...');
     return this.#http.get<CashRegisterSummaryResponse>(
       `${environment.apiUrl}/cash-register/summary`,
     );

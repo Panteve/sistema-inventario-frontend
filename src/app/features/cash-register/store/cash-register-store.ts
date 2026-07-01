@@ -161,7 +161,7 @@ export const CashRegisterStore = signalStore(
   })),
   withHooks({
     onInit(store) {
-      if(store.authStore.cashRegisterIsOpen()) {
+      if (store.authStore.cashRegisterIsOpen()) {
         store.getCashRegisterSummary();
       }
     },

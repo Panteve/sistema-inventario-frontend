@@ -16,7 +16,8 @@
       <router-outlet />
     </main>
 
-    <app-modal
+    @if(cashModalOpen()){
+      <app-modal
       [isOpen]="cashModalOpen()"
       [ariaLabel]="'Apertura de caja'"
       (close)="closeCashModal()"
@@ -25,7 +26,8 @@
         <app-cash-register (closeModal)="closeCashModal()"></app-cash-register>
       </div>
     </app-modal>
-
+    }
+    
     <app-modal
       [isOpen]="expenseModalOpen()"
       [ariaLabel]="'Crear gasto'"

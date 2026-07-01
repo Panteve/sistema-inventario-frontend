@@ -232,11 +232,7 @@
                                   {{ row.original.status ? 'Activo' : 'Inactivo' }}
                                 </span>
                               } @else if (cell.column.id === 'officeName') {
-                                {{
-                                  row.original.office?.name
-                                    ? row.original.office?.name
-                                    : 'Sin oficina'
-                                }}
+                                {{ row.original.office?.name ?? 'Sin oficina' }}
                               } @else {
                                 <ng-container
                                   *flexRender="

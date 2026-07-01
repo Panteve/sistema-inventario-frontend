@@ -32,16 +32,10 @@ export class App implements OnInit {
   expenseModalOpen = signal<boolean>(false);
 
   openCashModal() {
-    if (!this.authStore.cashRegisterIsOpen()) {
-      return;
-    }
     this.cashModalOpen.set(true);
   }
 
   closeCashModal() {
-    if (!this.authStore.cashRegisterIsOpen()) {
-      return;
-    }
     this.cashModalOpen.set(false);
   }
   openExpenseModal() {
