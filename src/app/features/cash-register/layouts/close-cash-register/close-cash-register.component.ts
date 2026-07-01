@@ -4,10 +4,11 @@ import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import { CashRegisterSummaryResponse } from '../../../../shared/interfaces/cash-register-interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-close-cash-register',
-  imports: [DatePipe, CopPipe, CopMoneyInputDirective],
+  imports: [DatePipe, CopPipe, CopMoneyInputDirective, ModalComponent],
   templateUrl: './close-cash-register.component.html',
 })
 export class CloseCashRegisterComponent {
@@ -55,7 +56,6 @@ export class CloseCashRegisterComponent {
 
   confirmCloseCashRegister() {
     this.closeCashRegister.emit(this.amountReceived());
-    this.closeConfirmationOpen.set(false);
   }
 
   onAmountReceivedChange(event: Event) {

@@ -23,7 +23,7 @@ export class CashRegisterService {
     );
   }
   closeCashRegister(amountReceived: number) {
-    return this.#http.patch<PostCashRegisterResponse>(`${environment.apiUrl}/cash-register/close`, { amountReceived });
+    return this.#http.patch<CashRegisterFullHistoryResponse>(`${environment.apiUrl}/cash-register/close`, { amountReceived });
   }
   getCashRegisterSummary() {
     return this.#http.get<CashRegisterSummaryResponse>(

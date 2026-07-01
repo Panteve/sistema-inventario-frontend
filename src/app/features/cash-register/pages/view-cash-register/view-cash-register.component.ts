@@ -75,6 +75,17 @@ export class ViewCashRegisterComponent implements OnInit {
     topProducts: [],
   });
 
+  constructor() {
+      const navCashRegister = this.#router.currentNavigation()?.extras.state?.['cashRegister'] as
+        | CashRegisterFullHistoryResponse
+        | undefined;
+  
+      if (navCashRegister) {
+        this.cashRegisterHistory.set(navCashRegister);
+        this.loading.set(false);
+      }
+    }
+
   #calculateDuration = computed(() => {
     const history = this.cashRegisterHistory();
     if (!history.openedAt) return { hours: 0, minutes: 0, display: '' };
@@ -117,6 +128,10 @@ export class ViewCashRegisterComponent implements OnInit {
   });
 
   ngOnInit(): void {
+    if (this.cashRegisterHistory().id !== 0) {
+      this.loading.set(false);
+      return;
+    }
     this.#cashRegisterService
       .getCashRegisterHistory(Number(this.cashRegisterIdParams()))
       .subscribe({
@@ -131,7 +146,7 @@ export class ViewCashRegisterComponent implements OnInit {
       });
   }
 
-  openBillDetail(billId: number) {
+  openBillDetail(billId: number):void {
     this.#router.navigate(['/view-bills/bill', billId], {
       queryParams: { from: '/view-cash-registers/list', fromId: this.cashRegisterIdParams() },
     });

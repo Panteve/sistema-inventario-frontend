@@ -125,7 +125,7 @@ export const CashRegisterStore = signalStore(
         }),
         switchMap((data) =>
           cashRegisterService.closeCashRegister(data.amountReceived).pipe(
-            tap((response) => {
+            tap((cashRegsiterResponse) => {
               authStore.resetCashRegister();
               toastService.show({
                 title: 'Caja cerrada exitosamente',
@@ -133,8 +133,9 @@ export const CashRegisterStore = signalStore(
                 type: 'success',
               });
               data.onSuccess?.();
-              const cashRegisterId = response.id;
-              router.navigate(['view-cash-registers/cash-register/', cashRegisterId]);
+              router.navigate(['view-cash-registers/cash-register/', cashRegsiterResponse.id], {
+                state: { cashRegister: cashRegsiterResponse },
+              });
             }),
             catchError((err) => {
               console.error('Error closing cash register:', err);
