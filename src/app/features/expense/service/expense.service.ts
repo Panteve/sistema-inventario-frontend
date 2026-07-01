@@ -15,11 +15,7 @@ export class ExpenseService {
   #http = inject(HttpClient);
 
   createExpense(expense: CreateExpenseRequest) {
-    return this.#http.post(`${environment.apiUrl}/expenses`, expense);
-  }
-
-  getExpenseById(expenseId: number) {
-    return this.#http.get<Expense>(`${environment.apiUrl}/expenses/${expenseId}`);
+    return this.#http.post<Expense>(`${environment.apiUrl}/expenses`, expense);
   }
 
   getExpenses(params: ParamsGetExpenses) {

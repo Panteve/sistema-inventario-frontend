@@ -1,4 +1,4 @@
-<header class="mb-2 flex items-center gap-2" data-reveal="up">
+<header class="mb-2 flex items-center gap-2">
   <div
     class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 pulse-dot pulse-dot-error"
   >
@@ -30,7 +30,6 @@
 </header>
 
 <article
-  data-reveal="up"
   class="du-card rounded-3xl border border-base-content/10 bg-base-100 shadow-xl"
 >
   <div class="du-card-body p-3 md:p-4">
@@ -109,12 +108,12 @@
         <button
           class="du-btn du-btn-soft flex-1"
           type="button"
-          [disabled]="expenseStore.loading()"
+          [disabled]="loading()"
           (click)="closeExpenseModal()"
         >
           Cancelar
         </button>
-        @if (expenseStore.loading()) {
+        @if (loading()) {
           <button class="du-btn du-btn-error du-btn-disabled flex-1 gap-2" type="button">
             <span class="du-loading du-loading-spinner du-loading-sm"></span>
             Guardando

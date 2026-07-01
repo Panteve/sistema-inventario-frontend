@@ -34,7 +34,7 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
     CopMoneyInputDirective,
     ViewExpenseComponent,
     FiltersComponent,
-    ModalComponent
+    ModalComponent,
   ],
   providers: [DatePipe],
   templateUrl: './expense-list.component.html',
@@ -63,6 +63,17 @@ export class ExpenseListComponent implements OnInit {
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
     { initialValue: false },
   );
+
+  constructor() {
+    const navExpense = this.#router.currentNavigation()?.extras.state?.['expense'] as
+      | Expense
+      | undefined;
+    if (navExpense) {
+      this.expenseSelected.set(navExpense);
+      this.openViewModal();
+      this.loading.set(false);
+    }
+  }
 
   ngOnInit(): void {
     const defaults = this.#buildDefaultParams();

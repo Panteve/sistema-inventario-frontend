@@ -1,10 +1,11 @@
-import { Component, inject, output } from '@angular/core';
+import { Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
 import { ExpenseStore } from '../../store/expense-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
-
+import { ExpenseService } from '../../service/expense.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-expense',
@@ -14,12 +15,12 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
   styleUrl: './expense.component.css',
 })
 export class ExpenseComponent {
-
-
-  expenseStore = inject(ExpenseStore);
+  expenseService = inject(ExpenseService);
   authStore = inject(AuthStore);
+  #router = inject(Router);
 
   closeModal = output<void>();
+  loading = signal<boolean>(false);
 
   expenseForm = new FormGroup({
     amount: new FormControl<number>(0, [
@@ -51,13 +52,20 @@ export class ExpenseComponent {
       this.expenseForm.markAllAsTouched();
       return;
     }
-
+    this.loading.set(true);
     const payload: CreateExpenseRequest = {
       amount: Number(this.expenseForm.value.amount),
       reason: this.expenseForm.value.reason?.trim() ?? '',
     };
-
-    this.expenseStore.createExpense(payload);
+    this.expenseService.createExpense(payload).subscribe({
+      next: (expenseResponse) => {
+        this.loading.set(false);
+        this.closeExpenseModal();
+        this.#router.navigate(['/expense-list'], {
+          state: { expense: expenseResponse },
+        });
+      },
+    });
   }
 
   closeExpenseModal() {
