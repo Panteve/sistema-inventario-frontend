@@ -207,8 +207,10 @@ export class BillComponent {
       customerId: this.customer()?.id ?? 0,
     };
     this.billService.createBill(cleanBill).subscribe({
-      next: (billId) => {
-        this.router.navigate(['/view-bills/bill', billId]);
+      next: (billResponse) => {
+        this.router.navigate(['/view-bills/bill', billResponse.id], {
+          state: { bill: billResponse },
+        });
         this.loading.set(false);
       },
       error: (error) => {

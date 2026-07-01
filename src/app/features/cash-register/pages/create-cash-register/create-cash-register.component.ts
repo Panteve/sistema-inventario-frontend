@@ -24,11 +24,15 @@ export class CreateCashRegisterComponent {
     this.cashRegisterStore.openCashRegister({
       officeId,
       initialAmount,
+      onSuccess: () => this.closeModal.emit(),
     });
   }
 
   closeCashRegister(amountReceived: number) {
-    this.cashRegisterStore.closeCashRegister(amountReceived);
+    this.cashRegisterStore.closeCashRegister({
+      amountReceived,
+      onSuccess: () => this.closeModal.emit(),
+    });
   }
 
   closeCashModal() {

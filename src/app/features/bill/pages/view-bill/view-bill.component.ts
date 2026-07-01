@@ -15,6 +15,7 @@ type BreadcrumbItem = { label: string; path: string | null };
 })
 export class ViewBillComponent implements OnInit {
   #router = inject(Router);
+  #billService = inject(BillService);
 
   billIdParams = input.required<string>({ alias: 'billId' });
   readonly from = input<string>();
@@ -80,9 +81,22 @@ export class ViewBillComponent implements OnInit {
     payments: [],
   });
 
-  #billService = inject(BillService);
+  constructor() {
+    const navBill = this.#router.currentNavigation()?.extras.state?.['bill'] as
+      | BillResponse
+      | undefined;
+
+    if (navBill) {
+      this.bill.set(navBill);
+      this.loading.set(false);
+    }
+  }
 
   ngOnInit(): void {
+    if (this.bill().id !== 0) {
+      this.loading.set(false);
+      return;
+    }
     this.#billService
       .getBillById(Number(this.billIdParams()))
       .pipe(finalize(() => this.loading.set(false)))

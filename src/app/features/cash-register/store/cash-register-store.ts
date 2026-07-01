@@ -42,7 +42,7 @@ export const CashRegisterStore = signalStore(
     router: inject(Router),
   })),
   withMethods(({ authStore, toastService, cashRegisterService, router, ...store }) => ({
-    openCashRegister: rxMethod<{ officeId: number; initialAmount: number }>(
+    openCashRegister: rxMethod<{ officeId: number; initialAmount: number; onSuccess?: () => void }>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
@@ -70,10 +70,7 @@ export const CashRegisterStore = signalStore(
                   content: 'La caja ha sido abierta, feliz día.',
                   type: 'success',
                 });
-                router.navigate([], {
-                  queryParams: { cashModal: 'null' },
-                  queryParamsHandling: 'merge',
-                });
+                data.onSuccess?.();
               }),
               catchError((err) => {
                 if (err.status === 409) {
@@ -121,13 +118,13 @@ export const CashRegisterStore = signalStore(
         ),
       ),
     ),
-    closeCashRegister: rxMethod<number>(
+    closeCashRegister: rxMethod<{ amountReceived: number; onSuccess?: () => void }>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
-        switchMap((amountReceived) =>
-          cashRegisterService.closeCashRegister(amountReceived).pipe(
+        switchMap((data) =>
+          cashRegisterService.closeCashRegister(data.amountReceived).pipe(
             tap((response) => {
               authStore.resetCashRegister();
               toastService.show({
@@ -135,10 +132,9 @@ export const CashRegisterStore = signalStore(
                 content: 'La caja ha sido cerrada correctamente.',
                 type: 'success',
               });
-              router.navigate([], {
-                queryParams: { cashModal: 'null' },
-                queryParamsHandling: 'merge',
-              });
+              data.onSuccess?.();
+              const cashRegisterId = response.id;
+              router.navigate(['view-cash-registers/cash-register/', cashRegisterId]);
             }),
             catchError((err) => {
               console.error('Error closing cash register:', err);

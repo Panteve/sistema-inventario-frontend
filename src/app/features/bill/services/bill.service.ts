@@ -15,7 +15,7 @@ export class BillService {
   #http = inject(HttpClient);
 
   createBill(bill: CreateBillRequest) {
-    return this.#http.post(`${environment.apiUrl}/bills/bill`, bill);
+    return this.#http.post<BillResponse>(`${environment.apiUrl}/bills/bill`, bill);
   }
 
   getBills(params: ParamsGetBills) {

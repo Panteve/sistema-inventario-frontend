@@ -1,15 +1,14 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
-import { OfficeNameIdResponse } from '../../../../shared/interfaces/office.interface';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { OfficeSelectComponent } from '../../../../shared/components/office-select.component/office-select.component';
-
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
   selector: 'app-open-cash-register',
-  imports: [DatePipe, CopMoneyInputDirective, CopPipe, OfficeSelectComponent],
+  imports: [DatePipe, CopMoneyInputDirective, CopPipe, OfficeSelectComponent, ModalComponent],
   templateUrl: './open-cash-register.component.html',
 })
 export class OpenCashRegisterComponent {
@@ -26,7 +25,7 @@ export class OpenCashRegisterComponent {
 
   validateAmount = computed(() => {
     return this.amountReceived() > 0;
-  })
+  });
   onAmountReceivedChange(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
     const value = Number(raw);
