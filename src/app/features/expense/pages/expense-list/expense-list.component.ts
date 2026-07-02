@@ -249,6 +249,13 @@ export class ExpenseListComponent implements OnInit {
       });
   }
 
+  navigateToCashRegister() {
+    this.#router.navigate([
+      'view-cash-registers/cash-register/',
+      this.expenseSelected()?.cashRegister.id,
+    ]);
+  }
+
   openViewModal() {
     this.#router.navigate([], {
       relativeTo: this.#route,

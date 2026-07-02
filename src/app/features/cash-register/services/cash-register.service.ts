@@ -8,6 +8,7 @@ import {
   CashRegisterHistoryResponse,
   ParamsGetCashRegisters,
   CashRegisterFullHistoryResponse,
+  CloseCashRegisterRequest,
 } from '../../../shared/interfaces/cash-register-interface';
 
 @Injectable({
@@ -22,8 +23,11 @@ export class CashRegisterService {
       openCashRegisterData,
     );
   }
-  closeCashRegister(amountReceived: number) {
-    return this.#http.patch<CashRegisterFullHistoryResponse>(`${environment.apiUrl}/cash-register/close`, { amountReceived });
+  closeCashRegister(closeCashRegisterData: CloseCashRegisterRequest) {
+    return this.#http.patch<CashRegisterFullHistoryResponse>(
+      `${environment.apiUrl}/cash-register/close`,
+      closeCashRegisterData,
+    );
   }
   getCashRegisterSummary() {
     return this.#http.get<CashRegisterSummaryResponse>(
@@ -32,7 +36,9 @@ export class CashRegisterService {
   }
 
   getCashRegisterHistory(id: number) {
-    return this.#http.get<CashRegisterFullHistoryResponse>(`${environment.apiUrl}/cash-register/history/${id}`);
+    return this.#http.get<CashRegisterFullHistoryResponse>(
+      `${environment.apiUrl}/cash-register/history/${id}`,
+    );
   }
 
   getAllCashRegisters(params: ParamsGetCashRegisters) {

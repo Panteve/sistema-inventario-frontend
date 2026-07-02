@@ -147,7 +147,7 @@
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost du-btn-primary justify-start"
               [class.du-btn-active]="isActive('/create-bill')"
-              [class.du-btn-disabled]="!authStore.cashRegisterIsOpen()"
+              [disabled]="!authStore.cashRegisterIsOpen()"
               data-tip="Generar factura"
               (click)="router.navigate(['create-bill'])"
             >
@@ -168,7 +168,7 @@
           <li>
             <button
               class="du-is-drawer-close:du-tooltip du-is-drawer-close:du-tooltip-right du-btn du-btn-ghost justify-start"
-              [class.du-btn-disabled]="!authStore.cashRegisterIsOpen()"
+              [disabled]="!authStore.cashRegisterIsOpen()"
               data-tip="Crear gasto"
               (click)="openExpenseModal()"
             >

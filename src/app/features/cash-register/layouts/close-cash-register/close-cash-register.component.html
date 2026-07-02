@@ -285,6 +285,7 @@
     <textarea
       class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
       placeholder="Anota novedades del cierre (faltantes, sobrantes, gastos no esperados)..."
+      (change)="onObservationChange($event)"
     ></textarea>
   </fieldset>
 
@@ -385,7 +386,6 @@
       <button
         class="du-btn du-btn-soft flex-1"
         type="button"
-        [class.du-btn-disabled]="loading()"
         [disabled]="loading()"
         (click)="cancelCloseCashRegister()"
       >

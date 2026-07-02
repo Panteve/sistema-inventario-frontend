@@ -191,7 +191,7 @@ export class EmployeesComponent implements OnInit {
       employees.map((employee) => (employee.id === updated.id ? updated : employee)),
     );
     const selected = this.selectedEmployee();
-    
+
     if (selected?.id === updated.id) {
       this.selectedEmployee.set(updated);
     }
@@ -214,11 +214,6 @@ export class EmployeesComponent implements OnInit {
     this.loadingModal.set(event);
   }
 
-  preventModalCancel(event: Event) {
-    if (this.loadingModal()) {
-      event.preventDefault();
-    }
-  }
   closeEmployeeModal() {
     this.employeeModalOpen.set(false);
     this.currentAction.set(null);
@@ -227,5 +222,4 @@ export class EmployeesComponent implements OnInit {
   getRoleLabel(role: EmployeeResponse['role']) {
     return role === 'ADMIN' ? 'Administrador' : 'Cajero';
   }
-
 }

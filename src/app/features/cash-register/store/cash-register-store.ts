@@ -11,7 +11,7 @@ import { CashRegisterService } from '../services/cash-register.service';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, filter, finalize, pipe, switchMap, tap } from 'rxjs';
 import { Router } from '@angular/router';
-import { CashRegisterSummaryResponse } from '../../../shared/interfaces/cash-register-interface';
+import { CashRegisterSummaryResponse, CloseCashRegisterRequest } from '../../../shared/interfaces/cash-register-interface';
 import { AuthStore } from '../../../core/store/auth-store';
 import { ToastService } from '../../../shared/services/toast.service';
 
@@ -118,13 +118,13 @@ export const CashRegisterStore = signalStore(
         ),
       ),
     ),
-    closeCashRegister: rxMethod<{ amountReceived: number; onSuccess?: () => void }>(
+    closeCashRegister: rxMethod<{ closeCashRegisterData: CloseCashRegisterRequest; onSuccess?: () => void }>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
         switchMap((data) =>
-          cashRegisterService.closeCashRegister(data.amountReceived).pipe(
+          cashRegisterService.closeCashRegister(data.closeCashRegisterData).pipe(
             tap((cashRegsiterResponse) => {
               authStore.resetCashRegister();
               toastService.show({

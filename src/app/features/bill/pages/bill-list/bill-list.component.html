@@ -1,8 +1,9 @@
 <section class="flex-1 flex justify-center px-4 py-10 md:py-14 min-h-screen">
   <div class="w-full max-w-5xl md:max-w-7xl">
-
-    
-    <article data-reveal="up" class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10">
+    <article
+      data-reveal="up"
+      class="du-card bg-base-100 shadow-xl rounded-4xl border border-base-content/10"
+    >
       <div class="du-card-body p-4 md:p-6 lg:p-8">
         <div
           class="z-10 rounded-2xl border border-base-content/10 bg-base-200/50 backdrop-blur-xs p-3 md:p-4"
@@ -51,47 +52,56 @@
 
         <div class="du-divider my-4"></div>
 
-        @if (loading()) {
-          <div class="space-y-2">
-            @for (_ of [1,2,3,4,5]; track _) {
-              <div class="flex items-center gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-4">
-                <div class="du-skeleton h-5 w-12 rounded"></div>
-                <div class="du-skeleton h-5 w-24 rounded"></div>
-                <div class="du-skeleton h-5 w-36 rounded"></div>
-                <div class="du-skeleton h-5 w-20 rounded"></div>
-                <div class="du-skeleton ml-auto h-5 w-16 rounded"></div>
-              </div>
-            }
-          </div>
-        } @else {
-          <div
-            class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
-          >
-            <div class="overflow-x-auto">
-              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
-                <thead class="bg-base-200/90">
-                  <tr>
-                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                      ID
-                    </th>
-                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                      Fecha
-                    </th>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      Cliente
-                    </th>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      Empleado
-                    </th>
-                    <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
-                      Total
-                    </th>
-                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                      Estado
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+        <div
+          class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
+        >
+          <div class="overflow-x-auto">
+            <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+              <thead class="bg-base-200/90">
+                <tr>
+                  <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">ID</th>
+                  <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                    Fecha
+                  </th>
+                  <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                    Cliente
+                  </th>
+                  <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
+                    Empleado
+                  </th>
+                  <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
+                    Total
+                  </th>
+                  <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                    Estado
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (loading()) {
+                  @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+                    <tr>
+                      <td class="text-center">
+                        <div class="du-skeleton h-4 w-8 rounded-full mx-auto"></div>
+                      </td>
+                      <td class="text-center">
+                        <div class="du-skeleton h-4 w-28 rounded-full mx-auto"></div>
+                      </td>
+                      <td>
+                        <div class="du-skeleton h-4 w-28 rounded-full"></div>
+                      </td>
+                      <td>
+                        <div class="du-skeleton h-4 w-24 rounded-full"></div>
+                      </td>
+                      <td class="text-right">
+                        <div class="du-skeleton h-4 w-20 rounded-full ml-auto"></div>
+                      </td>
+                      <td class="text-center">
+                        <div class="du-skeleton h-4 w-20 rounded-full mx-auto"></div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
                   @for (bill of bills(); track bill.id) {
                     <tr
                       class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
@@ -99,11 +109,16 @@
                       (click)="openBillDetail(bill.id)"
                     >
                       <td class="text-center">#{{ bill.id }}</td>
-                      <td class="text-center">{{ bill.createdAt | date: 'dd MMM y' }}</td>
-                      <td class="text-left">
+                      <td class="text-center">
+                        <span> {{ bill.createdAt | date: 'dd MMM y' }}</span>
+                        <span class="block text-xs opacity-50 leading-tight">{{
+                          bill.createdAt | date: 'hh:mm a'
+                        }}</span>
+                      </td>
+                      <td>
                         {{ bill.customer?.name || 'Sin cliente' }}
                       </td>
-                      <td class="text-left">{{ bill.employee.name }}</td>
+                      <td>{{ bill.employee.name }}</td>
                       <td class="text-right font-semibold">{{ bill.total | cop }}</td>
                       <td class="text-center">
                         <span
@@ -136,11 +151,11 @@
                       </td>
                     </tr>
                   }
-                </tbody>
-              </table>
-            </div>
+                }
+              </tbody>
+            </table>
           </div>
-        }
+        </div>
 
         <div class="du-divider my-4"></div>
 
@@ -152,6 +167,11 @@
               [disabled]="queryParams().page <= 1"
             >
               «
+            </button>
+            <button class="du-join-item du-btn" disabled>
+              <span class="du-btn du-btn-disabled du-btn-sm">
+                Página {{ queryParams().page }} de {{ pagination().totalPages || 1 }}
+              </span>
             </button>
             <button
               class="du-join-item du-btn"

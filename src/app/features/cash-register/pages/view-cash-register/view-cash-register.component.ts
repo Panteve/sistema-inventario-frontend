@@ -60,6 +60,7 @@ export class ViewCashRegisterComponent implements OnInit {
     amountReceived: 0,
     difference: 0,
     status: false,
+    observation: '',
     office: {
       name: '',
     },

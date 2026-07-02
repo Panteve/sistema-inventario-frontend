@@ -1,9 +1,10 @@
 <div class="flex justify-center px-4 py-10 md:py-14" (click)="clearOfficeSelected($event)">
   <div class="w-full max-w-7xl mx-auto">
-
-
     <div class="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-4 lg:gap-6 items-start">
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
           <div data-exception class="p-2">
             <h3 class="text-sm font-semibold uppercase tracking-[0.12em] opacity-80 mb-4">
@@ -68,13 +69,18 @@
               </fieldset>
 
               <div class="flex gap-2 pt-2">
-                <button class="du-btn du-btn-soft flex-1" type="reset" (click)="clearForm()">
+                <button
+                  class="du-btn du-btn-soft flex-1"
+                  type="reset"
+                  [disabled]="loadingAction()"
+                  (click)="clearForm()"
+                >
                   Limpiar
                 </button>
                 <button
                   class="du-btn du-btn-primary flex-1"
                   type="submit"
-                  [disabled]="!officeForm.valid || !hasChanges()"
+                  [disabled]="!officeForm.valid || !hasChanges() || loadingAction()"
                 >
                   {{ this.officeExist() ? 'Guardar' : 'Crear' }}
                 </button>
@@ -84,72 +90,93 @@
         </div>
       </article>
 
-      <article data-reveal="up" class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm">
+      <article
+        data-reveal="up"
+        class="du-card rounded-4xl bg-base-100 border border-base-content/10 shadow-sm"
+      >
         <div class="du-card-body p-4 md:p-6">
-          @if (this.loading()) {
-            <div class="text-center py-10 opacity-50">
-              <span class="du-loading du-loading-dots du-loading-xl"></span>
-              <p>Cargando sucursales...</p>
-            </div>
-          } @else {
-            <div class="min-w-0">
-              <div class="flex gap-2">
-                <label
-                  class="du-input du-input-bordered w-full min-w-0 mb-2 flex items-center gap-2"
+          <div class="min-w-0">
+            <div class="flex gap-2">
+              <label class="du-input du-input-bordered w-full min-w-0 mb-2 flex items-center gap-2">
+                <svg
+                  class="h-4 w-4 opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                  </g>
+                </svg>
+                <input
+                  #search
+                  class="grow"
+                  placeholder="Buscar por nombre o ID..."
+                  [disabled]="loadingTable()"
+                  (input)="globalFilter.set(search.value); resetViewTable()"
+                />
+              </label>
+              <div class="du-tooltip du-tooltip-left" data-tip="Recargar oficinas">
+                <button
+                  class="du-btn du-btn-circle du-btn-ghost"
+                  [disabled]="loadingTable()"
+                  (click)="this.loadOffices()"
                 >
                   <svg
-                    class="h-4 w-4 opacity-50"
                     xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
                     viewBox="0 0 24 24"
                   >
-                    <g
-                      stroke-linejoin="round"
-                      stroke-linecap="round"
-                      stroke-width="2.5"
-                      fill="none"
-                      stroke="currentColor"
-                    >
-                      <circle cx="11" cy="11" r="8"></circle>
-                      <path d="m21 21-4.3-4.3"></path>
-                    </g>
+                    <path
+                      fill="currentColor"
+                      d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
+                    />
                   </svg>
-                  <input
-                    #search
-                    class="grow"
-                    placeholder="Buscar por nombre o ID..."
-                    (input)="globalFilter.set(search.value); resetViewTable()"
-                  />
-                </label>
-                <div class="du-tooltip du-tooltip-left" data-tip="Recargar oficinas">
-                  <button class="du-btn du-btn-circle du-btn-ghost" (click)="this.loadOffices()">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="20"
-                      height="20"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                </button>
               </div>
+            </div>
 
-              <div class="overflow-hidden rounded-xl border border-base-content/10">
-                <div class="w-full overflow-x-auto">
-                  <table class="du-table du-table-zebra du-table-md w-full min-w-170">
-                    <thead class="bg-base-200">
-                      <tr>
-                        <th class="text-center">Nombre</th>
-                        <th class="text-center">Direccion</th>
-                        <th class="text-center">Telefono</th>
-                        <th class="text-center">Fecha de creacion</th>
-                        <th class="text-center">Status</th>
-                      </tr>
-                    </thead>
-                    <tbody>
+            <div class="overflow-hidden rounded-xl border border-base-content/10">
+              <div class="w-full overflow-x-auto">
+                <table class="du-table du-table-zebra du-table-md w-full min-w-170">
+                  <thead class="bg-base-200">
+                    <tr>
+                      <th class="text-center">Nombre</th>
+                      <th class="text-center">Direccion</th>
+                      <th class="text-center">Telefono</th>
+                      <th class="text-center">Fecha de creacion</th>
+                      <th class="text-center">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @if (this.loadingTable()) {
+                      @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+                        <tr class="hover:bg-base-300 transition-colors">
+                          <td class="text-center">
+                            <div class="du-skeleton h-4 w-24 rounded-full mx-auto"></div>
+                          </td>
+                          <td class="text-center">
+                            <div class="du-skeleton h-4 w-28 rounded-full mx-auto"></div>
+                          </td>
+                          <td class="text-center">
+                            <div class="du-skeleton h-4 w-20 rounded-full mx-auto"></div>
+                          </td>
+                          <td class="text-center">
+                            <div class="du-skeleton h-4 w-24 rounded-full mx-auto"></div>
+                          </td>
+                          <td class="text-center">
+                            <div class="du-skeleton h-4 w-14 rounded-full mx-auto"></div>
+                          </td>
+                        </tr>
+                      }
+                    } @else {
                       @for (row of table.getRowModel().rows; track row.id) {
                         <tr
                           class="hover:bg-base-300 transition-colors cursor-pointer"
@@ -180,72 +207,69 @@
                             </td>
                           }
                         </tr>
-                      } @empty {
-                        <tr>
-                          <div colspan="5" class="text-center py-10 opacity-50">
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              class="h-12 w-12 mx-auto mb-2 opacity-30"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                            >
-                              <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="1.5"
-                                d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
-                              />
-                            </svg>
-                            <p>No hay oficinas disponibles</p>
-                          </div>
-                        </tr>
-                      }
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div class="flex justify-center mt-4">
-                <div class="du-join">
-                  <button
-                    class="du-join-item du-btn du-btn-sm"
-                    (click)="previousPage()"
-                    [disabled]="!table.getCanPreviousPage()"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
-                    </svg>
-                  </button>
-                  <button class="du-join-item du-btn du-btn-sm" (click)="resetViewTable()">
-                    {{ numberPage() }}
-                  </button>
-                  <button
-                    class="du-join-item du-btn du-btn-sm"
-                    (click)="nextPage()"
-                    [disabled]="!table.getCanNextPage()"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="16"
-                      height="16"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        fill="currentColor"
-                        d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z"
-                      />
-                    </svg>
-                  </button>
-                </div>
+                        } @empty {
+                          <tr>
+                            <td colspan="5" class="text-center py-10 opacity-50">
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                class="h-12 w-12 mx-auto mb-2 opacity-30"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                              >
+                                <path
+                                  stroke-linecap="round"
+                                  stroke-linejoin="round"
+                                  stroke-width="1.5"
+                                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
+                                />
+                              </svg>
+                              <p>No hay oficinas disponibles</p>
+                            </td>
+                          </tr>
+                        }
+                    }
+                  </tbody>
+                </table>
               </div>
             </div>
-          }
+
+            <div class="flex justify-center mt-4">
+              <div class="du-join">
+                <button
+                  class="du-join-item du-btn du-btn-sm"
+                  (click)="previousPage()"
+                  [disabled]="!table.getCanPreviousPage()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
+                  </svg>
+                </button>
+                <button class="du-join-item du-btn du-btn-sm" (click)="resetViewTable()">
+                  {{ numberPage() }}
+                </button>
+                <button
+                  class="du-join-item du-btn du-btn-sm"
+                  (click)="nextPage()"
+                  [disabled]="!table.getCanNextPage()"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                  >
+                    <path fill="currentColor" d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </article>
     </div>

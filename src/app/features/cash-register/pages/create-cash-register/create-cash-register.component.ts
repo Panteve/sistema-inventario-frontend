@@ -5,6 +5,7 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CloseCashRegisterComponent } from '../../layouts/close-cash-register/close-cash-register.component';
 import { OpenCashRegisterComponent } from '../../layouts/open-cash-register/open-cash-register.component';
+import { CloseCashRegisterRequest } from '../../../../shared/interfaces/cash-register-interface';
 
 @Component({
   selector: 'app-cash-register',
@@ -28,9 +29,9 @@ export class CreateCashRegisterComponent {
     });
   }
 
-  closeCashRegister(amountReceived: number) {
+  closeCashRegister(closeCashRegisterData: CloseCashRegisterRequest) {
     this.cashRegisterStore.closeCashRegister({
-      amountReceived,
+      closeCashRegisterData,
       onSuccess: () => this.closeCashModal(),
     });
   }

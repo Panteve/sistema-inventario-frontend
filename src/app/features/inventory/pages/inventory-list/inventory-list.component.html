@@ -366,6 +366,45 @@
         }
         <div class="rounded-2xl border border-base-content/10 p-3 md:p-4 bg-base-100">
           @if (this.inventoryStore.loading()) {
+            <div class="mb-2 flex items-center gap-2">
+              <label
+                class="du-input du-input-bordered w-full rounded-xl border-base-content/15 bg-base-100 shadow-sm"
+              >
+                <svg
+                  class="h-4 w-4 opacity-50"
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                >
+                  <g
+                    stroke-linejoin="round"
+                    stroke-linecap="round"
+                    stroke-width="2.5"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.3-4.3"></path>
+                  </g>
+                </svg>
+                <input class="grow" placeholder="Buscar por nombre o ID..." />
+              </label>
+
+              <div class="du-tooltip du-tooltip-left" data-tip="Recargar productos">
+                <button class="du-btn du-btn-circle du-btn-soft">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      fill="currentColor"
+                      d="M17.65 6.35A7.96 7.96 0 0 0 12 4a8 8 0 0 0-8 8a8 8 0 0 0 8 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18a6 6 0 0 1-6-6a6 6 0 0 1 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4z"
+                    />
+                  </svg>
+                </button>
+              </div>
+            </div>
             <div
               class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
             >
@@ -388,7 +427,7 @@
                     </tr>
                   </thead>
                   <tbody>
-                    @for (_ of [1, 2, 3, 4, 5]; track _) {
+                    @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
                       <tr>
                         <td class="text-center">
                           <div class="du-skeleton h-4 w-28 mx-auto rounded"></div>

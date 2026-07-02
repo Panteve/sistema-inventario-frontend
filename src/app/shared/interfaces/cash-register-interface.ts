@@ -3,6 +3,11 @@ export interface OpenCashRegisterRequest {
   officeId: number;
 }
 
+export interface CloseCashRegisterRequest {
+  amountReceived: number;
+  observation?: string;
+}
+
 export interface PostCashRegisterResponse {
   //CAMBIAR AL NUEVO RETORNO PORQUE ES CON OPERATE BY NO CLOSEDBYID
   id: number;
@@ -27,6 +32,7 @@ export interface CashRegisterFullHistoryResponse {
   amountReceived: number;
   difference: number;
   status: boolean;
+  observation?: string;
   office: {
     name: string;
   };
@@ -108,3 +114,4 @@ export interface CashRegisterSummaryResponse {
   totalTransferSales: number;
   totalExpenses: number;
 }
+

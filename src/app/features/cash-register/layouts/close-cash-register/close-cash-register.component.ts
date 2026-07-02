@@ -1,7 +1,10 @@
 import { DatePipe } from '@angular/common';
 import { Component, computed, input, output, signal } from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
-import { CashRegisterSummaryResponse } from '../../../../shared/interfaces/cash-register-interface';
+import {
+  CashRegisterSummaryResponse,
+  CloseCashRegisterRequest,
+} from '../../../../shared/interfaces/cash-register-interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
@@ -15,13 +18,14 @@ export class CloseCashRegisterComponent {
   employee = input.required<Employee | null>();
   cashRegisterSummary = input.required<CashRegisterSummaryResponse>();
   closeModal = output<void>();
-  closeCashRegister = output<number>();
+  closeCashRegister = output<CloseCashRegisterRequest>();
   loading = input.required<boolean>();
   loadingSummary = input.required<boolean>();
 
   currentDate = new Date();
   closeConfirmationOpen = signal<boolean>(false);
   amountReceived = signal<number>(0);
+  observation = signal<string | undefined>(undefined);
 
   expected = computed(() => {
     return (
@@ -55,13 +59,25 @@ export class CloseCashRegisterComponent {
   }
 
   confirmCloseCashRegister() {
-    this.closeCashRegister.emit(this.amountReceived());
+    this.closeCashRegister.emit({
+      amountReceived: this.amountReceived(),
+      observation: this.observation(),
+    });
   }
 
   onAmountReceivedChange(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
     const value = Number(raw);
     this.amountReceived.set(isNaN(value) ? 0 : value);
+  }
+
+  onObservationChange(event: Event) {
+    const raw = (event.target as HTMLInputElement).value;
+    if (raw.trim() === '') {
+      this.observation.set(undefined);
+      return;
+    }
+    this.observation.set(raw);
   }
 
   onAmountClick(event: Event) {

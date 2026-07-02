@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { Expense } from '../../../../shared/interfaces/expense.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
@@ -10,4 +10,10 @@ import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 })
 export class ViewExpenseComponent {
   expenseSelected = input<Expense | null>(null);
+  navigateToCashRegister = output<void>();
+
+  emitNavigateToCashRegister() {
+    this.navigateToCashRegister.emit();
+  }
+  
 }

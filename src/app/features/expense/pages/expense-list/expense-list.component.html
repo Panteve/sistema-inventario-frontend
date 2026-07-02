@@ -140,49 +140,50 @@
 
         <div class="du-divider my-4"></div>
 
-        @if (loading()) {
-          <div class="space-y-2">
-            @for (_ of [1, 2, 3, 4, 5]; track _) {
-              <div
-                class="flex items-center gap-4 rounded-2xl border border-base-content/10 bg-base-100 p-4"
-              >
-                <div class="du-skeleton h-5 w-12 rounded"></div>
-                <div class="du-skeleton h-5 w-24 rounded"></div>
-                <div class="du-skeleton h-5 w-36 rounded"></div>
-                <div class="du-skeleton h-5 w-20 rounded"></div>
-                <div class="du-skeleton ml-auto h-5 w-16 rounded"></div>
-              </div>
-            }
-          </div>
-        } @else {
-          <div
-            class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
-          >
-            <div class="overflow-x-auto">
-              <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
-                <thead class="bg-base-200/90">
-                  <tr>
-                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                      ID
-                    </th>
-                    <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
-                      Fecha
-                    </th>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      Motivo
-                    </th>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      Empleado
-                    </th>
-                    <th class="text-left text-xs font-semibold uppercase tracking-[0.14em]">
-                      Oficina
-                    </th>
-                    <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
-                      Monto
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
+        <div
+          class="overflow-hidden rounded-2xl border border-base-content/10 bg-base-100 shadow-sm"
+        >
+          <div class="overflow-x-auto">
+            <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
+              <thead class="bg-base-200/90">
+                <tr>
+                  <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">ID</th>
+                  <th class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                    Fecha
+                  </th>
+                  <th class="text-xs font-semibold uppercase tracking-[0.14em]">Motivo</th>
+                  <th class="text-xs font-semibold uppercase tracking-[0.14em]">Empleado</th>
+                  <th class="text-xs font-semibold uppercase tracking-[0.14em]">Oficina</th>
+                  <th class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
+                    Monto
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                @if (loading()) {
+                  @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
+                    <tr>
+                      <td class="text-center">
+                        <div class="du-skeleton h-4 w-8 rounded-full mx-auto"></div>
+                      </td>
+                      <td class="text-center">
+                        <div class="du-skeleton h-4 w-26 rounded-full mx-auto"></div>
+                      </td>
+                      <td>
+                        <div class="du-skeleton h-4 w-26 rounded-full"></div>
+                      </td>
+                      <td>
+                        <div class="du-skeleton h-4 w-26 rounded-full"></div>
+                      </td>
+                      <td>
+                        <div class="du-skeleton h-4 w-26 rounded-full"></div>
+                      </td>
+                      <td class="text-right">
+                        <div class="du-skeleton h-4 w-20 rounded-full ml-auto"></div>
+                      </td>
+                    </tr>
+                  }
+                } @else {
                   @for (expense of expenses(); track expense.id) {
                     <tr
                       class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
@@ -190,9 +191,12 @@
                     >
                       <td class="text-center">#{{ expense.id }}</td>
                       <td class="text-center">
-                        {{ expense.createdAt | date: 'dd MMM y' }}
+                        <span> {{ expense.createdAt | date: 'dd MMM y' }}</span>
+                        <span class="block text-xs opacity-50 leading-tight">{{
+                          expense.createdAt | date: 'hh:mm a'
+                        }}</span>
                       </td>
-                      <td class="text-left">
+                      <td>
                         <span class="du-tooltip" [attr.data-tip]="expense.reason">
                           {{
                             expense.reason.length > 10
@@ -201,8 +205,8 @@
                           }}
                         </span>
                       </td>
-                      <td class="text-left">{{ expense.employee.name || 'Sin empleado' }}</td>
-                      <td class="text-left">{{ expense.office.name || 'Sin oficina' }}</td>
+                      <td>{{ expense.employee.name || 'Sin empleado' }}</td>
+                      <td>{{ expense.office.name || 'Sin oficina' }}</td>
                       <td class="text-right font-semibold">{{ expense.amount | cop }}</td>
                     </tr>
                   } @empty {
@@ -226,11 +230,11 @@
                       </td>
                     </tr>
                   }
-                </tbody>
-              </table>
-            </div>
+                }
+              </tbody>
+            </table>
           </div>
-        }
+        </div>
 
         <div class="du-divider my-4"></div>
 
@@ -262,8 +266,7 @@
 @if (viewModalOpen()) {
   <app-modal [isOpen]="viewModalOpen()" [ariaLabel]="'Ver gasto'" (close)="closeViewModal()">
     <div class="w-4xl h-full">
-      <app-view-expense [expenseSelected]="expenseSelected()"></app-view-expense>
+      <app-view-expense [expenseSelected]="expenseSelected()" (navigateToCashRegister)="navigateToCashRegister()"></app-view-expense>
     </div>
-    
   </app-modal>
 }

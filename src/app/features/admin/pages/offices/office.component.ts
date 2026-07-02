@@ -32,7 +32,8 @@ export class OfficeComponent implements OnInit {
   #destroyRef = inject(DestroyRef);
 
   offices = signal<OfficeResponse[]>([]);
-  loading = signal<boolean>(false);
+  loadingAction = signal<boolean>(false);
+  loadingTable = signal<boolean>(false);
   globalFilter = signal<string>('');
   numberPage = signal<number>(1);
   officeExist = signal<boolean>(false);
@@ -123,11 +124,11 @@ export class OfficeComponent implements OnInit {
   }
 
   loadOffices() {
-    this.loading.set(true);
+    this.loadingTable.set(true);
     this.globalFilter.set('');
     this.officeService
       .getOffices()
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(finalize(() => this.loadingTable.set(false)))
       .subscribe({
         next: (response) => {
           this.offices.set(response);
@@ -164,7 +165,7 @@ export class OfficeComponent implements OnInit {
         accessorKey: 'createdAt',
         id: 'createdAt',
         cell: (info: CellContext<OfficeResponse, any>) =>
-          this.#datePipe.transform(info.getValue(), 'dd/MM/yyyy') || '',
+          this.#datePipe.transform(info.getValue(), 'dd MMM y') || '',
       },
       {
         header: 'Status',
@@ -265,7 +266,7 @@ export class OfficeComponent implements OnInit {
   #setStatus(office: OfficeResponse) {
     this.officeService
       .setStatusOffice(office.id, office.status)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(finalize(() => this.loadingAction.set(false)))
       .subscribe({
         next: () => {
           const statusAction = office.status ? 'activar' : 'desactivar';
@@ -305,7 +306,7 @@ export class OfficeComponent implements OnInit {
 
     this.officeService
       .updateOffice(office.id, payload as CreateOfficeRequest)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(finalize(() => this.loadingAction.set(false)))
       .subscribe({
         next: (response) => {
           this.toastService.show({
@@ -330,7 +331,7 @@ export class OfficeComponent implements OnInit {
   #createOffice(office: CreateOfficeRequest) {
     this.officeService
       .createOffice(office)
-      .pipe(finalize(() => this.loading.set(false)))
+      .pipe(finalize(() => this.loadingAction.set(false)))
       .subscribe({
         next: () => {
           this.toastService.show({
@@ -352,7 +353,7 @@ export class OfficeComponent implements OnInit {
   }
 
   onSubmit() {
-    this.loading.set(true);
+    this.loadingAction.set(true);
     const office = this.officeForm.getRawValue();
     if (this.officeExist()) {
       if (office.status !== this.officeSelected()?.status) {
