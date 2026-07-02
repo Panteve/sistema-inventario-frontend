@@ -15,7 +15,7 @@
                 <p
                   class="text-sm md:text-base font-semibold opacity-80 rounded-full bg-base-200/70 px-3 py-1"
                 >
-                  {{ this.currentDate | date: 'dd/MM/yyyy' }}
+                  {{ this.currentDate | date: 'dd MMM y' }}
                 </p>
                 <p
                   class="text-xs md:text-sm rounded-full border border-base-content/10 bg-base-100 px-3 py-1"
@@ -204,7 +204,7 @@
 
             <button
               class="du-btn du-btn-secondary du-btn-soft du-btn-md w-full"
-              [disabled]="loading()|| notSelectedOffice()"
+              [disabled]="loading() || notSelectedOffice()"
               (click)="openProductsModal()"
             >
               <svg

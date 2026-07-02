@@ -77,13 +77,13 @@
       <div>
         <p class="text-[10px] uppercase tracking-[0.16em] opacity-50">Fecha apertura</p>
         <p class="text-sm font-semibold leading-snug">
-          {{ cashRegisterSummary().openedAt | date: 'dd/MM/yyyy HH:mm' }}
+          {{ cashRegisterSummary().openedAt | date: 'dd MMM y | hh:mm a' }}
         </p>
       </div>
       <div>
         <p class="text-[10px] uppercase tracking-[0.16em] opacity-50">Hora cierre</p>
         <p class="text-sm font-semibold leading-snug">
-          {{ currentDate | date: 'dd/MM/yyyy HH:mm' }}
+          {{ currentDate | date: 'dd MMM y | hh:mm a' }}
         </p>
       </div>
     </div>
