@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { OfficeService } from '../../../../shared/services/office.service';
 import {
   CreateOfficeRequest,
@@ -36,7 +45,6 @@ export class OfficeComponent implements OnInit {
   loadingAction = signal<boolean>(false);
   loadingTable = signal<boolean>(false);
   globalFilter = signal<string>('');
-  numberPage = signal<number>(1);
   officeExist = signal<boolean>(false);
   officeSelected = signal<OfficeResponse | null>(null);
   currentDate = new Date();
@@ -208,19 +216,16 @@ export class OfficeComponent implements OnInit {
       },
     },
   }));
-  resetViewTable() {
-    this.table.setPageIndex(0);
-    this.numberPage.set(1);
+  searchProducts(search: string) {
+    this.globalFilter.set(search);
+    this.table.firstPage();
   }
-
   nextPage() {
     this.table.nextPage();
-    this.numberPage.update((n) => n + 1);
   }
 
   previousPage() {
     this.table.previousPage();
-    this.numberPage.update((n) => n - 1);
   }
 
   clearOfficeSelected(event: Event) {

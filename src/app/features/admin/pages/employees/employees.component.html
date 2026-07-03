@@ -166,11 +166,15 @@
                   class="grow"
                   placeholder="Buscar por nombre, documento, correo o rol..."
                   [disabled]="loadingEmployees()"
-                  (input)="globalFilter.set(search.value); resetViewTable()"
+                  (input)="searchProducts(search.value)"
                 />
               </label>
               <div class="du-tooltip du-tooltip-left" data-tip="Recargar empleados">
-                <button class="du-btn du-btn-circle du-btn-ghost" [disabled]="loadingEmployees()" (click)="loadEmployees()">
+                <button
+                  class="du-btn du-btn-circle du-btn-ghost"
+                  [disabled]="loadingEmployees()"
+                  (click)="loadEmployees()"
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="20"
@@ -204,22 +208,22 @@
                       @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
                         <tr class="hover:bg-base-300 transition-colors">
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-24 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-24 rounded-full mx-auto"></div>
                           </td>
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-20 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-20 rounded-full mx-auto"></div>
                           </td>
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-28 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-28 rounded-full mx-auto"></div>
                           </td>
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-20 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-20 rounded-full mx-auto"></div>
                           </td>
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-14 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-14 rounded-full mx-auto"></div>
                           </td>
                           <td class="text-center">
-                            <div class="du-skeleton h-4 w-14 rounded-full mx-auto"></div>
+                            <div class="du-skeleton h-5.25 w-14 rounded-full mx-auto"></div>
                           </td>
                         </tr>
                       }
@@ -264,9 +268,9 @@
                             </td>
                           }
                         </tr>
-                        } @empty {
-                          <tr>
-                            <td colspan="6" class="text-center py-10 opacity-50">
+                      } @empty {
+                        <tr>
+                          <td colspan="6" class="text-center py-10 opacity-50">
                             <svg
                               xmlns="http://www.w3.org/2000/svg"
                               class="h-12 w-12 mx-auto mb-2 opacity-30"
@@ -294,35 +298,22 @@
             <div class="flex justify-center mt-4">
               <div class="du-join">
                 <button
-                  class="du-join-item du-btn du-btn-sm"
+                  class="du-join-item du-btn"
                   (click)="previousPage()"
                   [disabled]="!table.getCanPreviousPage()"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                  >
-                    <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
-                  </svg>
+                  <<
                 </button>
-                <button class="du-join-item du-btn du-btn-sm" (click)="resetViewTable()">
-                  {{ numberPage() }}
+                <button class="du-join-item du-btn">
+                  Pagina {{ this.table.getState().pagination.pageIndex + 1 }} de
+                  {{ table.getPageCount() }}
                 </button>
                 <button
-                  class="du-join-item du-btn du-btn-sm"
+                  class="du-join-item du-btn"
                   (click)="nextPage()"
                   [disabled]="!table.getCanNextPage()"
                 >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="16"
-                    height="16"
-                    viewBox="0 0 24 24"
-                  >
-                    <path fill="currentColor" d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z" />
-                  </svg>
+                  >>
                 </button>
               </div>
             </div>

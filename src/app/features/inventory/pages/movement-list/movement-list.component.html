@@ -363,15 +363,17 @@
               (click)="changePage(-1)"
               [disabled]="queryParams().page <= 1"
             >
-              «
+              <<
             </button>
-            <button class="du-join-item du-btn">Pagina {{ queryParams().page }}</button>
+            <button class="du-join-item du-btn">
+              Pagina {{ queryParams().page }} de {{ pagination().totalPages || 1 }}
+            </button>
             <button
               class="du-join-item du-btn"
               (click)="changePage(1)"
-              [disabled]="queryParams().page >= pagination().totalPages"
+              [disabled]="queryParams().page >= (pagination().totalPages || 1)"
             >
-              »
+              >>
             </button>
           </div>
         </div>

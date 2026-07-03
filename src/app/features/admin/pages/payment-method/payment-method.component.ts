@@ -42,7 +42,6 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
 
   paymentMethodSelected = signal<PaymentMethodResponse | null>(null);
   globalFilter = signal<string>('');
-  numberPage = signal<number>(1);
   methodExist = signal<boolean>(false);
   loading = signal<boolean>(false);
 
@@ -176,19 +175,16 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
     },
   }));
 
-  resetViewTable() {
-    this.table.setPageIndex(0);
-    this.numberPage.set(1);
+  searchProducts(search: string) {
+    this.globalFilter.set(search);
+    this.table.firstPage();
   }
-
   nextPage() {
     this.table.nextPage();
-    this.numberPage.update((n) => n + 1);
   }
 
   previousPage() {
     this.table.previousPage();
-    this.numberPage.update((n) => n - 1);
   }
 
   onRowClick(paymentMethod: PaymentMethodResponse) {

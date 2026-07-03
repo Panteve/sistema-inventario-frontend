@@ -1,5 +1,5 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, map } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -64,6 +64,8 @@ export class ExpenseListComponent implements OnInit {
     this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
     { initialValue: false },
   );
+
+  skeletonArray = computed(() => Array.from({ length: this.queryParams().limit }));
 
   constructor() {
     const navExpense = this.#router.currentNavigation()?.extras.state?.['expense'] as

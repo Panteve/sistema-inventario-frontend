@@ -35,7 +35,6 @@ export class EmployeesComponent implements OnInit {
   toastService = inject(ToastService);
 
   globalFilter = signal<string>('');
-  numberPage = signal<number>(1);
   loadingEmployees = signal<boolean>(false);
   loadingModal = signal<boolean>(false);
 
@@ -57,7 +56,7 @@ export class EmployeesComponent implements OnInit {
   loadEmployees() {
     this.loadingEmployees.set(true);
     this.globalFilter.set('');
-    this.resetViewTable();
+    this.table.firstPage();
     this.employeeService
       .getAllEmployees()
       .pipe(finalize(() => this.loadingEmployees.set(false)))
@@ -148,19 +147,17 @@ export class EmployeesComponent implements OnInit {
       },
     },
   }));
-  resetViewTable() {
-    this.table.setPageIndex(0);
-    this.numberPage.set(1);
-  }
 
+  searchProducts(search: string) {
+    this.globalFilter.set(search);
+    this.table.firstPage();
+  }
   nextPage() {
     this.table.nextPage();
-    this.numberPage.update((n) => n + 1);
   }
 
   previousPage() {
     this.table.previousPage();
-    this.numberPage.update((n) => n - 1);
   }
 
   onRowClick(employee: EmployeeResponse) {

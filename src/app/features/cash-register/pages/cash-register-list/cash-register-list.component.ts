@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -52,6 +52,9 @@ export class CashRegisterListComponent implements OnInit {
   loading = signal(false);
 
   queryParams = signal<ParamsGetCashRegisters>(this.#buildDefaultParams());
+
+  skeletonArray = computed(() => Array.from({ length: this.queryParams().limit }));
+
 
   ngOnInit(): void {
     const defaults = this.#buildDefaultParams();

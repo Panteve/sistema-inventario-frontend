@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnDestroy,
+  signal,
+} from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { Router } from '@angular/router';
@@ -55,6 +63,7 @@ export class InventoryListComponent implements OnDestroy {
   maxPriceFocus = signal<boolean>(false);
 
   productSelected = signal<ProductOnInventoryResponse | null>(null);
+  skeletonArray = computed(() => Array.from({ length: this.quantityProducts() }));
 
   displayMinPrice = computed(() => {
     if (this.minPriceFocus()) {

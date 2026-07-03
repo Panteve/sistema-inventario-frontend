@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import {
   CellContext,
   ColumnFiltersState,
@@ -52,7 +61,6 @@ export class TableProducts {
   copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
-  numberPage = signal<number>(1);
   #lastProductsFilteredCount = signal<number>(-1);
 
   #createRangeFilter(columnId: string, min: number | null, max: number | null) {
@@ -160,7 +168,7 @@ export class TableProducts {
       this.selectedPriceOrder();
       this.minPriceFilter();
       this.maxPriceFilter();
-      this.resetViewTable();
+      this.table.firstPage();
     });
     effect(() => {
       this.table.setPageSize(this.quantityProducts());
@@ -252,18 +260,16 @@ export class TableProducts {
     },
   }));
 
-  resetViewTable() {
-    this.table.setPageIndex(0);
-    this.numberPage.set(1);
+  searchProducts(search: string) {
+    this.globalFilter.set(search);
+    this.table.firstPage();
   }
 
   nextPage() {
     this.table.nextPage();
-    this.numberPage.update((n) => n + 1);
   }
 
   previousPage() {
     this.table.previousPage();
-    this.numberPage.update((n) => n - 1);
   }
 }

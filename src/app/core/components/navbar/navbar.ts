@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import { NavigationEnd, Router } from '@angular/router';
 import { ThemeStore } from '../../store/theme-store';
 import { AuthStore } from '../../store/auth-store';
 import { FIXED_LAYOUT_THEME } from '../../../constants/theme.constants';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { filter, map, startWith } from 'rxjs';
 
 const breadcrumbMap: Record<string, string> = {
   '/dashboard': 'Dashboard',
@@ -32,15 +34,24 @@ export class Navbar {
   router = inject(Router);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
 
-  get breadcrumbLabel(): string {
-    const url = this.router.url;
+  private currentUrl = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map((e) => e.urlAfterRedirects),
+      startWith(this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  currentPageLabel  = computed(() => {
+    const url = this.currentUrl();
     for (const [prefix, label] of Object.entries(breadcrumbMap)) {
       if (url.startsWith(prefix)) return label;
     }
     if (url.startsWith('/view-bills/bill/')) return 'Detalle de factura';
     if (url.startsWith('/view-cash-registers/cash-register/')) return 'Detalle de caja';
     return 'Dashboard';
-  }
+  });
 
   changeTheme(event: Event) {
     this.theme.setTheme((event.target as HTMLInputElement).checked);

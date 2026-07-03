@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -47,6 +47,8 @@ export class BillListComponent implements OnInit {
 
   queryParams = signal<ParamsGetBills>(this.#buildDefaultParams());
 
+  skeletonArray = computed(() => Array.from({ length: this.queryParams().limit }));
+
   ngOnInit(): void {
     // Priority: URL filters > saved filters > defaults.
     const defaults = this.#buildDefaultParams();
@@ -79,9 +81,7 @@ export class BillListComponent implements OnInit {
       limit,
       page,
     };
-    this.queryParams.set(
-      normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()),
-    );
+    this.queryParams.set(normalizeDateRange(nextParams, this.todayIso, this.authStore.isAdmin()));
     this.applyFilters();
   }
 

@@ -19,7 +19,7 @@
       #search
       class="grow"
       placeholder="Buscar por nombre o ID..."
-      (input)="globalFilter.set(search.value); resetViewTable()"
+      (input)="searchProducts(search.value)"
     />
   </label>
 
@@ -107,32 +107,20 @@
 </div>
 
 <!-- Paginacion -->
-<div class="mt-3 flex justify-center">
-  <div class="du-join rounded-xl border border-base-content/10 bg-base-100 p-1 shadow-sm">
+<div class="flex justify-center mt-4">
+  <div class="du-join">
     <button
-      class="du-join-item du-btn du-btn-sm"
+      class="du-join-item du-btn"
       (click)="previousPage()"
       [disabled]="!table.getCanPreviousPage()"
-      aria-label="Pagina anterior"
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M15.41 7.41L14 6l-6 6l6 6l1.41-1.41L10.83 12z" />
-      </svg>
+      <<
     </button>
-
-    <button class="du-join-item du-btn du-btn-sm" (click)="resetViewTable()">
-      {{ numberPage() }}
+    <button class="du-join-item du-btn">
+      Pagina {{ this.table.getState().pagination.pageIndex + 1 }} de {{ table.getPageCount() }}
     </button>
-
-    <button
-      class="du-join-item du-btn du-btn-sm"
-      (click)="nextPage()"
-      [disabled]="!table.getCanNextPage()"
-      aria-label="Pagina siguiente"
-    >
-      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24">
-        <path fill="currentColor" d="M10 6L8.59 7.41L13.17 12l-4.58 4.59L10 18l6-6z" />
-      </svg>
+    <button class="du-join-item du-btn" (click)="nextPage()" [disabled]="!table.getCanNextPage()">
+      >>
     </button>
   </div>
 </div>
