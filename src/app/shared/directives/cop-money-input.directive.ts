@@ -1,4 +1,4 @@
-import { Directive, ElementRef, forwardRef, inject, Input } from '@angular/core';
+import { Directive, effect, ElementRef, forwardRef, inject, input } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { CopPipe } from '../pipes/cop.pipes';
 
@@ -19,11 +19,22 @@ import { CopPipe } from '../pipes/cop.pipes';
   },
 })
 export class CopMoneyInputDirective implements ControlValueAccessor {
+  readonly copMoneyInput = input<number | string | null | undefined>();
+
   #el = inject<ElementRef<HTMLInputElement>>(ElementRef);
   #copPipe = inject(CopPipe);
 
   #onChange: (value: number) => void = () => {};
   #onTouched: () => void = () => {};
+
+  constructor() {
+    effect(() => {
+      const value = this.copMoneyInput();
+      if (value === null || value === undefined) return;
+      const n = typeof value === 'number' ? value : this.#parseToNumber(String(value));
+      this.#el.nativeElement.value = this.#copPipe.transform(n);
+    });
+  }
 
   writeValue(value: number | null): void {
     const n = typeof value === 'number' && !Number.isNaN(value) ? value : 0;
@@ -57,11 +68,5 @@ export class CopMoneyInputDirective implements ControlValueAccessor {
 
   onBlur(): void {
     this.#onTouched();
-  }
-
-  @Input() set copMoneyInput(value: number | string | null | undefined) {
-    if (value === null || value === undefined) return;
-    const n = typeof value === 'number' ? value : this.#parseToNumber(String(value));
-    this.#el.nativeElement.value = this.#copPipe.transform(n);
   }
 }

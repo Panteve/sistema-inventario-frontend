@@ -1,44 +1,48 @@
 import { Routes } from '@angular/router';
-import { LoginComponent } from './features/login/pages/login.component';
-import { DashboardComponent } from './features/dashboard/pages/dashboard.component';
-import { BillComponent } from './features/bill/pages/create-bill/bill.component';
 import { authGuard } from './core/guards/auth-guard';
-import { InventoryListComponent } from './features/inventory/pages/inventory-list/inventory-list.component';
-import { MovementCreateComponent } from './features/inventory/pages/movement-create/movement-create.component';
-import { MovementListComponent } from './features/inventory/pages/movement-list/movement-list.component';
-import { ViewBillComponent } from './features/bill/pages/view-bill/view-bill.component';
-import { adminChildGuard } from './core/guards/admin-child-guard';
-import { ExpenseListComponent } from './features/expense/pages/expense-list/expense-list.component';
-import { ViewCashRegisterComponent } from './features/cash-register/pages/view-cash-register/view-cash-register.component';
-import { dashboardRedirectGuard } from './core/guards/dashboard-redirect-guard-guard';
 import { adminGuard } from './core/guards/admin-guard';
+import { LoginComponent } from './features/login/pages/login.component';
+import { inject } from '@angular/core';
+import { AuthStore } from './core/store/auth-store';
 
 export const routes: Routes = [
   { path: '', component: LoginComponent, title: 'Inicio de sesión' },
   {
     path: 'dashboard',
-    component: DashboardComponent,
-    title: 'Panel de control',
-    canActivate: [authGuard, dashboardRedirectGuard],
-  },
-  {
-    path: 'dashboard/admin',
-    loadComponent: () =>
-      import('./features/dashboard/pages/admin-dashboard/admin-dashboard.component').then(
-        (c) => c.AdminDashboardComponent,
-      ),
-    canActivate: [adminGuard],
-  },
-  {
-    path: 'dashboard/cashier',
-    loadComponent: () =>
-      import('./features/dashboard/pages/cashier-dashboard/cashier-dashboard.component').then(
-        (c) => c.CashierDashboardComponent,
-      ),
+    canActivate: [authGuard],
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: () => {
+          const authStore = inject(AuthStore);
+          return authStore.isAdmin() ? '/dashboard/admin' : '/dashboard/cashier';
+        },
+      },
+      {
+        path: 'admin',
+        title: 'Panel de control',
+        loadComponent: () =>
+          import('./features/dashboard/pages/admin-dashboard/admin-dashboard.component').then(
+            (c) => c.AdminDashboardComponent,
+          ),
+        canActivate: [adminGuard],
+      },
+      {
+        path: 'cashier',
+        title: 'Panel de control',
+        loadComponent: () =>
+          import('./features/dashboard/pages/cashier-dashboard/cashier-dashboard.component').then(
+            (c) => c.CashierDashboardComponent,
+          ),
+        canActivate: [],
+      },
+    ],
   },
   {
     path: 'create-bill',
-    component: BillComponent,
+    loadComponent: () =>
+      import('./features/bill/pages/create-bill/bill.component').then((c) => c.BillComponent),
     title: 'Crear factura',
     canActivate: [authGuard],
   },
@@ -50,7 +54,10 @@ export const routes: Routes = [
         path: 'bill/:billId',
         title: 'Informacion de la factura',
         canActivate: [authGuard],
-        component: ViewBillComponent,
+        loadComponent: () =>
+          import('./features/bill/pages/view-bill/view-bill.component').then(
+            (c) => c.ViewBillComponent,
+          ),
       },
       {
         path: 'list',
@@ -69,9 +76,12 @@ export const routes: Routes = [
     children: [
       {
         path: 'cash-register/:cashRegisterId',
-        title: 'Informacion de la factura',
+        title: 'Informacion del registro de caja',
         canActivate: [authGuard],
-        component: ViewCashRegisterComponent,
+        loadComponent: () =>
+          import('./features/cash-register/pages/view-cash-register/view-cash-register.component').then(
+            (c) => c.ViewCashRegisterComponent,
+          ),
       },
       {
         path: 'list',
@@ -86,8 +96,8 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    title: 'Ver facturas',
-    canActivateChild: [adminChildGuard],
+    title: 'Administración',
+    canActivateChild: [adminGuard],
     children: [
       {
         path: 'payment-methods',
@@ -123,31 +133,43 @@ export const routes: Routes = [
   },
   {
     path: 'inventory',
-    title: 'Panel de control',
+    title: 'Inventario',
     children: [
       {
         path: 'inventory-office',
         title: 'Inventario de la oficina',
         canActivate: [authGuard],
-        component: InventoryListComponent,
+        loadComponent: () =>
+          import('./features/inventory/pages/inventory-list/inventory-list.component').then(
+            (c) => c.InventoryListComponent,
+          ),
       },
       {
         path: 'new-movement',
         title: 'Nuevo movimiento',
         canActivate: [authGuard],
-        component: MovementCreateComponent,
+        loadComponent: () =>
+          import('./features/inventory/pages/movement-create/movement-create.component').then(
+            (c) => c.MovementCreateComponent,
+          ),
       },
       {
         path: 'history-movement',
         title: 'Historial de movimientos',
         canActivate: [authGuard],
-        component: MovementListComponent,
+        loadComponent: () =>
+          import('./features/inventory/pages/movement-list/movement-list.component').then(
+            (c) => c.MovementListComponent,
+          ),
       },
     ],
   },
   {
     path: 'expense-list',
-    component: ExpenseListComponent,
+    loadComponent: () =>
+      import('./features/expense/pages/expense-list/expense-list.component').then(
+        (c) => c.ExpenseListComponent,
+      ),
     title: 'Lista de gastos',
     canActivate: [authGuard],
   },

@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
 import {
   CellContext,
   ColumnFiltersState,
@@ -25,6 +25,7 @@ type RangeFilterValue = {
 
 @Component({
   selector: 'app-table-products',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [FlexRenderDirective],
   providers: [CopPipe],
   templateUrl: './table-products.html',

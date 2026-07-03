@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -7,6 +7,7 @@ import { OfficeSelectComponent } from '../../../../shared/components/office-sele
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-open-cash-register',
   imports: [DatePipe, CopMoneyInputDirective, CopPipe, OfficeSelectComponent, ModalComponent],
   templateUrl: './open-cash-register.component.html',

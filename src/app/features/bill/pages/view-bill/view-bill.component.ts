@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { BillService } from '../../services/bill.service';
 import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
@@ -9,6 +9,7 @@ import { DatePipe } from '@angular/common';
 type BreadcrumbItem = { label: string; path: string | null };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-bill.component',
   imports: [CopPipe, RouterLink, DatePipe],
   templateUrl: './view-bill.component.html',

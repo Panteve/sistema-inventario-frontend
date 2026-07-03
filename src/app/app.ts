@@ -1,4 +1,11 @@
-import { Component, HostListener, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  HostListener,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router, RouterOutlet } from '@angular/router';
 import { Navbar } from './core/components/navbar/navbar';
 import { AuthStore } from './core/store/auth-store';
@@ -8,9 +15,11 @@ import { ExpenseComponent } from './features/expense/pages/expense-create/expens
 import { ToastComponent } from './shared/layouts/toast/toast.component';
 import { ScrollRevealService } from './shared/services/scroll-reveal.service';
 import { ModalComponent } from './shared/components/modal.component/modal.component';
+import { InventoryStore } from './shared/store/inventory-store';
 
 @Component({
   selector: 'app-root',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterOutlet,
     Navbar,
@@ -24,12 +33,14 @@ import { ModalComponent } from './shared/components/modal.component/modal.compon
 })
 export class App implements OnInit {
   authStore = inject(AuthStore);
+  inventoryStore = inject(InventoryStore);
   router = inject(Router);
   #route = inject(ActivatedRoute);
   #scrollReveal = inject(ScrollRevealService);
   fixedLayoutTheme = FIXED_LAYOUT_THEME;
   cashModalOpen = signal<boolean>(false);
   expenseModalOpen = signal<boolean>(false);
+  readonly #currentUrl = signal(this.router.url);
 
   openCashModal() {
     this.cashModalOpen.set(true);
@@ -70,11 +81,15 @@ export class App implements OnInit {
   }
 
   isActive(route: string): boolean {
-    return this.router.url.startsWith(route);
+    return this.#currentUrl().startsWith(route);
   }
 
   getCashRegisterLabel(): string {
     return this.authStore.cashRegisterIsOpen() ? 'Cierre de caja' : 'Apertura de caja';
+  }
+
+  constructor() {
+    this.router.events.subscribe(() => this.#currentUrl.set(this.router.url));
   }
 
   logout() {

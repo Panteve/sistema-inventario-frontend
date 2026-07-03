@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -25,6 +25,7 @@ import {
 } from '../../../../shared/utils/filter-query.utils';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-cash-register-list',
   standalone: true,
   imports: [DatePipe, CopPipe, FiltersComponent],

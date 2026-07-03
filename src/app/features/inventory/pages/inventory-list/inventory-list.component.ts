@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { Router } from '@angular/router';
@@ -14,6 +14,7 @@ type PriceOrderType = 'none' | 'asc' | 'desc';
 type StockStatusFilter = 'normal' | 'low' | 'out';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-inventory-list',
   imports: [TableProducts, ModalComponent],
   providers: [CurrencyPipe],

@@ -1,5 +1,5 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, map } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -26,6 +26,7 @@ import { FiltersComponent } from '../../../../shared/components/filters.componen
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-expense-list.component',
   imports: [
     DatePipe,

@@ -1,4 +1,5 @@
 import {
+  ChangeDetectionStrategy,
   Component,
   computed,
   DestroyRef,
@@ -28,6 +29,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-payment-method.component',
   imports: [FlexRenderDirective, ReactiveFormsModule],
   templateUrl: './payment-method.component.html',

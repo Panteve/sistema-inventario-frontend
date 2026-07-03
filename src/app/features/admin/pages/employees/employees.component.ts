@@ -1,4 +1,4 @@
-import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import {
   createAngularTable,
@@ -18,6 +18,7 @@ import { EmployeeStatusToggleComponent } from '../../components/employee-status-
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-employees.component',
   imports: [
     FlexRenderDirective,

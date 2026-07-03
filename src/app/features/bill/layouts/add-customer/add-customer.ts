@@ -1,4 +1,4 @@
-import { Component, effect, inject, model, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, model, output, signal } from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -18,6 +18,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
   selector: 'app-add-customer',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ReactiveFormsModule],
   templateUrl: './add-customer.html',
 })

@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { Expense } from '../../../../shared/interfaces/expense.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-expense',
   imports: [DatePipe, CopPipe],
   templateUrl: './view-expense.component.html',

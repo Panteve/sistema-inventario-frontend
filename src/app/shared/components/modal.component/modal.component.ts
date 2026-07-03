@@ -1,6 +1,7 @@
-import { Component, input, output, HostListener } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output, HostListener } from '@angular/core';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-modal',
   imports: [],
   templateUrl: './modal.component.html',

@@ -1,8 +1,9 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { InventoryMovement } from '../../../../shared/interfaces/inventoryMovement.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-movement',
   imports: [DatePipe],
   templateUrl: './view-movement.component.html',

@@ -1,7 +1,8 @@
-import { Component, effect, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, output } from '@angular/core';
 import { EmployeeStore } from '../../store/employee-store';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-employee-select',
   imports: [],
   templateUrl: './employee-select.component.html',

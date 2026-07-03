@@ -65,7 +65,6 @@
                     <p class="mt-0.5 text-xs opacity-50 md:text-sm">Información de la factura</p>
                   </div>
                   <div class="flex flex-wrap items-center gap-2 sm:justify-end">
-                    <span class="du-badge du-badge-ghost du-badge-sm md:du-badge-md">#00123</span>
                     <p
                       class="rounded-full bg-base-200/70 px-3 py-1 text-sm font-semibold opacity-80 md:text-base"
                     >
@@ -202,9 +201,8 @@
                               class="du-input du-input-sm w-full text-center du-input-ghost no-spinner text-sm md:text-lg"
                               (focus)="selectAll($event)"
                               (input)="onModifyPriceChange($event, product.productId)"
-                              [value]="product.priceUnique | cop"
+                              [copMoneyInput]="product.priceUnique"
                               inputmode="numeric"
-                              copMoneyInput
                             />
                           </td>
                           <td class="text-center font-semibold">

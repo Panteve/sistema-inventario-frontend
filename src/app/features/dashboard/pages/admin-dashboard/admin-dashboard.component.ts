@@ -1,5 +1,5 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { Component, inject, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import {
@@ -20,6 +20,7 @@ import { AdminDashboardBarChartComponent } from '../../components/admin-dashboar
 import { AdminDashboardPieChartComponent } from '../../components/admin-dashboard-pie-chart.component/admin-dashboard-pie-chart.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-admin-dashboard.component',
   imports: [
     AdminDashboardFiltersComponent,

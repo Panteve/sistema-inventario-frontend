@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { ThemeStore } from '../../store/theme-store';
 import { AuthStore } from '../../store/auth-store';
@@ -21,6 +21,7 @@ const breadcrumbMap: Record<string, string> = {
 
 @Component({
   selector: 'app-navbar',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [],
   templateUrl: './navbar.html',
   styleUrl: './navbar.css',

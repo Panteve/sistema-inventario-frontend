@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -6,6 +6,7 @@ import { AuthStore } from '../../../../core/store/auth-store';
 import { finalize } from 'rxjs';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-employee-status-toggle',
   imports: [],
   templateUrl: './employee-status-toggle.component.html',

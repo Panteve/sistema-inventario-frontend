@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';
@@ -7,6 +7,7 @@ import { finalize } from 'rxjs';
 import { EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-employee-create',
   imports: [ReactiveFormsModule],
   templateUrl: './employee-create.component.html',

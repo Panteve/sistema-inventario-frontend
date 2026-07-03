@@ -1,4 +1,4 @@
-import { Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
 import { OfficeService } from '../../../../shared/services/office.service';
 import {
   CreateOfficeRequest,
@@ -20,6 +20,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-office.component',
   imports: [FlexRenderDirective, ReactiveFormsModule, DatePipe],
   providers: [DatePipe],

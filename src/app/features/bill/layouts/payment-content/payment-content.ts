@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
 import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMethod.interface';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -6,6 +6,7 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
 
 @Component({
   selector: 'app-payment-content',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CopPipe, CopMoneyInputDirective],
   providers: [],
   templateUrl: './payment-content.html',

@@ -1,9 +1,10 @@
 import { DatePipe } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, input, output } from '@angular/core';
 import 'cally';
 import { coerceIsoDate, normalizeDateRange, toIsoDate } from '../../utils/filter-query.utils';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-date-range-popover',
   imports: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

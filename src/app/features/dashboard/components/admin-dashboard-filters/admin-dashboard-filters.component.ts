@@ -1,4 +1,4 @@
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit, output, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import 'cally';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
@@ -15,6 +15,7 @@ import {
 } from '../../../../shared/utils/filter-query.utils';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-admin-dashboard-filters',
   imports: [OfficeSelectComponent, EmployeeSelectComponent, DateRangePopoverComponent],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],

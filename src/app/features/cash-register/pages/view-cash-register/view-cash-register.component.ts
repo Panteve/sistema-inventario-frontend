@@ -1,4 +1,4 @@
-import { Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import { CashRegisterService } from '../../services/cash-register.service';
 import { CashRegisterFullHistoryResponse } from '../../../../shared/interfaces/cash-register-interface';
@@ -8,6 +8,7 @@ import { Router, RouterLink } from '@angular/router';
 type BreadcrumbItem = { label: string; path: string | null };
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-cash-register.component',
   imports: [DatePipe, CopPipe, RouterLink],
   templateUrl: './view-cash-register.component.html',

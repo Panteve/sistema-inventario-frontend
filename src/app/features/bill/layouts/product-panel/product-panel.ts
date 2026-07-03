@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { Router } from '@angular/router';
@@ -10,6 +10,7 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
 
 @Component({
   selector: 'app-product-panel',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [TableProducts, ProductPricesPanel, ModalComponent],
   providers: [],
   templateUrl: './product-panel.html',

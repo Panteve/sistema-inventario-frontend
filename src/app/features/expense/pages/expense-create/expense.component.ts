@@ -1,4 +1,4 @@
-import { Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
 import { ExpenseStore } from '../../store/expense-store';
@@ -8,6 +8,7 @@ import { ExpenseService } from '../../service/expense.service';
 import { Router } from '@angular/router';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-expense',
   imports: [ReactiveFormsModule, CopMoneyInputDirective],
   providers: [ExpenseStore],

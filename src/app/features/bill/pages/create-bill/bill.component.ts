@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -19,6 +19,7 @@ import { AgregarCliente } from '../../layouts/add-customer/add-customer';
 import { CreateCustomerRequest } from '../../../../shared/interfaces/customer-interface';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-bill.component',
   imports: [
     CopPipe,
@@ -132,6 +133,8 @@ export class BillComponent {
       taxAmount: product.priceSelected * (product.taxpercentage / 100),
       quantity: 1,
     };
+    console.log(product)
+    console.log(productTo)
     if (!this.bill().products.some((p) => p.productId === productTo.productId)) {
       this.bill.update((bill) => ({
         ...bill,

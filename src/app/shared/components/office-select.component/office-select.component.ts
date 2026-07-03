@@ -1,7 +1,8 @@
-import { Component, inject, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { OfficeStore } from '../../store/office-store';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-office-select',
   imports: [],
   templateUrl: './office-select.component.html',

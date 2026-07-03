@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
@@ -24,6 +24,7 @@ import { MovementInventoryService } from '../../services/inventory-movement.serv
 import { ToastService } from '../../../../shared/services/toast.service';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-movement-list.component',
   imports: [DatePipe, ViewMovementComponent, FiltersComponent, ModalComponent],
   providers: [DatePipe],

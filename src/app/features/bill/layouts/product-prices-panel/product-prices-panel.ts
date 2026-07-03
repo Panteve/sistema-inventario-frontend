@@ -1,9 +1,10 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 
 @Component({
   selector: 'app-product-prices-panel',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CopPipe],
   templateUrl: './product-prices-panel.html',
 })

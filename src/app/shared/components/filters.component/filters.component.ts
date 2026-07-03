@@ -1,10 +1,11 @@
-import { Component, inject, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, model, output } from '@angular/core';
 import { DateRangePopoverComponent } from '../date-range-popover.component/date-range-popover.component';
 import { AuthStore } from '../../../core/store/auth-store';
 import { EmployeeSelectComponent } from '../employee-select.component/employee-select.component';
 import { OfficeSelectComponent } from '../office-select.component/office-select.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-filters',
   imports: [DateRangePopoverComponent, EmployeeSelectComponent, OfficeSelectComponent],
   templateUrl: './filters.component.html',

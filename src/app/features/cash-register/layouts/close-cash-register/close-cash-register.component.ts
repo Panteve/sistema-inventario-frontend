@@ -1,5 +1,5 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, input, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import {
   CashRegisterSummaryResponse,
@@ -10,6 +10,7 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-close-cash-register',
   imports: [DatePipe, CopPipe, CopMoneyInputDirective, ModalComponent],
   templateUrl: './close-cash-register.component.html',
