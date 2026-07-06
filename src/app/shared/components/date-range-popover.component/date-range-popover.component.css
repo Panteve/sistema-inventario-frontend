@@ -30,7 +30,7 @@ calendar-range {
     width: 1.75rem;
     height: 1.75rem;
     border-radius: var(--radius-field);
-    border: 1px solid oklch(0% 0 0 / 10%);
+    border: 1px solid color-mix(in oklch, var(--color-base-content) 10%, transparent);
     background-color: var(--color-base-100);
     color: var(--color-base-content);
     cursor: pointer;
@@ -39,7 +39,7 @@ calendar-range {
 
   &::part(button):hover {
     background-color: var(--color-base-200);
-    border-color: oklch(0% 0 0 / 20%);
+    border-color: color-mix(in oklch, var(--color-base-content) 20%, transparent);
   }
 
   &::part(button):focus-visible {
@@ -54,7 +54,7 @@ calendar-range {
 
   &::part(disabled):hover {
     background-color: var(--color-base-100);
-    border-color: oklch(0% 0 0 / 10%);
+    border-color: color-mix(in oklch, var(--color-base-content) 10%, transparent);
   }
 
   svg {
@@ -73,7 +73,7 @@ calendar-range {
 
 calendar-month {
   --color-accent: var(--color-primary);
-  --color-text-on-accent: oklch(98% 0.01 240);
+  --color-text-on-accent: var(--color-primary-content);
 
   &::part(heading) {
     font-size: 0.8125rem;
@@ -94,7 +94,7 @@ calendar-month {
     font-weight: 500;
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    color: oklch(50% 0 0);
+    color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
     padding: 0.25rem 0;
     text-align: center;
   }
@@ -141,11 +141,11 @@ calendar-month {
   }
 
   &::part(selected):hover {
-    background-color: oklch(45% 0.3 240);
+    background-color: color-mix(in oklch, var(--color-primary), black 20%);
   }
 
   &::part(range-inner) {
-    background-color: oklch(90% 0.05 240);
+    background-color: color-mix(in oklch, var(--color-primary) 15%, transparent);
     color: var(--color-base-content);
     border-radius: 0;
   }
@@ -181,7 +181,7 @@ calendar-month {
 
   &::part(weeknumber) {
     font-size: 0.6875rem;
-    color: oklch(50% 0 0);
+    color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
     font-variant-numeric: tabular-nums;
   }
 }
