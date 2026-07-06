@@ -2,6 +2,22 @@
   display: block;
 }
 
+/* Override du-dropdown transitions on popover to prevent "jump" on close */
+.du-dropdown[popover] {
+  transition: none !important;
+  transform: none !important;
+  scale: none !important;
+  opacity: 1 !important;
+  animation: none !important;
+}
+
+@starting-style {
+  .du-dropdown[popover] {
+    opacity: 1 !important;
+    scale: none !important;
+  }
+}
+
 calendar-range {
   &::part(months) {
     display: flex;
@@ -18,12 +34,14 @@ calendar-range {
   }
 
   &::part(heading) {
+    font-family: var(--font-sans);
     font-size: 0.875rem;
     font-weight: 600;
     color: var(--color-base-content);
   }
 
   &::part(button) {
+    font-family: var(--font-sans);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -76,6 +94,7 @@ calendar-month {
   --color-text-on-accent: var(--color-primary-content);
 
   &::part(heading) {
+    font-family: var(--font-sans);
     font-size: 0.8125rem;
     font-weight: 600;
     text-align: center;
@@ -90,6 +109,7 @@ calendar-month {
   }
 
   &::part(th) {
+    font-family: var(--font-sans);
     font-size: 0.6875rem;
     font-weight: 500;
     text-transform: uppercase;
@@ -105,6 +125,7 @@ calendar-month {
   }
 
   &::part(button) {
+    font-family: var(--font-sans);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -180,6 +201,7 @@ calendar-month {
   }
 
   &::part(weeknumber) {
+    font-family: var(--font-sans);
     font-size: 0.6875rem;
     color: color-mix(in oklch, var(--color-base-content) 50%, transparent);
     font-variant-numeric: tabular-nums;
