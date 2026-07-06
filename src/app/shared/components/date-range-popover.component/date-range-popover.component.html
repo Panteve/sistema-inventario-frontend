@@ -1,5 +1,5 @@
 <div
-  class="gap-4"
+  class="gap-3"
   [class.flex]="inLine() === false"
   [class.flex-col]="inLine() === false"
   [class.grid]="inLine() === true"
@@ -7,7 +7,7 @@
 >
   <div class="du-join w-full">
     <button
-      class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+      class="du-join-item du-btn du-btn-sm flex-1"
       type="button"
       (click)="setTodayRange()"
       [class.du-btn-primary]="isTodayRange()"
@@ -15,7 +15,7 @@
       Hoy
     </button>
     <button
-      class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+      class="du-join-item du-btn du-btn-sm flex-1"
       type="button"
       (click)="setCurrentWeekRange()"
       [class.du-btn-primary]="isCurrentWeekRange()"
@@ -23,7 +23,7 @@
       Semana
     </button>
     <button
-      class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+      class="du-join-item du-btn du-btn-sm flex-1"
       type="button"
       (click)="setCurrentMonthRange()"
       [class.du-btn-primary]="isCurrentMonthRange()"
@@ -31,7 +31,7 @@
       Mes
     </button>
     <button
-      class="du-btn du-btn-sm du-join-item flex-1 border-primary/20"
+      class="du-join-item du-btn du-btn-sm flex-1"
       type="button"
       (click)="setCurrentYearRange()"
       [class.du-btn-primary]="isCurrentYearRange()"
@@ -42,28 +42,23 @@
 
   <fieldset class="w-full min-w-0">
     <button
-      class="du-input du-input-bordered flex w-full items-center justify-between gap-2 cursor-pointer"
-      [class.du-input-sm]="size() === 'sm'"
+      class="du-input du-input-sm du-input-bordered flex w-full items-center justify-between gap-2 cursor-pointer"
       [attr.popovertarget]="popoverId"
       [id]="buttonId"
       [style.anchor-name]="anchorName"
       type="button"
     >
-      <span class="truncate text-left">
-        {{ startDate() | date: 'yyyy-MM-dd' }} — {{ endDate() | date: 'yyyy-MM-dd' }}
+      <span class="truncate text-left text-sm">
+        {{ startDate() | date: 'dd/MM/yyyy' }} — {{ endDate() | date: 'dd/MM/yyyy' }}
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        width="20"
-        height="20"
+        width="16"
+        height="16"
         viewBox="0 0 24 24"
-        class="shrink-0 opacity-70"
+        class="shrink-0 opacity-50"
         aria-hidden="true"
       >
-        <path
-          fill="currentColor"
-          d="M7 11h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"
-        />
         <path
           fill="currentColor"
           d="M5 22h14c1.103 0 2-.897 2-2V6c0-1.103-.897-2-2-2h-2V2h-2v2H9V2H7v2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2M19 8l.001 12H5V8z"
@@ -73,7 +68,7 @@
     <div
       popover
       [id]="popoverId"
-      class="du-dropdown bg-base-100 rounded-box shadow-lg p-4 overflow-visible w-fit"
+      class="du-dropdown bg-base-100 rounded-box border border-base-content/10 shadow-lg p-4 overflow-visible w-fit"
       [style.position-anchor]="anchorName"
     >
       <calendar-range
