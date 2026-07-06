@@ -2,19 +2,48 @@
   display: block;
 }
 
-/* Override du-dropdown transitions on popover to prevent "jump" on close */
+/* Custom popover animation */
 .du-dropdown[popover] {
-  transition: none !important;
-  transform: none !important;
-  scale: none !important;
-  opacity: 1 !important;
-  animation: none !important;
+  transform-origin: top center;
+  animation: popover-in 0.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  transition: opacity 0.15s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  scale: 1;
+  transform: translateY(0);
 }
 
 @starting-style {
   .du-dropdown[popover] {
-    opacity: 1 !important;
-    scale: none !important;
+    opacity: 0;
+    scale: 0.96;
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes popover-in {
+  from {
+    opacity: 0;
+    scale: 0.96;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes popover-out {
+  from {
+    opacity: 1;
+    scale: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    scale: 0.96;
+    transform: translateY(-4px);
   }
 }
 
