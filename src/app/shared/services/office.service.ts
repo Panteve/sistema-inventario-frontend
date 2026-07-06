@@ -19,7 +19,7 @@ export class OfficeService {
   }
 
   setStatusOffice(id: number, status: boolean) {
-    return this.#http.patch(`${environment.apiUrl}/offices/delete/${id}`, { status });
+    return this.#http.patch(`${environment.apiUrl}/offices/toggle-status/${id}`, { status });
   }
 
   updateOffice(id: number, payload: Partial<CreateOfficeRequest>) {
@@ -27,6 +27,6 @@ export class OfficeService {
   }
   createOffice(office: CreateOfficeRequest){
     office.companyId = 1;
-    return this.#http.post(`${environment.apiUrl}/offices/create`, office );
+    return this.#http.post<OfficeResponse>(`${environment.apiUrl}/offices/create`, office );
   }
 }

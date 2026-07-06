@@ -9,14 +9,8 @@ import { CreateProductRequest, ProductCatalogResponse } from '../interfaces/prod
 export class ProductService {
   #http = inject(HttpClient);
 
-  loadProductsCatalog(showDeleted: boolean = true) {
-    let queryParams = {};
-    if (showDeleted) {
-      queryParams = { showDeleted: true };
-    }
-    return this.#http.get<ProductCatalogResponse[]>(`${environment.apiUrl}/products`, {
-      params: queryParams,
-    });
+  loadProductsCatalog() {
+    return this.#http.get<ProductCatalogResponse[]>(`${environment.apiUrl}/products`);
   }
 
   createProduct(product: CreateProductRequest) {

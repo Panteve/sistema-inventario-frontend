@@ -339,14 +339,14 @@ export class OfficeComponent implements OnInit {
       .createOffice(office)
       .pipe(finalize(() => this.loadingAction.set(false)))
       .subscribe({
-        next: () => {
+        next: (response) => {
           this.toastService.show({
             title: 'Oficina creada',
             content: 'La oficina ha sido creada exitosamente.',
             type: 'success',
           });
           this.clearForm();
-          this.loadOffices();
+          this.offices.update((offices) => [...offices, response]);
         },
         error: () => {
           this.toastService.show({
