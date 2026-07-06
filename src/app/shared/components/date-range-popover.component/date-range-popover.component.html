@@ -42,14 +42,15 @@
 
   <fieldset class="w-full min-w-0">
     <button
-      class="du-input du-input-sm du-input-bordered flex w-full items-center justify-between gap-2 cursor-pointer"
+      class="du-input du-input-bordered flex w-full items-center justify-between gap-2 cursor-pointer"
+      [class.du-input-sm]="size() === 'sm'"
       [attr.popovertarget]="popoverId"
       [id]="buttonId"
       [style.anchor-name]="anchorName"
       type="button"
     >
       <span class="truncate text-left text-sm">
-        {{ startDate() | date: 'dd/MM/yyyy' }} — {{ endDate() | date: 'dd/MM/yyyy' }}
+        {{ startDate() | date: 'dd MMM y' }} — {{ endDate() | date: 'dd MMM y' }}
       </span>
       <svg
         xmlns="http://www.w3.org/2000/svg"

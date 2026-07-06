@@ -9,6 +9,7 @@ import { coerceIsoDate, normalizeDateRange, toIsoDate } from '../../utils/filter
   imports: [DatePipe],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   templateUrl: './date-range-popover.component.html',
+  styleUrl: './date-range-popover.component.css',
 })
 export class DateRangePopoverComponent {
   startDate = input<string>();
