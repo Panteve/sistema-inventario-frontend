@@ -18,6 +18,6 @@ export class OfficeSelectComponent {
   changeOffice(event: Event) {
     const officeValue = Number((event.target as HTMLSelectElement).value);
     this.idOffice.emit(officeValue);
-    this.nameOffice.emit(this.officeStore.offices().find((o) => o.id === officeValue)?.name ?? '');
+    this.nameOffice.emit(this.officeStore.officesEntityMap()[officeValue]?.name ?? '');
   }
 }

@@ -8,7 +8,7 @@ export interface ProductOnInventoryResponse {
     wholesalePrice: number;
     taxPercentage: number;
   };
-  status:true
+  status:boolean
 }
 
 export interface changeStatusProductOnInventoryRequest {

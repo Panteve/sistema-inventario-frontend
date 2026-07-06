@@ -24,6 +24,6 @@ export class EmployeeSelectComponent {
   changeEmployee(event: Event) {
     const employeeValue = Number((event.target as HTMLSelectElement).value);
     this.idEmployee.emit(employeeValue);
-    this.nameEmployee.emit(this.employeeStore.employeesByOffice().find((e) => e.id === employeeValue)?.name ?? '');
+    this.nameEmployee.emit(this.employeeStore.employeesEntities()[employeeValue]?.name ?? '');
   }
 }

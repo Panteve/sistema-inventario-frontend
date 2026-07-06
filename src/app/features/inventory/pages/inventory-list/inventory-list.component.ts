@@ -52,7 +52,6 @@ export class InventoryListComponent implements OnDestroy {
   minPriceFilter = signal<number | null>(null);
   maxPriceFilter = signal<number | null>(null);
   selectedStockStatuses = signal<StockStatusFilter[]>([]);
-  isActiveProducts = signal<boolean>(true);
   showDisableModal = signal(false);
 
   enableStatusStockHighlight = signal<boolean>(true);
@@ -237,8 +236,7 @@ export class InventoryListComponent implements OnDestroy {
 
   changeIsActive(event: Event) {
     const checked = (event.target as HTMLInputElement).checked;
-    this.isActiveProducts.set(checked);
-    this.inventoryStore.loadProductsOnInventory(checked);
+    this.inventoryStore.setShowingInactive(checked);
   }
 
   setSelectedProduct(product: ProductOnInventoryResponse) {
@@ -262,7 +260,7 @@ export class InventoryListComponent implements OnDestroy {
       .subscribe(() => {
         this.productSelected.set(null);
         this.showDisableModal.set(false);
-        this.inventoryStore.loadProductsOnInventory(this.isActiveProducts());
+        this.inventoryStore.modifyProductStatus(product.product.id);
       });
   }
 }

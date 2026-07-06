@@ -85,7 +85,7 @@ export class MovementCreateComponent implements OnInit {
   });
 
   ngOnInit(): void {
-    this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
+    this.productCatalogStore.setShowingInactive(false);
   }
 
   openProductsModal() {
@@ -275,6 +275,17 @@ export class MovementCreateComponent implements OnInit {
         this.router.navigate([`/inventory/history-movement/`], {
           state: { inventoryMovement: inventoryMovementResponse },
         });
+        if (
+          this.movementData().type === this.MOVEMENTYPE.OUT ||
+          this.movementData().type === this.MOVEMENTYPE.TRANSFER
+        ) {
+          this.inventoryStore.modifyProductStock(this.movementData().products);
+        } else if (
+          this.movementData().type === this.MOVEMENTYPE.IN &&
+          this.authStore.employee()?.officeId === this.movementData().toOfficeId
+        ) {
+          this.inventoryStore.loadProductsOnInventory();
+        }
       },
       error: (error) => {
         this.loading.set(false);
@@ -283,7 +294,6 @@ export class MovementCreateComponent implements OnInit {
           content: 'Error al crear el movimiento de inventario.',
           type: 'error',
         });
-        
       },
     });
   }

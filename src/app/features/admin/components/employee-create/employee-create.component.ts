@@ -5,6 +5,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { finalize } from 'rxjs';
 import { EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
+import { EmployeeStore } from '../../../../shared/store/employee-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -14,6 +15,7 @@ import { EmployeeResponse } from '../../../../shared/interfaces/employee.interfa
 })
 export class EmployeeCreateComponent {
   officeStore = inject(OfficeStore);
+  employeeStore = inject(EmployeeStore);
   employeeService = inject(EmployeeService);
   toastService = inject(ToastService);
 
@@ -83,6 +85,13 @@ export class EmployeeCreateComponent {
             type: 'success',
           });
           this.addEmployee.emit(employee);
+          this.employeeStore.addEmployee({
+            id: employee.id,
+            name: employee.name,
+            office: {
+              id: employee.office?.id ?? 0,
+            },
+          });
           this.close.emit();
         },
         error: () => {

@@ -5,10 +5,13 @@ import {
   LOCALE_ID,
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
+  provideEnvironmentInitializer,
   provideZonelessChangeDetection,
 } from '@angular/core';
 import {
   provideRouter,
+  Router,
+  RouteReuseStrategy,
   withComponentInputBinding,
   withInMemoryScrolling,
   withRouterConfig,
@@ -26,7 +29,6 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(
       routes,
-      withRouterConfig({ onSameUrlNavigation: 'reload' }),
       withComponentInputBinding(),
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',

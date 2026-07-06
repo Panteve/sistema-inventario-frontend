@@ -56,9 +56,6 @@ export class App implements OnInit {
     this.expenseModalOpen.set(true);
   }
   closeExpenseModal() {
-    if (!this.authStore.cashRegisterIsOpen()) {
-      return;
-    }
     this.expenseModalOpen.set(false);
   }
 

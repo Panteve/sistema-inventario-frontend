@@ -188,7 +188,7 @@
                   @for (expense of expenses(); track expense.id) {
                     <tr
                       class="transition-colors duration-200 hover:bg-base-300/80 cursor-pointer"
-                      (click)="openViewModal(); expenseSelected.set(expense)"
+                      (click)="openViewModal(expense)"
                     >
                       <td class="text-center">#{{ expense.id }}</td>
                       <td class="text-center">

@@ -1,6 +1,7 @@
 import {
   patchState,
   signalStore,
+  type,
   withComputed,
   withHooks,
   withMethods,
@@ -13,18 +14,23 @@ import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { EmployeesByOfficeResponse } from '../interfaces/employee.interface';
 import { EmployeeService } from '../services/employee.service';
 import { ToastService } from '../services/toast.service';
+import { addEntity, entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
 
 type EmployeeState = {
-  employees: EmployeesByOfficeResponse[];
   selectedOfficeId: number;
   loading: boolean;
 };
 
 const initialState: EmployeeState = {
-  employees: [],
   selectedOfficeId: 0,
   loading: false,
 };
+
+const EmployeesByOfficeResponseConfig = entityConfig({
+  entity: type<EmployeesByOfficeResponse>(),
+  collection: 'employees',
+  selectId: (employee) => employee.id,
+});
 
 export const EmployeeStore = signalStore(
   { providedIn: 'root' },
@@ -33,12 +39,13 @@ export const EmployeeStore = signalStore(
     employeeService: inject(EmployeeService),
     toastService: inject(ToastService),
   })),
-  withComputed(({ employees, selectedOfficeId }) => ({
+  withEntities(EmployeesByOfficeResponseConfig),
+  withComputed(({ employeesEntities, selectedOfficeId }) => ({
     employeesByOffice: computed(() => {
       if (selectedOfficeId() === 0) {
-        return employees();
+        return employeesEntities();
       } else {
-        return employees().filter((e) => e.office?.id === selectedOfficeId() || e.office === null);
+        return employeesEntities().filter((e) => e.office?.id === selectedOfficeId() || e.office === null);
       }
     }),
   })),
@@ -51,7 +58,7 @@ export const EmployeeStore = signalStore(
         switchMap(() => {
           return employeeService.getEmployeesByOffice().pipe(
             tap((employees) => {
-              patchState(store, { employees: employees });
+              patchState(store, setAllEntities(employees, EmployeesByOfficeResponseConfig));
             }),
             catchError((err) => {
               toastService.show({
@@ -71,6 +78,9 @@ export const EmployeeStore = signalStore(
     changeSelectedOffice(officeId: number) {
       patchState(store, { selectedOfficeId: officeId });
     },
+    addEmployee(employee: EmployeesByOfficeResponse) {
+      patchState(store, addEntity(employee, EmployeesByOfficeResponseConfig));
+    }
   })),
 
   withHooks({

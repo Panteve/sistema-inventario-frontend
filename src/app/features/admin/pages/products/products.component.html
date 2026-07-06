@@ -196,16 +196,16 @@
                   @for (i of [1, 2, 3, 4, 5, 6, 7]; track i) {
                     <tr class="hover:bg-base-300 transition-colors cursor-pointer">
                       <td class="text-center">
-                        <div class="du-skeleton h-[21px] w-28 rounded-full mx-auto"></div>
+                        <div class="du-skeleton h-5.25 w-28 rounded-full mx-auto"></div>
                       </td>
                       <td class="text-center">
-                        <div class="du-skeleton h-[21px] w-20 rounded-full mx-auto"></div>
+                        <div class="du-skeleton h-5.25 w-20 rounded-full mx-auto"></div>
                       </td>
                       <td class="text-center">
-                        <div class="du-skeleton h-[21px] w-20 rounded-full mx-auto"></div>
+                        <div class="du-skeleton h-5.25 w-20 rounded-full mx-auto"></div>
                       </td>
                       <td class="text-center">
-                        <div class="du-skeleton h-[21px] w-14 rounded-full mx-auto"></div>
+                        <div class="du-skeleton h-5.25 w-14 rounded-full mx-auto"></div>
                       </td>
                     </tr>
                   }
@@ -213,11 +213,21 @@
               </table>
             </div>
           } @else {
+            <div class="flex items-center gap-2 mb-3">
+              <label class="du-label justify-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  class="du-checkbox du-checkbox-sm du-checkbox-primary"
+                  [checked]="productCatalogStore.showingInactive()"
+                  (change)="changeShowInactive($any($event.target).checked)"
+                />
+                <span class="du-label-text text-sm">Mostrar inactivos</span>
+              </label>
+            </div>
             <div class="min-w-0" data-keep-product-selected>
               <app-table-catalog-products
                 [quantityProducts]="15"
                 [manageProduct]="true"
-                [showDelete]="true"
                 (rowSelected)="setProductSelected($event)"
               />
             </div>

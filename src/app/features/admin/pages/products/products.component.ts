@@ -98,8 +98,6 @@ export class ProductsComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: false });
-
     this.productForm
       .get('status')
       ?.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
@@ -313,14 +311,14 @@ export class ProductsComponent implements OnInit {
         }),
       )
       .subscribe({
-        next: () => {
+        next: (createdProduct) => {
           this.#toastService.show({
             title: 'Producto creado',
             content: `El producto ${product.name} ha sido creado exitosamente.`,
             type: 'success',
           });
           this.onProductFormReset();
-          this.productCatalogStore.loadProductsCatalog({ showDelete: true, refresh: true });
+          this.productCatalogStore.addProductOnCatalog(createdProduct);
         },
         error: () => {
           this.#toastService.show({
@@ -344,5 +342,8 @@ export class ProductsComponent implements OnInit {
     } else {
       this.#createProduct(productData);
     }
+  }
+  changeShowInactive(value: boolean) {
+    this.productCatalogStore.setShowingInactive(value);
   }
 }

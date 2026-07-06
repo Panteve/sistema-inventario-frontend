@@ -1,5 +1,5 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { finalize, map } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -12,6 +12,7 @@ import {
 } from '../../../../shared/interfaces/expense.interface';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ExpenseService } from '../../service/expense.service';
+import { ExpenseNotificationService } from '../../service/expense-notification.service';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ViewExpenseComponent } from '../../layouts/view-expense/view-expense.component';
 import {
@@ -49,6 +50,7 @@ export class ExpenseListComponent implements OnInit {
   toastService = inject(ToastService);
   #route = inject(ActivatedRoute);
   #router = inject(Router);
+  #expenseNotification = inject(ExpenseNotificationService);
 
   readonly #today = new Date();
   readonly todayIso = toIsoDate(this.#today);
@@ -60,10 +62,7 @@ export class ExpenseListComponent implements OnInit {
 
   queryParams = signal<ParamsGetExpenses>(this.#buildDefaultParams());
 
-  viewModalOpen = toSignal(
-    this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
-    { initialValue: false },
-  );
+  viewModalOpen = signal<boolean>(false);
 
   skeletonArray = computed(() => Array.from({ length: this.queryParams().limit }));
 
@@ -72,10 +71,17 @@ export class ExpenseListComponent implements OnInit {
       | Expense
       | undefined;
     if (navExpense) {
-      this.expenseSelected.set(navExpense);
-      this.openViewModal();
-      this.loading.set(false);
+      this.openViewModal(navExpense);
     }
+
+    effect(() => {
+      const expense = this.#expenseNotification.expenseCreated();
+      if (expense) {
+        this.openViewModal(expense);
+        this.applyFilters();
+        this.#expenseNotification.clearNotification();
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -234,12 +240,16 @@ export class ExpenseListComponent implements OnInit {
           this.expenses.set(response.data);
           this.pagination.set(response.pagination);
           if (this.#route.snapshot.queryParamMap.get('fromDashboard')) {
-            this.expenseSelected.set(
+            this.openViewModal(
               response.data.find(
                 (e) => e.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')),
               )!,
             );
-            this.openViewModal();
+            this.#router.navigate([], {
+              relativeTo: this.#route,
+              queryParams: { fromDashboard: null },
+              queryParamsHandling: 'merge',
+            });
           }
         },
         error: () => {
@@ -259,20 +269,12 @@ export class ExpenseListComponent implements OnInit {
     ]);
   }
 
-  openViewModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { viewModal: 'open', fromDashboard: null },
-      queryParamsHandling: 'merge',
-    });
+  openViewModal(expense: Expense) {
+    this.expenseSelected.set(expense);
+    this.viewModalOpen.set(true);
   }
 
   closeViewModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { viewModal: null },
-      queryParamsHandling: 'merge',
-    });
-    this.expenseSelected.set(null);
+    this.viewModalOpen.set(false);
   }
 }

@@ -12,9 +12,9 @@ import { environment } from '../../../environments/environment';
 export class InventoryService {
   #http = inject(HttpClient);
 
-  loadInventory(isActive: boolean, officeId?: number) {
+  loadInventory(officeId?: number) {
     return this.#http.get<ProductOnInventoryResponse[]>(`${environment.apiUrl}/office-inventory/`, {
-      params: { officeId: officeId ? String(officeId) : 0, isActive: String(isActive) },
+      params: { officeId: officeId ? String(officeId) : 0, isActive: String(true) },
     });
   }
 

@@ -11,7 +11,7 @@
     } @else {
       <option [value]="0" disabled [selected]="value() === 0">Seleccione una sucursal</option>
     }
-    @for (office of officeStore.offices(); track office.id) {
+    @for (office of officeStore.officesEntities(); track office.id) {
       <option [value]="office.id" [selected]="office.id === value()">
         {{ office.name }}
       </option>

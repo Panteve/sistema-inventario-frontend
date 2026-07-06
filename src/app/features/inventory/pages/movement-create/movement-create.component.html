@@ -304,7 +304,6 @@
       @if (this.movementData().type === MOVEMENTYPE.IN) {
         <app-table-catalog-products
           [quantityProducts]="10"
-          [showDelete]="false"
           (rowSelected)="addProductCatalogToMovement($event)"
         ></app-table-catalog-products>
       } @else {

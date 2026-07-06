@@ -51,7 +51,6 @@ export class TableCatalogProducts {
   rowSelected = output<ProductCatalogResponse>();
   filteredProductsCountChanged = output<number>();
   manageProduct = input<boolean>(false);
-  showDelete = input<boolean>(false);
 
   productCatalogStore = inject(ProductCatalogStore);
   copPipe = inject(CopPipe);
@@ -153,7 +152,7 @@ export class TableCatalogProducts {
 
   loadProducts() {
     this.globalFilter.set('');
-    this.productCatalogStore.loadProductsCatalog({ showDelete: this.showDelete(), refresh: false });
+    this.productCatalogStore.loadProductsCatalog();
   }
   columns = computed(() => {
     const columns: ColumnDef<ProductCatalogResponse, any>[] = [

@@ -202,7 +202,7 @@ export class TableProducts {
   }
   loadProducts() {
     this.globalFilter.set('');
-    this.inventoryStore.loadProductsOnInventory(this.isActiveProducts());
+    this.inventoryStore.loadProductsOnInventory();
   }
 
   table = createAngularTable(() => ({

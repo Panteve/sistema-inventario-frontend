@@ -130,7 +130,7 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
   }
 
   table = createAngularTable(() => ({
-    data: this.paymentMethodStore.paymentMethods(),
+    data: this.paymentMethodStore.paymentMethodsEntities(),
     columns: [
       {
         header: 'Metodo de pago',

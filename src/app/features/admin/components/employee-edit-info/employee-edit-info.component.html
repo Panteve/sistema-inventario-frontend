@@ -42,7 +42,7 @@
       <legend class="du-fieldset-legend">Sucursal</legend>
       <select class="du-select du-select-bordered w-full" formControlName="officeId">
         @if (employeeForm.getRawValue().role !== 'ADMIN') {
-          @for (office of officeStore.offices(); track office.id) {
+          @for (office of officeStore.officesEntities(); track office.id) {
             <option [ngValue]="office.id">{{ office.name }}</option>
           }
         }

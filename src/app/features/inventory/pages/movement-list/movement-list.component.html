@@ -169,7 +169,7 @@
                 @for (movement of grouped.todayMovements; track movement.id) {
                   <article
                     class="rounded-2xl border border-base-content/10 bg-base-100 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-base-content/20 cursor-pointer"
-                    (click)="openViewModal(); movementSelected.set(movement)"
+                    (click)="openViewModal(movement)"
                   >
                     <div class="flex items-start justify-between gap-2 mb-3">
                       <span
@@ -268,7 +268,7 @@
                 @for (movement of grouped.olderMovements; track movement.id) {
                   <article
                     class="rounded-2xl border border-base-content/10 bg-base-100 p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md hover:border-base-content/20 cursor-pointer"
-                    (click)="openViewModal(); movementSelected.set(movement)"
+                    (click)="openViewModal(movement)"
                   >
                     <div class="flex items-start justify-between gap-2 mb-3">
                       <span

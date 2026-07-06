@@ -1,6 +1,7 @@
 import {
   patchState,
   signalStore,
+  type,
   withHooks,
   withMethods,
   withProps,
@@ -13,16 +14,21 @@ import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { OfficeService } from '../services/office.service';
 import { OfficeNameIdResponse } from '../interfaces/office.interface';
 import { ToastService } from '../services/toast.service';
+import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
 
 type OfficeState = {
-  offices: OfficeNameIdResponse[];
   loading: boolean;
 };
 
 const initialState: OfficeState = {
-  offices: [],
   loading: false,
 };
+
+const OfficeNameIdResponseConfig = entityConfig({
+  entity: type<OfficeNameIdResponse>(),
+  collection: 'offices',
+  selectId: (office) => office.id,
+});
 export const OfficeStore = signalStore(
   { providedIn: 'root' },
   withState(initialState),
@@ -31,6 +37,7 @@ export const OfficeStore = signalStore(
     officeService: inject(OfficeService),
     toastService: inject(ToastService),
   })),
+  withEntities(OfficeNameIdResponseConfig),
   withMethods(({ authStore, officeService, toastService, ...store }) => ({
     loadOffices: rxMethod<void>(
       pipe(
@@ -38,7 +45,7 @@ export const OfficeStore = signalStore(
         switchMap(() =>
           officeService.getNameOffices().pipe(
             tap((offices) => {
-              patchState(store, { offices });
+              patchState(store, setAllEntities(offices, OfficeNameIdResponseConfig));
             }),
             catchError((err) => {
               toastService.show({

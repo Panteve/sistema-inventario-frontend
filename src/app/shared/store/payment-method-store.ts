@@ -1,6 +1,7 @@
 import {
   patchState,
   signalStore,
+  type,
   withHooks,
   withMethods,
   withProps,
@@ -13,16 +14,21 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { PaymentMethodService } from '../services/payment-method.service';
+import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
 
 type PaymentMethodState = {
-  paymentMethods: PaymentMethodResponse[];
   loading: boolean;
 };
 
 const initialState: PaymentMethodState = {
-  paymentMethods: [],
   loading: false,
 };
+
+const PaymentMethodResponseConfig = entityConfig({
+  entity: type<PaymentMethodResponse>(),
+  collection: 'paymentMethods',
+  selectId: (paymentMethod) => paymentMethod.id,
+});
 
 export const PaymentMethodStore = signalStore(
   { providedIn: 'root' },
@@ -31,7 +37,7 @@ export const PaymentMethodStore = signalStore(
     paymentMethodService: inject(PaymentMethodService),
     toastService: inject(ToastService),
   })),
-
+  withEntities(PaymentMethodResponseConfig),
   withMethods(({ paymentMethodService, toastService, ...store }) => {
     const _loadPaymentMethodsTrigger = rxMethod<boolean>(
       pipe(
@@ -41,7 +47,7 @@ export const PaymentMethodStore = signalStore(
         switchMap((showDelete) =>
           paymentMethodService.loadPaymentMethods(showDelete).pipe(
             tap((paymentMethods) => {
-              patchState(store, { paymentMethods });
+              patchState(store, setAllEntities(paymentMethods, PaymentMethodResponseConfig));
             }),
             catchError((error) => {
               toastService.show({

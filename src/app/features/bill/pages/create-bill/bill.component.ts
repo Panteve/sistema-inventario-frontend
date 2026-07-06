@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { Router } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthStore } from '../../../../core/store/auth-store';
@@ -17,6 +24,7 @@ import { PaymentMethodResponse } from '../../../../shared/interfaces/paymentMeth
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AgregarCliente } from '../../layouts/add-customer/add-customer';
 import { CreateCustomerRequest } from '../../../../shared/interfaces/customer-interface';
+import { InventoryStore } from '../../../../shared/store/inventory-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -43,6 +51,7 @@ export class BillComponent {
 
   toastService = inject(ToastService);
   billService = inject(BillService);
+  inventoryStore = inject(InventoryStore);
   authStore = inject(AuthStore);
   router = inject(Router);
 
@@ -133,8 +142,7 @@ export class BillComponent {
       taxAmount: product.priceSelected * (product.taxpercentage / 100),
       quantity: 1,
     };
-    console.log(product)
-    console.log(productTo)
+
     if (!this.bill().products.some((p) => p.productId === productTo.productId)) {
       this.bill.update((bill) => ({
         ...bill,
@@ -203,10 +211,12 @@ export class BillComponent {
       this.loading.set(false);
       return;
     }
-
+    const cleanProducts = this.bill().products.map(
+      ({ name, taxPercentage, taxAmount, ...rest }) => rest,
+    );
     const cleanBill = {
       ...this.bill(),
-      products: this.bill().products.map(({ name, taxPercentage, taxAmount, ...rest }) => rest),
+      products: cleanProducts,
       customerId: this.customer()?.id ?? 0,
     };
     this.billService.createBill(cleanBill).subscribe({
@@ -214,6 +224,7 @@ export class BillComponent {
         this.router.navigate(['/view-bills/bill', billResponse.id], {
           state: { bill: billResponse },
         });
+        this.inventoryStore.modifyProductStock(cleanProducts);
         this.loading.set(false);
       },
       error: (error) => {

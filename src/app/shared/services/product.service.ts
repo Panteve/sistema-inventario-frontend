@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 import { CreateProductRequest, ProductCatalogResponse } from '../interfaces/product.interface';
@@ -9,7 +9,7 @@ import { CreateProductRequest, ProductCatalogResponse } from '../interfaces/prod
 export class ProductService {
   #http = inject(HttpClient);
 
-  loadProductsCatalog(showDeleted: boolean = false) {
+  loadProductsCatalog(showDeleted: boolean = true) {
     let queryParams = {};
     if (showDeleted) {
       queryParams = { showDeleted: true };
@@ -20,7 +20,7 @@ export class ProductService {
   }
 
   createProduct(product: CreateProductRequest) {
-    return this.#http.post<void>(`${environment.apiUrl}/products/product`, product);
+    return this.#http.post<ProductCatalogResponse>(`${environment.apiUrl}/products/product`, product);
   }
 
   updateProduct(id: number, product: Partial<CreateProductRequest>) {

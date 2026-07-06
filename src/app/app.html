@@ -16,27 +16,28 @@
       <router-outlet />
     </main>
 
-    @if(cashModalOpen()){
+    @if (cashModalOpen()) {
       <app-modal
-      [isOpen]="cashModalOpen()"
-      [ariaLabel]="'Apertura de caja'"
-      (close)="closeCashModal()"
-    >
-      <div class="w-4xl h-full">
-        <app-cash-register (closeModal)="closeCashModal()"></app-cash-register>
-      </div>
-    </app-modal>
+        [isOpen]="cashModalOpen()"
+        [ariaLabel]="'Apertura de caja'"
+        (close)="closeCashModal()"
+      >
+        <div class="w-4xl h-full">
+          <app-cash-register (closeModal)="closeCashModal()"></app-cash-register>
+        </div>
+      </app-modal>
     }
-    
-    <app-modal
-      [isOpen]="expenseModalOpen()"
-      [ariaLabel]="'Crear gasto'"
-      (close)="closeExpenseModal()"
-    >
-      <div class="w-xl">
-        <app-expense (closeModal)="closeExpenseModal()"></app-expense>
-      </div>
-    </app-modal>
+    @if (expenseModalOpen()) {
+      <app-modal
+        [isOpen]="expenseModalOpen()"
+        [ariaLabel]="'Crear gasto'"
+        (close)="closeExpenseModal()"
+      >
+        <div class="w-xl">
+          <app-expense (closeModal)="closeExpenseModal()"></app-expense>
+        </div>
+      </app-modal>
+    }
   </div>
   <div
     class="du-drawer-side du-is-drawer-close:overflow-visible drawer-scrollbar scrollbar-thumb-black"

@@ -15,7 +15,7 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
 export class PaymentContent {
   paymentMethodStore = inject(PaymentMethodStore);
   
-  paymentMethods = this.paymentMethodStore.paymentMethods;
+  paymentMethods = this.paymentMethodStore.paymentMethodsEntities;
   selectedMethod = signal<PaymentMethodResponse | null>(null);
   amountReceived = signal<number>(0);
 
@@ -40,7 +40,7 @@ export class PaymentContent {
 
   onPaymentMethodChange(event: Event) {
     const id = Number((event.target as HTMLSelectElement).value);
-    const method = this.paymentMethods().find((m) => m.id === id) ?? null;
+    const method = this.paymentMethods()[id] ?? null;
     this.selectedMethod.set(method);
     this.changeSelectedMethod.emit(method!);
   }

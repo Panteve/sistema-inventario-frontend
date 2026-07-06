@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { DatePipe } from '@angular/common';
 import {
   InventoryMovement,
@@ -7,8 +15,6 @@ import {
 } from '../../../../shared/interfaces/inventoryMovement.interface';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthStore } from '../../../../core/store/auth-store';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { map } from 'rxjs';
 import { ViewMovementComponent } from '../../layouts/view-movement/view-movement.component';
 import { FiltersComponent } from '../../../../shared/components/filters.component/filters.component';
 import {
@@ -22,6 +28,7 @@ import {
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
 import { MovementInventoryService } from '../../services/inventory-movement.service';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { finalize } from 'rxjs';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,10 +56,7 @@ export class MovementListComponent implements OnInit {
   movementSelected = signal<InventoryMovement | null>(null);
   filterPanelSticky = signal(false);
 
-  viewModalOpen = toSignal(
-    this.#route.queryParamMap.pipe(map((params) => params.get('viewModal') === 'open')),
-    { initialValue: false },
-  );
+  viewModalOpen = signal<boolean>(false);
   readonly groupedMovements = computed(() => {
     const todayMovements: InventoryMovement[] = [];
     const olderMovements: InventoryMovement[] = [];
@@ -73,24 +77,13 @@ export class MovementListComponent implements OnInit {
   });
 
   constructor() {
-    const navInventoryMovement = this.#router.currentNavigation()?.extras.state?.['inventoryMovement'] as
-      | InventoryMovement
-      | undefined;
+    const navInventoryMovement = this.#router.currentNavigation()?.extras.state?.[
+      'inventoryMovement'
+    ] as InventoryMovement | undefined;
     if (navInventoryMovement) {
-      this.movementSelected.set(navInventoryMovement);
-      this.openViewModal();
-      this.loading.set(false);
+      this.openViewModal(navInventoryMovement);
     }
-    effect(() => {
-      if (!this.loading() && this.#route.snapshot.queryParamMap.get('fromDashboard')) {
-        this.movementSelected.set(
-          this.movementList().find(
-            (m) => m.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')),
-          )!,
-        );
-        this.openViewModal();
-      }
-    });
+    effect(() => {});
   }
 
   ngOnInit(): void {
@@ -199,41 +192,43 @@ export class MovementListComponent implements OnInit {
 
   applyFilters() {
     this.loading.set(true);
-    this.movementInventoryService.getInventoryMovements(this.queryParams()).subscribe({
-      next: (response) => {
-        this.movementList.set(response.data);
-        this.pagination.set(response.pagination);
-        this.loading.set(false);
-      },
-      error: () => {
-        this.loading.set(false);
-        this.toastService.show({
-          title: 'Error',
-          content: 'Error al cargar los movimientos de inventario.',
-          type: 'error',
-        });
-      },
-    });
+    this.movementInventoryService
+      .getInventoryMovements(this.queryParams())
+      .pipe(finalize(() => this.loading.set(false)))
+      .subscribe({
+        next: (response) => {
+          this.movementList.set(response.data);
+          this.pagination.set(response.pagination);
+          if (this.#route.snapshot.queryParamMap.get('fromDashboard')) {
+            this.openViewModal(
+              this.movementList().find(
+                (m) => m.id === Number(this.#route.snapshot.queryParamMap.get('fromDashboard')),
+              )!,
+            );
+            this.#router.navigate([], {
+              relativeTo: this.#route,
+              queryParams: { fromDashboard: null },
+              queryParamsHandling: 'merge',
+            });
+          }
+        },
+        error: () => {
+          this.toastService.show({
+            title: 'Error',
+            content: 'Error al cargar los movimientos de inventario.',
+            type: 'error',
+          });
+        },
+      });
   }
 
-  setMovementSelected(movement: InventoryMovement) {
-    this.movementSelected.set(movement);
-  }
-
-  openViewModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { viewModal: 'open', fromDashboard: null },
-      queryParamsHandling: 'merge',
-    });
+  openViewModal(inventoryMovement: InventoryMovement) {
+    this.movementSelected.set(inventoryMovement);
+    this.viewModalOpen.set(true);
   }
 
   closeViewModal() {
-    this.#router.navigate([], {
-      relativeTo: this.#route,
-      queryParams: { viewModal: null },
-      queryParamsHandling: 'merge',
-    });
+    this.viewModalOpen.set(false);
     this.movementSelected.set(null);
   }
 }

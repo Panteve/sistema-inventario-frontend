@@ -41,7 +41,7 @@
                   @if (!authStore.cashRegisterIsOpen()) {
                     <option disabled selected>Seleccine una oficina</option>
                   }
-                  @for (office of officeStore.offices(); track office.id) {
+                  @for (office of officeStore.officesEntities(); track office.id) {
                     <option
                       [selected]="authStore.employee()?.officeId === office.id"
                       [value]="office.id"
@@ -295,10 +295,9 @@
                     <input
                       type="number"
                       min="1"
-                      max="50"
                       [value]="quantityProducts()"
                       (input)="changeQuantityProducts($event)"
-                      placeholder="Menor a 50"
+                      placeholder="10"
                       class="w-full text-sm"
                     />
                   </label>
@@ -314,14 +313,14 @@
                       <input
                         type="checkbox"
                         class="du-toggle du-toggle-sm"
-                        [checked]="isActiveProducts()"
+                        [checked]="inventoryStore.showingInactive()"
                         (change)="changeIsActive($event)"
                       />
                       <span class="text-sm">Activos</span>
                     </div>
                     <p class="text-[11px] opacity-50 mt-1">
                       {{
-                        isActiveProducts()
+                        inventoryStore.showingInactive()
                           ? 'Ocultando productos inactivos'
                           : 'Mostrando todos los productos'
                       }}
@@ -461,7 +460,6 @@
               [maxPriceFilter]="maxPriceFilter()"
               [selectedStockStatuses]="selectedStockStatuses()"
               [enableRowSelect]="true"
-              [isActiveProducts]="isActiveProducts()"
               (filteredProductsCountChanged)="updateVisibleProductsCount($event)"
               (rowSelected)="setSelectedProduct($event)"
             ></app-table-products>

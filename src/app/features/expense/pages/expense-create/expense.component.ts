@@ -1,17 +1,17 @@
 import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
-import { ExpenseStore } from '../../store/expense-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { ExpenseService } from '../../service/expense.service';
-import { Router } from '@angular/router';
+import { ExpenseNotificationService } from '../../service/expense-notification.service';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-expense',
   imports: [ReactiveFormsModule, CopMoneyInputDirective],
-  providers: [ExpenseStore],
+  providers: [],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css',
 })
@@ -19,6 +19,7 @@ export class ExpenseComponent {
   expenseService = inject(ExpenseService);
   authStore = inject(AuthStore);
   #router = inject(Router);
+  #expenseNotification = inject(ExpenseNotificationService);
 
   closeModal = output<void>();
   loading = signal<boolean>(false);
@@ -62,9 +63,13 @@ export class ExpenseComponent {
       next: (expenseResponse) => {
         this.loading.set(false);
         this.closeExpenseModal();
-        this.#router.navigate(['/expense-list'], {
-          state: { expense: expenseResponse },
-        });
+        if (this.#router.url.startsWith('/expense-list')) {
+          this.#expenseNotification.notifyExpenseCreated(expenseResponse);
+        } else {
+          this.#router.navigate(['/expense-list'], {
+            state: { expense: expenseResponse },
+          });
+        }
       },
     });
   }
