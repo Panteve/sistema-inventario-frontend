@@ -96,7 +96,10 @@ export class PaymentMethodComponent implements OnDestroy {
       ?.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef))
       .subscribe((value) => {
         if (value) {
-          if (this.paymentMethodSelected()?.status === true) {
+          if (
+            this.paymentMethodSelected()?.status === true ||
+            this.paymentMethodSelected() === null
+          ) {
             this.paymentMethodForm.get('name')?.enable({ emitEvent: false });
             this.paymentMethodForm.get('code')?.enable({ emitEvent: false });
             this.paymentMethodForm.get('affectsCash')?.enable({ emitEvent: false });
