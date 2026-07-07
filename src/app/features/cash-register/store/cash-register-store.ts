@@ -64,7 +64,7 @@ export const CashRegisterStore = signalStore(
             .openCashRegister({ initialAmount: data.initialAmount, officeId: data.officeId })
             .pipe(
               tap((response) => {
-                authStore.setCashRegister(response.office.id, response.office.name);
+                authStore.setCashRegister(response.office.id, response.office.name, response.id);
                 toastService.show({
                   title: 'Caja abierta exitosamente',
                   content: 'La caja ha sido abierta, feliz día.',

@@ -6,49 +6,6 @@
     (change)="customerPanelOpen.set($any($event.target).checked)"
   />
   <div class="du-drawer-content relative">
-    @if (!authStore.cashRegisterIsOpen()) {
-      <div
-        class="absolute inset-0 z-10 flex items-center justify-center bg-base-100/75 p-4 backdrop-blur-xs"
-      >
-        <div
-          class="w-full max-w-md rounded-4xl border border-accent/20 bg-base-100 p-6 shadow-2xl md:p-7"
-        >
-          <div class="mb-4 flex items-center gap-3">
-            <div
-              class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-accent/10 text-accent"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="22"
-                height="22"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <rect x="3" y="11" width="18" height="10" rx="2" />
-                <path d="M7 11V7a5 5 0 0 1 10 0v4" />
-              </svg>
-            </div>
-            <span class="du-badge du-badge-warning">Caja cerrada</span>
-          </div>
-
-          <h3 class="text-lg font-bold tracking-tight md:text-xl">Apertura requerida</h3>
-          <p class="mt-1 text-sm opacity-70">
-            Debes realizar primero la apertura de caja para continuar con la facturacion.
-          </p>
-
-          <div class="du-divider my-4"></div>
-
-          <div class="rounded-2xl border border-base-content/10 bg-base-200/70 p-3">
-            <p class="text-xs font-semibold uppercase tracking-wider opacity-50">Estado actual</p>
-            <p class="mt-1 text-sm font-medium">No hay una caja activa para esta sesion.</p>
-          </div>
-        </div>
-      </div>
-    }
     <div class="px-4 py-10 md:py-14">
       <div class="mx-auto max-w-7xl">
         <div class="lg:grid lg:grid-cols-[1fr_400px] lg:gap-6">

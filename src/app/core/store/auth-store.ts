@@ -127,10 +127,10 @@ export const AuthStore = signalStore(
         ),
       ),
     ),
-    setCashRegister(officeId: number, officeName: string) {
+    setCashRegister(officeId: number, officeName: string, cashRegisterId: number) {
       patchState(store, (state) => ({
         employee: state.employee
-          ? { ...state.employee, cashRegister: true, officeId, officeName }
+          ? { ...state.employee, cashRegister: cashRegisterId, officeId, officeName }
           : null,
         officeIdFromCashRegister: officeId,
       }));
@@ -144,7 +144,7 @@ export const AuthStore = signalStore(
         }));
       }
       patchState(store, (state) => ({
-        employee: state.employee ? { ...state.employee, cashRegister: false } : null,
+        employee: state.employee ? { ...state.employee, cashRegister: 0 } : null,
         officeIdFromCashRegister: null,
       }));
     },
