@@ -9,7 +9,7 @@ import {
   withState,
 } from '@ngrx/signals';
 import { PaymentMethodResponse } from '../interfaces/paymentMethod.interface';
-import { computed, inject, ValueSansProvider } from '@angular/core';
+import { computed, inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
