@@ -18,6 +18,10 @@ export class ExpenseService {
     return this.#http.post<Expense>(`${environment.apiUrl}/expenses`, expense);
   }
 
+  cancelExpense(id: number) {
+    return this.#http.delete<Expense>(`${environment.apiUrl}/expenses/${id}`);
+  }
+
   getExpenses(params: ParamsGetExpenses) {
     const queryParams: any = {
       startDate: params.startDate,

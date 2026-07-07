@@ -147,14 +147,31 @@
             <table class="du-table du-table-zebra du-table-sm md:du-table-md w-full">
               <thead class="bg-base-200/90">
                 <tr>
-                  <th scope="col" class="text-center text-xs font-semibold uppercase tracking-[0.14em]">ID</th>
-                  <th scope="col" class="text-center text-xs font-semibold uppercase tracking-[0.14em]">
+                  <th
+                    scope="col"
+                    class="text-center text-xs font-semibold uppercase tracking-[0.14em]"
+                  >
+                    ID
+                  </th>
+                  <th
+                    scope="col"
+                    class="text-center text-xs font-semibold uppercase tracking-[0.14em]"
+                  >
                     Fecha
                   </th>
-                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">Motivo</th>
-                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">Empleado</th>
-                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">Oficina</th>
-                  <th scope="col" class="text-right text-xs font-semibold uppercase tracking-[0.14em]">
+                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">
+                    Motivo
+                  </th>
+                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">
+                    Empleado
+                  </th>
+                  <th scope="col" class="text-xs font-semibold uppercase tracking-[0.14em]">
+                    Oficina
+                  </th>
+                  <th
+                    scope="col"
+                    class="text-right text-xs font-semibold uppercase tracking-[0.14em]"
+                  >
                     Monto
                   </th>
                 </tr>
@@ -267,7 +284,11 @@
 @if (viewModalOpen()) {
   <app-modal [isOpen]="viewModalOpen()" [ariaLabel]="'Ver gasto'" (close)="closeViewModal()">
     <div class="w-4xl h-full">
-      <app-view-expense [expenseSelected]="expenseSelected()" (navigateToCashRegister)="navigateToCashRegister()"></app-view-expense>
+      <app-view-expense
+        [expenseSelected]="expenseSelected()"
+        (navigateToCashRegister)="navigateToCashRegister()"
+        (expenseCancelled)="handleExpenseCancelled($event)"
+      ></app-view-expense>
     </div>
   </app-modal>
 }

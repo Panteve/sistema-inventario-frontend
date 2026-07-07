@@ -1,7 +1,15 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { finalize, map } from 'rxjs';
+import { finalize } from 'rxjs';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
@@ -13,7 +21,6 @@ import {
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ExpenseService } from '../../service/expense.service';
 import { ExpenseNotificationService } from '../../service/expense-notification.service';
-import { toSignal } from '@angular/core/rxjs-interop';
 import { ViewExpenseComponent } from '../../layouts/view-expense/view-expense.component';
 import {
   isIsoDate,
@@ -277,4 +284,16 @@ export class ExpenseListComponent implements OnInit {
   closeViewModal() {
     this.viewModalOpen.set(false);
   }
+
+  handleExpenseCancelled(expenseId: number) {
+    this.closeViewModal();
+
+    this.expenses.update((expenses) => expenses.filter((e) => e.id !== expenseId));
+    this.pagination.update((pagination) => ({
+      ...pagination,
+      totalItems: pagination.totalItems - 1,
+    }));
+  }
+
+  
 }
