@@ -1,9 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { EmployeeResponse } from '../../../../shared/interfaces/employee.interface';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { finalize } from 'rxjs';
+import { EmployeeStore } from '../../../../shared/store/employee-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -13,6 +22,7 @@ import { finalize } from 'rxjs';
 })
 export class EmployeeStatusToggleComponent {
   employeeService = inject(EmployeeService);
+  employeeStore = inject(EmployeeStore);
   toastService = inject(ToastService);
   authStore = inject(AuthStore);
 
@@ -61,12 +71,21 @@ export class EmployeeStatusToggleComponent {
             type: 'success',
           });
           this.employeeChanged.emit({ ...employee, status: !employee.status });
+          if (employee.status) {
+            this.employeeStore.deleteEmployee(employee.id);
+          } else {
+            this.employeeStore.addEmployee({
+              id: employee.id,
+              name: employee.name,
+              office: { id: employee.office?.id! },
+            });
+          }
           this.close.emit();
         },
         error: () => {
           this.toastService.show({
             title: 'Error',
-            content: `No se pudo ${action} al empleado.`,
+            content: `El empleado ${employee.name} no pudo ser ${action}.`,
             type: 'error',
           });
         },

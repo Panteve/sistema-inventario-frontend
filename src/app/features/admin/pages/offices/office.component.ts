@@ -27,6 +27,7 @@ import {
 import { DatePipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { OfficeStore } from '../../../../shared/store/office-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -38,6 +39,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 export class OfficeComponent implements OnInit {
   officeService = inject(OfficeService);
   toastService = inject(ToastService);
+  officeStore = inject(OfficeStore);
   #datePipe = inject(DatePipe);
   #destroyRef = inject(DestroyRef);
 
@@ -323,6 +325,9 @@ export class OfficeComponent implements OnInit {
           this.offices.update((offices) =>
             offices.map((o) => (o.id === office.id ? { ...o, ...response } : o)),
           );
+          if (payload.name) {
+            this.officeStore.updateOffice(office.id, payload.name);
+          }
           this.clearForm();
         },
         error: () => {
@@ -347,6 +352,7 @@ export class OfficeComponent implements OnInit {
           });
           this.clearForm();
           this.offices.update((offices) => [...offices, response]);
+          this.officeStore.addOffice({ id: response.id, name: response.name });
         },
         error: () => {
           this.toastService.show({

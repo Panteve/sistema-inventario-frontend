@@ -14,7 +14,13 @@ import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { OfficeService } from '../services/office.service';
 import { OfficeNameIdResponse } from '../interfaces/office.interface';
 import { ToastService } from '../services/toast.service';
-import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
+import {
+  addEntity,
+  entityConfig,
+  setAllEntities,
+  updateEntity,
+  withEntities,
+} from '@ngrx/signals/entities';
 
 type OfficeState = {
   loading: boolean;
@@ -62,6 +68,15 @@ export const OfficeStore = signalStore(
         ),
       ),
     ),
+    addOffice(office: OfficeNameIdResponse) {
+      patchState(store, addEntity(office, OfficeNameIdResponseConfig));
+    },
+    updateOffice(officeId: number, officeName: string) {
+      patchState(
+        store,
+        updateEntity({ id: officeId, changes: { name: officeName } }, OfficeNameIdResponseConfig),
+      );
+    },
   })),
   withHooks({
     onInit(store) {

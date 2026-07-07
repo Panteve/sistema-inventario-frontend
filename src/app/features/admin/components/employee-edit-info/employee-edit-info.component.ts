@@ -6,6 +6,7 @@ import { ToastService } from '../../../../shared/services/toast.service';
 import { OfficeStore } from '../../../../shared/store/office-store';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { finalize } from 'rxjs';
+import { EmployeeStore } from '../../../../shared/store/employee-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -15,6 +16,7 @@ import { finalize } from 'rxjs';
 })
 export class EmployeeEditInfoComponent {
   officeStore = inject(OfficeStore);
+  employeeStore = inject(EmployeeStore);
   employeeService = inject(EmployeeService);
   toastService = inject(ToastService);
   authStore = inject(AuthStore);
@@ -123,6 +125,12 @@ export class EmployeeEditInfoComponent {
           if (this.sameUser()) {
             this.authStore.checkSession();
           }
+          this.employeeStore.updateEmployee(updatedEmployee.id, {
+            name: updatedEmployee.name,
+            office: {
+              id: updatedEmployee.office?.id ?? 0,
+            },
+          });
           this.employeeChanged.emit(updatedEmployee);
           this.close.emit();
         },

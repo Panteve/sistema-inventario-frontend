@@ -22,13 +22,7 @@ export class PaymentMethodService {
   }
 
   loadPaymentMethods() {
-    let queryParams = {};
-    if (!this.#authStore.isAdmin()) {
-      queryParams = { showDeleted: false };
-    }
-    return this.#http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`, {
-      params: queryParams,
-    });
+    return this.#http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`);
   }
 
   updatePaymentMethod(id: number, payload: CreatePaymentMethodRequest) {

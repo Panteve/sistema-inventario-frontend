@@ -14,7 +14,14 @@ import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { EmployeesByOfficeResponse } from '../interfaces/employee.interface';
 import { EmployeeService } from '../services/employee.service';
 import { ToastService } from '../services/toast.service';
-import { addEntity, entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
+import {
+  addEntity,
+  entityConfig,
+  removeEntity,
+  setAllEntities,
+  updateEntity,
+  withEntities,
+} from '@ngrx/signals/entities';
 
 type EmployeeState = {
   selectedOfficeId: number;
@@ -45,7 +52,9 @@ export const EmployeeStore = signalStore(
       if (selectedOfficeId() === 0) {
         return employeesEntities();
       } else {
-        return employeesEntities().filter((e) => e.office?.id === selectedOfficeId() || e.office === null);
+        return employeesEntities().filter(
+          (e) => e.office?.id === selectedOfficeId() || e.office === null,
+        );
       }
     }),
   })),
@@ -80,7 +89,16 @@ export const EmployeeStore = signalStore(
     },
     addEmployee(employee: EmployeesByOfficeResponse) {
       patchState(store, addEntity(employee, EmployeesByOfficeResponseConfig));
-    }
+    },
+    updateEmployee(employeeId: number, employeeData: Partial<EmployeesByOfficeResponse>) {
+      patchState(
+        store,
+        updateEntity({ id: employeeId, changes: employeeData }, EmployeesByOfficeResponseConfig),
+      );
+    },
+    deleteEmployee(employeeId: number) {
+      patchState(store, removeEntity(employeeId, EmployeesByOfficeResponseConfig));
+    },
   })),
 
   withHooks({
