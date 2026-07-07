@@ -5,12 +5,14 @@ import {
   PaymentMethodResponse,
 } from '../interfaces/paymentMethod.interface';
 import { environment } from '../../../environments/environment';
+import { AuthStore } from '../../core/store/auth-store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentMethodService {
   #http = inject(HttpClient);
+  #authStore = inject(AuthStore);
 
   createPaymentMethod(payload: CreatePaymentMethodRequest) {
     return this.#http.post<PaymentMethodResponse>(
@@ -19,10 +21,10 @@ export class PaymentMethodService {
     );
   }
 
-  loadPaymentMethods(showDeleted: boolean) {
+  loadPaymentMethods() {
     let queryParams = {};
-    if (showDeleted) {
-      queryParams = { showDeleted: true };
+    if (!this.#authStore.isAdmin()) {
+      queryParams = { showDeleted: false };
     }
     return this.#http.get<PaymentMethodResponse[]>(`${environment.apiUrl}/payment-method`, {
       params: queryParams,

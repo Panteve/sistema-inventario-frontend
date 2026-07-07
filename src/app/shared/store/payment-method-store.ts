@@ -2,31 +2,40 @@ import {
   patchState,
   signalStore,
   type,
+  withComputed,
   withHooks,
   withMethods,
   withProps,
   withState,
 } from '@ngrx/signals';
 import { PaymentMethodResponse } from '../interfaces/paymentMethod.interface';
-import { inject } from '@angular/core';
+import { computed, inject, ValueSansProvider } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ToastService } from '../services/toast.service';
 import { PaymentMethodService } from '../services/payment-method.service';
-import { entityConfig, setAllEntities, withEntities } from '@ngrx/signals/entities';
+import {
+  entityConfig,
+  setAllEntities,
+  withEntities,
+  updateEntity,
+  prependEntity,
+} from '@ngrx/signals/entities';
 
 type PaymentMethodState = {
+  showingInactive: boolean;
   loading: boolean;
 };
 
 const initialState: PaymentMethodState = {
+  showingInactive: false,
   loading: false,
 };
 
 const PaymentMethodResponseConfig = entityConfig({
   entity: type<PaymentMethodResponse>(),
-  collection: 'paymentMethods',
+  collection: '_paymentMethods',
   selectId: (paymentMethod) => paymentMethod.id,
 });
 
@@ -38,14 +47,22 @@ export const PaymentMethodStore = signalStore(
     toastService: inject(ToastService),
   })),
   withEntities(PaymentMethodResponseConfig),
-  withMethods(({ paymentMethodService, toastService, ...store }) => {
-    const _loadPaymentMethodsTrigger = rxMethod<boolean>(
+  withComputed(({ _paymentMethodsEntities, showingInactive }) => ({
+    paymentMethods: computed(() => {
+      if (showingInactive()) {
+        return _paymentMethodsEntities().filter((pm) => !pm.status);
+      }
+      return _paymentMethodsEntities().filter((pm) => pm.status);
+    }),
+  })),
+  withMethods(({ paymentMethodService, toastService, ...store }) => ({
+    loadPaymentMethods: rxMethod<void>(
       pipe(
         tap(() => {
           patchState(store, { loading: true });
         }),
-        switchMap((showDelete) =>
-          paymentMethodService.loadPaymentMethods(showDelete).pipe(
+        switchMap(() =>
+          paymentMethodService.loadPaymentMethods().pipe(
             tap((paymentMethods) => {
               patchState(store, setAllEntities(paymentMethods, PaymentMethodResponseConfig));
             }),
@@ -61,13 +78,26 @@ export const PaymentMethodStore = signalStore(
           ),
         ),
       ),
-    );
-    return {
-      loadPaymentMethods(showDelete = false) {
-        _loadPaymentMethodsTrigger(showDelete);
-      },
-    };
-  }),
+    ),
+    setShowingInactive(showingInactive: boolean) {
+      patchState(store, { showingInactive });
+    },
+    changePaymentMethodOnCatalog(paymentMethod: PaymentMethodResponse) {
+      patchState(
+        store,
+        updateEntity(
+          {
+            id: paymentMethod.id,
+            changes: { ...paymentMethod },
+          },
+          PaymentMethodResponseConfig,
+        ),
+      );
+    },
+    addPaymentMethodOnCatalog(paymentMethod: PaymentMethodResponse) {
+      patchState(store, prependEntity(paymentMethod, PaymentMethodResponseConfig));
+    },
+  })),
   withHooks({
     onInit(store) {
       store.loadPaymentMethods();

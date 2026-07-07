@@ -6,7 +6,6 @@ import {
   effect,
   inject,
   OnDestroy,
-  OnInit,
   signal,
 } from '@angular/core';
 import { PaymentMethodStore } from '../../../../shared/store/payment-method-store';
@@ -34,7 +33,7 @@ import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
   imports: [FlexRenderDirective, ReactiveFormsModule],
   templateUrl: './payment-method.component.html',
 })
-export class PaymentMethodComponent implements OnDestroy, OnInit {
+export class PaymentMethodComponent implements OnDestroy {
   paymentMethodStore = inject(PaymentMethodStore);
   paymentMethodService = inject(PaymentMethodService);
   toastService = inject(ToastService);
@@ -118,19 +117,21 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
         }
       });
   }
-  ngOnInit(): void {
-    this.paymentMethodStore.loadPaymentMethods(true);
-  }
   ngOnDestroy(): void {
-    this.paymentMethodStore.loadPaymentMethods(false);
+    this.paymentMethodStore.setShowingInactive(false);
   }
+
   loadPaymentMethods() {
     this.globalFilter.set('');
-    this.paymentMethodStore.loadPaymentMethods(true);
+    this.paymentMethodStore.loadPaymentMethods();
+  }
+
+  changeShowInactive(value: boolean) {
+    this.paymentMethodStore.setShowingInactive(value);
   }
 
   table = createAngularTable(() => ({
-    data: this.paymentMethodStore.paymentMethodsEntities(),
+    data: this.paymentMethodStore.paymentMethods(),
     columns: [
       {
         header: 'Metodo de pago',
@@ -219,18 +220,20 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
         next: () => {
+          const action = paymentMethod.status ? 'activado' : 'desactivado';
           this.toastService.show({
-            title: 'Método de pago desactivado',
-            content: 'El método de pago ha sido desactivado exitosamente.',
+            title: `Método de pago ${action}`,
+            content: `El método de pago ha sido ${action} exitosamente.`,
             type: 'success',
           });
-          this.loadPaymentMethods();
+          this.paymentMethodStore.changePaymentMethodOnCatalog(paymentMethod);
           this.clearForm();
         },
         error: () => {
+          const action = paymentMethod.status ? 'activar' : 'desactivar';
           this.toastService.show({
-            title: 'Error al desactivar método de pago',
-            content: 'No se pudo desactivar el método de pago. Inténtalo de nuevo.',
+            title: `Error al ${action} método de pago`,
+            content: `No se pudo ${action} el método de pago. Inténtalo de nuevo.`,
             type: 'error',
           });
         },
@@ -260,8 +263,8 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
             content: `El método de pago ${paymentMethod.name} ha sido actualizado exitosamente.`,
             type: 'success',
           });
+          this.paymentMethodStore.changePaymentMethodOnCatalog(paymentMethod);
           this.clearForm();
-          this.loadPaymentMethods();
         },
         error: () => {
           this.toastService.show({
@@ -278,14 +281,14 @@ export class PaymentMethodComponent implements OnDestroy, OnInit {
       .createPaymentMethod(paymentMethod)
       .pipe(finalize(() => this.loading.set(false)))
       .subscribe({
-        next: () => {
+        next: (created) => {
           this.toastService.show({
             title: 'Método de pago creado',
             content: 'El método de pago ha sido creado exitosamente.',
             type: 'success',
           });
+          this.paymentMethodStore.addPaymentMethodOnCatalog(created);
           this.clearForm();
-          this.loadPaymentMethods();
         },
         error: () => {
           this.toastService.show({

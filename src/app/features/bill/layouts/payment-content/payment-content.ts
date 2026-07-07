@@ -15,7 +15,7 @@ import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-
 export class PaymentContent {
   paymentMethodStore = inject(PaymentMethodStore);
   
-  paymentMethods = this.paymentMethodStore.paymentMethodsEntities;
+  paymentMethods = this.paymentMethodStore.paymentMethods;
   selectedMethod = signal<PaymentMethodResponse | null>(null);
   amountReceived = signal<number>(0);
 

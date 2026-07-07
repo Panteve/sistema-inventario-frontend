@@ -43,7 +43,7 @@
           <option value="" [selected]="filters().paymentMethodId === undefined">
             Todos los metodos
           </option>
-          @for (method of paymentMethodStore.paymentMethodsEntities(); track method.id) {
+          @for (method of paymentMethodStore.paymentMethods(); track method.id) {
             <option [value]="method.id" [selected]="method.id === filters().paymentMethodId">
               {{ method.name }}
             </option>

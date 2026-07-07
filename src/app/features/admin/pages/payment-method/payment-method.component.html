@@ -87,6 +87,17 @@
       >
         <div class="du-card-body p-4 md:p-6">
           <div class="min-w-0">
+            <div class="flex items-center gap-2 mb-3">
+              <label class="du-label justify-start gap-2 cursor-pointer">
+                <input
+                  type="checkbox"
+                  class="du-checkbox du-checkbox-sm du-checkbox-primary"
+                  [checked]="paymentMethodStore.showingInactive()"
+                  (change)="changeShowInactive($any($event.target).checked)"
+                />
+                <span class="du-label-text text-sm">Mostrar inactivos</span>
+              </label>
+            </div>
             <div class="flex gap-2">
               <label class="du-input du-input-bordered w-full min-w-0 mb-2 flex items-center gap-2">
                 <svg
