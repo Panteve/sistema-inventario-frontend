@@ -37,7 +37,7 @@
     <thead class="bg-base-200">
       <tr>
         @for (column of columns(); track $index) {
-          <th class="text-center">{{ column.header }}</th>
+          <th scope="col" class="text-center">{{ column.header }}</th>
         }
       </tr>
     </thead>

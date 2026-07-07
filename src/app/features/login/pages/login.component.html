@@ -5,7 +5,7 @@
       <header class="text-center mb-6 items-center justify-center flex flex-col gap-2">
         <h2 class="du-card-title justify-center text-2xl">Bienvenido</h2>
         <p class="text-sm opacity-70">Sistema de Inventario</p>
-        <img src="icons/Print.svg" loading="eager" fetchpriority=high class="w-3/5 h-3/5" />
+        <img src="icons/Print.svg" alt="Logo del sistema" loading="eager" fetchpriority=high class="w-3/5 h-3/5" />
       </header>
 
       <form (submit)="onSubmit($event)" class="space-y-5">
@@ -65,17 +65,16 @@
               class="grow"
               [formField]="loginForm.password"
               placeholder="Ingrese su contraseña"
-              title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
             />
           </label>
         </div>
         <!-- BUTTON -->
         @if (!this.authStore.loading()) {
-          <button class="du-btn du-btn-primary w-full mb-0">Login</button>
+          <button class="du-btn du-btn-primary w-full mb-0">Iniciar sesión</button>
         } @else {
           <button class="du-btn du-btn-primary w-full mb-0"disabled>
             <span class="du-loading du-loading-spinner"></span>
-            Loading
+            Iniciando sesión
           </button>
         }
       </form>
