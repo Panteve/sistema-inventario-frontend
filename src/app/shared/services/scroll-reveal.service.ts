@@ -7,6 +7,7 @@ export class ScrollRevealService {
   #staggerIo: IntersectionObserver | null = null;
   #cio: IntersectionObserver | null = null;
   #mo: MutationObserver | null = null;
+  #moRaf: number | null = null;
   #rm = false;
 
   constructor(
@@ -45,7 +46,7 @@ export class ScrollRevealService {
       });
     }
 
-    this.#mo = new MutationObserver(() => this.#onMutation());
+    this.#mo = new MutationObserver(() => this.#scheduleMutationHandler());
     this.#mo.observe(root, { childList: true, subtree: true });
   }
 
@@ -102,6 +103,14 @@ export class ScrollRevealService {
     root.querySelectorAll('[data-count]').forEach((el) => this.#cio!.observe(el));
   }
 
+  #scheduleMutationHandler() {
+    if (this.#moRaf !== null) return;
+    this.#moRaf = requestAnimationFrame(() => {
+      this.#moRaf = null;
+      this.#onMutation();
+    });
+  }
+
   #onMutation() {
     if (!this.#io || !this.#staggerIo) return;
 
@@ -116,6 +125,7 @@ export class ScrollRevealService {
   }
 
   #cleanup() {
+    if (this.#moRaf !== null) cancelAnimationFrame(this.#moRaf);
     this.#io?.disconnect();
     this.#staggerIo?.disconnect();
     this.#cio?.disconnect();

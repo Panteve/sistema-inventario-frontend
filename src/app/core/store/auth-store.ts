@@ -13,6 +13,7 @@ import { Router } from '@angular/router';
 import type { Employee } from '../../shared/interfaces/Auth.interface';
 import { catchError, EMPTY, finalize, pipe, switchMap, tap } from 'rxjs';
 import { ToastService } from '../../shared/services/toast.service';
+import { ElectronApiService } from '../services/electron-api.service';
 
 type AuthState = {
   employee: Employee | null;
@@ -33,13 +34,14 @@ export const AuthStore = signalStore(
     authService: inject(AuthService),
     router: inject(Router),
     toastService: inject(ToastService),
+    electronApi: inject(ElectronApiService),
   })),
   withComputed(({ employee }) => ({
     cashRegisterIsOpen: computed(() => employee()?.cashRegister),
     isAdmin: computed(() => employee()?.role === 'ADMIN'),
     isAuthenticated: computed(() => !!employee()),
   })),
-  withMethods(({ authService, router, toastService, ...store }) => ({
+  withMethods(({ authService, router, toastService, electronApi, ...store }) => ({
     login: rxMethod<{ document: string; password: string }>(
       pipe(
         tap(() => {
@@ -48,7 +50,7 @@ export const AuthStore = signalStore(
         switchMap(({ document, password }) =>
           authService.login(document, password).pipe(
             tap(({ user, access_token }) => {
-              window.electronAPI.saveToken(access_token);
+              electronApi.saveToken(access_token);
               patchState(store, {
                 employee: user,
                 officeIdFromCashRegister: user.officeId ?? null,
@@ -74,7 +76,7 @@ export const AuthStore = signalStore(
     ),
 
     async logout() {
-      await window.electronAPI.deleteToken();
+      await electronApi.deleteToken();
       try {
         localStorage.removeItem('billFilters');
         localStorage.removeItem('cashRegisterFilters');
@@ -86,7 +88,7 @@ export const AuthStore = signalStore(
     },
 
     async getToken() {
-      return await window.electronAPI.getToken();
+      return await electronApi.getToken();
     },
     resetOfficeIdFromCashRegister() {
       const officeIdFromCashRegister = store.officeIdFromCashRegister() ?? undefined;

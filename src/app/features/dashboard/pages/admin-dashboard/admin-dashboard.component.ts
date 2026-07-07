@@ -1,7 +1,7 @@
 import { DatePipe, SlicePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, inject, OnDestroy, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { catchError, EMPTY, finalize, forkJoin, switchMap, tap } from 'rxjs';
 import {
   AreaChartData,
   BarChartData,
@@ -18,6 +18,7 @@ import { AdminDashboardFiltersComponent } from '../../components/admin-dashboard
 import { AdminDashboardAreaChartComponent } from '../../components/admin-dashboard-area-chart.component/admin-dashboard-area-chart.component';
 import { AdminDashboardBarChartComponent } from '../../components/admin-dashboard-bar-chart.component/admin-dashboard-bar-chart.component';
 import { AdminDashboardPieChartComponent } from '../../components/admin-dashboard-pie-chart.component/admin-dashboard-pie-chart.component';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -57,7 +58,7 @@ export class AdminDashboardComponent implements OnDestroy {
     totalExpenses: { current: 0, previous: 0, diff: 0, diffPercentage: 0 },
     activeOffices: 0,
     activeCashRegisters: [],
-  });
+  })
   dashboardProducts = signal<DashboardTables>({
     topSellingProductsByQuantity: [],
     topSellingProductsByRevenue: [],
@@ -83,49 +84,46 @@ export class AdminDashboardComponent implements OnDestroy {
     this.loadingCharts.set(true);
     this.#dashboardService
       .getDashboardSummary(filters)
-      .pipe(finalize(() => this.loadingSummary.set(false)))
-      .subscribe({
-        next: (response) => {
-          this.dashboardSummary.set(response);
+      .pipe(
+        tap((response) => this.dashboardSummary.set(response)),
+        finalize(() => this.loadingSummary.set(false)),
+        switchMap((response) => {
           if (changeJustPaymentMethod) {
-            return;
+            this.loadingProducts.set(false);
+            this.loadingCharts.set(false);
+            return EMPTY;
           }
-          this.#dashboardService
-            .getDashboardTables(filters)
-            .pipe(finalize(() => this.loadingProducts.set(false)))
-            .subscribe({
-              next: (products) => {
-                this.dashboardProducts.set(products);
-                this.#animateProgressBars();
-                this.#dashboardService
-                  .getDashboardCharts(filters)
-                  .pipe(
-                    finalize(() => {
-                      this.loadingCharts.set(false);
-                    }),
-                  )
-                  .subscribe({
-                    next: (charts) => {
-                      this.#dashboardChartsData.set(charts);
-                      this.#updateBarChartData();
-                      this.areaChartData.set(charts.salesByHour);
-                      this.pieChartData.set(charts.paymentMethodDistribution);
-                    },
-                  });
-              },
-            });
-        },
-        error: () => {
+          return forkJoin({
+            tables: this.#dashboardService.getDashboardTables(filters),
+            charts: this.#dashboardService.getDashboardCharts(filters),
+          }).pipe(
+            tap(({ tables, charts }) => {
+              this.dashboardProducts.set(tables);
+              this.#animateProgressBars();
+              this.#dashboardChartsData.set(charts);
+              this.#updateBarChartData();
+              this.areaChartData.set(charts.salesByHour);
+              this.pieChartData.set(charts.paymentMethodDistribution);
+            }),
+            finalize(() => {
+              this.loadingProducts.set(false);
+              this.loadingCharts.set(false);
+            }),
+          );
+        }),
+        catchError(() => {
           this.loadingProducts.set(false);
           this.loadingSummary.set(false);
           this.loadingCharts.set(false);
           this.#toastService.show({
             title: 'Error',
-            content: 'Error al obtener el resumen del dashboard. Por favor, inténtalo de nuevo.',
+            content: 'Error al obtener datos del dashboard. Por favor, inténtalo de nuevo.',
             type: 'error',
           });
-        },
-      });
+          return EMPTY;
+        }),
+      )
+      .subscribe();
   }
 
   ngOnDestroy(): void {

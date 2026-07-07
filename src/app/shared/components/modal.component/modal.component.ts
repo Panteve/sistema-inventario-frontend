@@ -3,7 +3,6 @@ import {
   Component,
   effect,
   ElementRef,
-  HostListener,
   input,
   output,
   viewChild,
@@ -11,6 +10,10 @@ import {
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:keydown.escape)': 'handleEscape()',
+    '(keydown)': 'trapFocus($event)',
+  },
   selector: 'app-modal',
   imports: [],
   templateUrl: './modal.component.html',
@@ -39,14 +42,12 @@ export class ModalComponent {
     });
   }
 
-  @HostListener('document:keydown.escape')
   handleEscape() {
     if (this.isOpen()) {
       this.close.emit();
     }
   }
 
-  @HostListener('keydown', ['$event'])
   trapFocus(event: KeyboardEvent) {
     if (event.key !== 'Tab') return;
     const el = this.dialogEl()?.nativeElement;

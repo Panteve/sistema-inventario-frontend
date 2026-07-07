@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  HostListener,
   inject,
   OnInit,
   signal,
@@ -20,6 +19,9 @@ import { InventoryStore } from './shared/store/inventory-store';
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:mousemove)': 'onMouseMove($event)',
+  },
   imports: [
     RouterOutlet,
     Navbar,
@@ -41,6 +43,9 @@ export class App implements OnInit {
   cashModalOpen = signal<boolean>(false);
   expenseModalOpen = signal<boolean>(false);
   readonly #currentUrl = signal(this.router.url);
+
+  #rafId: number | null = null;
+  #lastMouseEvent: MouseEvent | null = null;
 
   openCashModal() {
     this.cashModalOpen.set(true);
@@ -93,15 +98,24 @@ export class App implements OnInit {
     this.authStore.logout();
   }
 
+  
+
   ngOnInit() {
     this.#scrollReveal.init();
   }
 
-  @HostListener('document:mousemove', ['$event'])
   onMouseMove(event: MouseEvent) {
-    const glow = document.getElementById('cursorGlow');
-    if (glow) {
-      glow.style.transform = `translate(${event.clientX - 300}px, ${event.clientY - 300}px)`;
-    }
+    this.#lastMouseEvent = event;
+    if (this.#rafId !== null) return;
+    this.#rafId = requestAnimationFrame(() => {
+      this.#rafId = null;
+      const evt = this.#lastMouseEvent;
+      this.#lastMouseEvent = null;
+      if (!evt) return;
+      const glow = document.getElementById('cursorGlow');
+      if (glow) {
+        glow.style.transform = `translate(${evt.clientX - 300}px, ${evt.clientY - 300}px)`;
+      }
+    });
   }
 }

@@ -1,6 +1,14 @@
-import { computed } from '@angular/core';
-import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
+import { computed, inject } from '@angular/core';
+import {
+  patchState,
+  signalStore,
+  withComputed,
+  withMethods,
+  withProps,
+  withState,
+} from '@ngrx/signals';
 import { DEFAULT_APP_THEME, THEMES, ThemeName } from '../../constants/theme.constants';
+import { ElectronApiService } from '../services/electron-api.service';
 
 type ThemeState = {
   theme: ThemeName;
@@ -16,15 +24,18 @@ export const ThemeStore = signalStore(
   withComputed(({ theme }) => ({
     isLightTheme: computed(() => theme() === THEMES.LIGHT),
   })),
-  withMethods((store) => ({
+  withProps(() => ({
+    electronApi: inject(ElectronApiService),
+  })),
+  withMethods(({ electronApi, ...store }) => ({
     setTheme(light: boolean) {
       const value: ThemeName = light ? THEMES.LIGHT : DEFAULT_APP_THEME;
       patchState(store, { theme: value });
       document.documentElement.setAttribute('data-theme', value);
-      window.electronAPI.saveTheme(value);
+      electronApi.saveTheme(value);
     },
     async init() {
-      const savedTheme = await window.electronAPI.getTheme();
+      const savedTheme = await electronApi.getTheme();
       this.setTheme(savedTheme ? savedTheme === THEMES.LIGHT : true);
     },
   })),
