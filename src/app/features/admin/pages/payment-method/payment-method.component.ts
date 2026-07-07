@@ -23,7 +23,7 @@ import {
   CreatePaymentMethodRequest,
   PaymentMethodResponse,
 } from '../../../../shared/interfaces/paymentMethod.interface';
-import { finalize } from 'rxjs';
+import { finalize, map } from 'rxjs';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 
@@ -64,9 +64,10 @@ export class PaymentMethodComponent implements OnDestroy {
     }),
   });
 
-  #formValue = toSignal(this.paymentMethodForm.valueChanges, {
-    initialValue: this.paymentMethodForm.getRawValue(),
-  });
+  #formValue = toSignal(
+    this.paymentMethodForm.valueChanges.pipe(map(() => this.paymentMethodForm.getRawValue())),
+    { initialValue: this.paymentMethodForm.getRawValue() },
+  );
   hasChanges = computed(() => {
     const selected = this.paymentMethodSelected();
     const formValue = this.#formValue();
@@ -108,15 +109,15 @@ export class PaymentMethodComponent implements OnDestroy {
           this.paymentMethodForm.get('name')?.disable({ emitEvent: false });
           this.paymentMethodForm
             .get('name')
-            ?.setValue(this.paymentMethodSelected()?.name ?? '', { emitEvent: false });
+            ?.setValue(this.paymentMethodSelected()?.name!, { emitEvent: false });
           this.paymentMethodForm.get('code')?.disable({ emitEvent: false });
           this.paymentMethodForm
             .get('code')
-            ?.setValue(this.paymentMethodSelected()?.code ?? '', { emitEvent: false });
+            ?.setValue(this.paymentMethodSelected()?.code!, { emitEvent: false });
           this.paymentMethodForm.get('affectsCash')?.disable({ emitEvent: false });
           this.paymentMethodForm
             .get('affectsCash')
-            ?.setValue(this.paymentMethodSelected()?.affectsCash ?? false, { emitEvent: false });
+            ?.setValue(this.paymentMethodSelected()?.affectsCash!, { emitEvent: false });
         }
       });
   }
@@ -207,14 +208,14 @@ export class PaymentMethodComponent implements OnDestroy {
   }
 
   clearForm() {
+    this.paymentMethodSelected.set(null);
+    this.methodExist.set(false);
     this.paymentMethodForm.reset({
       name: '',
       code: '',
       affectsCash: false,
       status: true,
     });
-    this.paymentMethodSelected.set(null);
-    this.methodExist.set(false);
   }
 
   #setStatus(paymentMethod: PaymentMethodResponse) {
