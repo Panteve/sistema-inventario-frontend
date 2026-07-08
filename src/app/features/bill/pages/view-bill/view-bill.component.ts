@@ -16,14 +16,14 @@ import { DatePipe } from '@angular/common';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
-import { FormsModule } from '@angular/forms';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
 
 type BreadcrumbItem = { label: string; path: string | null };
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-bill.component',
-  imports: [CopPipe, RouterLink, DatePipe, ModalComponent, FormsModule],
+  imports: [CopPipe, RouterLink, DatePipe, ModalComponent, ReactiveFormsModule],
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
@@ -97,7 +97,7 @@ export class ViewBillComponent implements OnInit {
   });
 
   showCancelModal = signal(false);
-  cancelReason = signal('');
+  cancelReason = new FormControl('');
 
   canCancel = computed(() => {
     const b = this.bill();
@@ -136,7 +136,7 @@ export class ViewBillComponent implements OnInit {
   }
 
   openCancelModal() {
-    this.cancelReason.set('');
+    this.cancelReason.setValue('');
     this.showCancelModal.set(true);
   }
 
@@ -146,9 +146,9 @@ export class ViewBillComponent implements OnInit {
 
   confirmCancel() {
     const b = this.bill();
-    const cancelReason = this.cancelReason().trim();
-    if (!b.id || !cancelReason) return;
 
+    if (!b.id || !this.cancelReason.value) return;
+    const cancelReason = this.cancelReason.value.trim();
     this.#billService.cancelBill({ id: b.id, cancelReason }).subscribe({
       next: () => {
         this.bill.update((bill) => ({
