@@ -60,10 +60,48 @@
       }
     </nav>
 
-    <div class="mb-4 flex justify-end px-1">
+    <div class="mb-4 flex justify-end gap-2 px-1">
       @if (loading()) {
         <span class="du-skeleton h-5 w-36 rounded-full"></span>
+        <span class="du-skeleton h-5 w-36 rounded-full"></span>
       } @else {
+        @if (bill().status) {
+          <span class="du-badge du-badge-success du-badge-md gap-1.5 px-2.5 py-2 text-white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="20 6 9 17 4 12" />
+            </svg>
+            Activa
+          </span>
+        } @else {
+          <span class="du-badge du-badge-error du-badge-md gap-1.5 px-2.5 py-2 text-white">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+            Anulada
+          </span>
+        }
+
         <span class="du-badge du-badge-outline du-badge-md gap-1.5 px-2.5 py-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -217,7 +255,10 @@
             </div>
           </article>
 
-          <article data-reveal="up" class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl">
+          <article
+            data-reveal="up"
+            class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl"
+          >
             <div class="du-card-body p-4 md:p-5">
               <div class="mb-3 flex items-center gap-2">
                 <div class="du-skeleton h-3 w-24 rounded-full"></div>
@@ -325,8 +366,41 @@
             </div>
           </article>
 
-          @if (canCancel()) {
-            <button class="du-btn du-btn-error du-btn-outline w-full" (click)="cancelBill()">
+          @if (!bill().status) {
+            <article
+              data-reveal="up"
+              class="du-card rounded-4xl border border-base-content/10 bg-base-100/95 shadow-xl"
+            >
+              <div class="du-card-body p-4 md:p-5">
+                <div
+                  class="flex items-center gap-2 mt-0.5 rounded-full bg-error/10 p-1.5 text-error"
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                  <span class="text-sm font-bold text-error">Factura anulada</span>
+                </div>
+                <div class="flex flex-col gap-0.5">
+                  <span class="text-xs">{{
+                    bill().cancelAt | date: 'dd MMM y | hh:mm a'
+                  }}</span>
+                  <p class="text-sm leading-relaxed ">{{ bill().cancelReason }}</p>
+                </div>
+              </div>
+            </article>
+          } @else if (canCancel()) {
+            <button class="du-btn du-btn-error du-btn-outline w-full" (click)="openCancelModal()">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -349,3 +423,33 @@
     </div>
   </div>
 </section>
+
+<app-modal
+  [isOpen]="showCancelModal()"
+  ariaLabel="Confirmar anulación de factura"
+  [showCloseButton]="true"
+  (close)="closeCancelModal()"
+>
+  <div class="flex flex-col gap-4" style="width: 400px; max-width: 100%">
+    <h2 class="text-lg font-bold tracking-tight">Anular factura #{{ bill().id }}</h2>
+    <p class="text-sm opacity-70">
+      Esta acción no se puede deshacer. Ingresa el motivo de la anulación.
+    </p>
+    <textarea
+      class="du-textarea du-textarea-bordered h-24 resize-none"
+      placeholder="Motivo de la anulación"
+      [(ngModel)]="cancelReason"
+      maxlength="250"
+    ></textarea>
+    <div class="flex justify-end gap-2">
+      <button class="du-btn du-btn-ghost" (click)="closeCancelModal()">Cancelar</button>
+      <button
+        class="du-btn du-btn-error"
+        [disabled]="!cancelReason().trim()"
+        (click)="confirmCancel()"
+      >
+        Anular factura
+      </button>
+    </div>
+  </div>
+</app-modal>

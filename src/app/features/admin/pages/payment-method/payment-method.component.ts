@@ -210,12 +210,7 @@ export class PaymentMethodComponent implements OnDestroy {
   clearForm() {
     this.paymentMethodSelected.set(null);
     this.methodExist.set(false);
-    this.paymentMethodForm.reset({
-      name: '',
-      code: '',
-      affectsCash: false,
-      status: true,
-    });
+    this.paymentMethodForm.reset();
   }
 
   #setStatus(paymentMethod: PaymentMethodResponse) {

@@ -260,13 +260,7 @@ export class OfficeComponent implements OnInit {
   }
 
   clearForm() {
-    this.officeForm.reset({
-      name: '',
-      address: '',
-      phone: '',
-      createdAt: '',
-      status: true,
-    });
+    this.officeForm.reset();
     this.officeSelected.set(null);
     this.officeExist.set(false);
   }

@@ -41,12 +41,12 @@ export class AgregarCliente {
   constructor() {
     effect(() => {
       if (this.customer()) {
-        this.customerForm.patchValue({
-          document: this.customer()?.document,
-          name: this.customer()?.name,
-          email: this.customer()?.email,
-          phone: this.customer()?.phone,
-          role: this.customer()?.role,
+        this.customerForm.setValue({
+          document: this.customer()?.document!,
+          name: this.customer()?.name!,
+          email: this.customer()?.email!,
+          phone: this.customer()?.phone!,
+          role: this.customer()?.role!,
         });
         this.customerForm.disable();
         this.customerForm.get('document')?.enable();

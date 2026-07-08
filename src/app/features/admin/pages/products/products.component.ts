@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { TableCatalogProducts } from '../../../../shared/layouts/table-catalog-products/table-catalog-products';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
@@ -157,9 +166,9 @@ export class ProductsComponent implements OnInit {
       return this.onProductFormReset();
     }
     this.productSelected.set(product);
-    const tax = product.taxPercentage;
-    const calc = (base: number) => Math.round(base * (1 + tax / 100));
-    this.productForm.patchValue({
+    const calc = (base: number) => Math.round(base * (1 + product.taxPercentage / 100));
+
+    this.productForm.setValue({
       id: product.id,
       name: product.name,
       description: product.description ?? '',
@@ -167,24 +176,14 @@ export class ProductsComponent implements OnInit {
       unitPriceCalculated: calc(product.unitPrice),
       wholesalePrice: product.wholesalePrice,
       wholesalePriceCalculated: calc(product.wholesalePrice),
-      taxPercentage: tax,
+      taxPercentage: product.taxPercentage,
       status: product.status,
     });
   }
 
   onProductFormReset(): void {
     this.productSelected.set(null);
-    this.productForm.reset({
-      id: 0,
-      name: '',
-      description: '',
-      unitPrice: 0,
-      unitPriceCalculated: 0,
-      wholesalePrice: 0,
-      wholesalePriceCalculated: 0,
-      taxPercentage: 0,
-      status: true,
-    });
+    this.productForm.reset();
   }
 
   #setupPriceSync() {
@@ -195,7 +194,8 @@ export class ProductsComponent implements OnInit {
     const wholeCalcCtrl = this.productForm.get('wholesalePriceCalculated')!;
 
     const calcFromBase = (base: number, tax: number) => Math.round(base * (1 + tax / 100));
-    const calcBase = (total: number, tax: number) => (tax > 0 ? Math.round(total / (1 + tax / 100)) : 0);
+    const calcBase = (total: number, tax: number) =>
+      tax > 0 ? Math.round(total / (1 + tax / 100)) : 0;
 
     taxCtrl.valueChanges.pipe(takeUntilDestroyed(this.#destroyRef)).subscribe((tax) => {
       if (this.#syncing) return;
@@ -332,7 +332,8 @@ export class ProductsComponent implements OnInit {
 
   onSubmit() {
     this.loading.set(true);
-    const productData = this.productForm.getRawValue() as ProductCatalogResponse;
+    const product = this.productForm.getRawValue();
+    const { unitPriceCalculated, wholesalePriceCalculated, ...productData } = product;
     if (this.productExist()) {
       if (productData.status !== this.productSelected()?.status) {
         this.#setStatus(productData);

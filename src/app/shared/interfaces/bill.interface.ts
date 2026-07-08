@@ -95,9 +95,11 @@ export interface BillResponse {
     phone: string;
   };
   payments: { paymentMethodName: string }[];
+  cancelReason?: string;
+  cancelAt?: string;
 }
 
 export interface BillCancelRequest{
   id: number;
-  reason: string;
+  cancelReason: string;
 }

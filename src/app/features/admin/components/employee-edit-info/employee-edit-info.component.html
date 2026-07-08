@@ -19,10 +19,7 @@
     </fieldset>
     <fieldset class="du-fieldset">
       <legend class="du-fieldset-legend">Documento</legend>
-      <input type="text" class="du-input du-input-bordered w-full" formControlName="document" placeholder="Ej: 123456789" />
-      @if (employeeForm.get('document')?.invalid && employeeForm.get('document')?.touched) {
-        <span class="mt-0.5 text-xs font-medium text-error">El documento es obligatorio y debe tener al menos 8 caracteres.</span>
-      }
+      <input type="text" class="du-input du-input-bordered w-full" disabled [value]="selectedEmployee().document" />
     </fieldset>
     <fieldset class="du-fieldset">
       <legend class="du-fieldset-legend">Correo</legend>

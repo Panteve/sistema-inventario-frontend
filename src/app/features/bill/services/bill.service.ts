@@ -47,6 +47,6 @@ export class BillService {
   }
 
   cancelBill(data: BillCancelRequest) {
-    return this.#http.patch<BillResponse>(`${environment.apiUrl}/bills`, data);
+    return this.#http.patch<BillResponse>(`${environment.apiUrl}/bills/delete`, data);
   }
 }

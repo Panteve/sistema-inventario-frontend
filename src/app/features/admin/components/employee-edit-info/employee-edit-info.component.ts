@@ -1,6 +1,18 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { EmployeeResponse, UpdateEmployeeRequest } from '../../../../shared/interfaces/employee.interface';
+import {
+  EmployeeResponse,
+  UpdateEmployeeRequest,
+} from '../../../../shared/interfaces/employee.interface';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import { ToastService } from '../../../../shared/services/toast.service';
 import { OfficeStore } from '../../../../shared/store/office-store';
@@ -27,12 +39,9 @@ export class EmployeeEditInfoComponent {
   close = output<void>();
 
   isLoading = signal(false);
-  sameUser = computed(() => this.selectedEmployee().id === this.authStore.employee()?.id);
+  sameUser = computed(() => this.selectedEmployee().document === this.authStore.employee()?.document);
 
   constructor() {
-    effect(() => {
-      this.employeeForm.get('document')?.disable();
-    });
     effect(() => {
       if (this.sameUser()) {
         this.employeeForm.get('role')?.disable();
@@ -42,9 +51,8 @@ export class EmployeeEditInfoComponent {
     });
     effect(() => {
       const emp = this.selectedEmployee();
-      this.employeeForm.reset({
-        document: emp.document,
-        email: emp.email,
+      this.employeeForm.setValue({
+      email: emp.email,
         name: emp.name,
         phone: emp.phone,
         officeId: emp.office?.id ?? 1,
@@ -57,10 +65,6 @@ export class EmployeeEditInfoComponent {
     name: new FormControl<string>('', {
       nonNullable: true,
       validators: [Validators.required, Validators.minLength(3)],
-    }),
-    document: new FormControl<string>('', {
-      nonNullable: true,
-      validators: [Validators.required, Validators.minLength(8)],
     }),
     email: new FormControl<string>('', {
       nonNullable: true,

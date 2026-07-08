@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { BillService } from '../../services/bill.service';
 import { BillResponse } from '../../../../shared/interfaces/bill.interface';
 import { finalize } from 'rxjs';
@@ -7,13 +15,15 @@ import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
 import { AuthStore } from '../../../../core/store/auth-store';
 import { ToastService } from '../../../../shared/services/toast.service';
+import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
+import { FormsModule } from '@angular/forms';
 
 type BreadcrumbItem = { label: string; path: string | null };
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-view-bill.component',
-  imports: [CopPipe, RouterLink, DatePipe],
+  imports: [CopPipe, RouterLink, DatePipe, ModalComponent, FormsModule],
   templateUrl: './view-bill.component.html',
 })
 export class ViewBillComponent implements OnInit {
@@ -86,6 +96,16 @@ export class ViewBillComponent implements OnInit {
     payments: [],
   });
 
+  showCancelModal = signal(false);
+  cancelReason = signal('');
+
+  canCancel = computed(() => {
+    const b = this.bill();
+    const employee = this.#authStore.employee();
+    if (!b.id || !b.status || !employee) return false;
+    return b.cashRegister.id === employee.cashRegister;
+  });
+
   constructor() {
     const navBill = this.#router.currentNavigation()?.extras.state?.['bill'] as
       | BillResponse
@@ -114,20 +134,31 @@ export class ViewBillComponent implements OnInit {
         },
       });
   }
-  canCancel = computed(() => {
-    const b = this.bill();
-    const employee = this.#authStore.employee();
-    if (!b.id || !b.status || !employee) return false;
-    return b.cashRegister.id === employee.cashRegister;
-  });
 
-  cancelBill() {
-    const b = this.bill();
-    if (!b.id) return;
+  openCancelModal() {
+    this.cancelReason.set('');
+    this.showCancelModal.set(true);
+  }
 
-    this.#billService.cancelBill(b.id).subscribe({
+  closeCancelModal() {
+    this.showCancelModal.set(false);
+  }
+
+  confirmCancel() {
+    const b = this.bill();
+    const cancelReason = this.cancelReason().trim();
+    if (!b.id || !cancelReason) return;
+
+    this.#billService.cancelBill({ id: b.id, cancelReason }).subscribe({
       next: () => {
-        this.bill.update((bill) => ({ ...bill, status: false }));
+        this.bill.update((bill) => ({
+          ...bill,
+          status: false,
+          cancelReason,
+          cancelAt: new Date().toISOString(),
+        }));
+        // A decision de la persona actualizar el inventario a mano
+        this.showCancelModal.set(false);
         this.#toastService.show({
           content: 'Factura anulada correctamente.',
           type: 'success',
