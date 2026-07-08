@@ -25,7 +25,7 @@ import {
 import { toObservable } from '@angular/core/rxjs-interop';
 import { ToastService } from '../services/toast.service';
 import { InventoryService } from '../services/inventory.service';
-import { entityConfig, setAllEntities, updateEntity, upsertEntity, withEntities } from '@ngrx/signals/entities';
+import { entityConfig, setAllEntities, updateEntity, withEntities } from '@ngrx/signals/entities';
 
 type InventoryState = {
   showingInactive: boolean;

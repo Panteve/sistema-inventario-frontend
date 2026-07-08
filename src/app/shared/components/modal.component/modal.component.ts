@@ -31,13 +31,17 @@ export class ModalComponent {
   constructor() {
     effect(() => {
       if (this.isOpen()) {
+        document.body.style.overflow = 'hidden';
         this.previousActiveElement = document.activeElement as HTMLElement;
         requestAnimationFrame(() => {
           this.focusFirstElement();
         });
-      } else if (this.previousActiveElement) {
-        this.previousActiveElement.focus();
-        this.previousActiveElement = null;
+      } else {
+        document.body.style.overflow = '';
+        if (this.previousActiveElement) {
+          this.previousActiveElement.focus();
+          this.previousActiveElement = null;
+        }
       }
     });
   }

@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { NgApexchartsModule } from 'ng-apexcharts';
-import { DashboardCharts, PieChartData } from '../../../../shared/interfaces/dashboard.interface';
+import { PieChartData } from '../../../../shared/interfaces/dashboard.interface';
 import { ChartOptions } from '../../types/chart-options.type';
 import {
   DASHBOARD_CHART_COLORS,
