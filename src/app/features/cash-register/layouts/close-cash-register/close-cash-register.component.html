@@ -215,6 +215,7 @@
       class="du-input du-input-accent flex min-h-12 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 text-xl shadow-sm"
     >
       <input
+        #amountInputRef
         type="text"
         class="grow bg-transparent outline-none no-spinner"
         placeholder="$ 0.00"
@@ -283,6 +284,7 @@
       Observaciones de cierre
     </legend>
     <textarea
+      #obsTextareaRef
       class="du-textarea du-textarea-bordered du-textarea-accent h-20 w-full resize-none rounded-2xl bg-base-100"
       placeholder="Anota novedades del cierre (faltantes, sobrantes, gastos no esperados)..."
       (change)="onObservationChange($event)"
@@ -292,6 +294,7 @@
   <!-- ===================== ACTIONS ===================== -->
   <div class="mt-3 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between">
     <button
+      #cancelBtnRef
       class="du-btn du-btn-soft w-full sm:w-auto"
       [disabled]="loading()"
       (click)="emitCloseCashModal()"
@@ -305,6 +308,7 @@
       </button>
     } @else {
       <button
+        #closeBtnRef
         class="du-btn du-btn-error w-full gap-2 sm:w-auto"
         type="button"
         (click)="requestCloseCashRegister()"
@@ -329,82 +333,85 @@
   </div>
 
   <!-- ===================== CONFIRMATION MODAL ===================== -->
-
-  <app-modal
-    [isOpen]="closeConfirmationOpen()"
-    [ariaLabel]="'Modal de confirmacion'"
-    [showCloseButton]="false"
-    (closeModal)="cancelCloseCashRegister()"
-    (cancel)="cancelCloseCashRegister()"
-  >
-    <div class="flex items-start gap-3">
-      <div
-        class="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 text-error"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="22"
-          height="22"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
+  @if (closeConfirmationOpen()) {
+    <app-modal
+      [isOpen]="closeConfirmationOpen()"
+      [ariaLabel]="'Modal de confirmacion'"
+      [showCloseButton]="false"
+      (closeModal)="cancelCloseCashRegister()"
+      (cancel)="cancelCloseCashRegister()"
+    >
+      <div class="flex items-start gap-3">
+        <div
+          class="mt-0.5 inline-flex h-9 w-9 items-center justify-center rounded-full bg-error/10 text-error"
         >
-          <path d="M12 9v4" />
-          <path d="M12 17h.01" />
-          <path
-            d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
-          />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="22"
+            height="22"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 9v4" />
+            <path d="M12 17h.01" />
+            <path
+              d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"
+            />
+          </svg>
+        </div>
+        <div class="min-w-0 flex-1">
+          <h2 id="close-cash-confirmation-title" class="text-base font-bold tracking-tight">
+            Confirmar cierre de caja
+          </h2>
+          <p id="close-cash-confirmation-description" class="mt-1 text-sm opacity-70">
+            Esta acción cerrará la caja actual. Verifica el efectivo físico antes de continuar.
+          </p>
+        </div>
       </div>
-      <div class="min-w-0 flex-1">
-        <h2 id="close-cash-confirmation-title" class="text-base font-bold tracking-tight">
-          Confirmar cierre de caja
-        </h2>
-        <p id="close-cash-confirmation-description" class="mt-1 text-sm opacity-70">
-          Esta acción cerrará la caja actual. Verifica el efectivo físico antes de continuar.
+
+      <div class="mt-3 rounded-2xl border border-base-content/10 bg-base-200/40 p-3 text-sm">
+        <p class="font-semibold">Resumen actual</p>
+        <p class="mt-1 opacity-70">Esperado en caja: {{ expected() | cop }}</p>
+        <p class="opacity-70">Efectivo registrado: {{ amountReceived() | cop }}</p>
+        <p
+          class="opacity-70"
+          [class.text-error]="differenceStatus() === 'short'"
+          [class.text-warning]="differenceStatus() === 'over'"
+        >
+          Diferencia registrada: {{ cashDifference() | cop }}
         </p>
       </div>
-    </div>
 
-    <div class="mt-3 rounded-2xl border border-base-content/10 bg-base-200/40 p-3 text-sm">
-      <p class="font-semibold">Resumen actual</p>
-      <p class="mt-1 opacity-70">Esperado en caja: {{ expected() | cop }}</p>
-      <p class="opacity-70">Efectivo registrado: {{ amountReceived() | cop }}</p>
-      <p
-        class="opacity-70"
-        [class.text-error]="differenceStatus() === 'short'"
-        [class.text-warning]="differenceStatus() === 'over'"
-      >
-        Diferencia registrada: {{ cashDifference() | cop }}
-      </p>
-    </div>
-
-    <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row">
-      <button
-        class="du-btn du-btn-soft flex-1"
-        type="button"
-        [disabled]="loading()"
-        (click)="cancelCloseCashRegister()"
-      >
-        Cancelar
-      </button>
-      @if (loading()) {
-        <button class="du-btn du-btn-accent flex-1" type="button" disabled>
-          <span class="du-loading du-loading-spinner du-loading-sm"></span>
-          Cerrando caja...
-        </button>
-      } @else {
+      <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row">
         <button
-          class="du-btn du-btn-error flex-1"
+          #confirmCancelBtnRef
+          class="du-btn du-btn-soft flex-1"
           type="button"
-          (click)="confirmCloseCashRegister()"
+          [disabled]="loading()"
+          (click)="cancelCloseCashRegister()"
         >
-          Sí, cerrar caja
+          Cancelar
         </button>
-      }
-    </div>
-  </app-modal>
+        @if (loading()) {
+          <button class="du-btn du-btn-accent flex-1" type="button" disabled>
+            <span class="du-loading du-loading-spinner du-loading-sm"></span>
+            Cerrando caja...
+          </button>
+        } @else {
+          <button
+            #confirmBtnRef
+            class="du-btn du-btn-error flex-1"
+            type="button"
+            (click)="confirmCloseCashRegister()"
+          >
+            Sí, cerrar caja
+          </button>
+        }
+      </div>
+    </app-modal>
+  }
 }

@@ -41,7 +41,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 |-------|--------|
 | `F1` | Navegar a nueva factura (`/create-bill`) |
 | `F3` | Abrir/cerrar caja (toggle modal) |
-| `F4` | Abrir modal de gasto |
+| `F4` ✅ | Abrir modal de gasto |
 
 ### Página principal — BillComponent
 
@@ -111,13 +111,14 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 > Si el usuario es ADMIN, hay un `OfficeSelect` adicional. La navegación por Tab lo cubre naturalmente.
 
-### Modal de cierre de caja — CloseCashRegisterComponent
+### Modal de cierre de caja — CloseCashRegisterComponent ✅
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en input de efectivo físico (lo maneja ModalComponent → `focusFirstElement`) |
+| `Al abrir` | Focus en input de efectivo físico vía `effect` + `.select()` |
+| `↓` / `↑` | Navegación cíclica: monto → textarea → Cancelar → Cerrar caja |
 | `Enter` en input de monto | Avanzar foco al textarea de observaciones |
-| `Tab` | Navegar: monto → observaciones → Cerrar caja (lo maneja ModalComponent → focus trap) |
+| `Enter` en textarea | Avanzar foco al botón "Cerrar caja" |
 | `Enter` en botón "Cerrar caja" | Abrir confirmación (`requestCloseCashRegister()`) |
 | `Escape` | Lo maneja ModalComponent — NO duplicar |
 
@@ -125,22 +126,22 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en botón "Cancelar" |
+| `Al abrir` | Focus en "Sí, cerrar caja" vía `effect` + `afterNextRender` |
+| `←` / `→` | Navegación cíclica entre Cancelar y Sí, cerrar caja |
 | `Enter` en "Sí, cerrar caja" | Confirmar cierre |
 | `Escape` | Cerrar confirmación, volver al formulario |
 
-### Modal de gasto — ExpenseComponent
+### Modal de gasto — ExpenseComponent ✅
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en input de monto (lo maneja ModalComponent → `focusFirstElement`) |
+| `Al abrir` | Focus en input de monto (lo maneja ModalComponent) |
 | `Enter` en input de monto | Avanzar foco al textarea de motivo |
-| `Tab` | Navegar: monto → motivo → Cancelar → Crear gasto (lo maneja ModalComponent → focus trap) |
-| `Enter` en textarea de motivo | Si el formulario es válido, mueve foco al botón "Crear gasto"; si no, marca errores |
+| `Enter` en textarea de motivo | Si válido → foco en "Crear gasto"; si inválido → marca errores |
 | `Enter` en botón "Crear gasto" | Enviar formulario (`onSubmit()`) |
-| `Escape` | Lo maneja ModalComponent (`handleEscape` → `close.emit()`) — NO duplicar en ExpenseComponent |
+| `Escape` | Lo maneja ModalComponent — NO duplicar |
 
-**⚠️ Importante:** `focusFirstElement` de ModalComponent enfoca el primer elemento focusable en orden DOM. El botón ✕ de cerrar está antes que `<ng-content>`, por lo que si `showCloseButton` es `true`, se enfoca el botón ✕ en lugar del input. Solución: pasar `[showCloseButton]="false"` cuando el contenido del modal ya tiene su propio botón de cerrar/cancelar (aplica a expense, open-cash-register y close-cash-register).
+**⚠️ Importante:** `focusFirstElement` enfoca el ✕ antes que `<ng-content>`. Solución: `[showCloseButton]="false"` cuando el contenido ya tiene botón Cancelar.
 
 ---
 
@@ -210,8 +211,8 @@ Indica qué opción de precio (0 = unitario, 1 = mayorista) está highlighteada 
 | 9 | `src/app/features/bill/layouts/add-customer/add-customer.ts` | Agregar `host` con Enter para búsqueda |
 | 10 | `src/app/features/bill/layouts/product-panel/product-panel.ts` | Auto-focus en input de búsqueda al abrir modal |
 | 11 | `src/app/features/cash-register/layouts/open-cash-register/open-cash-register.component.ts` | Agregar `host` con Enter en monto (→ abrir confirmación) |
-| 12 | `src/app/features/cash-register/layouts/close-cash-register/close-cash-register.component.ts` | Agregar `host` con Enter en monto (→ textarea) + Enter en textarea |
-| 13 | `src/app/features/expense/pages/expense-create/expense.component.ts` ✅ | Agregar `host` con Enter en monto (→ textarea) + Enter en textarea (→ submit) |
+| 12 | `src/app/features/cash-register/layouts/close-cash-register/close-cash-register.component.ts` ✅ | Navegación con flechas (↑↓↔), Enter monto→textarea, Enter textarea→Cerrar caja, focus en confirmación, scroll al fondo |
+| 13 | `src/app/features/expense/pages/expense-create/expense.component.ts` ✅ | Enter monto→textarea, Enter textarea→Crear gasto (o marca errores), `showCloseButton="false"` |
 
 ---
 

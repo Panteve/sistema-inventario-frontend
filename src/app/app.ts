@@ -121,11 +121,19 @@ export class App implements OnInit {
   }
 
   onKeydown(event: KeyboardEvent) {
-    if (event.key === 'F4') {
+    if (event.key === 'F4' && this.authStore.cashRegisterIsOpen()) {
       event.preventDefault();
-      if (!this.expenseModalOpen()) {
+      if (!this.expenseModalOpen() && !this.cashModalOpen()) {
         this.openExpenseModal();
       }
+      return
     }
+    if (event.key === 'F3' ) {
+      event.preventDefault();
+      if (!this.cashModalOpen() && !this.expenseModalOpen()) {
+        this.openCashModal();
+      }
+    }
+
   }
 }

@@ -20,6 +20,7 @@
       <app-modal
         [isOpen]="cashModalOpen()"
         [ariaLabel]="'Apertura de caja'"
+        [showCloseButton]="false"
         (close)="closeCashModal()"
       >
         <div class="w-4xl h-full">

@@ -1,5 +1,19 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  afterRenderEffect,
+  computed,
+  effect,
+  inject,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import {
   CashRegisterSummaryResponse,
@@ -14,6 +28,9 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
   selector: 'app-close-cash-register',
   imports: [DatePipe, CopPipe, CopMoneyInputDirective, ModalComponent],
   templateUrl: './close-cash-register.component.html',
+  host: {
+    '(document:keydown)': 'onKeydown($event)',
+  },
 })
 export class CloseCashRegisterComponent {
   employee = input.required<Employee | null>();
@@ -27,6 +44,25 @@ export class CloseCashRegisterComponent {
   closeConfirmationOpen = signal<boolean>(false);
   amountReceived = signal<number>(0);
   observation = signal<string | undefined>(undefined);
+
+  amountInputRef = viewChild<ElementRef<HTMLInputElement>>('amountInputRef');
+  obsTextareaRef = viewChild<ElementRef<HTMLTextAreaElement>>('obsTextareaRef');
+  cancelBtnRef = viewChild<ElementRef<HTMLButtonElement>>('cancelBtnRef');
+  closeBtnRef = viewChild<ElementRef<HTMLButtonElement>>('closeBtnRef');
+  confirmCancelBtnRef = viewChild<ElementRef<HTMLButtonElement>>('confirmCancelBtnRef');
+  confirmBtnRef = viewChild<ElementRef<HTMLButtonElement>>('confirmBtnRef');
+
+  constructor() {
+    effect(() => {
+      if (!this.loadingSummary()) {
+        const input = this.amountInputRef()?.nativeElement;
+        input?.focus();
+        input?.select();
+        const container = input?.closest<HTMLElement>('.overflow-y-auto');
+        if (container) container.scrollTop = container.scrollHeight;
+      }
+    });
+  }
 
   expected = computed(() => {
     return (
@@ -57,6 +93,7 @@ export class CloseCashRegisterComponent {
 
   cancelCloseCashRegister() {
     this.closeConfirmationOpen.set(false);
+    this.amountInputRef()?.nativeElement.focus();
   }
 
   confirmCloseCashRegister() {
@@ -83,5 +120,57 @@ export class CloseCashRegisterComponent {
 
   onAmountClick(event: Event) {
     (event.target as HTMLInputElement).select();
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+
+    if (this.closeConfirmationOpen() && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+      const btns = [
+        this.confirmCancelBtnRef()?.nativeElement,
+        this.confirmBtnRef()?.nativeElement,
+      ].filter(Boolean) as HTMLElement[];
+      const index = btns.indexOf(target);
+      if (index === -1) return;
+      event.preventDefault();
+      const next =
+        event.key === 'ArrowRight'
+          ? (index + 1) % btns.length
+          : (index - 1 + btns.length) % btns.length;
+      btns[next].focus();
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      const elements = [
+        this.amountInputRef()?.nativeElement,
+        this.obsTextareaRef()?.nativeElement,
+        this.cancelBtnRef()?.nativeElement,
+        this.closeBtnRef()?.nativeElement,
+      ].filter(Boolean) as HTMLElement[];
+
+      const index = elements.indexOf(target);
+      if (index === -1) return;
+      event.preventDefault();
+      const next =
+        event.key === 'ArrowDown'
+          ? (index + 1) % elements.length
+          : (index - 1 + elements.length) % elements.length;
+      elements[next].focus();
+      return;
+    }
+
+    if (event.key !== 'Enter') return;
+
+    if (target === this.amountInputRef()?.nativeElement) {
+      event.preventDefault();
+      this.obsTextareaRef()?.nativeElement.focus();
+      return;
+    }
+
+    if (target === this.obsTextareaRef()?.nativeElement) {
+      event.preventDefault();
+      this.closeBtnRef()?.nativeElement.focus();
+    }
   }
 }
