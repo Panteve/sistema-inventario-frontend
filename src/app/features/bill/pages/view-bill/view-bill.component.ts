@@ -160,6 +160,7 @@ export class ViewBillComponent implements OnInit {
         // A decision de la persona actualizar el inventario a mano
         this.showCancelModal.set(false);
         this.#toastService.show({
+          title: 'Factura anulada',
           content: 'Factura anulada correctamente.',
           type: 'success',
         });
