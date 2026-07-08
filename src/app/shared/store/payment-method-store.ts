@@ -35,7 +35,7 @@ const initialState: PaymentMethodState = {
 
 const PaymentMethodResponseConfig = entityConfig({
   entity: type<PaymentMethodResponse>(),
-  collection: '_paymentMethods',
+  collection: 'paymentMethods',
   selectId: (paymentMethod) => paymentMethod.id,
 });
 
@@ -47,12 +47,12 @@ export const PaymentMethodStore = signalStore(
     toastService: inject(ToastService),
   })),
   withEntities(PaymentMethodResponseConfig),
-  withComputed(({ _paymentMethodsEntities, showingInactive }) => ({
+  withComputed(({ paymentMethodsEntities, showingInactive }) => ({
     paymentMethods: computed(() => {
       if (showingInactive()) {
-        return _paymentMethodsEntities().filter((pm) => !pm.status);
+        return paymentMethodsEntities().filter((pm) => !pm.status);
       }
-      return _paymentMethodsEntities().filter((pm) => pm.status);
+      return paymentMethodsEntities().filter((pm) => pm.status);
     }),
   })),
   withMethods(({ paymentMethodService, toastService, ...store }) => ({

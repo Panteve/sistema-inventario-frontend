@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import {
+  BillCancelRequest,
   BillResponse,
   BillsHistoryListResponse,
   CreateBillRequest,
@@ -43,5 +44,9 @@ export class BillService {
 
   getBillById(billId: number) {
     return this.#http.get<BillResponse>(`${environment.apiUrl}/bills/${billId}`);
+  }
+
+  cancelBill(data: BillCancelRequest) {
+    return this.#http.patch<BillResponse>(`${environment.apiUrl}/bills`, data);
   }
 }

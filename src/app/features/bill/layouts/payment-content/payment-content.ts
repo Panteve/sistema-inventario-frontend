@@ -40,7 +40,7 @@ export class PaymentContent {
 
   onPaymentMethodChange(event: Event) {
     const id = Number((event.target as HTMLSelectElement).value);
-    const method = this.paymentMethods()[id] ?? null;
+    const method = this.paymentMethodStore.paymentMethodsEntityMap()[id] ?? null;
     this.selectedMethod.set(method);
     this.changeSelectedMethod.emit(method!);
   }

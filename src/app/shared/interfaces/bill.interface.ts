@@ -96,3 +96,8 @@ export interface BillResponse {
   };
   payments: { paymentMethodName: string }[];
 }
+
+export interface BillCancelRequest{
+  id: number;
+  reason: string;
+}

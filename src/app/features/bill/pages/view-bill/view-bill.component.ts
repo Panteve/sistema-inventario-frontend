@@ -5,6 +5,8 @@ import { finalize } from 'rxjs';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
 import { Router, RouterLink } from '@angular/router';
 import { DatePipe } from '@angular/common';
+import { AuthStore } from '../../../../core/store/auth-store';
+import { ToastService } from '../../../../shared/services/toast.service';
 
 type BreadcrumbItem = { label: string; path: string | null };
 
@@ -17,6 +19,8 @@ type BreadcrumbItem = { label: string; path: string | null };
 export class ViewBillComponent implements OnInit {
   #router = inject(Router);
   #billService = inject(BillService);
+  #authStore = inject(AuthStore);
+  #toastService = inject(ToastService);
 
   billIdParams = input.required<string>({ alias: 'billId' });
   readonly from = input<string>();
@@ -110,6 +114,34 @@ export class ViewBillComponent implements OnInit {
         },
       });
   }
+  canCancel = computed(() => {
+    const b = this.bill();
+    const employee = this.#authStore.employee();
+    if (!b.id || !b.status || !employee) return false;
+    return b.cashRegister.id === employee.cashRegister;
+  });
+
+  cancelBill() {
+    const b = this.bill();
+    if (!b.id) return;
+
+    this.#billService.cancelBill(b.id).subscribe({
+      next: () => {
+        this.bill.update((bill) => ({ ...bill, status: false }));
+        this.#toastService.show({
+          content: 'Factura anulada correctamente.',
+          type: 'success',
+        });
+      },
+      error: () => {
+        this.#toastService.show({
+          content: 'Error al anular la factura. Intenta de nuevo.',
+          type: 'error',
+        });
+      },
+    });
+  }
+
   viewCashRegister(cashRegisterId: number) {
     this.#router.navigate(['/view-cash-registers/cash-register', cashRegisterId], {
       queryParams: { from: '/view-bills/bill', fromId: this.billIdParams() },
