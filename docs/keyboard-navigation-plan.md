@@ -13,6 +13,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | Framework | Angular v21 |
 | Reactividad | Signals (`signal`, `computed`, `effect`) |
 | Eventos de teclado | `host: { '(document:keydown)': 'handler($event)' }` en decorador del componente (**NO** `@HostListener`) |
+| Referencias a elementos | `viewChild<T>('ref')` como signal (**NO** `@ViewChild` decorador) |
 | UI | daisyUI 5 + Tailwind CSS |
 | Estado de modales | Signals existentes (`productsModalOpen`, `paymentModalOpen`, `customerPanelOpen`) |
 | Navegación en tablas | @tanstack/angular-table (ya integrado) |
@@ -96,9 +97,9 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en input de monto inicial (`amountReceived`) |
+| `Al abrir` | Focus en input de monto inicial (lo maneja ModalComponent → `focusFirstElement`) |
 | `Enter` en input de monto | Validar y abrir confirmación (`requestOpenCashRegister()`) |
-| `Escape` | Cerrar modal sin guardar |
+| `Escape` | Lo maneja ModalComponent — NO duplicar |
 
 **Confirmación interna** (modal anidado):
 
@@ -114,11 +115,11 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en input de efectivo físico (`amountReceived`) |
+| `Al abrir` | Focus en input de efectivo físico (lo maneja ModalComponent → `focusFirstElement`) |
 | `Enter` en input de monto | Avanzar foco al textarea de observaciones |
-| `Tab` | Navegar: monto → observaciones → Cerrar caja |
+| `Tab` | Navegar: monto → observaciones → Cerrar caja (lo maneja ModalComponent → focus trap) |
 | `Enter` en botón "Cerrar caja" | Abrir confirmación (`requestCloseCashRegister()`) |
-| `Escape` | Cerrar modal sin guardar |
+| `Escape` | Lo maneja ModalComponent — NO duplicar |
 
 **Confirmación interna** (modal anidado):
 
@@ -132,12 +133,14 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 | Tecla | Acción |
 |-------|--------|
-| `Al abrir` | Focus en input de monto |
+| `Al abrir` | Focus en input de monto (lo maneja ModalComponent → `focusFirstElement`) |
 | `Enter` en input de monto | Avanzar foco al textarea de motivo |
-| `Tab` | Navegar: monto → motivo → Cancelar → Crear gasto |
-| `Enter` en textarea de motivo | Si el formulario es válido, enviar; si no, avanzar foco |
+| `Tab` | Navegar: monto → motivo → Cancelar → Crear gasto (lo maneja ModalComponent → focus trap) |
+| `Enter` en textarea de motivo | Si el formulario es válido, mueve foco al botón "Crear gasto"; si no, marca errores |
 | `Enter` en botón "Crear gasto" | Enviar formulario (`onSubmit()`) |
-| `Escape` | Cerrar modal sin guardar |
+| `Escape` | Lo maneja ModalComponent (`handleEscape` → `close.emit()`) — NO duplicar en ExpenseComponent |
+
+**⚠️ Importante:** `focusFirstElement` de ModalComponent enfoca el primer elemento focusable en orden DOM. El botón ✕ de cerrar está antes que `<ng-content>`, por lo que si `showCloseButton` es `true`, se enfoca el botón ✕ en lugar del input. Solución: pasar `[showCloseButton]="false"` cuando el contenido del modal ya tiene su propio botón de cerrar/cancelar (aplica a expense, open-cash-register y close-cash-register).
 
 ---
 
@@ -196,7 +199,7 @@ Indica qué opción de precio (0 = unitario, 1 = mayorista) está highlighteada 
 
 | # | Archivo | Cambio |
 |---|---------|--------|
-| 1 | `src/app/app.ts` | Agregar `host` con F1, F3, F4 |
+| 1 | `src/app/app.ts` ✅ | Agregar `host` con F1, F3, F4 (F4 implementado, F1 y F3 pendientes) |
 | 2 | `src/app/features/bill/pages/create-bill/bill.component.ts` | Agregar `host` con F2, F8, flechas, Delete, Escape; signal `activeRowIndex` |
 | 3 | `src/app/features/bill/pages/create-bill/bill.component.html` | `tabindex` + `(focus)` + clase highlight en `<tr>` de líneas |
 | 4 | `src/app/shared/layouts/table-products/table-products.ts` | Agregar `host` con flechas + Enter; signal `highlightedRowIndex` |
@@ -206,16 +209,27 @@ Indica qué opción de precio (0 = unitario, 1 = mayorista) está highlighteada 
 | 8 | `src/app/features/bill/layouts/payment-content/payment-content.ts` | Agregar `host` con Enter; auto-focus en select |
 | 9 | `src/app/features/bill/layouts/add-customer/add-customer.ts` | Agregar `host` con Enter para búsqueda |
 | 10 | `src/app/features/bill/layouts/product-panel/product-panel.ts` | Auto-focus en input de búsqueda al abrir modal |
-| 11 | `src/app/features/cash-register/layouts/open-cash-register/open-cash-register.component.ts` | Agregar `host` con Enter en monto + Escape; auto-focus en input de monto al abrir |
-| 12 | `src/app/features/cash-register/layouts/close-cash-register/close-cash-register.component.ts` | Agregar `host` con Enter en monto + Enter en textarea + Escape; auto-focus en input al abrir |
-| 13 | `src/app/features/expense/pages/expense-create/expense.component.ts` | Agregar `host` con Enter en monto (→ textarea) + Enter en textarea (→ submit) + Escape |
+| 11 | `src/app/features/cash-register/layouts/open-cash-register/open-cash-register.component.ts` | Agregar `host` con Enter en monto (→ abrir confirmación) |
+| 12 | `src/app/features/cash-register/layouts/close-cash-register/close-cash-register.component.ts` | Agregar `host` con Enter en monto (→ textarea) + Enter en textarea |
+| 13 | `src/app/features/expense/pages/expense-create/expense.component.ts` ✅ | Agregar `host` con Enter en monto (→ textarea) + Enter en textarea (→ submit) |
 
 ---
 
 ## Consideraciones
 
 1. **Prioridad de eventos**: Los atajos locales (dentro de modal activo) tienen prioridad sobre globales. Se implementa verificando signals de estado (`productsModalOpen()`, `paymentModalOpen()`, etc.).
-2. **Focus trap en modales**: El `ModalComponent` ya usa `host` con focus trap y Escape. No se toca, solo se asegura compatibilidad.
-3. **Accesibilidad**: Se añaden `tabindex` y `role` apropiados. Se mantiene `focus-visible`.
+2. **ModalComponent como base**: El `ModalComponent` compartido (`shared/components/modal.component/modal.component.ts`) ya proporciona:
+   - **Escape** → `close.emit()` via `host: { '(document:keydown.escape)': 'handleEscape()' }`
+   - **Focus trap** con Tab cíclico via `trapFocus($event)`
+   - **Auto-focus** en el primer elemento focusable al abrirse (via `effect` + `requestAnimationFrame` + `focusFirstElement`)
+   
+   **Regla:** Los componentes renderizados DENTRO de `<app-modal>` NO deben duplicar el manejo de Escape ni auto-focus. Solo agregan su propia lógica (Enter, flechas, etc.).
+
+3. **Componentes dentro de ModalComponent**: Según `app.html`, estos componentes están dentro de `<app-modal>` y por tanto heredan Escape + focus trap:
+   - `app-cash-register` (OpenCashRegister y CloseCashRegister)
+   - `app-expense`
+   
+   Componentes como `BillComponent` NO están dentro de `ModalComponent` y sí necesitan su propio Escape.
+4. **Accesibilidad**: Se añaden `tabindex` y `role` apropiados. Se mantiene `focus-visible`.
 4. **Indicadores visuales**: Tooltips con los shortcuts (`[F2]`, `[F8]`, `[↓][↑]`) en botones y tablas.
 5. **Sin dependencias nuevas**: Todo se implementa con APIs nativas de Angular (host bindings, signals).

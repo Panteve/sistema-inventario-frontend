@@ -31,6 +31,7 @@
       <app-modal
         [isOpen]="expenseModalOpen()"
         [ariaLabel]="'Crear gasto'"
+        [showCloseButton]="false"
         (close)="closeExpenseModal()"
       >
         <div class="w-xl">

@@ -21,6 +21,7 @@ import { InventoryStore } from './shared/store/inventory-store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '(document:mousemove)': 'onMouseMove($event)',
+    '(document:keydown)': 'onKeydown($event)',
   },
   imports: [
     RouterOutlet,
@@ -117,5 +118,14 @@ export class App implements OnInit {
         glow.style.transform = `translate(${evt.clientX - 300}px, ${evt.clientY - 300}px)`;
       }
     });
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key === 'F4') {
+      event.preventDefault();
+      if (!this.expenseModalOpen()) {
+        this.openExpenseModal();
+      }
+    }
   }
 }

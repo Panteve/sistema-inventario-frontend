@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, inject, output, signal, viewChild } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CreateExpenseRequest } from '../../../../shared/interfaces/expense.interface';
@@ -14,6 +14,9 @@ import { ExpenseNotificationService } from '../../service/expense-notification.s
   providers: [],
   templateUrl: './expense.component.html',
   styleUrl: './expense.component.css',
+  host: {
+    '(document:keydown)': 'onKeydown($event)',
+  },
 })
 export class ExpenseComponent {
   expenseService = inject(ExpenseService);
@@ -23,6 +26,10 @@ export class ExpenseComponent {
 
   closeModal = output<void>();
   loading = signal<boolean>(false);
+
+  amountInputRef = viewChild<ElementRef<HTMLInputElement>>('amountInputRef');
+  reasonTextareaRef = viewChild<ElementRef<HTMLTextAreaElement>>('reasonTextareaRef');
+  submitBtnRef = viewChild<ElementRef<HTMLButtonElement>>('submitBtnRef');
 
   expenseForm = new FormGroup({
     amount: new FormControl<number>(0, [
@@ -76,5 +83,27 @@ export class ExpenseComponent {
 
   closeExpenseModal() {
     this.closeModal.emit();
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    if (event.key !== 'Enter') return;
+
+    const target = event.target as HTMLElement;
+
+    if (target === this.amountInputRef()?.nativeElement) {
+      event.preventDefault();
+      this.reasonTextareaRef()?.nativeElement.focus();
+      return;
+    }
+
+    if (target === this.reasonTextareaRef()?.nativeElement) {
+      event.preventDefault();
+      if (this.expenseForm.invalid) {
+        this.expenseForm.markAllAsTouched();
+        return;
+      }
+      console.log('valido')
+      this.submitBtnRef()?.nativeElement.focus();
+    }
   }
 }
