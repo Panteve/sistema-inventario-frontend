@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { EmployeeService } from '../../../../shared/services/employee.service';
 import {
   createAngularTable,
@@ -42,9 +49,19 @@ export class EmployeesComponent implements OnInit {
   selectedEmployee = signal<EmployeeResponse | null>(null);
   employeeModalOpen = signal<boolean>(false);
   currentAction = signal<EmployeeAction | null>(null);
+  showingInactive = signal(false);
+  displayedEmployees = computed(() => {
+    return this.showingInactive()
+      ? this.employees().filter((e) => !e.status)
+      : this.employees().filter((e) => e.status);
+  });
 
   activeEmployees = computed(() => this.employees().filter((employee) => employee.status).length);
   inactiveEmployees = computed(() => this.employees().length - this.activeEmployees());
+
+  changeShowInactive(value: boolean) {
+    this.showingInactive.set(value);
+  }
 
   ngOnInit(): void {
     this.loadEmployees();
@@ -75,7 +92,7 @@ export class EmployeesComponent implements OnInit {
   }
 
   table = createAngularTable(() => ({
-    data: this.employees(),
+    data: this.displayedEmployees(),
     columns: [
       {
         header: 'Nombre',

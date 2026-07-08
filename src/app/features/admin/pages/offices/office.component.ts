@@ -28,6 +28,7 @@ import { DatePipe } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { OfficeStore } from '../../../../shared/store/office-store';
+import { AuthStore } from '../../../../core/store/auth-store';
 
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -40,6 +41,7 @@ export class OfficeComponent implements OnInit {
   officeService = inject(OfficeService);
   toastService = inject(ToastService);
   officeStore = inject(OfficeStore);
+  #authStore = inject(AuthStore);
   #datePipe = inject(DatePipe);
   #destroyRef = inject(DestroyRef);
 
@@ -49,6 +51,12 @@ export class OfficeComponent implements OnInit {
   globalFilter = signal<string>('');
   officeExist = signal<boolean>(false);
   officeSelected = signal<OfficeResponse | null>(null);
+  showingInactive = signal(false);
+  displayedOffices = computed(() => {
+    return this.showingInactive()
+      ? this.offices().filter((o) => !o.status)
+      : this.offices().filter((o) => o.status);
+  });
   currentDate = new Date();
 
   officeForm = new FormGroup({
@@ -134,6 +142,10 @@ export class OfficeComponent implements OnInit {
     this.loadOffices();
   }
 
+  changeShowInactive(value: boolean) {
+    this.showingInactive.set(value);
+  }
+
   loadOffices() {
     this.loadingTable.set(true);
     this.globalFilter.set('');
@@ -154,7 +166,7 @@ export class OfficeComponent implements OnInit {
       });
   }
   table = createAngularTable(() => ({
-    data: this.offices(),
+    data: this.displayedOffices(),
     columns: [
       {
         header: 'Nombre',
@@ -266,6 +278,16 @@ export class OfficeComponent implements OnInit {
   }
 
   #setStatus(office: OfficeResponse) {
+    if (this.#authStore.employee()?.officeId === office.id) {
+      this.toastService.show({
+        title: 'Error',
+        content:
+          'No puedes cambiar el estado de esta oficina porque es la que estás usando actualmente, cierra caja y vuelve a intentarlo',
+        type: 'error',
+      });
+      this.loadingAction.set(false);
+      return;
+    }
     this.officeService
       .setStatusOffice(office.id, office.status)
       .pipe(finalize(() => this.loadingAction.set(false)))
@@ -280,6 +302,12 @@ export class OfficeComponent implements OnInit {
           this.offices.update((offices) =>
             offices.map((o) => (o.id === office.id ? { ...o, status: office.status } : o)),
           );
+          if (office.status) {
+            this.officeStore.addOffice({ id: office.id, name: office.name });
+          } else {
+            this.officeStore.deleteOffice(office.id);
+          }
+
           this.clearForm();
         },
         error: () => {
@@ -307,17 +335,17 @@ export class OfficeComponent implements OnInit {
     }
 
     this.officeService
-      .updateOffice(office.id, payload as CreateOfficeRequest)
+      .updateOffice(office.id, payload)
       .pipe(finalize(() => this.loadingAction.set(false)))
       .subscribe({
-        next: (response) => {
+        next: () => {
           this.toastService.show({
             title: 'Oficina actualizada',
             content: `La oficina ${office.name} ha sido actualizada exitosamente.`,
             type: 'success',
           });
           this.offices.update((offices) =>
-            offices.map((o) => (o.id === office.id ? { ...o, ...response } : o)),
+            offices.map((o) => (o.id === office.id ? { ...o, ...payload } : o)),
           );
           if (payload.name) {
             this.officeStore.updateOffice(office.id, payload.name);

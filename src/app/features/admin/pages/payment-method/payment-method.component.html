@@ -26,9 +26,10 @@
                 <legend class="du-fieldset-legend">Codigo</legend>
                 <input
                   type="text"
-                  class="du-input du-input-bordered w-full"
+                  class="du-input du-input-bordered w-full uppercase"
                   formControlName="code"
                   placeholder="Ej: TRANS"
+                  (input)="onCodeInput($event)"
                 />
               </fieldset>
 
@@ -73,7 +74,11 @@
                   type="submit"
                   [disabled]="!paymentMethodForm.valid || !hasChanges() || loading()"
                 >
-                  {{ this.methodExist() ? 'Guardar' : 'Crear' }}
+                  @if (this.loading()) {
+                    <span class="du-loading du-loading-spinner"></span>
+                  } @else {
+                    {{ this.methodExist() ? 'Guardar' : 'Crear' }}
+                  }
                 </button>
               </div>
             </form>

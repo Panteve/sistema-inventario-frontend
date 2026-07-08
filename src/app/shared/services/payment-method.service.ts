@@ -5,14 +5,12 @@ import {
   PaymentMethodResponse,
 } from '../interfaces/paymentMethod.interface';
 import { environment } from '../../../environments/environment';
-import { AuthStore } from '../../core/store/auth-store';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PaymentMethodService {
   #http = inject(HttpClient);
-  #authStore = inject(AuthStore);
 
   createPaymentMethod(payload: CreatePaymentMethodRequest) {
     return this.#http.post<PaymentMethodResponse>(

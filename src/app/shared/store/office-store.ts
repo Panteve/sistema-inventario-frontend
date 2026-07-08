@@ -17,6 +17,7 @@ import { ToastService } from '../services/toast.service';
 import {
   addEntity,
   entityConfig,
+  removeEntity,
   setAllEntities,
   updateEntity,
   withEntities,
@@ -77,6 +78,12 @@ export const OfficeStore = signalStore(
         updateEntity({ id: officeId, changes: { name: officeName } }, OfficeNameIdResponseConfig),
       );
     },
+    deleteOffice(officeId: number) {
+      patchState(
+        store,
+        removeEntity(officeId, OfficeNameIdResponseConfig),
+      );
+    }
   })),
   withHooks({
     onInit(store) {

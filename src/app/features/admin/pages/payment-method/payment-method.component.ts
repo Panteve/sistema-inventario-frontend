@@ -54,7 +54,7 @@ export class PaymentMethodComponent implements OnDestroy {
     }),
     code: new FormControl<string>('', {
       nonNullable: true,
-      validators: [Validators.required, Validators.pattern(/^[a-zA-Z0-9_]+$/)],
+      validators: [Validators.required, Validators.pattern(/^[A-Z0-9_]+$/)],
     }),
     affectsCash: new FormControl<boolean>(false, {
       nonNullable: true,
@@ -309,7 +309,16 @@ export class PaymentMethodComponent implements OnDestroy {
         this.#updatePaymentMethod(paymentMethod);
       }
     } else {
-      this.#createPaymentMethod(paymentMethod);
+      const { id, status, ...createPayload } = paymentMethod;
+      this.#createPaymentMethod(createPayload);
+    }
+  }
+
+  onCodeInput(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const uppercased = input.value.toUpperCase();
+    if (uppercased !== input.value) {
+      this.paymentMethodForm.get('code')?.setValue(uppercased, { emitEvent: false });
     }
   }
 
