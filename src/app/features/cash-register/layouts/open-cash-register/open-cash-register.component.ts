@@ -1,5 +1,14 @@
 import { DatePipe } from '@angular/common';
-import { ChangeDetectionStrategy, Component, computed, input, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  ElementRef,
+  input,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { Employee } from '../../../../shared/interfaces/Auth.interface';
 import { CopMoneyInputDirective } from '../../../../shared/directives/cop-money-input.directive';
 import { CopPipe } from '../../../../shared/pipes/cop.pipes';
@@ -11,6 +20,9 @@ import { ModalComponent } from '../../../../shared/components/modal.component/mo
   selector: 'app-open-cash-register',
   imports: [DatePipe, CopMoneyInputDirective, CopPipe, OfficeSelectComponent, ModalComponent],
   templateUrl: './open-cash-register.component.html',
+  host: {
+    '(document:keydown)': 'onKeydown($event)',
+  },
 })
 export class OpenCashRegisterComponent {
   employee = input.required<Employee | null>();
@@ -24,8 +36,15 @@ export class OpenCashRegisterComponent {
   officeId = signal<number>(0);
   selectedOffice = signal<string | null>(null);
 
+  amountInputRef = viewChild<ElementRef<HTMLInputElement>>('amountInputRef');
+  openCancelBtnRef = viewChild<ElementRef<HTMLButtonElement>>('openCancelBtnRef');
+  openConfirmBtnRef = viewChild<ElementRef<HTMLButtonElement>>('openConfirmBtnRef');
+  cancelBtnRef = viewChild<ElementRef<HTMLButtonElement>>('cancelBtnRef');
+  confirmBtnRef = viewChild<ElementRef<HTMLButtonElement>>('confirmBtnRef');
+  officeSelectCmp = viewChild<OfficeSelectComponent>('officeSelectCmp');
+
   validateAmount = computed(() => {
-    return this.amountReceived() > 0;
+    return this.amountReceived() > 0 && this.officeId() !== 0;
   });
   onAmountReceivedChange(event: Event) {
     const raw = (event.target as HTMLInputElement).value.replace(/[^0-9]/g, '');
@@ -62,5 +81,66 @@ export class OpenCashRegisterComponent {
 
   requestOpenCashRegister() {
     this.openConfirmationOpen.set(true);
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+
+    if (this.openConfirmationOpen()) {
+      if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+        event.preventDefault();
+        if (target === this.cancelBtnRef()?.nativeElement) {
+          this.confirmBtnRef()?.nativeElement.focus();
+        } else {
+          this.cancelBtnRef()?.nativeElement.focus();
+        }
+        return;
+      }
+      return;
+    }
+
+    const selectEl = this.officeSelectCmp()?.selectRef()?.nativeElement;
+
+    if (
+      event.key === 'Enter' &&
+      target === this.amountInputRef()?.nativeElement &&
+      this.validateAmount()
+    ) {
+      event.preventDefault();
+      this.requestOpenCashRegister();
+      return;
+    }
+
+    // Enter sobre el select nativo -> abrirlo
+    if (event.key === 'Enter' && target === selectEl) {
+      event.preventDefault();
+      if (typeof (target as HTMLSelectElement).showPicker === 'function') {
+        try {
+          (target as HTMLSelectElement).showPicker();
+        } catch {
+          // requiere gesto de usuario reciente; si falla, no rompemos nada
+        }
+      }
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      const elements = [
+        selectEl,
+        this.amountInputRef()?.nativeElement,
+        this.openCancelBtnRef()?.nativeElement,
+        this.openConfirmBtnRef()?.nativeElement,
+      ].filter(Boolean) as HTMLElement[];
+
+      const currentIdx = elements.indexOf(target);
+      if (currentIdx === -1) return;
+
+      event.preventDefault(); // esto también bloquea el ciclado nativo cuando target es el select cerrado
+      const nextIdx =
+        event.key === 'ArrowDown'
+          ? (currentIdx + 1) % elements.length
+          : (currentIdx - 1 + elements.length) % elements.length;
+      elements[nextIdx].focus();
+    }
   }
 }

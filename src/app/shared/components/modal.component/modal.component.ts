@@ -35,7 +35,7 @@ export class ModalComponent {
         document.body.style.overflow = 'hidden';
         this.previousActiveElement = document.activeElement as HTMLElement;
         requestAnimationFrame(() => {
-          this.focusFirstElement();
+          this.#focusFirstElement();
         });
       } else {
         document.body.style.overflow = '';
@@ -57,7 +57,7 @@ export class ModalComponent {
     if (event.key !== 'Tab') return;
     const el = this.dialogEl()?.nativeElement;
     if (!el) return;
-    const focusable = this.getFocusableElements(el);
+    const focusable = this.#getFocusableElements(el);
     if (focusable.length === 0) return;
     const first = focusable[0];
     const last = focusable[focusable.length - 1];
@@ -70,19 +70,29 @@ export class ModalComponent {
     }
   }
 
-  private focusFirstElement() {
+  #focusFirstElement() {
     const el = this.dialogEl()?.nativeElement;
     if (!el) return;
-    const focusable = this.getFocusableElements(el);
+
+    const preferred = el.querySelector<HTMLElement>('[data-autofocus]:not([disabled])');
+    if (preferred) {
+      preferred.focus();
+      return;
+    }
+
+    const focusable = this.#getFocusableElements(el);
     if (focusable.length > 0) {
       focusable[0].focus();
     }
   }
 
-  private getFocusableElements(el: HTMLElement): HTMLElement[] {
+  #getFocusableElements(el: HTMLElement): HTMLElement[] {
     const selectors = [
-      'a[href]', 'button:not([disabled])', 'textarea:not([disabled])',
-      'input:not([disabled])', 'select:not([disabled])',
+      'a[href]',
+      'button:not([disabled])',
+      'textarea:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
       '[tabindex]:not([tabindex="-1"])',
     ];
     return Array.from(el.querySelectorAll<HTMLElement>(selectors.join(',')));

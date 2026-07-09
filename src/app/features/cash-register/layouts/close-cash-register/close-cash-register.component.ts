@@ -170,7 +170,7 @@ export class CloseCashRegisterComponent {
 
     if (target === this.obsTextareaRef()?.nativeElement) {
       event.preventDefault();
-      this.closeBtnRef()?.nativeElement.focus();
+      this.requestCloseCashRegister();
     }
   }
 }

@@ -41,6 +41,7 @@
       <p class="mt-0.5 truncate text-base font-semibold leading-tight">
         @if (employee()?.role === 'ADMIN') {
           <app-office-select
+            #officeSelectCmp
             [value]="officeId()"
             [allOffices]="false"
             (idOffice)="changeOffice($event)"
@@ -67,6 +68,7 @@
       class="du-input du-input-accent flex min-h-10 w-full items-center gap-2 rounded-2xl border border-base-content/10 bg-base-100 px-3 text-base shadow-sm"
     >
       <input
+        #amountInputRef
         type="text"
         class="grow bg-transparent outline-none no-spinner"
         copMoneyInput
@@ -80,8 +82,18 @@
   </fieldset>
 
   <div class="mt-2 flex flex-col-reverse gap-1 sm:flex-row sm:items-center sm:justify-between">
-    <button class="du-btn du-btn-soft w-full sm:w-auto" (click)="closeCashModal()">Cancelar</button>
-    <button class="du-btn du-btn-accent w-full gap-2 sm:w-auto" (click)="requestOpenCashRegister()">
+    <button
+      #openCancelBtnRef
+      class="du-btn du-btn-soft w-full sm:w-auto"
+      (click)="closeCashModal()"
+    >
+      Cancelar
+    </button>
+    <button
+      #openConfirmBtnRef
+      class="du-btn du-btn-accent w-full gap-2 sm:w-auto"
+      (click)="requestOpenCashRegister()"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         class="h-5 w-5"
@@ -154,6 +166,7 @@
 
   <div class="mt-3 flex flex-col-reverse gap-2 sm:flex-row">
     <button
+      #cancelBtnRef
       class="du-btn du-btn-soft flex-1"
       type="button"
       [disabled]="loading()"
@@ -168,6 +181,8 @@
       </button>
     } @else {
       <button
+        #confirmBtnRef
+        data-autofocus
         class="du-btn du-btn-error flex-1"
         type="button"
         [disabled]="(!selectedOffice() && employee()?.role === 'ADMIN') || !validateAmount()"

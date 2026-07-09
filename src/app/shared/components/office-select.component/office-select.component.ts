@@ -1,4 +1,12 @@
-import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  inject,
+  input,
+  output,
+  viewChild,
+} from '@angular/core';
 import { OfficeStore } from '../../store/office-store';
 
 @Component({
@@ -13,6 +21,7 @@ export class OfficeSelectComponent {
   allOffices = input<boolean>(true);
   idOffice = output<number>();
   nameOffice = output<string>();
+  selectRef = viewChild<ElementRef<HTMLSelectElement>>('officeSelect');
   officeStore = inject(OfficeStore);
 
   changeOffice(event: Event) {
