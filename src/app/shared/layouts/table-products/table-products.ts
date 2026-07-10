@@ -1,12 +1,15 @@
 import {
+  afterNextRender,
   ChangeDetectionStrategy,
   Component,
   computed,
   effect,
+  ElementRef,
   inject,
   input,
   output,
   signal,
+  viewChild,
 } from '@angular/core';
 import {
   CellContext,
@@ -35,6 +38,9 @@ type RangeFilterValue = {
 @Component({
   selector: 'app-table-products',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(keydown)': 'onKeydown($event)',
+  },
   imports: [FlexRenderDirective],
   providers: [CopPipe],
   templateUrl: './table-products.html',
@@ -61,7 +67,10 @@ export class TableProducts {
   copPipe = inject(CopPipe);
 
   globalFilter = signal<string>('');
+  highlightedRowIndex = signal<number>(-1);
   #lastProductsFilteredCount = signal<number>(-1);
+
+  searchInput = viewChild<ElementRef<HTMLInputElement>>('search');
 
   #createRangeFilter(columnId: string, min: number | null, max: number | null) {
     return {
@@ -185,6 +194,12 @@ export class TableProducts {
       this.#lastProductsFilteredCount.set(filteredCount);
       this.filteredProductsCountChanged.emit(filteredCount);
     });
+
+    effect(() => {
+      if (!this.inventoryStore.loading()) {
+        this.searchInput()?.nativeElement.focus();
+      }
+    });
   }
 
   onRowClick(product: ProductOnInventoryResponse) {
@@ -263,6 +278,7 @@ export class TableProducts {
   searchProducts(search: string) {
     this.globalFilter.set(search);
     this.table.firstPage();
+    this.highlightedRowIndex.set(-1);
   }
 
   nextPage() {
@@ -271,5 +287,39 @@ export class TableProducts {
 
   previousPage() {
     this.table.previousPage();
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    const rows = this.table.getRowModel().rows;
+    if (rows.length === 0) return;
+
+    const maxIndex = rows.length - 1;
+
+    if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      this.highlightedRowIndex.update((i) => (i >= maxIndex ? 0 : i + 1));
+      return;
+    }
+
+    if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      this.highlightedRowIndex.update((i) => (i <= 0 ? maxIndex : i - 1));
+      return;
+    }
+
+    if (event.key === 'Enter') {
+      const idx = this.highlightedRowIndex();
+      if (idx >= 0 && idx <= maxIndex) {
+        event.preventDefault();
+        this.onRowClick(rows[idx].original);
+      }
+      return;
+    }
+
+    if (event.key === 'r' && event.altKey) {
+      event.preventDefault();
+      this.loadProducts();
+      return;
+    }
   }
 }

@@ -19,6 +19,7 @@
       #search
       class="grow"
       placeholder="Buscar por nombre o ID..."
+      data-autofocus
       (input)="searchProducts(search.value)"
     />
   </label>
@@ -47,14 +48,20 @@
         </tr>
       </thead>
       <tbody>
-        @for (row of table.getRowModel().rows; track row.id) {
+        @for (row of table.getRowModel().rows; track row.id; let idx = $index) {
           <tr
             class="transition-colors duration-200 hover:bg-base-300/80"
             [class.cursor-pointer]="enableRowSelect()"
+            [class.bg-primary/15]="highlightedRowIndex() === idx"
+            [class.ring-1]="highlightedRowIndex() === idx"
+            [class.ring-primary/40]="highlightedRowIndex() === idx"
             [class.bg-warning/20]="isLowStock(row.original.quantity)"
             [class.hover:bg-warning/30]="isLowStock(row.original.quantity)"
             [class.bg-error/20]="isNegativeStock(row.original.quantity)"
             [class.hover:bg-error/30]="isNegativeStock(row.original.quantity)"
+            [attr.tabindex]="enableRowSelect() ? 0 : null"
+            [attr.aria-selected]="highlightedRowIndex() === idx"
+            role="row"
             (click)="onRowClick(row.original)"
           >
             @for (cell of row.getVisibleCells(); track cell.id) {
