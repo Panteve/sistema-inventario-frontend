@@ -10,6 +10,9 @@
     <!-- Precio Unitario -->
     <button
       class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
+      [class.du-btn-primary]="highlightedPriceIndex() === 0"
+      [class.du-btn-outline]="highlightedPriceIndex() !== 0"
+      data-autofocus
       (click)="addProductToBill(unitPrice)"
     >
       <div class="flex flex-col items-start">
@@ -34,6 +37,8 @@
     <!-- Precio Mayorista -->
     <button
       class="du-btn du-btn-outline du-btn-block justify-between h-auto py-4 px-5 normal-case"
+      [class.du-btn-primary]="highlightedPriceIndex() === 1"
+      [class.du-btn-outline]="highlightedPriceIndex() !== 1"
       (click)="addProductToBill(wholesalePrice)"
     >
       <div class="flex flex-col items-start">

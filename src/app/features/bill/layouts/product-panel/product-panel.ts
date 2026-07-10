@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, inject, output, signal } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  inject,
+  output,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { ProductOnInventoryResponse } from '../../../../shared/interfaces/product.interface';
 import { ProductSelected } from '../../../../shared/interfaces/bill.interface';
 import { Router } from '@angular/router';
@@ -6,7 +15,6 @@ import { InventoryStore } from '../../../../shared/store/inventory-store';
 import { TableProducts } from '../../../../shared/layouts/table-products/table-products';
 import { ProductPricesPanel } from '../product-prices-panel/product-prices-panel';
 import { ModalComponent } from '../../../../shared/components/modal.component/modal.component';
-
 
 @Component({
   selector: 'app-product-panel',
@@ -22,6 +30,8 @@ export class ProductPanel {
   priceModalOpen = signal<boolean>(false);
   addProductToBill = output<ProductSelected>();
 
+  tableProducts = viewChild<TableProducts>('productTable');
+
   productSelected = signal<ProductSelected>({
     id: 0,
     unitPrice: 0,
@@ -31,6 +41,17 @@ export class ProductPanel {
     quantity: 0,
     taxpercentage: 0,
   });
+
+  constructor() {
+    let prevPriceModal = this.priceModalOpen();
+    effect(() => {
+      const isOpen = this.priceModalOpen();
+      if (prevPriceModal && !isOpen) {
+        this.tableProducts()?.searchInput()?.nativeElement.focus();
+      }
+      prevPriceModal = isOpen;
+    });
+  }
 
   onPriceSelected(price: number) {
     this.productSelected.update((current) => ({

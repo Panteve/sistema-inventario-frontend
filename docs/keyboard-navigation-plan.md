@@ -56,7 +56,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | `Alt+C` | Abrir drawer de cliente | Sin modal/drawer abierto |
 | `Escape` | Limpiar/Cancelar factura | Sin líneas de productos |
 
-### Modal de productos — ProductPanel / TableProducts
+### Modal de productos — ProductPanel / TableProducts ✅
 
 | Tecla | Acción |
 |-------|--------|
@@ -66,7 +66,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | `Enter` | Seleccionar producto highlighteado |
 | `Escape` | Cerrar modal |
 
-### Modal de precio — ProductPricesPanel
+### Modal de precio — ProductPricesPanel 
 
 | Tecla | Acción |
 |-------|--------|

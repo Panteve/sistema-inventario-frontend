@@ -12,6 +12,7 @@
   </div>
 } @else {
   <app-table-products
+    #productTable
     [enableRowSelect]="true"
     [quantityProducts]="10"
     (rowSelected)="getProductTable($event)"
