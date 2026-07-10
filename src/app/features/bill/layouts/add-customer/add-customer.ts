@@ -1,4 +1,18 @@
-import { ChangeDetectionStrategy, Component, effect, inject, model, output, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  effect,
+  ElementRef,
+  inject,
+  model,
+  output,
+  signal,
+  viewChild,
+  afterNextRender,
+  input,
+  Injector,
+  afterRenderEffect,
+} from '@angular/core';
 import {
   AbstractControl,
   FormControl,
@@ -19,12 +33,16 @@ import { ToastService } from '../../../../shared/services/toast.service';
 @Component({
   selector: 'app-add-customer',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '(document:keydown)': 'onKeydown($event)',
+  },
   imports: [ReactiveFormsModule],
   templateUrl: './add-customer.html',
 })
 export class AgregarCliente {
-  customerService = inject(CustomerService);
-  toastService = inject(ToastService);
+  #customerService = inject(CustomerService);
+  #toastService = inject(ToastService);
+  #injector = inject(Injector);
 
   rolesCustomer = [
     { id: 1, name: 'Natural', code: 'CLIENT' as Role },
@@ -32,13 +50,34 @@ export class AgregarCliente {
   ];
 
   customer = model<CreateCustomerRequest | null>(null);
+  panelOpen = input.required<boolean>();
   editarClienteActivo = signal<boolean>(false);
   newCustomer = signal<boolean>(false);
   loading = signal<boolean>(false);
 
   clearCustomer = model<boolean>(false);
 
+  documentInput = viewChild<ElementRef<HTMLInputElement>>('documentInput');
+  btnSearch = viewChild<ElementRef<HTMLButtonElement>>('btnSearch');
+
+  private focusDocumentInput() {
+    const input = this.documentInput()?.nativeElement;
+    const drawerSide = input?.closest('.du-drawer-side') as HTMLElement | null;
+    if (!input || !drawerSide) return;
+
+    if (getComputedStyle(input).visibility === 'hidden') {
+      drawerSide.addEventListener('transitionend', () => input.focus(), { once: true });
+    } else {
+      input.focus();
+    }
+  }
   constructor() {
+    effect(() => {
+      if (this.panelOpen()) {
+        afterNextRender(() => this.focusDocumentInput(), { injector: this.#injector });
+      }
+    });
+
     effect(() => {
       if (this.customer()) {
         this.customerForm.setValue({
@@ -128,7 +167,7 @@ export class AgregarCliente {
       this.loading.set(true);
       this.customer.set(null);
       this.newCustomer.set(false);
-      this.customerService.searchCustomerByDoc(document).subscribe({
+      this.#customerService.searchCustomerByDoc(document).subscribe({
         next: (customer) => {
           this.customer.set(customer);
           this.loading.set(false);
@@ -136,13 +175,13 @@ export class AgregarCliente {
         error: (error) => {
           if (error.status === 404) {
             this.newCustomer.set(true);
-            this.toastService.show({
+            this.#toastService.show({
               title: 'Cliente no encontrado',
               content: 'El cliente no existe, por favor ingresa los datos para crearlo.',
               type: 'info',
             });
           } else {
-            this.toastService.show({
+            this.#toastService.show({
               title: 'Error al buscar el cliente',
               content: 'Ocurrió un error al buscar el cliente.',
               type: 'error',
@@ -179,17 +218,17 @@ export class AgregarCliente {
       payload.role = formValue.role as Role;
     }
     if (!formValue.document) {
-      this.toastService.show({
+      this.#toastService.show({
         title: 'Documento inválido',
         content: 'El documento no puede estar vacío.',
         type: 'error',
       });
       return;
     }
-    this.customerService.updateCustomerByDoc(formValue.document, payload).subscribe({
+    this.#customerService.updateCustomerByDoc(formValue.document, payload).subscribe({
       next: (customer) => {
         this.customer.set(customer);
-        this.toastService.show({
+        this.#toastService.show({
           title: 'Cliente actualizado',
           content: 'El cliente ha sido actualizado exitosamente.',
           type: 'success',
@@ -199,13 +238,13 @@ export class AgregarCliente {
       },
       error: (error) => {
         if (error.status === 400) {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al actualizar el cliente',
             content: 'Verifique los datos ingresados.',
             type: 'error',
           });
         } else {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al actualizar el cliente',
             content: 'Ocurrió un error al actualizar el cliente.',
             type: 'error',
@@ -231,11 +270,11 @@ export class AgregarCliente {
       role: formValue.role as Role,
     };
 
-    this.customerService.createCustomer(customerData).subscribe({
+    this.#customerService.createCustomer(customerData).subscribe({
       next: (customer) => {
         this.customer.set(customer);
         this.newCustomer.set(false);
-        this.toastService.show({
+        this.#toastService.show({
           title: 'Cliente creado',
           content: 'El cliente ha sido creado exitosamente.',
           type: 'success',
@@ -244,13 +283,13 @@ export class AgregarCliente {
       },
       error: (error) => {
         if (error.status === 400) {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al crear el cliente',
             content: 'Verifique los datos ingresados.',
             type: 'error',
           });
         } else {
-          this.toastService.show({
+          this.#toastService.show({
             title: 'Error al crear el cliente',
             content: 'Ocurrió un error al crear el cliente.',
             type: 'error',
@@ -261,4 +300,20 @@ export class AgregarCliente {
     });
   }
 
+  onKeydown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+    const docInput = this.documentInput()?.nativeElement;
+
+    if (event.key === 'Enter' && target === docInput) {
+      event.preventDefault();
+      if (
+        docInput?.value &&
+        this.customerForm.get('document')?.valid &&
+        !this.customer() &&
+        !this.newCustomer()
+      ) {
+        this.buscarCliente();
+      }
+    }
+  }
 }

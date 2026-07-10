@@ -1,9 +1,10 @@
-<div class="du-drawer du-drawer-end relative z-0">
+<div class="du-drawer du-drawer-end relative z-50">
   <input
     id="my-drawer-1"
     type="checkbox"
     class="du-drawer-toggle"
     (change)="customerPanelOpen.set($any($event.target).checked)"
+    (focus)="$any($event.target).blur()"
   />
   <div class="du-drawer-content relative">
     <div class="px-4 py-10 md:py-14">
@@ -330,7 +331,10 @@
       (click)="customerPanelOpen.set(false)"
     ></label>
     <ul class="du-menu bg-base-100 min-h-full w-80 md:w-100 p-4">
-      <app-add-customer [(customer)]="customer"></app-add-customer>
+      <app-add-customer
+        [(customer)]="customer"
+        [panelOpen]="customerPanelOpen()"
+      ></app-add-customer>
     </ul>
   </div>
 </div>
