@@ -6,6 +6,7 @@
     aria-modal="true"
     [attr.aria-label]="ariaLabel()"
     #dialogContainer
+    (keydown.escape)="handleEscape($event)"
     (click)="close.emit()"
   >
     <div

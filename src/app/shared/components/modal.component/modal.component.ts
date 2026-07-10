@@ -12,7 +12,6 @@ import {
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '(document:keydown.escape)': 'handleEscape()',
     '(keydown)': 'trapFocus($event)',
   },
   selector: 'app-modal',
@@ -47,8 +46,9 @@ export class ModalComponent {
     });
   }
 
-  handleEscape() {
+  handleEscape(event: Event) {
     if (this.isOpen()) {
+      event.stopPropagation();
       this.close.emit();
     }
   }
