@@ -61,6 +61,7 @@ export class PaymentContent {
     afterRenderEffect(() => {
       this.selectedMethod()
       this.inputAmountRef()?.nativeElement.focus();
+      this.inputAmountRef()?.nativeElement.select();
     })
   }
 

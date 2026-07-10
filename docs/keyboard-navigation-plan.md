@@ -78,7 +78,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 
 **Señal nueva:** `highlightedPriceIndex = signal<number>(0)`
 
-### Modal de pago — PaymentContent
+### Modal de pago — PaymentContent ✅
 
 | Tecla | Acción |
 |-------|--------|

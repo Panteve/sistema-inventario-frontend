@@ -53,7 +53,7 @@ export class CloseCashRegisterComponent {
   confirmBtnRef = viewChild<ElementRef<HTMLButtonElement>>('confirmBtnRef');
 
   constructor() {
-    effect(() => {
+    afterRenderEffect(() => {
       if (!this.loadingSummary()) {
         const input = this.amountInputRef()?.nativeElement;
         input?.focus();
@@ -61,7 +61,7 @@ export class CloseCashRegisterComponent {
         const container = input?.closest<HTMLElement>('.overflow-y-auto');
         if (container) container.scrollTop = container.scrollHeight;
       }
-    });
+    })
   }
 
   expected = computed(() => {
