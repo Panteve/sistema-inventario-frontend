@@ -12,7 +12,9 @@
     "dev": "concurrently -k \"npm run start\" \"wait-on http://localhost:8080 && npm run electron\"",
     "build:prod": "ng build --configuration production,electron",
     "start:electron:prod": "electron .",
-    "prod": "ng build --configuration production && electron ."
+    "prod": "ng build --configuration production && electron .",
+    "dist": "npm run build:prod && electron-builder",
+    "dist:win": "npm run build:prod && electron-builder --win"
   },
   "prettier": {
     "printWidth": 100,
@@ -55,11 +57,35 @@
     "@tailwindcss/postcss": "^4.1.18",
     "concurrently": "^9.2.1",
     "electron": "^40.8.5",
+    "electron-builder": "^26.15.3",
     "jsdom": "^27.1.0",
     "postcss": "^8.5.6",
     "tailwindcss": "^4.1.18",
     "typescript": "~5.9.2",
     "vitest": "^4.0.8",
     "wait-on": "^9.0.3"
+  },
+  "build": {
+    "appId": "com.panteve.electropos",
+    "productName": "Electro POS",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "package.json",
+      "node_modules/**/*"
+    ],
+    "asar": true,
+    "win": {
+      "target": "nsis"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
+    }
   }
 }

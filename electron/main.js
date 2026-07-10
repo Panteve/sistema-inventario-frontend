@@ -58,9 +58,18 @@ function createWindow() {
     }
   });
 
-  mainWindow.loadFile(
-    path.join(__dirname, '../dist/sistema-inventario-frontend/browser/index.html'),
-  );
+  const indexPath = app.isPackaged
+    ? path.join(
+        process.resourcesPath,
+        'app.asar',
+        'dist',
+        'sistema-inventario-frontend',
+        'browser',
+        'index.html',
+      )
+    : path.join(__dirname, '../dist/sistema-inventario-frontend/browser/index.html');
+
+  mainWindow.loadFile(indexPath);
 
   mainWindow.on('closed', () => {
     mainWindow = null;
