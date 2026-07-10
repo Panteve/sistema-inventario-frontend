@@ -66,7 +66,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | `Enter` | Seleccionar producto highlighteado |
 | `Escape` | Cerrar modal |
 
-### Modal de precio — ProductPricesPanel 
+### Modal de precio — ProductPricesPanel ✅
 
 | Tecla | Acción |
 |-------|--------|
@@ -93,7 +93,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | `Enter` en input de documento | Ejecutar búsqueda |
 | `Escape` | Cerrar drawer |
 
-### Modal de apertura de caja — OpenCashRegisterComponent
+### Modal de apertura de caja — OpenCashRegisterComponent ✅
 
 | Tecla | Acción |
 |-------|--------|
@@ -122,7 +122,7 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | `Enter` en botón "Cerrar caja" | Abrir confirmación (`requestCloseCashRegister()`) |
 | `Escape` | Lo maneja ModalComponent — NO duplicar |
 
-**Confirmación interna** (modal anidado):
+**Confirmación interna** (modal anidado): ✅
 
 | Tecla | Acción |
 |-------|--------|

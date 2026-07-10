@@ -287,6 +287,30 @@ export class BillComponent {
       return;
     }
 
+    if (event.key === 'Enter' && !isInput) {
+      const idx = this.activeRowIndex();
+      if (idx >= 0 && idx < this.bill().products.length) {
+        event.preventDefault();
+        this.focusQuantityInput(idx);
+      }
+      return;
+    }
+
+    if (event.key === 'Enter' && isInput) {
+      const row = target.closest('tr');
+      const inputs = row?.querySelectorAll('input');
+      const currentIndex = Array.from(inputs ?? []).indexOf(target as HTMLInputElement);
+      if (currentIndex === 0 && inputs && inputs.length > 1) {
+        event.preventDefault();
+        inputs[1].focus();
+        inputs[1].select();
+      } else {
+        event.preventDefault();
+        (target as HTMLElement).blur();
+      }
+      return;
+    }
+
     if (event.key === 'Delete') {
       const idx = this.activeRowIndex();
       if (idx >= 0 && idx < this.bill().products.length) {
@@ -300,6 +324,16 @@ export class BillComponent {
       event.preventDefault();
       this.cancelBill();
       return;
+    }
+  }
+
+  focusQuantityInput(rowIndex: number) {
+    const rows = document.querySelectorAll('table tbody tr');
+    const row = rows[rowIndex];
+    const quantityInput = row?.querySelector('input[type="number"]') as HTMLInputElement;
+    if (quantityInput) {
+      quantityInput.focus();
+      quantityInput.select();
     }
   }
 
