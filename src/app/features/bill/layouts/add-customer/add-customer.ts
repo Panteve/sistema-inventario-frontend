@@ -55,10 +55,17 @@ export class AgregarCliente {
   newCustomer = signal<boolean>(false);
   loading = signal<boolean>(false);
 
+  closeRequested = output<void>();
   clearCustomer = model<boolean>(false);
 
   documentInput = viewChild<ElementRef<HTMLInputElement>>('documentInput');
   btnSearch = viewChild<ElementRef<HTMLButtonElement>>('btnSearch');
+  nameInput = viewChild<ElementRef<HTMLInputElement>>('nameInput');
+  emailInput = viewChild<ElementRef<HTMLInputElement>>('emailInput');
+  phoneInput = viewChild<ElementRef<HTMLInputElement>>('phoneInput');
+  roleSelect = viewChild<ElementRef<HTMLSelectElement>>('roleSelect');
+  btnPrimary = viewChild<ElementRef<HTMLButtonElement>>('btnPrimary');
+  btnSecondary = viewChild<ElementRef<HTMLButtonElement>>('btnSecondary');
 
   private focusDocumentInput() {
     const input = this.documentInput()?.nativeElement;
@@ -154,6 +161,7 @@ export class AgregarCliente {
     this.customerForm.enable();
     this.customerForm.get('document')?.disable();
     this.editarClienteActivo.set(true);
+    this.nameInput()?.nativeElement.focus();
   }
   disabledEditarCliente() {
     this.customerForm.disable();
@@ -302,18 +310,63 @@ export class AgregarCliente {
 
   onKeydown(event: KeyboardEvent) {
     const target = event.target as HTMLElement;
-    const docInput = this.documentInput()?.nativeElement;
 
-    if (event.key === 'Enter' && target === docInput) {
+    const selectEl = this.roleSelect()?.nativeElement;
+
+    const elements = [
+      this.documentInput()?.nativeElement,
+      this.btnSearch()?.nativeElement,
+      this.nameInput()?.nativeElement,
+      this.emailInput()?.nativeElement,
+      this.phoneInput()?.nativeElement,
+      selectEl,
+      this.btnPrimary()?.nativeElement,
+      this.btnSecondary()?.nativeElement,
+    ].filter(Boolean) as HTMLElement[];
+
+    if (event.key === 'Enter' && target === this.documentInput()?.nativeElement) {
       event.preventDefault();
-      if (
-        docInput?.value &&
-        this.customerForm.get('document')?.valid &&
-        !this.customer() &&
-        !this.newCustomer()
-      ) {
+
+      if (this.customerForm.get('document')?.valid) {
         this.buscarCliente();
+        this.documentInput()?.nativeElement.focus();
       }
+      return;
+    }
+
+    if (event.key === 'Escape' && this.panelOpen()) {
+      event.preventDefault();
+      this.closeRequested.emit();
+      return;
+    }
+
+    if (
+      event.key === 'Enter' &&
+      target !== this.documentInput()?.nativeElement &&
+      target !== this.btnSearch()?.nativeElement &&
+      target !== this.btnPrimary()?.nativeElement &&
+      target !== this.btnSecondary()?.nativeElement &&
+      target !== selectEl
+    ) {
+      const currentIdx = elements.indexOf(target);
+      if (currentIdx === -1) return;
+
+      event.preventDefault();
+      const nextIdx = (currentIdx + 1) % elements.length;
+      elements[nextIdx].focus();
+      return;
+    }
+
+    if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+      const currentIdx = elements.indexOf(target);
+      if (currentIdx === -1) return;
+
+      event.preventDefault();
+      const nextIdx =
+        event.key === 'ArrowDown'
+          ? (currentIdx + 1) % elements.length
+          : (currentIdx - 1 + elements.length) % elements.length;
+      elements[nextIdx].focus();
     }
   }
 }

@@ -3,6 +3,7 @@
     id="my-drawer-1"
     type="checkbox"
     class="du-drawer-toggle"
+    [checked]="customerPanelOpen()"
     (change)="customerPanelOpen.set($any($event.target).checked)"
     (focus)="$any($event.target).blur()"
   />
@@ -334,6 +335,7 @@
       <app-add-customer
         [(customer)]="customer"
         [panelOpen]="customerPanelOpen()"
+        (closeRequested)="customerPanelOpen.set(false)"
       ></app-add-customer>
     </ul>
   </div>
