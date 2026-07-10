@@ -13,6 +13,7 @@ import {
   Router,
   RouteReuseStrategy,
   withComponentInputBinding,
+  withHashLocation,
   withInMemoryScrolling,
   withRouterConfig,
 } from '@angular/router';
@@ -29,6 +30,7 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     provideRouter(
       routes,
+      withHashLocation(),
       withComponentInputBinding(),
       withInMemoryScrolling({
         scrollPositionRestoration: 'top',

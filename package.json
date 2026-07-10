@@ -10,6 +10,8 @@
     "test": "ng test",
     "electron": "electron .",
     "dev": "concurrently -k \"npm run start\" \"wait-on http://localhost:8080 && npm run electron\"",
+    "build:prod": "ng build --configuration production,electron",
+    "start:electron:prod": "electron .",
     "prod": "ng build --configuration production && electron ."
   },
   "prettier": {
