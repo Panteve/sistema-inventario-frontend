@@ -29,6 +29,9 @@ import { InventoryStore } from '../../../../shared/store/inventory-store';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-bill.component',
+  host: {
+    '(document:keydown)': 'onKeydown($event)',
+  },
   imports: [
     CopPipe,
     DatePipe,
@@ -59,6 +62,7 @@ export class BillComponent {
   paymentModalOpen = signal<boolean>(false);
   productsModalOpen = signal<boolean>(false);
   clearCustomer = signal<boolean>(false);
+  activeRowIndex = signal<number>(-1);
 
   bill = signal<CreateBillRequest>({
     customerId: 0,
@@ -236,6 +240,67 @@ export class BillComponent {
         this.loading.set(false);
       },
     });
+  }
+
+  onKeydown(event: KeyboardEvent) {
+    const target = event.target as HTMLElement;
+    const isModalOpen = this.productsModalOpen() || this.paymentModalOpen();
+    const isInput = target.tagName === 'INPUT';
+
+    if (event.key === 'F2' && !isModalOpen) {
+      event.preventDefault();
+      this.openProductModal();
+      return;
+    }
+
+    if (event.key === 'F8' && !isModalOpen && this.bill().products.length > 0) {
+      event.preventDefault();
+      this.openPaymentModal();
+      return;
+    }
+
+    if (event.key === 'c' && event.altKey && !this.customerPanelOpen() && !isModalOpen) {
+      event.preventDefault();
+      const drawerCheckbox = document.getElementById('my-drawer-1') as HTMLInputElement;
+      if (drawerCheckbox) drawerCheckbox.checked = true;
+      this.customerPanelOpen.set(true);
+      return;
+    }
+
+    if (isModalOpen) return;
+
+    if (event.key === 'ArrowDown' && !isInput) {
+      event.preventDefault();
+      this.activeRowIndex.update((i) => {
+        const max = this.bill().products.length - 1;
+        return i >= max ? 0 : i + 1;
+      });
+      return;
+    }
+
+    if (event.key === 'ArrowUp' && !isInput) {
+      event.preventDefault();
+      this.activeRowIndex.update((i) => {
+        if (i <= 0 || i > this.bill().products.length - 1) return this.bill().products.length - 1;
+        return i - 1;
+      });
+      return;
+    }
+
+    if (event.key === 'Delete') {
+      const idx = this.activeRowIndex();
+      if (idx >= 0 && idx < this.bill().products.length) {
+        event.preventDefault();
+        this.quitProduct(this.bill().products[idx].productId);
+      }
+      return;
+    }
+
+    if (event.key === 'Escape' && this.bill().products.length > 0) {
+      event.preventDefault();
+      this.cancelBill();
+      return;
+    }
   }
 
   openProductModal() {

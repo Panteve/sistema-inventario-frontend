@@ -121,19 +121,28 @@ export class App implements OnInit {
   }
 
   onKeydown(event: KeyboardEvent) {
+    if (event.key === 'F1' && this.authStore.cashRegisterIsOpen()) {
+      event.preventDefault();
+      if (!this.cashModalOpen() && !this.expenseModalOpen()) {
+        this.router.navigate(['/create-bill']);
+      }
+      return;
+    }
+    if (event.key === 'F3') {
+      event.preventDefault();
+      if (this.cashModalOpen()) {
+        this.closeCashModal();
+      } else if (!this.expenseModalOpen()) {
+        this.openCashModal();
+      }
+      return;
+    }
     if (event.key === 'F4' && this.authStore.cashRegisterIsOpen()) {
       event.preventDefault();
       if (!this.expenseModalOpen() && !this.cashModalOpen()) {
         this.openExpenseModal();
       }
-      return
+      return;
     }
-    if (event.key === 'F3' ) {
-      event.preventDefault();
-      if (!this.cashModalOpen() && !this.expenseModalOpen()) {
-        this.openCashModal();
-      }
-    }
-
   }
 }

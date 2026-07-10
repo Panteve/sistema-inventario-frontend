@@ -40,10 +40,10 @@ Hacer que **todo el flujo de creación de facturas** que realiza un cajero sea o
 | Tecla | Acción |
 |-------|--------|
 | `F1` | Navegar a nueva factura (`/create-bill`) |
-| `F3` | Abrir/cerrar caja (toggle modal) |
+| `F3` ✅ | Abrir/cerrar caja (toggle modal) |
 | `F4` ✅ | Abrir modal de gasto |
 
-### Página principal — BillComponent
+### Página principal — BillComponent  ✅
 
 | Tecla | Acción | Condición |
 |-------|--------|-----------|
@@ -200,9 +200,9 @@ Indica qué opción de precio (0 = unitario, 1 = mayorista) está highlighteada 
 
 | # | Archivo | Cambio |
 |---|---------|--------|
-| 1 | `src/app/app.ts` ✅ | Agregar `host` con F1, F3, F4 (F4 implementado, F1 y F3 pendientes) |
-| 2 | `src/app/features/bill/pages/create-bill/bill.component.ts` | Agregar `host` con F2, F8, flechas, Delete, Escape; signal `activeRowIndex` |
-| 3 | `src/app/features/bill/pages/create-bill/bill.component.html` | `tabindex` + `(focus)` + clase highlight en `<tr>` de líneas |
+| 1 | `src/app/app.ts` ✅ | Agregar `host` con F1, F3, F4 (todos implementados) |
+| 2 | `src/app/features/bill/pages/create-bill/bill.component.ts` ✅ | Agregar `host` con F2, F8, flechas, Delete, Escape; signal `activeRowIndex` |
+| 3 | `src/app/features/bill/pages/create-bill/bill.component.html` ✅ | `(click)` + clase highlight en `<tr>` de líneas |
 | 4 | `src/app/shared/layouts/table-products/table-products.ts` | Agregar `host` con flechas + Enter; signal `highlightedRowIndex` |
 | 5 | `src/app/shared/layouts/table-products/table-products.html` | Clase highlight en fila activa |
 | 6 | `src/app/features/bill/layouts/product-prices-panel/product-prices-panel.ts` | Agregar `host` con flechas + Enter; signal `highlightedPriceIndex`; auto-focus al abrir |
@@ -210,7 +210,7 @@ Indica qué opción de precio (0 = unitario, 1 = mayorista) está highlighteada 
 | 8 | `src/app/features/bill/layouts/payment-content/payment-content.ts` | Agregar `host` con Enter; auto-focus en select |
 | 9 | `src/app/features/bill/layouts/add-customer/add-customer.ts` | Agregar `host` con Enter para búsqueda |
 | 10 | `src/app/features/bill/layouts/product-panel/product-panel.ts` | Auto-focus en input de búsqueda al abrir modal |
-| 11 | `src/app/features/cash-register/layouts/open-cash-register/open-cash-register.component.ts` | Agregar `host` con Enter en monto (→ abrir confirmación) |
+| 11 | `src/app/features/cash-register/layouts/open-cash-register/open-cash-register.component.ts` ✅ | Agregar `host` con Enter en monto, flechas (↑↓) cíclicas en formulario y confirmación, focus en confirmación |
 | 12 | `src/app/features/cash-register/layouts/close-cash-register/close-cash-register.component.ts` ✅ | Navegación con flechas (↑↓↔), Enter monto→textarea, Enter textarea→Cerrar caja, focus en confirmación, scroll al fondo |
 | 13 | `src/app/features/expense/pages/expense-create/expense.component.ts` ✅ | Enter monto→textarea, Enter textarea→Crear gasto (o marca errores), `showCloseButton="false"` |
 

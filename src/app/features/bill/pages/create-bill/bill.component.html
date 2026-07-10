@@ -78,6 +78,7 @@
                     }
                   </div>
                   <label
+                    #billCustomerButton
                     for="my-drawer-1"
                     class="du-btn du-btn-ghost du-btn-sm w-full md:w-auto"
                     (click)="customerPanelOpen.set(true)"
@@ -137,7 +138,11 @@
                     </thead>
                     <tbody class="text-sm md:text-base text-center">
                       @for (product of bill().products; track product.productId) {
-                        <tr class="hover:bg-base-200 transition-colors">
+                        <tr
+                          class="hover:bg-base-200 transition-colors"
+                          [class.bg-primary/10]="activeRowIndex() === $index"
+                          (click)="activeRowIndex.set($index)"
+                        >
                           <td>{{ product.name }}</td>
                           <td>
                             <input
