@@ -50,12 +50,12 @@ export const AuthStore = signalStore(
         switchMap(({ document, password }) =>
           authService.login(document, password).pipe(
             tap(({ user, access_token }) => {
+              router.navigate(['/dashboard']);
               electronApi.saveToken(access_token);
               patchState(store, {
                 employee: user,
                 officeIdFromCashRegister: user.officeId ?? null,
               });
-              router.navigate(['/dashboard']);
             }),
             catchError((err) => {
               if (err.status === 401 || err.status === 404) {
